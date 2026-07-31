@@ -602,6 +602,28 @@ body {
 }
 .preset-btn.active { background: var(--focus); color: #FFF; border-color: var(--focus); }
 
+/* ============ STAR TOAST ============ */
+.star-toast {
+  position: fixed;
+  top: calc(64px + env(safe-area-inset-top, 0px));
+  left: 50%;
+  transform: translateX(-50%) translateY(-16px);
+  background: rgba(51,51,51,0.92);
+  color: #FFF;
+  padding: 10px 22px;
+  border-radius: 22px;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 300;
+  max-width: 84%;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+.star-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ============ REWARD MODAL ============ */
 .reward-overlay {
   position: fixed;
@@ -771,7 +793,11 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <div class="chinese-sub active" id="sub-pinyin">
       <div class="card">
         <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击拼音可以听发音哦～（人教版一年级上册）</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+          点击拼音可以听发音哦～（人教版一年级上册）
+          <button onclick="speakText('你好呀，声音好着呢！')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试声音</button>
+          <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
+        </p>
         
         <h3 style="margin:12px 0 8px;font-size:16px;">声母 (23个)</h3>
         <div class="pinyin-grid" id="shengmuGrid"></div>
@@ -1023,6 +1049,9 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   </button>
 </div>
 
+<!-- STAR TOAST (lightweight reward feedback) -->
+<div class="star-toast" id="starToast"></div>
+
 <!-- REWARD OVERLAY -->
 <div class="reward-overlay" id="rewardOverlay" style="display:none;" onclick="hideReward()">
   <div class="reward-modal" onclick="event.stopPropagation()">
@@ -1217,18 +1246,20 @@ function updateStreak() {
 
 // Award stars only once per key, so kids can't farm stars by re-tapping
 // the same task / poem / character over and over.
-function grantStarOnce(key, n, msg) {
+function grantStarOnce(key, n, msg, big) {
   if (state.starGranted[key]) return false;
   state.starGranted[key] = true;
-  addStars(n, msg);
+  addStars(n, msg, big);
   return true;
 }
 
-function addStars(n, msg) {
+function addStars(n, msg, big) {
   state.stars += n;
   updateStarsDisplay();
   saveState();
-  if (msg) showReward(msg || `获得 ${n} 颗小星星！`);
+  if (!msg) return;
+  // Small frequent rewards use a light toast; only big moments get the modal.
+  if (big) showReward(msg); else showToast(msg);
 }
 
 // Reuse a single AudioContext: browsers cap how many can exist at once,
@@ -1259,6 +1290,17 @@ function showReward(msg) {
 
 function hideReward() {
   document.getElementById('rewardOverlay').style.display = 'none';
+}
+
+// Lightweight, non-blocking star feedback for frequent small rewards
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('starToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.classList.remove('show'); }, 1400);
 }
 
 function updateStarsDisplay() {
@@ -1311,6 +1353,10 @@ function toggleTask(key, idx) {
   } else {
     state.tasksDone[key] = true;
     grantStarOnce('task_' + key, 1, '完成任务！+1⭐');
+    // Daily sweep bonus: every task on the schedule checked off
+    const todayKey = getToday();
+    const allDone = dailySchedule.every(function(_, i) { return state.tasksDone[`${todayKey}_${i}`]; });
+    if (allDone) grantStarOnce('alldone_' + todayKey, 5, '今日任务全部完成！超级棒 +5⭐', true);
   }
 
   updateStreak();
@@ -1390,27 +1436,46 @@ function initSpeech() {
   }
 }
 
-function speakText(text, lang = 'zh-CN', rate = 0.7) {
-  if (!('speechSynthesis' in window)) return false;
+function speakText(text, lang = 'zh-CN', rate = 0.7, onEnd) {
+  if (!('speechSynthesis' in window)) {
+    if (onEnd) onEnd();
+    return false;
+  }
   initSpeech();
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
     u.rate = rate;
-    u.volume = 0.9;
-    // Pick a Chinese voice if available
-    const zhVoice = speechVoices.find(v => v.lang && v.lang.startsWith('zh'));
+    u.volume = 1.0;
+    // Pick a Chinese voice if available (refresh the list if it loaded late)
+    if (speechVoices.length === 0) speechVoices = speechSynthesis.getVoices();
+    const zhVoice = speechVoices.find(v => v.lang && v.lang.replace('_', '-').indexOf('zh') === 0);
     if (zhVoice) u.voice = zhVoice;
-    // iOS bug workaround: pause+resume to activate audio context
-    speechSynthesis.speak(u);
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      speechSynthesis.pause();
-      speechSynthesis.resume();
-    }
+    // Fire onEnd when the reading actually finishes. Some engines never fire
+    // the event (especially on long texts), so arm a length-based fallback.
+    let ended = false;
+    const done = function() {
+      if (ended) return;
+      ended = true;
+      if (onEnd) onEnd();
+    };
+    u.onend = done;
+    u.onerror = done;
+    setTimeout(done, Math.min(25000, Math.max(1200, Math.round(text.length * 300 / rate))));
+    // Chrome/Android silently drops speak() calls made immediately after
+    // cancel() — a short delay lets the cancel settle. And on iOS we only
+    // resume (pausing right after speaking can mute the utterance).
+    setTimeout(function() {
+      try {
+        speechSynthesis.speak(u);
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) speechSynthesis.resume();
+      } catch(e) { done(); }
+    }, 60);
     return true;
   } catch(e) {
     console.log('Speech error:', e);
+    if (onEnd) onEnd();
     return false;
   }
 }
@@ -1418,18 +1483,20 @@ function speakText(text, lang = 'zh-CN', rate = 0.7) {
 function speakPinyin(py, label, speak) {
   // Speak the carrier character (呼读法) — reliable on every TTS engine.
   // Romanized pinyin is not: ü-family syllables were silently mangled to "u".
-  speakText(speak || label || py);
-  // Only award star once per pinyin per day
-  const today = getToday();
-  if (state.pinyinDate !== today) {
-    state.pinyinToday = {};
-    state.pinyinDate = today;
-  }
-  if (!state.pinyinToday[py]) {
-    state.pinyinToday[py] = true;
-    saveState();
-    addStars(1, '学习拼音 +1⭐');
-  }
+  // The star pops only AFTER the sound finishes.
+  speakText(speak || label || py, 'zh-CN', 0.7, function() {
+    // Only award star once per pinyin per day
+    const today = getToday();
+    if (state.pinyinDate !== today) {
+      state.pinyinToday = {};
+      state.pinyinDate = today;
+    }
+    if (!state.pinyinToday[py]) {
+      state.pinyinToday[py] = true;
+      saveState();
+      addStars(1, '学习拼音 +1⭐');
+    }
+  });
 }
 
 function renderCharGrid(id, data) {
@@ -1451,7 +1518,9 @@ function toggleChar(ch) {
   } else {
     state.charsLearned[ch] = true;
     const count = Object.keys(state.charsLearned).length;
-    grantStarOnce('char_' + ch, 1, `认识"${ch}"！已认识${count}个字 +1⭐`);
+    speakText(ch, 'zh-CN', 0.7, function() {
+      grantStarOnce('char_' + ch, 1, `认识"${ch}"！已认识${count}个字 +1⭐`);
+    });
   }
   saveState();
   renderCharGrid('charGrid1', charWrite);
@@ -1519,8 +1588,10 @@ function renderPoems() {
 
 function speakPoem(idx) {
   const poem = poems[idx];
-  speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6);
-  grantStarOnce(`poem_${getToday()}_${idx}`, 1, `朗读《${poems[idx].title}》+1⭐`);
+  // The star pops only after the whole poem has been read aloud.
+  speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6, function() {
+    grantStarOnce(`poem_${getToday()}_${idx}`, 1, `《${poems[idx].title}》朗读完成！+1⭐`, true);
+  });
 }
 
 // ==================== MATH PAGE ====================
@@ -1593,8 +1664,11 @@ function answerMath(n, btn) {
     state.mathCorrect++;
     btn.classList.add('correct');
     mathStreak++;
-    const bonus = mathStreak > 0 && mathStreak % 5 === 0;
-    addStars(bonus ? 2 : 1, bonus ? `连续答对${mathStreak}题！+2⭐` : '回答正确！+1⭐');
+    if (mathStreak > 0 && mathStreak % 5 === 0) {
+      addStars(2, `连续答对${mathStreak}题！+2⭐`, true);
+    } else {
+      addStars(1, '回答正确！+1⭐');
+    }
   } else {
     mathStreak = 0;
     btn.classList.add('wrong');
@@ -1751,7 +1825,7 @@ function toggleTimer() {
         timerRemaining = 0;
         updateTimerDisplay();
         const min = Math.floor(timerDuration / 60);
-        addStars(2, `专注${min}分钟完成！+2⭐`);
+        addStars(2, `专注${min}分钟完成！+2⭐`, true);
         state.focusMinutes += min;
         saveState();
       }
@@ -1815,7 +1889,7 @@ function clickSchulte(n, btn) {
       clearInterval(schulteInterval);
       const elapsed = ((Date.now() - schulteStartTime) / 1000).toFixed(1);
       document.getElementById('schulteTimer').textContent = '✅ ' + elapsed + '秒';
-      addStars(3, `舒尔特方格完成！用时${elapsed}秒 +3⭐`);
+      addStars(3, `舒尔特方格完成！用时${elapsed}秒 +3⭐`, true);
     }
   }
 }
@@ -1823,10 +1897,16 @@ function clickSchulte(n, btn) {
 // ==================== INIT ====================
 function init() {
   try {
-    // On iOS, suggest Add to Home Screen unless already launched that way
+    // Banner logic: WeChat's built-in browser often cannot play TTS audio —
+    // send those users to a real browser. On plain iOS Safari, suggest
+    // Add to Home Screen instead.
     var ua = navigator.userAgent;
-    if (/iPhone|iPad|iPod/i.test(ua) && window.navigator.standalone !== true) {
-      document.getElementById('iosBanner').style.display = 'block';
+    var banner = document.getElementById('iosBanner');
+    if (/MicroMessenger/i.test(ua)) {
+      banner.innerHTML = '⚠️ 微信里打开可能没有声音！请点右上角 <b>···</b> → <b>"在浏览器打开"</b>，语音朗读才能正常使用。<button onclick="this.parentElement.style.display=\'none\'" style="margin-left:8px;background:none;border:none;font-size:16px;cursor:pointer;color:#856404;">✕</button>';
+      banner.style.display = 'block';
+    } else if (/iPhone|iPad|iPod/i.test(ua) && window.navigator.standalone !== true) {
+      banner.style.display = 'block';
     }
 
     loadState();
@@ -1882,13 +1962,13 @@ function init() {
       var hints = document.querySelectorAll('#sub-pinyin p, #sub-chars p');
       hints.forEach(function(h) {
         if (h.textContent.indexOf('听发音') >= 0 || h.textContent.indexOf('点击') >= 0) {
-          h.textContent = '💡 当前浏览器不支持语音朗读，请用 Safari 浏览器打开即可听发音。';
+          h.textContent = '💡 当前浏览器不支持语音朗读，请改用手机自带浏览器（Safari / Chrome / 华为浏览器等）打开本页。';
           h.style.color = '#FF6B6B';
         }
       });
       // Also add note to home page
       var dateEl = document.getElementById('dateDisplay');
-      if (dateEl) dateEl.textContent += ' | 💡 请用Safari打开以启用语音';
+      if (dateEl) dateEl.textContent += ' | 💡 请改用系统浏览器打开以启用语音';
     }
   } catch(e) {
     console.error('Init error:', e);
