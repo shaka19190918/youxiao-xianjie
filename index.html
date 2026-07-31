@@ -820,7 +820,8 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <div class="chinese-sub" id="sub-chars" style="display:none;">
       <div class="card">
         <div class="card-header"><span class="icon">✏️</span><h2>会写字（一年级上册）</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">每天认识5个新字，点击可标记已学会</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">每天认识5个新字，点击可标记已学会</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">✍️ 写字姿势"三个一"：胸离桌边一拳，眼离本子一尺，手离笔尖一寸。</p>
         <div class="char-grid" id="charGrid1"></div>
       </div>
       <div class="card">
@@ -851,7 +852,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <!-- Poem Section -->
     <div class="chinese-sub" id="sub-poem" style="display:none;">
       <div class="card">
-        <div class="card-header"><span class="icon">📜</span><h2>必背古诗 · 一年级上册</h2></div>
+        <div class="card-header"><span class="icon">📜</span><h2>必背古诗童谣 · 一年级上册</h2></div>
         <div id="poemList"></div>
       </div>
     </div>
@@ -861,6 +862,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   <div class="page" id="page-math">
     <div class="module-tabs" id="mathTabs">
       <button class="module-tab active" data-sub="count">数数认数</button>
+      <button class="module-tab" data-sub="split">分与合</button>
       <button class="module-tab" data-sub="addsub">加减法</button>
       <button class="module-tab" data-sub="compare">比大小</button>
       <button class="module-tab" data-sub="shapes">认图形</button>
@@ -876,6 +878,16 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     </div>
 
     <!-- Add/Sub Section -->
+    <!-- Number Bonds Section: 数的分与合是加减法的基础（人教版一上） -->
+    <div class="math-sub" id="sub-split" style="display:none;">
+      <div class="card" style="text-align:center;">
+        <div class="card-header"><span class="icon">🍎</span><h2 style="margin:0 auto;">数的分与合</h2></div>
+        <p style="font-size:13px;color:var(--text-light);">把苹果分到两个盘子里：5 可以分成 2 和 3</p>
+        <div class="math-question" id="splitQuestion">5 可以分成 2 和 ?</div>
+        <div class="math-options" id="splitOptions"></div>
+      </div>
+    </div>
+
     <div class="math-sub" id="sub-addsub" style="display:none;">
       <div class="card">
         <div class="score-bar">
@@ -1049,6 +1061,17 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   </button>
 </div>
 
+<!-- EYE-CARE REMINDER: 教育部等八部门《综合防控儿童青少年近视实施方案》
+     建议电子产品单次使用不超过15分钟 -->
+<div class="reward-overlay" id="eyeOverlay" style="display:none;">
+  <div class="reward-modal" onclick="event.stopPropagation()">
+    <div class="star-big">👀</div>
+    <h3>眼睛休息一下</h3>
+    <p>已经看了15分钟屏幕啦～<br>看看窗外远处20秒，眨眨眼睛！</p>
+    <button onclick="eyeRestDone()">🌳 我休息好了</button>
+  </div>
+</div>
+
 <!-- STAR TOAST (lightweight reward feedback) -->
 <div class="star-toast" id="starToast"></div>
 
@@ -1167,6 +1190,8 @@ const poems = [
   { title: '江南', author: '汉乐府', lines: ['江南可采莲，', '莲叶何田田。', '鱼戏莲叶间。', '鱼戏莲叶东，鱼戏莲叶西，鱼戏莲叶南，鱼戏莲叶北。'], emoji: '🌸' },
   { title: '悯农', author: '李绅', lines: ['锄禾日当午，', '汗滴禾下土。', '谁知盘中餐，', '粒粒皆辛苦。'], emoji: '🌾' },
   { title: '古朗月行', author: '李白', lines: ['小时不识月，', '呼作白玉盘。', '又疑瑶台镜，', '飞在青云端。'], emoji: '🌙' },
+  { title: '金木水火土', author: '识字课文', lines: ['一二三四五，', '金木水火土。', '天地分上下，', '日月照今古。'], emoji: '🌍' },
+  { title: '对韵歌', author: '识字课文', lines: ['云对雨，雪对风，', '花对树，鸟对虫。', '山清对水秀，', '柳绿对桃红。'], emoji: '🎵' },
 ];
 
 // Habits
@@ -1604,6 +1629,7 @@ document.getElementById('mathTabs').addEventListener('click', function(e) {
     document.querySelectorAll('.math-sub').forEach(s => s.style.display = 'none');
     document.getElementById('sub-' + sub).style.display = 'block';
     if (sub === 'addsub') generateMath();
+    if (sub === 'split') generateSplit();
     if (sub === 'compare') generateCompare();
   }
 });
@@ -1618,6 +1644,43 @@ function renderNumberLine() {
 
 function speakNumber(n) {
   speakText(String(n));
+}
+
+// Number Bonds (分与合): n can be split into a and ?
+let currentSplitAnswer = 0;
+
+function generateSplit() {
+  const n = Math.floor(Math.random() * 9) + 2;       // 2..10
+  const a = Math.floor(Math.random() * (n - 1)) + 1; // 1..n-1
+  currentSplitAnswer = n - a;
+  document.getElementById('splitQuestion').textContent = `${n} 可以分成 ${a} 和 ?`;
+
+  // 4 options from a bounded pool, always terminates
+  const pool = [];
+  for (let x = Math.max(1, currentSplitAnswer - 3); x <= Math.min(10, currentSplitAnswer + 3); x++) {
+    if (x !== currentSplitAnswer) pool.push(x);
+  }
+  pool.sort(() => Math.random() - 0.5);
+  const options = [currentSplitAnswer, ...pool.slice(0, 3)].sort(() => Math.random() - 0.5);
+
+  document.getElementById('splitOptions').innerHTML = options.map(v => `
+    <button class="math-option" onclick="answerSplit(${v}, this)">${v}</button>
+  `).join('');
+}
+
+function answerSplit(v, btn) {
+  const allBtns = document.querySelectorAll('#splitOptions .math-option');
+  allBtns.forEach(b => b.style.pointerEvents = 'none');
+  if (v === currentSplitAnswer) {
+    btn.classList.add('correct');
+    addStars(1, '分与合正确！+1⭐');
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (parseInt(b.textContent) === currentSplitAnswer) b.classList.add('correct');
+    });
+  }
+  setTimeout(generateSplit, 1200);
 }
 
 // Math Quiz
@@ -1894,6 +1957,19 @@ function clickSchulte(n, btn) {
   }
 }
 
+// ==================== EYE CARE ====================
+// Remind every 15 minutes of screen time, per official myopia-prevention guidance.
+function armEyeTimer() {
+  setTimeout(function() {
+    document.getElementById('eyeOverlay').style.display = 'flex';
+  }, 15 * 60 * 1000);
+}
+
+function eyeRestDone() {
+  document.getElementById('eyeOverlay').style.display = 'none';
+  armEyeTimer(); // re-arm for the next 15 minutes
+}
+
 // ==================== INIT ====================
 function init() {
   try {
@@ -1937,6 +2013,7 @@ function init() {
     // Math
     renderNumberLine();
     generateMath();
+    generateSplit();
     generateCompare();
     
     // Habits
@@ -1945,6 +2022,9 @@ function init() {
     // Focus
     updateTimerDisplay();
     initSchulte();
+
+    // Eye care
+    armEyeTimer();
     
     updateStarsDisplay();
     
