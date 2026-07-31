@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="幼小衔接快乐营">
+<meta name="theme-color" content="#FF6B6B">
+<title>幼小衔接快乐营</title>
+<style>
+:root {
+  --primary: #FF6B6B;
+  --primary-light: #FFE0E0;
+  --chinese: #4ECDC4;
+  --math: #FFD93D;
+  --habit: #6BCB77;
+  --focus: #A66CFF;
+  --bg: #FFF8F0;
+  --card: #FFFFFF;
+  --text: #333333;
+  --text-light: #888888;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --radius: 24px;
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ============ HEADER ============ */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  padding: 16px 20px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+}
+
+.header .logo { font-size: 22px; font-weight: 800; color: #FFF; letter-spacing: 2px; }
+.header .stars-display {
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 6px 16px;
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============ MAIN CONTENT ============ */
+.main {
+  padding: 16px 20px;
+  padding-bottom: calc(100px + var(--safe-bottom));
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* ============ BOTTOM NAV ============ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #FFF;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  z-index: 200;
+  border-radius: 24px 24px 0 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+.nav-item .nav-icon { font-size: 26px; line-height: 1; }
+.nav-item.active { color: var(--primary); font-weight: 700; }
+.nav-item.active .nav-icon { transform: scale(1.2); }
+
+/* ============ CARDS ============ */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header .icon { font-size: 28px; }
+.card-header h2 { font-size: 18px; font-weight: 700; }
+
+/* ============ HOME PAGE ============ */
+.welcome-banner {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: var(--radius);
+  padding: 24px;
+  color: #FFF;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-banner::after {
+  content: '🎒📚✏️🌈';
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 40px;
+  opacity: 0.4;
+}
+
+.welcome-banner h1 { font-size: 22px; margin-bottom: 6px; }
+.welcome-banner p { font-size: 14px; opacity: 0.9; }
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-card .stat-icon { font-size: 32px; margin-bottom: 6px; }
+.stat-card .stat-value { font-size: 24px; font-weight: 800; color: var(--primary); }
+.stat-card .stat-label { font-size: 13px; color: var(--text-light); }
+
+.today-schedule-mini { margin-bottom: 16px; }
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.schedule-item:last-child { border-bottom: none; }
+
+.schedule-item .time-badge {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.schedule-item .task-name { flex: 1; font-size: 15px; }
+.schedule-item .task-done {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid #DDD;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.schedule-item .task-done.done {
+  background: var(--habit);
+  border-color: var(--habit);
+  color: #FFF;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.quick-action {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 16px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.quick-action:active { transform: scale(0.95); }
+.quick-action .qa-icon { font-size: 32px; margin-bottom: 6px; }
+.quick-action .qa-label { font-size: 12px; color: var(--text); font-weight: 600; }
+
+/* ============ DAILY PLAN PAGE ============ */
+.day-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.day-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid #E0E0E0;
+  background: #FFF;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.day-chip.active {
+  background: var(--primary);
+  color: #FFF;
+  border-color: var(--primary);
+}
+
+.timeline { position: relative; padding-left: 24px; }
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 3px;
+  background: #E0E0E0;
+  border-radius: 2px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 18px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  background: #FFF;
+}
+
+.timeline-item .tl-time { font-size: 12px; color: var(--primary); font-weight: 700; margin-bottom: 4px; }
+.timeline-item .tl-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.timeline-item .tl-desc { font-size: 13px; color: var(--text-light); }
+.timeline-item .tl-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+.tag-study { background: #E8F4FD; color: #2196F3; }
+.tag-play { background: #FFF3E0; color: #FF9800; }
+.tag-life { background: #E8F5E9; color: #4CAF50; }
+.tag-rest { background: #F3E5F5; color: #9C27B0; }
+
+/* ============ CHINESE PAGE ============ */
+.module-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  background: #F0F0F0;
+  border-radius: 16px;
+  padding: 4px;
+}
+
+.module-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 13px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-weight: 600;
+}
+.module-tab.active {
+  background: #FFF;
+  color: var(--chinese);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.pinyin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+.pinyin-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid #F0F0F0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.pinyin-card:active { transform: scale(0.92); background: var(--chinese); color: #FFF; border-color: var(--chinese); }
+.pinyin-card .py-char { font-size: 28px; font-weight: 800; }
+.pinyin-card .py-label { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.char-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid #F0F0F0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.char-card:active { transform: scale(0.92); }
+.char-card .char-big { font-size: 40px; font-weight: 800; }
+.char-card .char-pinyin { font-size: 13px; color: var(--chinese); margin-top: 4px; }
+.char-card .char-stroke { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+.char-card.learned { border-color: var(--habit); background: #F0FFF0; }
+
+.flashcard-container {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.flashcard {
+  display: inline-block;
+  background: var(--card);
+  border-radius: 24px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.3s;
+  min-width: 200px;
+}
+
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard .fc-char { font-size: 72px; font-weight: 800; line-height: 1.2; }
+.flashcard .fc-info { font-size: 18px; color: var(--chinese); margin-top: 8px; }
+
+/* ============ MATH PAGE ============ */
+.math-question {
+  text-align: center;
+  padding: 20px;
+  font-size: 48px;
+  font-weight: 800;
+  background: #FFF;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  letter-spacing: 8px;
+}
+
+.math-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.math-option {
+  padding: 20px;
+  font-size: 32px;
+  font-weight: 800;
+  border-radius: 20px;
+  border: 3px solid #E0E0E0;
+  background: #FFF;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-family: inherit;
+}
+
+.math-option:active { transform: scale(0.95); }
+.math-option.correct { background: #E8F5E9; border-color: var(--habit); color: var(--habit); animation: pulse 0.5s; }
+.math-option.wrong { background: #FFEBEE; border-color: var(--primary); color: var(--primary); animation: shake 0.4s; }
+
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.score-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.score-item { text-align: center; }
+.score-item .si-val { font-size: 32px; font-weight: 800; }
+.score-item .si-val.good { color: var(--habit); }
+.score-item .si-label { font-size: 12px; color: var(--text-light); }
+
+.number-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 16px 0;
+}
+
+.num-dot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--math);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.num-dot:active { transform: scale(1.3); background: #FF9800; }
+
+/* ============ HABITS PAGE ============ */
+.habit-list { display: flex; flex-direction: column; gap: 10px; }
+
+.habit-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.habit-item .habit-icon { font-size: 32px; }
+.habit-item .habit-info { flex: 1; }
+.habit-item .habit-name { font-size: 16px; font-weight: 700; }
+.habit-item .habit-progress { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+.habit-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.habit-star {
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.3;
+}
+
+.habit-star.earned { opacity: 1; }
+.habit-star:active { transform: scale(1.4); }
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.week-day-label { font-size: 12px; color: var(--text-light); padding: 4px; }
+.week-day { 
+  padding: 8px 4px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  background: #F8F8F8;
+}
+.week-day.done { background: #E8F5E9; color: var(--habit); }
+.week-day.today { background: var(--primary-light); color: var(--primary); }
+
+/* ============ FOCUS PAGE ============ */
+.timer-circle {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(var(--focus) var(--progress), #F0F0F0 var(--progress));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px auto;
+  position: relative;
+}
+
+.timer-inner {
+  width: 170px; height: 170px;
+  border-radius: 50%;
+  background: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-time { font-size: 42px; font-weight: 800; color: var(--focus); }
+.timer-label { font-size: 13px; color: var(--text-light); }
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.timer-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  border: none;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.timer-btn.start { background: var(--focus); color: #FFF; }
+.timer-btn.reset { background: #F0F0F0; color: var(--text); }
+.timer-btn:active { transform: scale(0.95); }
+
+.timer-presets {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.preset-btn {
+  padding: 8px 16px;
+  border-radius: 16px;
+  border: 2px solid #E0E0E0;
+  background: #FFF;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.preset-btn.active { background: var(--focus); color: #FFF; border-color: var(--focus); }
+
+/* ============ REWARD MODAL ============ */
+.reward-overlay {
+  position: fixed;
+  top:0;left:0;right:0;bottom:0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+
+.reward-modal {
+  background: #FFF;
+  border-radius: 28px;
+  padding: 30px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: bounceIn 0.5s;
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.reward-modal .star-big { font-size: 60px; }
+.reward-modal h3 { font-size: 22px; margin: 10px 0; }
+.reward-modal p { color: var(--text-light); margin-bottom: 16px; }
+
+.reward-modal button {
+  padding: 12px 40px;
+  border-radius: 25px;
+  border: none;
+  background: var(--primary);
+  color: #FFF;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (min-width: 768px) {
+  .main { padding: 24px 32px; padding-bottom: calc(110px + var(--safe-bottom)); }
+  .stats-row { grid-template-columns: repeat(4, 1fr); }
+  .quick-actions { grid-template-columns: repeat(4, 1fr); }
+  .char-grid { grid-template-columns: repeat(6, 1fr); }
+  .math-options { grid-template-columns: repeat(4, 1fr); }
+  .pinyin-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .main { max-width: 800px; }
+  .char-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* Touch-friendly for iPad */
+button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item {
+  min-height: 44px; min-width: 44px;
+}
+</style>
+</head>
+<body>
+<noscript>
+  <div style="background:#FF6B6B;color:#FFF;text-align:center;padding:20px;font-size:16px;">
+    ⚠️ 请使用 <b>Safari浏览器</b> 打开此文件，并确保已启用JavaScript。
+  </div>
+</noscript>
+
+<!-- HEADER -->
+<div class="header">
+  <span class="logo">🎒 幼小衔接快乐营</span>
+  <span class="stars-display" id="totalStars">⭐ 0</span>
+</div>
+
+<!-- iOS add-to-home-screen guidance banner -->
+<div id="iosBanner" style="display:none;background:#FFF3CD;color:#856404;text-align:center;padding:10px 16px;font-size:13px;line-height:1.6;border-bottom:1px solid #FFE69C;">
+  💡 用 <b>Safari</b> 打开本页后，点击底部分享按钮 → <b>"添加到主屏幕"</b>，就能像 App 一样全屏使用，语音朗读和打卡记录都正常。
+  <button onclick="this.parentElement.style.display='none'" style="margin-left:8px;background:none;border:none;font-size:16px;cursor:pointer;color:#856404;">✕</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- ===== PAGE 0: HOME ===== -->
+  <div class="page active" id="page-home">
+    <div class="welcome-banner">
+      <h1>👋 早上好 转转！</h1>
+      <p id="dateDisplay">今天是美好的一天，准备好了吗？</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-value" id="streakDays">0</div>
+        <div class="stat-label">连续打卡天数</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-value" id="totalStarsHome">0</div>
+        <div class="stat-label">累计小星星</div>
+      </div>
+    </div>
+
+    <div class="card today-schedule-mini">
+      <div class="card-header">
+        <span class="icon">📋</span>
+        <h2>今日任务清单</h2>
+      </div>
+      <div id="todayTasks"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🚀</span>
+        <h2>快速入口</h2>
+      </div>
+      <div class="quick-actions">
+        <div class="quick-action" onclick="switchTab(1)">
+          <div class="qa-icon">📖</div>
+          <div class="qa-label">语文启蒙</div>
+        </div>
+        <div class="quick-action" onclick="switchTab(2)">
+          <div class="qa-icon">🔢</div>
+          <div class="qa-label">数学思维</div>
+        </div>
+        <div class="quick-action" onclick="switchTab(3)">
+          <div class="qa-icon">⭐</div>
+          <div class="qa-label">好习惯</div>
+        </div>
+        <div class="quick-action" onclick="switchTab(4)">
+          <div class="qa-icon">⏱️</div>
+          <div class="qa-label">专注力</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 1: DAILY PLAN ===== -->
+  <div class="page" id="page-plan">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📅</span>
+        <h2>每日作息表</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        💡 点击任务可以标记完成，养成好习惯从小开始！
+      </p>
+      <div class="timeline" id="dailyTimeline"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 2: CHINESE ===== -->
+  <div class="page" id="page-chinese">
+    <div class="module-tabs" id="chineseTabs">
+      <button class="module-tab active" data-sub="pinyin">拼音城堡</button>
+      <button class="module-tab" data-sub="chars">汉字花园</button>
+      <button class="module-tab" data-sub="flashcard">闪卡识字</button>
+      <button class="module-tab" data-sub="poem">古诗童谣</button>
+    </div>
+
+    <!-- Pinyin Section -->
+    <div class="chinese-sub active" id="sub-pinyin">
+      <div class="card">
+        <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击拼音可以听发音哦～（人教版一年级上册）</p>
+        
+        <h3 style="margin:12px 0 8px;font-size:16px;">声母 (23个)</h3>
+        <div class="pinyin-grid" id="shengmuGrid"></div>
+        
+        <h3 style="margin:16px 0 8px;font-size:16px;">单韵母 (6个)</h3>
+        <div class="pinyin-grid" id="danyunmuGrid"></div>
+        
+        <h3 style="margin:16px 0 8px;font-size:16px;">复韵母 (9个)</h3>
+        <div class="pinyin-grid" id="fuyunmuGrid"></div>
+
+        <h3 style="margin:16px 0 8px;font-size:16px;">前鼻韵母 (5个) + 后鼻韵母 (4个)</h3>
+        <div class="pinyin-grid" id="biyunmuGrid"></div>
+
+        <h3 style="margin:16px 0 8px;font-size:16px;">整体认读音节 (16个)</h3>
+        <div class="pinyin-grid" id="zhengtiGrid"></div>
+      </div>
+    </div>
+
+    <!-- Characters Section -->
+    <div class="chinese-sub" id="sub-chars" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">✏️</span><h2>会写字练习（第一单元）</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">每天认识5个新字，点击可标记已学会</p>
+        <div class="char-grid" id="charGrid1"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="icon">📝</span><h2>会认字（常用字）</h2></div>
+        <div class="char-grid" id="charGrid2"></div>
+      </div>
+    </div>
+
+    <!-- Flashcard Section -->
+    <div class="chinese-sub" id="sub-flashcard" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">🃏</span><h2>闪卡识字游戏</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击卡片翻转看拼音和笔画～ 左右滑动切换汉字</p>
+        <div class="flashcard-container">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="fc-char" id="fcChar">一</div>
+            <div class="fc-info" id="fcInfo" style="display:none;">yī · 1画</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
+          <button class="timer-btn reset" onclick="prevFlashcard()">◀ 上一个</button>
+          <span style="line-height:44px;font-weight:700;" id="fcIndex">1/20</span>
+          <button class="timer-btn start" onclick="nextFlashcard()">下一个 ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Poem Section -->
+    <div class="chinese-sub" id="sub-poem" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">📜</span><h2>必背古诗 · 一年级上册</h2></div>
+        <div id="poemList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 3: MATH ===== -->
+  <div class="page" id="page-math">
+    <div class="module-tabs" id="mathTabs">
+      <button class="module-tab active" data-sub="count">数数认数</button>
+      <button class="module-tab" data-sub="addsub">加减法</button>
+      <button class="module-tab" data-sub="compare">比大小</button>
+      <button class="module-tab" data-sub="shapes">认图形</button>
+    </div>
+
+    <!-- Count Section -->
+    <div class="math-sub active" id="sub-count">
+      <div class="card" style="text-align:center;">
+        <div class="card-header"><span class="icon">🔢</span><h2 style="margin:0 auto;">1~20 数数练习</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击数字听发音，按顺序数一数吧！</p>
+        <div class="number-line" id="numberLine"></div>
+      </div>
+    </div>
+
+    <!-- Add/Sub Section -->
+    <div class="math-sub" id="sub-addsub" style="display:none;">
+      <div class="card">
+        <div class="score-bar">
+          <div class="score-item">
+            <div class="si-val good" id="correctCount">0</div>
+            <div class="si-label">✅ 做对</div>
+          </div>
+          <div class="score-item">
+            <div class="si-val" id="totalCount" style="color:var(--text);">0</div>
+            <div class="si-label">📝 总题</div>
+          </div>
+        </div>
+        <div class="math-question" id="mathQuestion">3 + 2 = ?</div>
+        <div class="math-options" id="mathOptions"></div>
+      </div>
+    </div>
+
+    <!-- Compare Section -->
+    <div class="math-sub" id="sub-compare" style="display:none;">
+      <div class="card" style="text-align:center;">
+        <div class="card-header"><span class="icon">⚖️</span><h2 style="margin:0 auto;">比大小</h2></div>
+        <div style="font-size:64px;font-weight:800;margin:16px 0;" id="compareNums">3 🆚 5</div>
+        <div style="display:flex;justify-content:center;gap:20px;margin:12px;">
+          <button class="math-option" style="font-size:28px;width:80px;" onclick="answerCompare('<')">&lt;</button>
+          <button class="math-option" style="font-size:28px;width:80px;" onclick="answerCompare('=')">=</button>
+          <button class="math-option" style="font-size:28px;width:80px;" onclick="answerCompare('>')">&gt;</button>
+        </div>
+        <p style="font-size:14px;color:var(--text-light);">口诀：开口朝大数，尖角对小数</p>
+      </div>
+    </div>
+
+    <!-- Shapes Section -->
+    <div class="math-sub" id="sub-shapes" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">🔷</span><h2>认识立体图形</h2></div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+          <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:48px;">📦</div>
+            <div style="font-weight:700;margin:8px 0;">长方体</div>
+            <div style="font-size:12px;color:var(--text-light);">长长方方，6个平平的面</div>
+          </div>
+          <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:48px;">🎲</div>
+            <div style="font-weight:700;margin:8px 0;">正方体</div>
+            <div style="font-size:12px;color:var(--text-light);">四四方方，6个面一样大</div>
+          </div>
+          <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:48px;">🥫</div>
+            <div style="font-weight:700;margin:8px 0;">圆柱</div>
+            <div style="font-size:12px;color:var(--text-light);">直直的，上下一样粗</div>
+          </div>
+          <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:48px;">⚽</div>
+            <div style="font-weight:700;margin:8px 0;">球</div>
+            <div style="font-size:12px;color:var(--text-light);">圆圆的，可以向任意方向滚动</div>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);margin-top:12px;text-align:center;">
+          💡 小游戏：在家里找找这些形状的物品吧！
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 4: HABITS ===== -->
+  <div class="page" id="page-habits">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🏆</span>
+        <h2>好习惯打卡</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        💡 每完成一次点击一颗星星，集满7颗星星获得大奖章！
+      </p>
+      <div class="habit-list" id="habitList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📊</span>
+        <h2>本周打卡记录</h2>
+      </div>
+      <div class="week-grid">
+        <div class="week-day-label">一</div>
+        <div class="week-day-label">二</div>
+        <div class="week-day-label">三</div>
+        <div class="week-day-label">四</div>
+        <div class="week-day-label">五</div>
+        <div class="week-day-label">六</div>
+        <div class="week-day-label">日</div>
+      </div>
+      <div class="week-grid" id="weekGrid" style="margin-top:4px;"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 5: FOCUS ===== -->
+  <div class="page" id="page-focus">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">⏱️</span>
+        <h2>专注力时钟</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;text-align:center;">
+        🧠 每天专注学习一小段时间，慢慢就能坐得住啦！
+      </p>
+      
+      <div class="timer-presets">
+        <button class="preset-btn active" onclick="setTimer(5)">5分钟</button>
+        <button class="preset-btn" onclick="setTimer(10)">10分钟</button>
+        <button class="preset-btn" onclick="setTimer(15)">15分钟</button>
+        <button class="preset-btn" onclick="setTimer(20)">20分钟</button>
+      </div>
+
+      <div class="timer-circle" id="timerCircle">
+        <div class="timer-inner">
+          <div class="timer-time" id="timerDisplay">05:00</div>
+          <div class="timer-label">专注学习</div>
+        </div>
+      </div>
+
+      <div class="timer-controls">
+        <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">▶ 开始</button>
+        <button class="timer-btn reset" onclick="resetTimer()">↺ 重置</button>
+      </div>
+
+      <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">
+        ✅ 完成专注时段可以获得一颗小星星哦！
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🎯</span>
+        <h2>专注力小游戏</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        舒尔特方格：按顺序从1点到25，看看你需要多长时间！
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:300px;margin:0 auto;" id="schulteGrid"></div>
+      <div style="text-align:center;margin-top:12px;">
+        <span id="schulteNext" style="font-size:18px;font-weight:700;">下一个: 1</span>
+        <span id="schulteTimer" style="margin-left:12px;font-size:14px;color:var(--text-light);">⏱️ 0.0秒</span>
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <button class="timer-btn reset" onclick="initSchulte()">🔄 重新开始</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" data-tab="0" onclick="switchTab(0)">
+    <span class="nav-icon">🏠</span>首页
+  </button>
+  <button class="nav-item" data-tab="1" onclick="switchTab(1)">
+    <span class="nav-icon">📋</span>每日计划
+  </button>
+  <button class="nav-item" data-tab="2" onclick="switchTab(2)">
+    <span class="nav-icon">📖</span>语文
+  </button>
+  <button class="nav-item" data-tab="3" onclick="switchTab(3)">
+    <span class="nav-icon">🔢</span>数学
+  </button>
+  <button class="nav-item" data-tab="4" onclick="switchTab(4)">
+    <span class="nav-icon">⭐</span>习惯
+  </button>
+  <button class="nav-item" data-tab="5" onclick="switchTab(5)">
+    <span class="nav-icon">⏱️</span>专注
+  </button>
+</div>
+
+<!-- REWARD OVERLAY -->
+<div class="reward-overlay" id="rewardOverlay" style="display:none;" onclick="hideReward()">
+  <div class="reward-modal" onclick="event.stopPropagation()">
+    <div class="star-big">🌟</div>
+    <h3>太棒了！</h3>
+    <p id="rewardMsg">获得一颗小星星！</p>
+    <button onclick="hideReward()">👍 继续加油</button>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+
+// Daily Schedule
+const dailySchedule = [
+  { time: '07:00', title: '起床洗漱', desc: '自己刷牙洗脸、叠被子', tag: 'life', tagLabel: '生活' },
+  { time: '07:30', title: '营养早餐', desc: '独立吃饭，不挑食', tag: 'life', tagLabel: '生活' },
+  { time: '08:15', title: '晨读时光', desc: '大声朗读拼音或古诗10分钟', tag: 'study', tagLabel: '学习' },
+  { time: '08:30', title: '语文启蒙', desc: '拼音拼读 + 认识3个新汉字', tag: 'study', tagLabel: '学习' },
+  { time: '09:00', title: '户外运动', desc: '跑步、跳绳、拍球，锻炼身体', tag: 'play', tagLabel: '运动' },
+  { time: '10:00', title: '数学思维', desc: '10以内加减法小游戏', tag: 'study', tagLabel: '学习' },
+  { time: '10:30', title: '自由玩耍', desc: '积木、画画、拼图任选', tag: 'play', tagLabel: '玩耍' },
+  { time: '12:00', title: '午餐', desc: '独立吃饭，收拾碗筷', tag: 'life', tagLabel: '生活' },
+  { time: '13:00', title: '午休', desc: '安静休息，为下午充电', tag: 'rest', tagLabel: '休息' },
+  { time: '15:00', title: '绘本阅读', desc: '自己看绘本或亲子共读20分钟', tag: 'study', tagLabel: '学习' },
+  { time: '15:40', title: '专注力训练', desc: '舒尔特方格或拼图游戏', tag: 'study', tagLabel: '学习' },
+  { time: '16:20', title: '户外活动', desc: '骑车、滑梯、和小伙伴玩耍', tag: 'play', tagLabel: '运动' },
+  { time: '18:00', title: '晚餐', desc: '帮忙摆碗筷', tag: 'life', tagLabel: '生活' },
+  { time: '19:00', title: '亲子时光', desc: '聊天、桌游、手工', tag: 'play', tagLabel: '玩耍' },
+  { time: '20:00', title: '整理书包', desc: '自己收拾第二天的物品', tag: 'life', tagLabel: '生活' },
+  { time: '20:30', title: '洗漱准备', desc: '刷牙、洗澡', tag: 'life', tagLabel: '生活' },
+  { time: '21:00', title: '睡前故事', desc: '听一个故事然后乖乖睡觉', tag: 'rest', tagLabel: '休息' },
+];
+
+// Pinyin data
+const shengmu = [
+  { char: 'b', label: 'bō' }, { char: 'p', label: 'pō' }, { char: 'm', label: 'mō' }, { char: 'f', label: 'fó' },
+  { char: 'd', label: 'dé' }, { char: 't', label: 'tè' }, { char: 'n', label: 'né' }, { char: 'l', label: 'lè' },
+  { char: 'g', label: 'gē' }, { char: 'k', label: 'kē' }, { char: 'h', label: 'hē' },
+  { char: 'j', label: 'jī' }, { char: 'q', label: 'qī' }, { char: 'x', label: 'xī' },
+  { char: 'zh', label: 'zhī' }, { char: 'ch', label: 'chī' }, { char: 'sh', label: 'shī' }, { char: 'r', label: 'rì' },
+  { char: 'z', label: 'zī' }, { char: 'c', label: 'cī' }, { char: 's', label: 'sī' },
+  { char: 'y', label: 'yī' }, { char: 'w', label: 'wū' },
+];
+
+const danyunmu = [
+  { char: 'a', label: 'ā' }, { char: 'o', label: 'ō' }, { char: 'e', label: 'ē' },
+  { char: 'i', label: 'ī' }, { char: 'u', label: 'ū' }, { char: 'ü', label: 'ǖ' },
+];
+
+const fuyunmu = [
+  { char: 'ai', label: 'āi' }, { char: 'ei', label: 'ēi' }, { char: 'ui', label: 'uī' },
+  { char: 'ao', label: 'āo' }, { char: 'ou', label: 'ōu' }, { char: 'iu', label: 'iū' },
+  { char: 'ie', label: 'iē' }, { char: 'üe', label: 'üē' }, { char: 'er', label: 'ér' },
+];
+
+const biyunmu = [
+  { char: 'an', label: 'ān' }, { char: 'en', label: 'ēn' }, { char: 'in', label: 'īn' },
+  { char: 'un', label: 'ūn' }, { char: 'ün', label: 'ǖn' },
+  { char: 'ang', label: 'āng' }, { char: 'eng', label: 'ēng' }, { char: 'ing', label: 'īng' }, { char: 'ong', label: 'ōng' },
+];
+
+const zhengti = [
+  { char: 'zhi', label: 'zhī' }, { char: 'chi', label: 'chī' }, { char: 'shi', label: 'shī' }, { char: 'ri', label: 'rì' },
+  { char: 'zi', label: 'zǐ' }, { char: 'ci', label: 'cí' }, { char: 'si', label: 'sī' },
+  { char: 'yi', label: 'yī' }, { char: 'wu', label: 'wū' }, { char: 'yu', label: 'yú' },
+  { char: 'ye', label: 'yē' }, { char: 'yue', label: 'yuē' }, { char: 'yuan', label: 'yuán' },
+  { char: 'yin', label: 'yīn' }, { char: 'yun', label: 'yūn' }, { char: 'ying', label: 'yīng' },
+];
+
+// Characters - 会写字 (第一单元)
+const charWrite = [
+  { char: '一', pinyin: 'yī', stroke: '1画' }, { char: '二', pinyin: 'èr', stroke: '2画' },
+  { char: '三', pinyin: 'sān', stroke: '3画' }, { char: '上', pinyin: 'shàng', stroke: '3画' },
+  { char: '口', pinyin: 'kǒu', stroke: '3画' }, { char: '目', pinyin: 'mù', stroke: '5画' },
+  { char: '耳', pinyin: 'ěr', stroke: '6画' }, { char: '手', pinyin: 'shǒu', stroke: '4画' },
+  { char: '日', pinyin: 'rì', stroke: '4画' }, { char: '田', pinyin: 'tián', stroke: '5画' },
+  { char: '禾', pinyin: 'hé', stroke: '5画' }, { char: '火', pinyin: 'huǒ', stroke: '4画' },
+  { char: '虫', pinyin: 'chóng', stroke: '6画' }, { char: '云', pinyin: 'yún', stroke: '4画' },
+  { char: '山', pinyin: 'shān', stroke: '3画' }, { char: '八', pinyin: 'bā', stroke: '2画' },
+  { char: '十', pinyin: 'shí', stroke: '2画' }, { char: '了', pinyin: 'le', stroke: '2画' },
+  { char: '子', pinyin: 'zǐ', stroke: '3画' }, { char: '人', pinyin: 'rén', stroke: '2画' },
+  { char: '大', pinyin: 'dà', stroke: '3画' }, { char: '月', pinyin: 'yuè', stroke: '4画' },
+  { char: '儿', pinyin: 'ér', stroke: '2画' }, { char: '头', pinyin: 'tóu', stroke: '5画' },
+];
+
+// Characters - 会认字 (常用)
+const charRead = [
+  { char: '天', pinyin: 'tiān', stroke: '4画' }, { char: '地', pinyin: 'dì', stroke: '6画' },
+  { char: '你', pinyin: 'nǐ', stroke: '7画' }, { char: '我', pinyin: 'wǒ', stroke: '7画' },
+  { char: '他', pinyin: 'tā', stroke: '5画' }, { char: '四', pinyin: 'sì', stroke: '5画' },
+  { char: '五', pinyin: 'wǔ', stroke: '4画' }, { char: '下', pinyin: 'xià', stroke: '3画' },
+  { char: '花', pinyin: 'huā', stroke: '7画' }, { char: '鸟', pinyin: 'niǎo', stroke: '5画' },
+  { char: '六', pinyin: 'liù', stroke: '4画' }, { char: '七', pinyin: 'qī', stroke: '2画' },
+  { char: '九', pinyin: 'jiǔ', stroke: '2画' }, { char: '水', pinyin: 'shuǐ', stroke: '4画' },
+  { char: '风', pinyin: 'fēng', stroke: '4画' }, { char: '雨', pinyin: 'yǔ', stroke: '8画' },
+  { char: '鱼', pinyin: 'yú', stroke: '8画' }, { char: '马', pinyin: 'mǎ', stroke: '3画' },
+];
+
+// Poems
+const poems = [
+  { title: '咏鹅', author: '骆宾王', lines: ['鹅，鹅，鹅，', '曲项向天歌。', '白毛浮绿水，', '红掌拨清波。'], emoji: '🦢' },
+  { title: '画', author: '王维', lines: ['远看山有色，', '近听水无声。', '春去花还在，', '人来鸟不惊。'], emoji: '🖼️' },
+  { title: '风', author: '李峤', lines: ['解落三秋叶，', '能开二月花。', '过江千尺浪，', '入竹万竿斜。'], emoji: '🍃' },
+  { title: '江南', author: '汉乐府', lines: ['江南可采莲，', '莲叶何田田。', '鱼戏莲叶间。', '鱼戏莲叶东，鱼戏莲叶西，鱼戏莲叶南，鱼戏莲叶北。'], emoji: '🌸' },
+  { title: '悯农', author: '李绅', lines: ['锄禾日当午，', '汗滴禾下土。', '谁知盘中餐，', '粒粒皆辛苦。'], emoji: '🌾' },
+  { title: '古朗月行', author: '李白', lines: ['小时不识月，', '呼作白玉盘。', '又疑瑶台镜，', '飞在青云端。'], emoji: '🌙' },
+];
+
+// Habits
+const habits = [
+  { id: 'self_care', icon: '🪥', name: '自己刷牙洗脸', target: 7 },
+  { id: 'tidy_bed', icon: '🛏️', name: '自己叠被子', target: 7 },
+  { id: 'reading', icon: '📚', name: '每天阅读20分钟', target: 7 },
+  { id: 'homework', icon: '✏️', name: '完成学习任务', target: 7 },
+  { id: 'sports', icon: '🏃', name: '户外运动1小时', target: 7 },
+  { id: 'pack_bag', icon: '🎒', name: '自己整理书包', target: 7 },
+  { id: 'early_sleep', icon: '😴', name: '21:00前睡觉', target: 7 },
+  { id: 'table_manners', icon: '🍽️', name: '独立吃饭不挑食', target: 7 },
+  { id: 'politeness', icon: '🙋', name: '主动打招呼说谢谢', target: 7 },
+  { id: 'focus', icon: '🧩', name: '专注做一件事15分钟', target: 7 },
+];
+
+const allFlashcards = [...charWrite, ...charRead];
+
+// ==================== STATE ====================
+let state = {
+  stars: 0,
+  streak: 0,
+  lastActiveDate: '',
+  tasksDone: {},
+  charsLearned: {},
+  mathCorrect: 0,
+  mathTotal: 0,
+  habitStars: {},
+  weekHistory: {},
+  focusMinutes: 0,
+  pinyinToday: {},
+  pinyinDate: '',
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('yxxj_state');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state = { ...state, ...parsed };
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('yxxj_state', JSON.stringify(state));
+  } catch(e) {}
+}
+
+// Local-date helpers: toISOString() is UTC, which lands on the wrong day
+// before 8am in China and breaks daily task keys / streaks.
+function localDateStr(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function getToday() {
+  return localDateStr(new Date());
+}
+
+function getYesterday() {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return localDateStr(d);
+}
+
+// Streak = consecutive days with at least one completed task.
+// Only call this on real activity, never on app open.
+function updateStreak() {
+  const today = getToday();
+  if (state.lastActiveDate === today) return;
+  state.streak = (state.lastActiveDate === getYesterday()) ? state.streak + 1 : 1;
+  state.lastActiveDate = today;
+  saveState();
+}
+
+function addStars(n, msg) {
+  state.stars += n;
+  updateStarsDisplay();
+  saveState();
+  if (msg) showReward(msg || `获得 ${n} 颗小星星！`);
+}
+
+// Reuse a single AudioContext: browsers cap how many can exist at once,
+// so creating one per reward silently kills the sound after a few stars.
+var cheerCtx = null;
+
+function showReward(msg) {
+  document.getElementById('rewardMsg').textContent = msg;
+  document.getElementById('rewardOverlay').style.display = 'flex';
+  // Simple cheer sound (safe fallback if AudioContext unavailable)
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!cheerCtx) cheerCtx = new AC();
+    var ctx = cheerCtx;
+    if (ctx.state === 'suspended' || ctx.state === 'interrupted') ctx.resume();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.setValueAtTime(523, ctx.currentTime);
+    o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+    o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function hideReward() {
+  document.getElementById('rewardOverlay').style.display = 'none';
+}
+
+function updateStarsDisplay() {
+  document.getElementById('totalStars').textContent = '⭐ ' + state.stars;
+  document.getElementById('totalStarsHome').textContent = state.stars;
+  document.getElementById('streakDays').textContent = state.streak;
+}
+
+// ==================== NAVIGATION ====================
+function switchTab(idx) {
+  const pages = document.querySelectorAll('.page');
+  const navItems = document.querySelectorAll('.nav-item');
+  pages.forEach((p, i) => p.classList.toggle('active', i === idx));
+  navItems.forEach((n, i) => {
+    n.classList.toggle('active', parseInt(n.dataset.tab) === idx);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ==================== HOME PAGE ====================
+function renderHome() {
+  const now = new Date();
+  const days = ['日', '一', '二', '三', '四', '五', '六'];
+  const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${days[now.getDay()]}`;
+  document.getElementById('dateDisplay').textContent = '📅 ' + dateStr + ' | 今天是美好的一天！';
+
+  // Today's tasks
+  const today = getToday();
+  const container = document.getElementById('todayTasks');
+  const morningTasks = dailySchedule.filter((_, i) => i < 8);
+  
+  container.innerHTML = morningTasks.map((task, i) => {
+    const doneKey = `${today}_${i}`;
+    const done = state.tasksDone[doneKey];
+    return `
+      <div class="schedule-item">
+        <span class="time-badge">${task.time}</span>
+        <span class="task-name">${task.title}</span>
+        <div class="task-done ${done ? 'done' : ''}" onclick="toggleTask('${doneKey}', ${i})">
+          ${done ? '✓' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleTask(key, idx) {
+  if (state.tasksDone[key]) {
+    delete state.tasksDone[key];
+  } else {
+    state.tasksDone[key] = true;
+    addStars(1, '完成任务！+1⭐');
+  }
+
+  updateStreak();
+
+  saveState();
+  renderHome();
+  updateStarsDisplay();
+}
+
+// ==================== DAILY PLAN ====================
+function renderDailyPlan() {
+  const container = document.getElementById('dailyTimeline');
+  const today = getToday();
+  
+  container.innerHTML = dailySchedule.map((task, i) => {
+    const doneKey = `${today}_plan_${i}`;
+    const done = state.tasksDone[doneKey];
+    return `
+      <div class="timeline-item" onclick="togglePlanTask('${doneKey}', ${i})" style="cursor:pointer;">
+        <div class="tl-time">⏰ ${task.time}</div>
+        <div class="tl-title">${done ? '✅ ' : ''}${task.title}</div>
+        <div class="tl-desc">${task.desc}</div>
+        <span class="tl-tag tag-${task.tag}">${task.tagLabel}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function togglePlanTask(key, idx) {
+  if (state.tasksDone[key]) {
+    delete state.tasksDone[key];
+  } else {
+    state.tasksDone[key] = true;
+    addStars(1, '太棒了！完成一项任务 +1⭐');
+  }
+  saveState();
+  renderDailyPlan();
+  renderHome();
+  updateStarsDisplay();
+}
+
+// ==================== CHINESE PAGE ====================
+// Sub-tab switching
+document.getElementById('chineseTabs').addEventListener('click', function(e) {
+  if (e.target.classList.contains('module-tab')) {
+    this.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    const sub = e.target.dataset.sub;
+    document.querySelectorAll('.chinese-sub').forEach(s => s.style.display = 'none');
+    document.getElementById('sub-' + sub).style.display = 'block';
+  }
+});
+
+function renderPinyinGrid(id, data) {
+  document.getElementById(id).innerHTML = data.map(p => `
+    <div class="pinyin-card" onclick="speakPinyin('${p.char}', '${p.label}')">
+      <div class="py-char">${p.char}</div>
+      <div class="py-label">${p.label}</div>
+    </div>
+  `).join('');
+}
+
+// ===== Robust speech synthesis (iOS Safari compatible) =====
+let speechReady = false;
+let speechVoices = [];
+
+// Remove tone marks for TTS: "bō" → "bo", "nǚ" → "nv"
+function normalizePinyin(py) {
+  return py.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ǖ/g, 'v').replace(/ǘ/g, 'v').replace(/ǚ/g, 'v').replace(/ǜ/g, 'v');
+}
+
+// Prime speech synthesis on first user interaction
+function initSpeech() {
+  if (speechReady) return;
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechVoices = speechSynthesis.getVoices();
+    if (speechVoices.length > 0) {
+      speechReady = true;
+      return;
+    }
+    speechSynthesis.onvoiceschanged = () => {
+      speechVoices = speechSynthesis.getVoices();
+      if (speechVoices.length > 0) speechReady = true;
+    };
+    // iOS workaround: trigger voices load with a dummy utterance
+    const dummy = new SpeechSynthesisUtterance('');
+    dummy.volume = 0;
+    dummy.rate = 1;
+    speechSynthesis.speak(dummy);
+    setTimeout(() => { speechReady = true; }, 500);
+  } catch(e) {
+    speechReady = true; // mark ready anyway, will try again on speak
+  }
+}
+
+function speakText(text, lang = 'zh-CN', rate = 0.7) {
+  if (!('speechSynthesis' in window)) return false;
+  initSpeech();
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    u.rate = rate;
+    u.volume = 0.9;
+    // Pick a Chinese voice if available
+    const zhVoice = speechVoices.find(v => v.lang && v.lang.startsWith('zh'));
+    if (zhVoice) u.voice = zhVoice;
+    // iOS bug workaround: pause+resume to activate audio context
+    speechSynthesis.speak(u);
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      speechSynthesis.pause();
+      speechSynthesis.resume();
+    }
+    return true;
+  } catch(e) {
+    console.log('Speech error:', e);
+    return false;
+  }
+}
+
+function speakPinyin(py, label) {
+  // Speak the full pinyin syllable (e.g. "bo") instead of single letter (e.g. "b")
+  // so Chinese TTS pronounces it correctly instead of as English
+  const toSpeak = label ? normalizePinyin(label) : py;
+  speakText(toSpeak);
+  // Only award star once per pinyin per day
+  const today = getToday();
+  if (state.pinyinDate !== today) {
+    state.pinyinToday = {};
+    state.pinyinDate = today;
+  }
+  if (!state.pinyinToday[py]) {
+    state.pinyinToday[py] = true;
+    saveState();
+    addStars(1, '学习拼音 +1⭐');
+  }
+}
+
+function renderCharGrid(id, data) {
+  document.getElementById(id).innerHTML = data.map(c => {
+    const learned = state.charsLearned[c.char];
+    return `
+      <div class="char-card ${learned ? 'learned' : ''}" onclick="toggleChar('${c.char}')">
+        <div class="char-big">${c.char}</div>
+        <div class="char-pinyin">${c.pinyin}</div>
+        <div class="char-stroke">${c.stroke}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleChar(ch) {
+  if (state.charsLearned[ch]) {
+    delete state.charsLearned[ch];
+  } else {
+    state.charsLearned[ch] = true;
+    const count = Object.keys(state.charsLearned).length;
+    addStars(1, `认识"${ch}"！已认识${count}个字 +1⭐`);
+  }
+  saveState();
+  renderCharGrid('charGrid1', charWrite);
+  renderCharGrid('charGrid2', charRead);
+}
+
+// Flashcard
+let fcIdx = 0;
+let fcFlipped = false;
+
+function renderFlashcard() {
+  fcFlipped = false;
+  const card = allFlashcards[fcIdx];
+  document.getElementById('fcChar').textContent = card.char;
+  document.getElementById('fcInfo').style.display = 'none';
+  document.getElementById('fcIndex').textContent = `${fcIdx + 1}/${allFlashcards.length}`;
+  const fcEl = document.getElementById('flashcard');
+  fcEl.classList.remove('flipped');
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  const fcEl = document.getElementById('flashcard');
+  const card = allFlashcards[fcIdx];
+  if (fcFlipped) {
+    document.getElementById('fcInfo').textContent = `${card.pinyin} · ${card.stroke}`;
+    document.getElementById('fcInfo').style.display = 'block';
+  } else {
+    document.getElementById('fcInfo').style.display = 'none';
+  }
+  fcEl.classList.toggle('flipped', fcFlipped);
+  if (fcFlipped) {
+    // Speak the Chinese character directly (not pinyin)
+    speakText(card.char);
+    if (!state.charsLearned[card.char]) {
+      state.charsLearned[card.char] = true;
+      saveState();
+    }
+  }
+}
+
+function nextFlashcard() {
+  fcIdx = (fcIdx + 1) % allFlashcards.length;
+  renderFlashcard();
+}
+
+function prevFlashcard() {
+  fcIdx = (fcIdx - 1 + allFlashcards.length) % allFlashcards.length;
+  renderFlashcard();
+}
+
+function renderPoems() {
+  document.getElementById('poemList').innerHTML = poems.map((p, i) => `
+    <div style="background:#FFF;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <span style="font-size:28px;">${p.emoji}</span>
+        <span style="font-weight:700;font-size:16px;">${p.title}</span>
+        <span style="color:var(--text-light);font-size:13px;">— ${p.author}</span>
+        <button style="margin-left:auto;background:var(--focus);color:#FFF;border:none;padding:6px 14px;border-radius:12px;font-size:13px;cursor:pointer;" onclick="speakPoem(${i})">🔊 朗读</button>
+      </div>
+      <div style="font-size:15px;line-height:2;color:#555;">${p.lines.join('<br>')}</div>
+    </div>
+  `).join('');
+}
+
+function speakPoem(idx) {
+  const poem = poems[idx];
+  speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6);
+  addStars(1, `朗读《${poems[idx].title}》+1⭐`);
+}
+
+// ==================== MATH PAGE ====================
+// Sub-tab switching
+document.getElementById('mathTabs').addEventListener('click', function(e) {
+  if (e.target.classList.contains('module-tab')) {
+    this.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    const sub = e.target.dataset.sub;
+    document.querySelectorAll('.math-sub').forEach(s => s.style.display = 'none');
+    document.getElementById('sub-' + sub).style.display = 'block';
+    if (sub === 'addsub') generateMath();
+    if (sub === 'compare') generateCompare();
+  }
+});
+
+function renderNumberLine() {
+  let html = '';
+  for (let i = 1; i <= 20; i++) {
+    html += `<div class="num-dot" onclick="speakNumber(${i})">${i}</div>`;
+  }
+  document.getElementById('numberLine').innerHTML = html;
+}
+
+function speakNumber(n) {
+  speakText(String(n));
+}
+
+// Math Quiz
+let currentMathAnswer = 0;
+
+function generateMath() {
+  const level = Math.min(Math.floor(state.mathTotal / 10), 2);
+  let a, b, op;
+  
+  if (level === 0) {
+    // Within 5
+    a = Math.floor(Math.random() * 5) + 1;
+    b = Math.floor(Math.random() * (a + 1));
+    op = Math.random() > 0.5 ? '+' : '-';
+    if (op === '-') { const tmp = a; a = Math.max(a, b); b = Math.min(tmp, b); }
+    else { a = Math.floor(Math.random() * 4) + 1; b = Math.floor(Math.random() * (6 - a)) + 1; }
+    if (op === '-') { b = Math.min(b, a); }
+  } else {
+    // Within 10-20
+    a = Math.floor(Math.random() * 10) + 1;
+    b = Math.floor(Math.random() * 10) + 1;
+    op = Math.random() > 0.4 ? '+' : '-';
+    if (op === '-') { const max = Math.max(a, b); b = Math.min(a, b); a = max; }
+  }
+
+  currentMathAnswer = op === '+' ? a + b : a - b;
+  document.getElementById('mathQuestion').textContent = `${a} ${op} ${b} = ?`;
+
+  // Generate 4 options
+  const options = new Set([currentMathAnswer]);
+  while (options.size < 4) {
+    const fake = currentMathAnswer + Math.floor(Math.random() * 5) - 2;
+    if (fake >= 0 && fake <= 20) options.add(fake);
+  }
+  const shuffled = [...options].sort(() => Math.random() - 0.5);
+
+  document.getElementById('mathOptions').innerHTML = shuffled.map(n => `
+    <button class="math-option" onclick="answerMath(${n}, this)">${n}</button>
+  `).join('');
+}
+
+function answerMath(n, btn) {
+  state.mathTotal++;
+  const allBtns = document.querySelectorAll('#mathOptions .math-option');
+  allBtns.forEach(b => b.style.pointerEvents = 'none');
+  
+  if (n === currentMathAnswer) {
+    state.mathCorrect++;
+    btn.classList.add('correct');
+    const extra = state.mathCorrect % 5 === 0;
+    addStars(extra ? 2 : 1, extra ? '连对5题！+2⭐' : '回答正确！+1⭐');
+  } else {
+    btn.classList.add('wrong');
+    // Highlight correct
+    allBtns.forEach(b => {
+      if (parseInt(b.textContent) === currentMathAnswer) b.classList.add('correct');
+    });
+  }
+  
+  document.getElementById('correctCount').textContent = state.mathCorrect;
+  document.getElementById('totalCount').textContent = state.mathTotal;
+  saveState();
+  
+  setTimeout(() => {
+    generateMath();
+  }, 1500);
+}
+
+// Compare
+let compareA = 0, compareB = 0;
+
+function generateCompare() {
+  compareA = Math.floor(Math.random() * 20) + 1;
+  compareB = Math.floor(Math.random() * 20) + 1;
+  document.getElementById('compareNums').textContent = `${compareA} 🆚 ${compareB}`;
+}
+
+function answerCompare(sym) {
+  let correct = false;
+  if (sym === '<' && compareA < compareB) correct = true;
+  if (sym === '=' && compareA === compareB) correct = true;
+  if (sym === '>' && compareA > compareB) correct = true;
+  
+  if (correct) {
+    addStars(1, '比大小正确！+1⭐');
+  }
+  setTimeout(generateCompare, 1000);
+}
+
+// Shapes are static HTML, no JS needed beyond rendering
+
+// ==================== HABITS PAGE ====================
+function renderHabits() {
+  const container = document.getElementById('habitList');
+  container.innerHTML = habits.map(h => {
+    const stars = state.habitStars[h.id] || 0;
+    const starHTML = Array.from({ length: h.target }, (_, i) => 
+      `<span class="habit-star ${i < stars ? 'earned' : ''}" onclick="toggleHabitStar('${h.id}', ${i+1})">⭐</span>`
+    ).join('');
+    
+    return `
+      <div class="habit-item">
+        <div class="habit-icon">${h.icon}</div>
+        <div class="habit-info">
+          <div class="habit-name">${h.name}</div>
+          <div class="habit-progress">${stars}/${h.target} 已完成</div>
+        </div>
+        <div class="habit-stars">${starHTML}</div>
+      </div>
+    `;
+  }).join('');
+
+  renderWeekHistory();
+}
+
+function toggleHabitStar(habitId, starNum) {
+  const current = state.habitStars[habitId] || 0;
+  // Only allow adding stars (kid-friendly: no accidental removal)
+  if (starNum <= current) return;
+  state.habitStars[habitId] = starNum;
+  addStars(1, '好习惯打卡 +1⭐');
+  // Record in week history
+  const today = getToday();
+  if (!state.weekHistory[today]) state.weekHistory[today] = [];
+  if (!state.weekHistory[today].includes(habitId)) {
+    state.weekHistory[today].push(habitId);
+  }
+  saveState();
+  renderHabits();
+  updateStarsDisplay();
+}
+
+function renderWeekHistory() {
+  const grid = document.getElementById('weekGrid');
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0=Sun
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + mondayOffset + i);
+    const ds = localDateStr(d);
+    const count = (state.weekHistory[ds] || []).length;
+    const isToday = ds === getToday();
+    html += `<div class="week-day ${count > 0 ? 'done' : ''} ${isToday ? 'today' : ''}">${count > 0 ? '⭐' : d.getDate()}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+// ==================== FOCUS PAGE ====================
+let timerDuration = 5 * 60; // seconds
+let timerRemaining = 5 * 60;
+let timerInterval = null;
+let timerRunning = false;
+let timerEndAt = 0;
+
+function setTimer(min) {
+  if (timerRunning) return;
+  timerDuration = min * 60;
+  timerRemaining = timerDuration;
+  updateTimerDisplay();
+  
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === min + '分钟');
+  });
+}
+
+function updateTimerDisplay() {
+  const min = Math.floor(timerRemaining / 60);
+  const sec = timerRemaining % 60;
+  document.getElementById('timerDisplay').textContent = 
+    String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  
+  const progress = ((timerDuration - timerRemaining) / timerDuration) * 100;
+  document.getElementById('timerCircle').style.background = 
+    `conic-gradient(var(--focus) ${progress}%, #F0F0F0 ${progress}%)`;
+}
+
+function toggleTimer() {
+  if (timerRunning) {
+    // Pause
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timerStartBtn').textContent = '▶ 继续';
+  } else {
+    // Start: timestamp-based so the countdown stays accurate
+    // even if iOS throttles intervals while the app is backgrounded
+    timerRunning = true;
+    timerEndAt = Date.now() + timerRemaining * 1000;
+    document.getElementById('timerStartBtn').textContent = '⏸ 暂停';
+    timerInterval = setInterval(() => {
+      timerRemaining = Math.max(0, Math.ceil((timerEndAt - Date.now()) / 1000));
+      updateTimerDisplay();
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timerStartBtn').textContent = '▶ 开始';
+        timerRemaining = 0;
+        updateTimerDisplay();
+        const min = Math.floor(timerDuration / 60);
+        addStars(2, `专注${min}分钟完成！+2⭐`);
+        state.focusMinutes += min;
+        saveState();
+      }
+    }, 250);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = timerDuration;
+  document.getElementById('timerStartBtn').textContent = '▶ 开始';
+  updateTimerDisplay();
+}
+
+// Schulte Grid
+let schulteNumbers = [];
+let schulteNext = 1;
+let schulteStartTime = 0;
+let schulteInterval = null;
+
+function initSchulte() {
+  // Generate 1-25 in random order
+  schulteNumbers = Array.from({ length: 25 }, (_, i) => i + 1);
+  // Fisher-Yates shuffle
+  for (let i = schulteNumbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [schulteNumbers[i], schulteNumbers[j]] = [schulteNumbers[j], schulteNumbers[i]];
+  }
+  
+  schulteNext = 1;
+  schulteStartTime = Date.now();
+  
+  // Clear previous interval
+  if (schulteInterval) clearInterval(schulteInterval);
+  schulteInterval = setInterval(() => {
+    const elapsed = ((Date.now() - schulteStartTime) / 1000).toFixed(1);
+    document.getElementById('schulteTimer').textContent = '⏱️ ' + elapsed + '秒';
+  }, 100);
+  
+  document.getElementById('schulteNext').textContent = '下一个: 1';
+  
+  const grid = document.getElementById('schulteGrid');
+  grid.innerHTML = schulteNumbers.map(n => `
+    <button style="padding:12px;font-size:16px;font-weight:700;border:none;border-radius:10px;
+      background:#FFF;box-shadow:0 2px 6px rgba(0,0,0,0.08);cursor:pointer;min-height:44px;
+      transition:all 0.2s;" 
+      onclick="clickSchulte(${n}, this)">${n}</button>
+  `).join('');
+}
+
+function clickSchulte(n, btn) {
+  if (n === schulteNext) {
+    btn.style.background = 'var(--focus)';
+    btn.style.color = '#FFF';
+    btn.style.transform = 'scale(0.9)';
+    schulteNext++;
+    document.getElementById('schulteNext').textContent = schulteNext <= 25 ? '下一个: ' + schulteNext : '完成！';
+    
+    if (schulteNext > 25) {
+      clearInterval(schulteInterval);
+      const elapsed = ((Date.now() - schulteStartTime) / 1000).toFixed(1);
+      document.getElementById('schulteTimer').textContent = '✅ ' + elapsed + '秒';
+      addStars(3, `舒尔特方格完成！用时${elapsed}秒 +3⭐`);
+    }
+  }
+}
+
+// ==================== INIT ====================
+function init() {
+  try {
+    // On iOS, suggest Add to Home Screen unless already launched that way
+    var ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua) && window.navigator.standalone !== true) {
+      document.getElementById('iosBanner').style.display = 'block';
+    }
+
+    loadState();
+    updateStarsDisplay();
+    
+    // Streak display only: reset to 0 if the chain is already broken.
+    // The streak itself only grows via updateStreak() on real activity.
+    const today = getToday();
+    if (state.lastActiveDate && state.lastActiveDate !== today && state.lastActiveDate !== getYesterday()) {
+      state.streak = 0;
+      saveState();
+    }
+    
+    renderHome();
+    renderDailyPlan();
+    
+    // Chinese
+    renderPinyinGrid('shengmuGrid', shengmu);
+    renderPinyinGrid('danyunmuGrid', danyunmu);
+    renderPinyinGrid('fuyunmuGrid', fuyunmu);
+    renderPinyinGrid('biyunmuGrid', biyunmu);
+    renderPinyinGrid('zhengtiGrid', zhengti);
+    renderCharGrid('charGrid1', charWrite);
+    renderCharGrid('charGrid2', charRead);
+    renderFlashcard();
+    renderPoems();
+    
+    // Math
+    renderNumberLine();
+    generateMath();
+    generateCompare();
+    
+    // Habits
+    renderHabits();
+    
+    // Focus
+    updateTimerDisplay();
+    initSchulte();
+    
+    updateStarsDisplay();
+    
+    // iOS Safari: prime speech synthesis on first touch
+    document.addEventListener('touchstart', function primeSpeech() {
+      initSpeech();
+    }, { once: true, passive: true });
+    document.addEventListener('click', function primeSpeechClick() {
+      initSpeech();
+    }, { once: true });
+
+    // Check if speech synthesis is available, update hints
+    var hasSpeech = ('speechSynthesis' in window);
+    if (!hasSpeech) {
+      var hints = document.querySelectorAll('#sub-pinyin p, #sub-chars p');
+      hints.forEach(function(h) {
+        if (h.textContent.indexOf('听发音') >= 0 || h.textContent.indexOf('点击') >= 0) {
+          h.textContent = '💡 当前浏览器不支持语音朗读，请用 Safari 浏览器打开即可听发音。';
+          h.style.color = '#FF6B6B';
+        }
+      });
+      // Also add note to home page
+      var dateEl = document.getElementById('dateDisplay');
+      if (dateEl) dateEl.textContent += ' | 💡 请用Safari打开以启用语音';
+    }
+  } catch(e) {
+    console.error('Init error:', e);
+    // Show error fallback - at least show the page content
+    document.querySelectorAll('.page').forEach(function(p) { p.style.display = 'block'; });
+    document.getElementById('page-home').classList.add('active');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
