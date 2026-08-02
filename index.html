@@ -1110,47 +1110,47 @@ const dailySchedule = [
 ];
 
 // Pinyin data
-// Each pinyin card carries a carrier character (speak) used for TTS:
-// the classroom 呼读法. Asking TTS to read romanized pinyin misreads
-// whole families (e.g. ü becomes "u"), so we always speak a real character.
+// IMPORTANT: these are verified, pre-recorded Mandarin syllables. Pinyin
+// teaching must never use browser TTS or a "carrier" Chinese character:
+// system voices can choose a different tone (for example 雌 is cí, not cī).
 const shengmu = [
-  { char: 'b', label: 'bō', speak: '播' }, { char: 'p', label: 'pō', speak: '坡' },
-  { char: 'm', label: 'mō', speak: '摸' }, { char: 'f', label: 'fó', speak: '佛' },
-  { char: 'd', label: 'dē', speak: '得' }, { char: 't', label: 'tē', speak: '特' },
-  { char: 'n', label: 'nē', speak: '讷' }, { char: 'l', label: 'lē', speak: '乐' },
-  { char: 'g', label: 'gē', speak: '哥' }, { char: 'k', label: 'kē', speak: '科' }, { char: 'h', label: 'hē', speak: '喝' },
-  { char: 'j', label: 'jī', speak: '鸡' }, { char: 'q', label: 'qī', speak: '七' }, { char: 'x', label: 'xī', speak: '西' },
-  { char: 'zh', label: 'zhī', speak: '知' }, { char: 'ch', label: 'chī', speak: '吃' },
-  { char: 'sh', label: 'shī', speak: '诗' }, { char: 'r', label: 'rì', speak: '日' },
-  { char: 'z', label: 'zī', speak: '资' }, { char: 'c', label: 'cī', speak: '雌' }, { char: 's', label: 'sī', speak: '思' },
-  { char: 'y', label: 'yī', speak: '衣' }, { char: 'w', label: 'wū', speak: '乌' },
+  { char: 'b', label: 'bō', audio: 'bo1' }, { char: 'p', label: 'pō', audio: 'po1' },
+  { char: 'm', label: 'mō', audio: 'mo1' }, { char: 'f', label: 'fō', audio: 'fo1' },
+  { char: 'd', label: 'dē', audio: 'de1' }, { char: 't', label: 'tē', audio: 'te1' },
+  { char: 'n', label: 'nē', audio: 'ne1' }, { char: 'l', label: 'lē', audio: 'le1' },
+  { char: 'g', label: 'gē', audio: 'ge1' }, { char: 'k', label: 'kē', audio: 'ke1' }, { char: 'h', label: 'hē', audio: 'he1' },
+  { char: 'j', label: 'jī', audio: 'ji1' }, { char: 'q', label: 'qī', audio: 'qi1' }, { char: 'x', label: 'xī', audio: 'xi1' },
+  { char: 'zh', label: 'zhī', audio: 'zhi1' }, { char: 'ch', label: 'chī', audio: 'chi1' },
+  { char: 'sh', label: 'shī', audio: 'shi1' }, { char: 'r', label: 'rì', audio: 'ri4' },
+  { char: 'z', label: 'zī', audio: 'zi1' }, { char: 'c', label: 'cī', audio: 'ci1' }, { char: 's', label: 'sī', audio: 'si1' },
+  { char: 'y', label: 'yī', audio: 'yi1' }, { char: 'w', label: 'wū', audio: 'wu1' },
 ];
 
 const danyunmu = [
-  { char: 'a', label: 'ā', speak: '阿' }, { char: 'o', label: 'ō', speak: '喔' }, { char: 'e', label: 'ē', speak: '鹅' },
-  { char: 'i', label: 'ī', speak: '衣' }, { char: 'u', label: 'ū', speak: '乌' }, { char: 'ü', label: 'ǖ', speak: '迂' },
+  { char: 'a', label: 'ā', audio: 'a1' }, { char: 'o', label: 'ō', audio: 'o1' }, { char: 'e', label: 'ē', audio: 'e1' },
+  { char: 'i', label: 'ī', audio: 'yi1' }, { char: 'u', label: 'ū', audio: 'wu1' }, { char: 'ü', label: 'ǖ', audio: 'yu1' },
 ];
 
 const fuyunmu = [
-  { char: 'ai', label: 'āi', speak: '哀' }, { char: 'ei', label: 'ēi', speak: '诶' }, { char: 'ui', label: 'uī', speak: '威' },
-  { char: 'ao', label: 'āo', speak: '凹' }, { char: 'ou', label: 'ōu', speak: '欧' }, { char: 'iu', label: 'iū', speak: '优' },
-  { char: 'ie', label: 'iē', speak: '耶' }, { char: 'üe', label: 'üē', speak: '约' }, { char: 'er', label: 'ér', speak: '儿' },
+  { char: 'ai', label: 'āi', audio: 'ai1' }, { char: 'ei', label: 'ēi', audio: 'ei1' }, { char: 'ui', label: 'uī', audio: 'wei1' },
+  { char: 'ao', label: 'āo', audio: 'ao1' }, { char: 'ou', label: 'ōu', audio: 'ou1' }, { char: 'iu', label: 'iū', audio: 'you1' },
+  { char: 'ie', label: 'iē', audio: 'ye1' }, { char: 'üe', label: 'üē', audio: 'yue1' }, { char: 'er', label: 'ér', audio: 'er2' },
 ];
 
 const biyunmu = [
-  { char: 'an', label: 'ān', speak: '安' }, { char: 'en', label: 'ēn', speak: '恩' }, { char: 'in', label: 'īn', speak: '因' },
-  { char: 'un', label: 'ūn', speak: '温' }, { char: 'ün', label: 'ǖn', speak: '晕' },
-  { char: 'ang', label: 'āng', speak: '昂' }, { char: 'eng', label: 'ēng', speak: '灯' },
-  { char: 'ing', label: 'īng', speak: '英' }, { char: 'ong', label: 'ōng', speak: '轰' },
+  { char: 'an', label: 'ān', audio: 'an1' }, { char: 'en', label: 'ēn', audio: 'en1' }, { char: 'in', label: 'īn', audio: 'yin1' },
+  { char: 'un', label: 'ūn', audio: 'wen1' }, { char: 'ün', label: 'ǖn', audio: 'yun1' },
+  { char: 'ang', label: 'āng', audio: 'ang1' }, { char: 'eng', label: 'ēng', audio: 'eng1' },
+  { char: 'ing', label: 'īng', audio: 'ying1' }, { char: 'ong', label: 'ōng', audio: 'weng1' },
 ];
 
 const zhengti = [
-  { char: 'zhi', label: 'zhī', speak: '知' }, { char: 'chi', label: 'chī', speak: '吃' },
-  { char: 'shi', label: 'shī', speak: '诗' }, { char: 'ri', label: 'rì', speak: '日' },
-  { char: 'zi', label: 'zī', speak: '资' }, { char: 'ci', label: 'cī', speak: '雌' }, { char: 'si', label: 'sī', speak: '思' },
-  { char: 'yi', label: 'yī', speak: '衣' }, { char: 'wu', label: 'wū', speak: '乌' }, { char: 'yu', label: 'yū', speak: '鱼' },
-  { char: 'ye', label: 'yē', speak: '椰' }, { char: 'yue', label: 'yuē', speak: '约' }, { char: 'yuan', label: 'yuān', speak: '圆' },
-  { char: 'yin', label: 'yīn', speak: '因' }, { char: 'yun', label: 'yūn', speak: '云' }, { char: 'ying', label: 'yīng', speak: '英' },
+  { char: 'zhi', label: 'zhī', audio: 'zhi1' }, { char: 'chi', label: 'chī', audio: 'chi1' },
+  { char: 'shi', label: 'shī', audio: 'shi1' }, { char: 'ri', label: 'rì', audio: 'ri4' },
+  { char: 'zi', label: 'zī', audio: 'zi1' }, { char: 'ci', label: 'cī', audio: 'ci1' }, { char: 'si', label: 'sī', audio: 'si1' },
+  { char: 'yi', label: 'yī', audio: 'yi1' }, { char: 'wu', label: 'wū', audio: 'wu1' }, { char: 'yu', label: 'yū', audio: 'yu1' },
+  { char: 'ye', label: 'yē', audio: 'ye1' }, { char: 'yue', label: 'yuē', audio: 'yue1' }, { char: 'yuan', label: 'yuān', audio: 'yuan1' },
+  { char: 'yin', label: 'yīn', audio: 'yin1' }, { char: 'yun', label: 'yūn', audio: 'yun1' }, { char: 'ying', label: 'yīng', audio: 'ying1' },
 ];
 
 // Characters - 会写字 (第一单元)
@@ -1425,7 +1425,7 @@ document.getElementById('chineseTabs').addEventListener('click', function(e) {
 
 function renderPinyinGrid(id, data) {
   document.getElementById(id).innerHTML = data.map(p => `
-    <div class="pinyin-card" onclick="speakPinyin('${p.char}', '${p.label}', '${p.speak}')">
+    <div class="pinyin-card" onclick="speakPinyin('${p.char}', '${p.audio}')">
       <div class="py-char">${p.char}</div>
       <div class="py-label">${p.label}</div>
     </div>
@@ -1505,11 +1505,42 @@ function speakText(text, lang = 'zh-CN', rate = 0.7, onEnd) {
   }
 }
 
-function speakPinyin(py, label, speak) {
-  // Speak the carrier character (呼读法) — reliable on every TTS engine.
-  // Romanized pinyin is not: ü-family syllables were silently mangled to "u".
-  // The star pops only AFTER the sound finishes.
-  speakText(speak || label || py, 'zh-CN', 0.7, function() {
+const pinyinAudioCache = new Map();
+let activePinyinAudio = null;
+
+function playPinyinAudio(audioId, onEnd) {
+  let finished = false;
+  const done = function(success) {
+    if (finished) return;
+    finished = true;
+    if (success && onEnd) onEnd();
+  };
+  try {
+    if (activePinyinAudio) {
+      activePinyinAudio.pause();
+      activePinyinAudio.currentTime = 0;
+    }
+    let audio = pinyinAudioCache.get(audioId);
+    if (!audio) {
+      audio = new Audio(`assets/pinyin/${audioId}.mp3`);
+      audio.preload = 'auto';
+      pinyinAudioCache.set(audioId, audio);
+    }
+    activePinyinAudio = audio;
+    audio.currentTime = 0;
+    audio.onended = () => done(true);
+    audio.onerror = () => done(false);
+    const playback = audio.play();
+    if (playback && typeof playback.catch === 'function') playback.catch(() => done(false));
+  } catch (e) {
+    done(false);
+  }
+}
+
+function speakPinyin(py, audioId) {
+  // Pinyin learning uses bundled, verified recordings. Never fall back to TTS:
+  // a speech engine can turn a correct spelling into an incorrect lesson.
+  playPinyinAudio(audioId, function() {
     // Only award star once per pinyin per day
     const today = getToday();
     if (state.pinyinDate !== today) {
