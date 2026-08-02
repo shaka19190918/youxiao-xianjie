@@ -322,6 +322,10 @@ body {
   padding: 4px;
 }
 
+/* Math now has more learning routes; keep every tab comfortably tappable on iPad. */
+#mathTabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+#mathTabs .module-tab { flex: 0 0 auto; min-width: 76px; }
+
 .module-tab {
   flex: 1;
   padding: 10px;
@@ -733,6 +737,8 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <label class="form-field"><span>起床时间</span><input id="profileWake" type="time" value="07:00" required></label>
       <label class="form-field"><span>早餐时间</span><input id="profileBreakfast" type="time" value="07:30" required></label>
       <label class="form-field full"><span>准备入睡时间</span><input id="profileBedtime" type="time" value="21:00" required></label>
+      <label class="form-field"><span>家长密码（4–8 位数字）</span><input id="profilePin" type="password" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" required autocomplete="new-password" placeholder="仅家长知道"></label>
+      <label class="form-field"><span>再次输入家长密码</span><input id="profilePinConfirm" type="password" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" required autocomplete="new-password"></label>
     </div>
     <div class="setup-actions"><button class="btn-primary" type="submit">生成我的学习计划</button></div>
   </form>
@@ -899,6 +905,8 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <button class="module-tab" data-sub="addsub">加减法</button>
       <button class="module-tab" data-sub="compare">比大小</button>
       <button class="module-tab" data-sub="shapes">认图形</button>
+      <button class="module-tab" data-sub="pattern">找规律</button>
+      <button class="module-tab" data-sub="life">生活数学</button>
     </div>
 
     <!-- Count Section -->
@@ -924,6 +932,10 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 
     <div class="math-sub" id="sub-addsub" style="display:none;">
       <div class="card">
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:14px;" id="mathLevelButtons">
+          <button class="question-sound" onclick="setMathLevel(5)">5 以内</button><button class="question-sound" onclick="setMathLevel(10)">10 以内</button><button class="question-sound" onclick="setMathLevel(20)">20 以内</button><button class="question-sound" onclick="setMathLevel(100)">100 以内</button>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);text-align:center;margin:-4px 0 12px;">从适合孩子的难度开始；答对后再主动升级，不会强制超前。</p>
         <div class="score-bar">
           <div class="score-item">
             <div class="si-val good" id="correctCount">0</div>
@@ -984,6 +996,26 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <p style="font-size:13px;color:var(--text-light);margin-top:12px;text-align:center;">
           💡 小游戏：在家里找找这些形状的物品吧！
         </p>
+      </div>
+    </div>
+
+    <div class="math-sub" id="sub-pattern" style="display:none;">
+      <div class="card" style="text-align:center;">
+        <div class="card-header"><span class="icon">🔁</span><h2 style="margin:0 auto;">规律推理</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">观察数字或图形的排列，找出下一个。这个练习不计时，可以慢慢想。</p>
+        <button class="question-sound" onclick="speakPatternQuestion()">🔊 听题目</button>
+        <div class="math-question" id="patternQuestion">2，4，6，？</div>
+        <div class="math-options" id="patternOptions"></div>
+      </div>
+    </div>
+
+    <div class="math-sub" id="sub-life" style="display:none;">
+      <div class="card" style="text-align:center;">
+        <div class="card-header"><span class="icon">🛒</span><h2 style="margin:0 auto;">生活数学</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">把数、比较、时间和测量用到真实情境中。</p>
+        <button class="question-sound" onclick="speakLifeQuestion()">🔊 听题目</button>
+        <div class="math-question" id="lifeQuestion">小明有 3 个苹果，又得到 2 个，一共有几个？</div>
+        <div class="math-options" id="lifeOptions"></div>
       </div>
     </div>
   </div>
@@ -1070,6 +1102,22 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div style="text-align:center;margin-top:8px;">
         <button class="timer-btn reset" onclick="initSchulte()">🔄 重新开始</button>
       </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">🧠</span><h2>数字记忆</h2></div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">先看一串数字，3 秒后它会藏起来；再按顺序输入。答对后会逐步加长。</p>
+      <div id="memorySequence" style="font-size:30px;letter-spacing:8px;text-align:center;font-weight:800;padding:12px;min-height:62px;color:var(--focus);">点击开始</div>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;"><input id="memoryInput" inputmode="numeric" maxlength="8" style="max-width:170px;padding:12px;border:2px solid #eee;border-radius:12px;font-size:18px;text-align:center;" placeholder="输入数字" disabled><button class="timer-btn start" onclick="startMemoryGame()">开始</button><button class="timer-btn reset" onclick="checkMemoryGame()">提交</button></div>
+      <p id="memoryHint" style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">每轮只需专心几秒钟。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">🔎</span><h2>找一找</h2></div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">在一排相同符号里，找出唯一不一样的一个。看清楚再点，不追求速度。</p>
+      <div id="oddPrompt" style="text-align:center;font-weight:700;margin-bottom:8px;">点击“换一题”开始</div>
+      <div id="oddGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:320px;margin:0 auto;"></div>
+      <div style="text-align:center;margin-top:10px;"><button class="timer-btn reset" onclick="generateOddOneOut()">换一题</button></div>
     </div>
   </div>
 
@@ -1233,6 +1281,36 @@ const poems = [
   { category: '国学启蒙', title: '弟子规（节选）', author: '李毓秀', lines: ['弟子规，圣人训。', '首孝弟，次谨信。', '泛爱众，而亲仁。', '有余力，则学文。', '父母呼，应勿缓。', '父母命，行勿懒。'], emoji: '📙' },
 ];
 
+// Every item below is a complete poem or a complete short chapter. Long classical
+// works are deliberately introduced by complete short chapters instead of calling
+// an arbitrary fragment "全文".
+const extendedPoems = [
+  { title: '静夜思', author: '李白', lines: ['床前明月光，', '疑是地上霜。', '举头望明月，', '低头思故乡。'], emoji: '🌙' },
+  { title: '春晓', author: '孟浩然', lines: ['春眠不觉晓，', '处处闻啼鸟。', '夜来风雨声，', '花落知多少。'], emoji: '🌸' },
+  { title: '登鹳雀楼', author: '王之涣', lines: ['白日依山尽，', '黄河入海流。', '欲穷千里目，', '更上一层楼。'], emoji: '🏯' },
+  { title: '绝句', author: '杜甫', lines: ['两个黄鹂鸣翠柳，', '一行白鹭上青天。', '窗含西岭千秋雪，', '门泊东吴万里船。'], emoji: '🐦' },
+  { title: '江雪', author: '柳宗元', lines: ['千山鸟飞绝，', '万径人踪灭。', '孤舟蓑笠翁，', '独钓寒江雪。'], emoji: '❄️' },
+  { title: '小池', author: '杨万里', lines: ['泉眼无声惜细流，', '树阴照水爱晴柔。', '小荷才露尖尖角，', '早有蜻蜓立上头。'], emoji: '🪷' },
+  { title: '所见', author: '袁枚', lines: ['牧童骑黄牛，', '歌声振林樾。', '意欲捕鸣蝉，', '忽然闭口立。'], emoji: '🐂' },
+  { title: '村居', author: '高鼎', lines: ['草长莺飞二月天，', '拂堤杨柳醉春烟。', '儿童散学归来早，', '忙趁东风放纸鸢。'], emoji: '🪁' },
+  { title: '咏柳', author: '贺知章', lines: ['碧玉妆成一树高，', '万条垂下绿丝绦。', '不知细叶谁裁出，', '二月春风似剪刀。'], emoji: '🌿' },
+  { title: '回乡偶书', author: '贺知章', lines: ['少小离家老大回，', '乡音无改鬓毛衰。', '儿童相见不相识，', '笑问客从何处来。'], emoji: '🏡' },
+  { title: '鹿柴', author: '王维', lines: ['空山不见人，', '但闻人语响。', '返景入深林，', '复照青苔上。'], emoji: '🦌' },
+  { title: '竹里馆', author: '王维', lines: ['独坐幽篁里，', '弹琴复长啸。', '深林人不知，', '明月来相照。'], emoji: '🎋' },
+  { title: '望庐山瀑布', author: '李白', lines: ['日照香炉生紫烟，', '遥看瀑布挂前川。', '飞流直下三千尺，', '疑是银河落九天。'], emoji: '💦' },
+  { title: '早发白帝城', author: '李白', lines: ['朝辞白帝彩云间，', '千里江陵一日还。', '两岸猿声啼不住，', '轻舟已过万重山。'], emoji: '⛵' },
+  { title: '赠汪伦', author: '李白', lines: ['李白乘舟将欲行，', '忽闻岸上踏歌声。', '桃花潭水深千尺，', '不及汪伦送我情。'], emoji: '🤝' },
+  { title: '敕勒歌', author: '北朝民歌', lines: ['敕勒川，阴山下。', '天似穹庐，笼盖四野。', '天苍苍，野茫茫。', '风吹草低见牛羊。'], emoji: '🐑' },
+  { title: '悯农（二）', author: '李绅', lines: ['春种一粒粟，', '秋收万颗子。', '四海无闲田，', '农夫犹饿死。'], emoji: '🌾' },
+  { title: '寻隐者不遇', author: '贾岛', lines: ['松下问童子，', '言师采药去。', '只在此山中，', '云深不知处。'], emoji: '⛰️' },
+  { title: '梅花', author: '王安石', lines: ['墙角数枝梅，', '凌寒独自开。', '遥知不是雪，', '为有暗香来。'], emoji: '🌺' },
+  { title: '江上渔者', author: '范仲淹', lines: ['江上往来人，', '但爱鲈鱼美。', '君看一叶舟，', '出没风波里。'], emoji: '🐟' },
+  { title: '游子吟', author: '孟郊', lines: ['慈母手中线，游子身上衣。', '临行密密缝，意恐迟迟归。', '谁言寸草心，报得三春晖。'], emoji: '🧵' },
+  { category: '国学启蒙（完整短篇）', title: '弟子规·总叙', author: '李毓秀', lines: ['弟子规，圣人训。', '首孝弟，次谨信。', '泛爱众，而亲仁。', '有余力，则学文。'], emoji: '📘' },
+  { category: '国学启蒙（完整短篇）', title: '弟子规·入则孝', author: '李毓秀', lines: ['父母呼，应勿缓。', '父母命，行勿懒。', '父母教，须敬听。', '父母责，须顺承。', '冬则温，夏则凊。', '晨则省，昏则定。', '出必告，反必面。', '居有常，业无变。'], emoji: '📗' },
+];
+let poemLibrary = [];
+
 // Habits
 const habits = [
   { id: 'self_care', icon: '🪥', name: '自己刷牙洗脸', target: 7 },
@@ -1317,12 +1395,18 @@ function getLearningTip() {
 
 function saveProfile(event) {
   event.preventDefault();
+  const pin = document.getElementById('profilePin').value;
+  if (pin !== document.getElementById('profilePinConfirm').value) {
+    showToast('两次输入的家长密码不一致');
+    return;
+  }
   const profile = {
     name: document.getElementById('profileName').value.trim() || '小朋友',
     age: Number(document.getElementById('profileAge').value),
     wakeTime: document.getElementById('profileWake').value,
     breakfastTime: document.getElementById('profileBreakfast').value,
     bedtime: document.getElementById('profileBedtime').value,
+    parentPin: pin,
   };
   state.profile = profile;
   state.schedule = buildScheduleFromProfile(profile);
@@ -1332,15 +1416,13 @@ function saveProfile(event) {
   renderDailyPlan();
 }
 
-let parentGateAnswer = null;
 function openParentGate() {
-  const a = Math.floor(Math.random() * 8) + 12;
-  const b = Math.floor(Math.random() * 8) + 7;
-  parentGateAnswer = a + b;
+  const hasPin = state.profile && state.profile.parentPin;
   document.getElementById('parentPanel').innerHTML = `
-    <h2>⚙️ 家长模式</h2><p>简单验证可减少孩子误改设置。本页不含账号或云端数据。</p>
-    <form onsubmit="unlockParent(event)"><label class="form-field"><span>请计算：${a} + ${b} =</span><input id="parentGateInput" inputmode="numeric" required autofocus></label>
-    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">进入设置</button></div></form>`;
+    <h2>⚙️ 家长模式</h2><p>${hasPin ? '请输入家长密码后进入设置。密码只保存在这台设备上。' : '这是首次升级后的家长保护：请先设置一个 4–8 位数字密码。'}</p>
+    <form onsubmit="unlockParent(event)"><label class="form-field"><span>${hasPin ? '家长密码' : '设置家长密码（4–8 位数字）'}</span><input id="parentGateInput" type="password" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" required autofocus autocomplete="${hasPin ? 'current-password' : 'new-password'}"></label>
+    ${hasPin ? '' : '<label class="form-field"><span>再次输入密码</span><input id="parentGateConfirm" type="password" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" required autocomplete="new-password"></label>'}
+    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">${hasPin ? '进入设置' : '设置并进入'}</button></div></form>`;
   document.getElementById('parentSetup').style.display = 'flex';
 }
 
@@ -1348,15 +1430,28 @@ function closeParentMode() { document.getElementById('parentSetup').style.displa
 
 function unlockParent(event) {
   event.preventDefault();
-  if (Number(document.getElementById('parentGateInput').value) !== parentGateAnswer) {
-    showToast('答案不对，请再试一次');
+  const pin = document.getElementById('parentGateInput').value;
+  if (!state.profile) {
+    showToast('请先完成孩子资料设置');
+    return;
+  }
+  if (!state.profile.parentPin) {
+    const confirmPin = document.getElementById('parentGateConfirm').value;
+    if (pin !== confirmPin) {
+      showToast('两次输入的家长密码不一致');
+      return;
+    }
+    state.profile.parentPin = pin;
+    saveState();
+  } else if (pin !== state.profile.parentPin) {
+    showToast('家长密码不正确，请再试一次');
     return;
   }
   renderParentEditor();
 }
 
 function renderParentEditor() {
-  const profile = state.profile || { name: '小朋友', age: 6, wakeTime: '07:00', breakfastTime: '07:30', bedtime: '21:00' };
+  const profile = state.profile || { name: '小朋友', age: 6, wakeTime: '07:00', breakfastTime: '07:30', bedtime: '21:00', parentPin: '' };
   const scheduleRows = getSchedule().map((task, index) => `<div class="parent-schedule-row"><input type="time" id="scheduleTime${index}" value="${escapeHtml(task.time)}"><input id="scheduleTitle${index}" maxlength="16" value="${escapeHtml(task.title)}" aria-label="第${index + 1}项任务名称"></div>`).join('');
   document.getElementById('parentPanel').innerHTML = `
     <h2>⚙️ 家长模式</h2><p>修改后立即保存到当前设备。起床、早餐和其他日程都可以按家庭实际情况调整。</p>
@@ -1367,14 +1462,15 @@ function renderParentEditor() {
       <label class="form-field"><span>早餐时间</span><input id="parentBreakfast" type="time" value="${escapeHtml(profile.breakfastTime)}" required></label>
       <label class="form-field full"><span>准备入睡时间</span><input id="parentBedtime" type="time" value="${escapeHtml(profile.bedtime)}" required></label>
     </div><h3 style="margin-top:18px;">每日作息（时间和名称均可修改）</h3><div class="parent-schedule">${scheduleRows}</div>
-    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">保存设置</button></div></form>`;
+    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">保存设置</button></div></form>
+    <div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">数据管理</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">清空学习记录会保留孩子资料、家长密码和作息设置。</p><button class="btn-secondary" type="button" onclick="resetLearningData()">清空学习记录</button><button style="margin-left:8px;background:#fff0f0;color:#c0392b;border:1px solid #f1b7b1;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;" type="button" onclick="factoryReset()">恢复出厂设置</button></div>`;
 }
 
 function saveParentSettings(event) {
   event.preventDefault();
   const profile = {
     name: document.getElementById('parentName').value.trim() || '小朋友', age: Number(document.getElementById('parentAge').value),
-    wakeTime: document.getElementById('parentWake').value, breakfastTime: document.getElementById('parentBreakfast').value, bedtime: document.getElementById('parentBedtime').value,
+    wakeTime: document.getElementById('parentWake').value, breakfastTime: document.getElementById('parentBreakfast').value, bedtime: document.getElementById('parentBedtime').value, parentPin: (state.profile && state.profile.parentPin) || '',
   };
   const schedule = getSchedule().map((task, index) => ({ ...task, time: document.getElementById('scheduleTime' + index).value, title: document.getElementById('scheduleTitle' + index).value.trim() || task.title }));
   if (schedule[0]) schedule[0].time = profile.wakeTime;
@@ -1387,6 +1483,26 @@ function saveParentSettings(event) {
   renderHome();
   renderDailyPlan();
   showToast('家长设置已保存');
+}
+
+function resetLearningData() {
+  if (!confirm('确定清空星星、打卡、识字复习、数学和专注记录吗？孩子资料和作息会保留。')) return;
+  const profile = state.profile;
+  const schedule = state.schedule;
+  state = { ...state, stars: 0, streak: 0, lastActiveDate: '', tasksDone: {}, charsLearned: {}, mathCorrect: 0, mathTotal: 0, habitStars: {}, weekHistory: {}, focusMinutes: 0, pinyinToday: {}, pinyinDate: '', starGranted: {}, flashcardReview: {}, habitDays: {}, profile, schedule };
+  saveState();
+  closeParentMode();
+  renderHome(); renderDailyPlan(); renderHabits(); renderFlashcard();
+  document.getElementById('correctCount').textContent = '0';
+  document.getElementById('totalCount').textContent = '0';
+  showToast('学习记录已清空');
+}
+
+function factoryReset() {
+  if (!confirm('这会删除本机全部资料、家长密码和学习记录。确定继续吗？')) return;
+  if (prompt('输入“清空”确认恢复出厂设置：') !== '清空') return;
+  localStorage.removeItem('yxxj_state');
+  location.reload();
 }
 
 // Local-date helpers: toISOString() is UTC, which lands on the wrong day
@@ -1819,7 +1935,8 @@ function prevFlashcard() {
 
 function renderPoems() {
   let lastCategory = '';
-  document.getElementById('poemList').innerHTML = poems.map((p, i) => {
+  poemLibrary = [...poems.filter(p => !p.title.includes('（节选）')), ...extendedPoems];
+  document.getElementById('poemList').innerHTML = `<p style="font-size:13px;color:var(--text-light);margin:0 2px 12px;">已收录 ${poemLibrary.length} 篇完整诗文。长篇国学会逐步增加完整篇章，不用孤立节选替代全文。</p>` + poemLibrary.map((p, i) => {
     const category = p.category || '古诗童谣';
     const heading = category === lastCategory ? '' : `<h3 style="margin:18px 2px 8px;font-size:16px;color:var(--chinese);">${category}</h3>`;
     lastCategory = category;
@@ -1838,10 +1955,10 @@ function renderPoems() {
 }
 
 function speakPoem(idx) {
-  const poem = poems[idx];
+  const poem = poemLibrary[idx];
   // The star pops only after the whole poem has been read aloud.
   speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6, function() {
-    grantStarOnce(`poem_${getToday()}_${idx}`, 1, `《${poems[idx].title}》朗读完成！+1⭐`, true);
+    grantStarOnce(`poem_${getToday()}_${idx}`, 1, `《${poemLibrary[idx].title}》朗读完成！+1⭐`, true);
   });
 }
 
@@ -1857,6 +1974,8 @@ document.getElementById('mathTabs').addEventListener('click', function(e) {
     if (sub === 'addsub') generateMath();
     if (sub === 'split') generateSplit();
     if (sub === 'compare') generateCompare();
+    if (sub === 'pattern') generatePattern();
+    if (sub === 'life') generateLifeQuestion();
   }
 });
 
@@ -1919,12 +2038,28 @@ function answerSplit(v, btn) {
 let currentMathAnswer = 0;
 let mathStreak = 0; // consecutive correct answers (runtime only)
 let currentMathA = 0, currentMathB = 0, currentMathOp = '+';
+let mathLevel = 10;
+
+function recommendedMathLevel() {
+  const age = Number(state.profile && state.profile.age);
+  return age <= 5 ? 5 : age >= 7 ? 20 : 10;
+}
 
 function numberToChinese(n) {
   const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
   if (n <= 10) return digits[n];
   if (n < 20) return '十' + digits[n - 10];
-  return '二十';
+  if (n < 100) return digits[Math.floor(n / 10)] + '十' + (n % 10 ? digits[n % 10] : '');
+  return '一百';
+}
+
+function setMathLevel(level) {
+  mathLevel = level;
+  document.querySelectorAll('#mathLevelButtons .question-sound').forEach(btn => {
+    btn.style.opacity = btn.textContent.includes(String(level)) ? '1' : '0.62';
+    btn.style.outline = btn.textContent.includes(String(level)) ? '2px solid var(--math)' : 'none';
+  });
+  generateMath();
 }
 
 function speakMathQuestion(kind) {
@@ -1936,8 +2071,7 @@ function speakMathQuestion(kind) {
 
 function generateMath() {
   // Difficulty grows with usage: 5以内 → 10以内 → 20以内
-  const level = Math.min(Math.floor(state.mathTotal / 10), 2);
-  const maxNum = [5, 10, 20][level];
+  const maxNum = mathLevel;
   const op = Math.random() > 0.5 ? '+' : '-';
   let a, b;
   if (op === '+') {
@@ -1957,7 +2091,7 @@ function generateMath() {
   // 4 options from a bounded candidate pool. The old while-loop could spin
   // forever when the answer was 0 (only 3 valid fakes existed), freezing the page.
   const pool = [];
-  for (let n = Math.max(0, currentMathAnswer - 3); n <= Math.min(20, currentMathAnswer + 3); n++) {
+  for (let n = Math.max(0, currentMathAnswer - 8); n <= Math.min(maxNum, currentMathAnswer + 8); n++) {
     if (n !== currentMathAnswer) pool.push(n);
   }
   pool.sort(() => Math.random() - 0.5);
@@ -2028,6 +2162,48 @@ function answerCompare(sym, btn) {
     speakText('再想一想。');
     setTimeout(() => btn.classList.remove('wrong'), 500);
   }
+}
+
+// Pattern and life-math questions keep the challenge concrete and age-appropriate.
+const patternQuestions = [
+  { text: '2，4，6，？', speech: '二，四，六，下一个数是几？', answer: '8', options: ['7', '8', '9', '10'] },
+  { text: '1，3，5，？', speech: '一，三，五，下一个数是几？', answer: '7', options: ['6', '7', '8', '9'] },
+  { text: '🔴🔵🔴🔵，？', speech: '红色，蓝色，红色，蓝色，下一个是什么颜色？', answer: '🔴', options: ['🔴', '🔵', '🟡', '🟢'] },
+  { text: '10，9，8，？', speech: '十，九，八，下一个数是几？', answer: '7', options: ['6', '7', '8', '9'] },
+  { text: '3，6，9，？', speech: '三，六，九，下一个数是几？', answer: '12', options: ['10', '11', '12', '13'] },
+];
+const lifeQuestions = [
+  { text: '小明有 3 个苹果，又得到 2 个，一共有几个？', answer: '5', options: ['4', '5', '6', '7'] },
+  { text: '一支铅笔大约长 15（  ）。', answer: '厘米', options: ['厘米', '米', '小时', '元'] },
+  { text: '7 点起床，7 点半吃早餐，过了多久？', answer: '30 分钟', options: ['10 分钟', '30 分钟', '1 小时', '2 小时'] },
+  { text: '盒里有 10 块积木，拿走 4 块，还剩几块？', answer: '6', options: ['5', '6', '7', '14'] },
+  { text: '20 元买一本书用去 12 元，应找回多少元？', answer: '8', options: ['6', '8', '10', '12'] },
+  { text: '从家到学校，走 100（  ）比较合适。', answer: '米', options: ['厘米', '米', '小时', '千克'] },
+];
+let patternIndex = 0;
+let lifeIndex = 0;
+
+function renderChoiceQuestion(question, questionId, optionsId, answerFn) {
+  document.getElementById(questionId).textContent = question.text;
+  document.getElementById(optionsId).innerHTML = [...question.options].sort(() => Math.random() - 0.5).map(option => `<button class="math-option" onclick="${answerFn}('${option.replace(/'/g, "\\'")}', this)">${option}</button>`).join('');
+}
+function generatePattern() { renderChoiceQuestion(patternQuestions[patternIndex], 'patternQuestion', 'patternOptions', 'answerPattern'); }
+function speakPatternQuestion() { speakText(patternQuestions[patternIndex].speech, 'zh-CN', 0.75); }
+function answerPattern(value, btn) {
+  const question = patternQuestions[patternIndex];
+  document.querySelectorAll('#patternOptions .math-option').forEach(b => b.style.pointerEvents = 'none');
+  if (value === question.answer) { btn.classList.add('correct'); addStars(1, '规律推理正确！+1⭐'); speakText('回答正确，真棒！'); }
+  else { btn.classList.add('wrong'); document.querySelectorAll('#patternOptions .math-option').forEach(b => { if (b.textContent === question.answer) b.classList.add('correct'); }); speakText('再看看规律。'); }
+  setTimeout(() => { patternIndex = (patternIndex + 1) % patternQuestions.length; generatePattern(); }, 1300);
+}
+function generateLifeQuestion() { renderChoiceQuestion(lifeQuestions[lifeIndex], 'lifeQuestion', 'lifeOptions', 'answerLifeQuestion'); }
+function speakLifeQuestion() { speakText(lifeQuestions[lifeIndex].text, 'zh-CN', 0.75); }
+function answerLifeQuestion(value, btn) {
+  const question = lifeQuestions[lifeIndex];
+  document.querySelectorAll('#lifeOptions .math-option').forEach(b => b.style.pointerEvents = 'none');
+  if (value === question.answer) { btn.classList.add('correct'); addStars(1, '生活数学正确！+1⭐'); speakText('回答正确，真棒！'); }
+  else { btn.classList.add('wrong'); document.querySelectorAll('#lifeOptions .math-option').forEach(b => { if (b.textContent === question.answer) b.classList.add('correct'); }); speakText('再想一想。'); }
+  setTimeout(() => { lifeIndex = (lifeIndex + 1) % lifeQuestions.length; generateLifeQuestion(); }, 1300);
 }
 
 // Shapes are static HTML, no JS needed beyond rendering
@@ -2215,6 +2391,66 @@ function clickSchulte(n, btn) {
   }
 }
 
+// Short, calm attention activities: working-memory and visual discrimination.
+let memorySequence = '';
+let memoryLength = 3;
+let memoryShowing = false;
+function startMemoryGame() {
+  memorySequence = Array.from({ length: memoryLength }, () => Math.floor(Math.random() * 10)).join('');
+  memoryShowing = true;
+  document.getElementById('memorySequence').textContent = memorySequence;
+  document.getElementById('memoryInput').value = '';
+  document.getElementById('memoryInput').disabled = true;
+  document.getElementById('memoryHint').textContent = '认真看一看，3 秒后数字会藏起来。';
+  setTimeout(() => {
+    memoryShowing = false;
+    document.getElementById('memorySequence').textContent = '？ ？ ？';
+    document.getElementById('memoryInput').disabled = false;
+    document.getElementById('memoryInput').focus();
+    document.getElementById('memoryHint').textContent = '请按刚才的顺序输入数字。';
+  }, 3000);
+}
+function checkMemoryGame() {
+  if (!memorySequence || memoryShowing) return;
+  const input = document.getElementById('memoryInput').value;
+  if (input === memorySequence) {
+    memoryLength = Math.min(8, memoryLength + 1);
+    document.getElementById('memorySequence').textContent = '✓ ' + memorySequence;
+    document.getElementById('memoryHint').textContent = '记对了！下一轮会多一个数字。';
+    addStars(1, '数字记忆正确！+1⭐');
+  } else {
+    memoryLength = Math.max(3, memoryLength - 1);
+    document.getElementById('memorySequence').textContent = '答案：' + memorySequence;
+    document.getElementById('memoryHint').textContent = '没关系，下一轮从短一点的数字开始。';
+  }
+  document.getElementById('memoryInput').disabled = true;
+  memorySequence = '';
+}
+
+let oddAnswer = '';
+function generateOddOneOut() {
+  const sets = [ ['🔴', '🟠'], ['🐱', '🐶'], ['▲', '■'], ['1', '7'], ['b', 'd'] ];
+  const pair = sets[Math.floor(Math.random() * sets.length)];
+  oddAnswer = pair[1];
+  const target = Math.floor(Math.random() * 15);
+  document.getElementById('oddPrompt').textContent = `找出唯一的“${pair[1]}”`;
+  document.getElementById('oddGrid').innerHTML = Array.from({ length: 15 }, (_, i) => {
+    const value = i === target ? pair[1] : pair[0];
+    return `<button class="math-option" style="width:auto;font-size:24px;min-height:48px;" onclick="answerOddOneOut('${value}', this)">${value}</button>`;
+  }).join('');
+}
+function answerOddOneOut(value, btn) {
+  if (value === oddAnswer) {
+    document.querySelectorAll('#oddGrid button').forEach(b => b.style.pointerEvents = 'none');
+    btn.classList.add('correct');
+    addStars(1, '观察力真棒！+1⭐');
+    document.getElementById('oddPrompt').textContent = '找到了！慢慢观察也能很厉害。';
+  } else {
+    btn.classList.add('wrong');
+    setTimeout(() => btn.classList.remove('wrong'), 400);
+  }
+}
+
 // ==================== EYE CARE ====================
 // Remind every 15 minutes of screen time, per official myopia-prevention guidance.
 function armEyeTimer() {
@@ -2270,9 +2506,12 @@ function init() {
     
     // Math
     renderNumberLine();
-    generateMath();
+    mathLevel = recommendedMathLevel();
+    setMathLevel(mathLevel);
     generateSplit();
     generateCompare();
+    generatePattern();
+    generateLifeQuestion();
     
     // Habits
     renderHabits();
