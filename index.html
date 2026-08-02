@@ -669,6 +669,19 @@ body {
   font-family: inherit;
 }
 
+/* ============ PARENT & FIRST-USE SETUP ============ */
+.parent-mode-btn { margin-left:auto; border:1px solid rgba(255,255,255,.65); background:rgba(255,255,255,.18); color:#FFF; border-radius:16px; padding:6px 10px; font:inherit; font-size:12px; cursor:pointer; }
+.setup-overlay { position:fixed; inset:0; z-index:500; background:rgba(37,45,64,.58); display:flex; align-items:center; justify-content:center; padding:18px; }
+.setup-panel { width:min(520px,100%); max-height:90vh; overflow:auto; background:#FFF; border-radius:24px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.setup-panel h2 { font-size:21px; margin-bottom:8px; }.setup-panel p { color:var(--text-light); font-size:13px; line-height:1.6; margin-bottom:14px; }
+.form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }.form-field { display:flex; flex-direction:column; gap:5px; font-size:13px; font-weight:700; }.form-field.full { grid-column:1/-1; }
+.form-field input,.form-field select { min-height:42px; border:1px solid #D9DCE5; border-radius:10px; padding:8px 10px; font:inherit; background:#FFF; }
+.setup-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }.setup-actions button { border:none; border-radius:18px; padding:10px 16px; font:inherit; font-weight:700; cursor:pointer; }.btn-secondary { background:#F1F3F7; color:var(--text); }.btn-primary { background:var(--primary); color:#FFF; }
+.parent-schedule { display:flex; flex-direction:column; gap:8px; margin-top:12px; }.parent-schedule-row { display:grid; grid-template-columns:92px 1fr; gap:8px; align-items:center; }.parent-schedule-row input { min-width:0; min-height:38px; border:1px solid #D9DCE5; border-radius:9px; padding:6px 8px; font:inherit; }
+.profile-tip { margin-top:8px; font-size:13px; color:var(--chinese); font-weight:700; }
+.flashcard-actions { display:flex; justify-content:center; gap:10px; margin-top:14px; flex-wrap:wrap; }.flashcard-actions button { border:none; border-radius:18px; padding:10px 16px; font:inherit; font-weight:700; cursor:pointer; }.flashcard-actions .known { background:var(--habit); color:#FFF; }.flashcard-actions .again { background:#FFF0EE; color:#D94A3D; }
+.question-sound { border:none; background:#EEF3FF; color:#3A63C7; border-radius:14px; padding:7px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; margin:2px auto 10px; display:block; }
+
 /* ============ RESPONSIVE ============ */
 @media (min-width: 768px) {
   .main { padding: 24px 32px; padding-bottom: calc(110px + var(--safe-bottom)); }
@@ -701,6 +714,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 <div class="header">
   <span class="logo">🎒 幼小衔接快乐营</span>
   <span class="stars-display" id="totalStars">⭐ 0</span>
+  <button class="parent-mode-btn" onclick="openParentGate()">⚙️ 家长</button>
 </div>
 
 <!-- iOS add-to-home-screen guidance banner -->
@@ -709,14 +723,32 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   <button onclick="this.parentElement.style.display='none'" style="margin-left:8px;background:none;border:none;font-size:16px;cursor:pointer;color:#856404;">✕</button>
 </div>
 
+<div class="setup-overlay" id="profileSetup" style="display:none;">
+  <form class="setup-panel" onsubmit="saveProfile(event)">
+    <h2>🌱 先认识一下小朋友</h2>
+    <p>这些信息只保存在本机或这台 iPad 上，用来生成更贴合孩子的学习提醒和作息建议。</p>
+    <div class="form-grid">
+      <label class="form-field"><span>孩子昵称</span><input id="profileName" maxlength="12" required placeholder="例如：转转"></label>
+      <label class="form-field"><span>年龄</span><select id="profileAge"><option value="4">4岁</option><option value="5">5岁</option><option value="6" selected>6岁</option><option value="7">7岁</option></select></label>
+      <label class="form-field"><span>起床时间</span><input id="profileWake" type="time" value="07:00" required></label>
+      <label class="form-field"><span>早餐时间</span><input id="profileBreakfast" type="time" value="07:30" required></label>
+      <label class="form-field full"><span>准备入睡时间</span><input id="profileBedtime" type="time" value="21:00" required></label>
+    </div>
+    <div class="setup-actions"><button class="btn-primary" type="submit">生成我的学习计划</button></div>
+  </form>
+</div>
+
+<div class="setup-overlay" id="parentSetup" style="display:none;"><div class="setup-panel" id="parentPanel"></div></div>
+
 <!-- MAIN CONTENT -->
 <div class="main">
 
   <!-- ===== PAGE 0: HOME ===== -->
   <div class="page active" id="page-home">
     <div class="welcome-banner">
-      <h1>👋 早上好 转转！</h1>
+      <h1 id="welcomeTitle">👋 早上好！</h1>
       <p id="dateDisplay">今天是美好的一天，准备好了吗？</p>
+      <div class="profile-tip" id="profileTip"></div>
     </div>
 
     <div class="stats-row">
@@ -795,7 +827,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
         <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
           点击拼音可以听发音哦～（人教版一年级上册）
-          <button onclick="speakText('你好呀，声音好着呢！')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试声音</button>
+          <button onclick="speakPinyin('a','a1')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试拼音音频</button>
           <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
         </p>
         
@@ -834,7 +866,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <div class="chinese-sub" id="sub-flashcard" style="display:none;">
       <div class="card">
         <div class="card-header"><span class="icon">🃏</span><h2>闪卡识字游戏</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击卡片翻转看拼音和笔画～ 左右滑动切换汉字</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">先看字、在心里读一遍；翻开答案后再选择“认识”或“再练一次”。认识的字会按 1、3、7、14 天间隔复习。</p>
         <div class="flashcard-container">
           <div class="flashcard" id="flashcard" onclick="flipCard()">
             <div class="fc-char" id="fcChar">一</div>
@@ -843,16 +875,17 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         </div>
         <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
           <button class="timer-btn reset" onclick="prevFlashcard()">◀ 上一个</button>
-          <span style="line-height:44px;font-weight:700;" id="fcIndex">1/20</span>
-          <button class="timer-btn start" onclick="nextFlashcard()">下一个 ▶</button>
+          <span style="line-height:44px;font-weight:700;" id="fcIndex">今日待复习</span>
+          <button class="timer-btn start" onclick="nextFlashcard()">下一张 ▶</button>
         </div>
+        <div class="flashcard-actions" id="fcReviewActions" style="display:none;"><button class="again" onclick="reviewFlashcard(false)">🔁 再练一次</button><button class="known" onclick="reviewFlashcard(true)">✅ 我认识</button></div>
       </div>
     </div>
 
     <!-- Poem Section -->
     <div class="chinese-sub" id="sub-poem" style="display:none;">
       <div class="card">
-        <div class="card-header"><span class="icon">📜</span><h2>必背古诗童谣 · 一年级上册</h2></div>
+        <div class="card-header"><span class="icon">📜</span><h2>古诗童谣与国学启蒙</h2></div>
         <div id="poemList"></div>
       </div>
     </div>
@@ -883,6 +916,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">🍎</span><h2 style="margin:0 auto;">数的分与合</h2></div>
         <p style="font-size:13px;color:var(--text-light);">把苹果分到两个盘子里：5 可以分成 2 和 3</p>
+        <button class="question-sound" onclick="speakMathQuestion('split')">🔊 听题目</button>
         <div class="math-question" id="splitQuestion">5 可以分成 2 和 ?</div>
         <div class="math-options" id="splitOptions"></div>
       </div>
@@ -901,6 +935,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
           </div>
         </div>
         <div class="math-question" id="mathQuestion">3 + 2 = ?</div>
+        <button class="question-sound" onclick="speakMathQuestion('addsub')">🔊 听题目</button>
         <div class="math-options" id="mathOptions"></div>
       </div>
     </div>
@@ -910,6 +945,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">⚖️</span><h2 style="margin:0 auto;">比大小</h2></div>
         <div style="font-size:64px;font-weight:800;margin:16px 0;" id="compareNums">3 🆚 5</div>
+        <button class="question-sound" onclick="speakMathQuestion('compare')">🔊 听题目</button>
         <div style="display:flex;justify-content:center;gap:20px;margin:12px;">
           <button class="math-option" style="font-size:28px;width:80px;" onclick="answerCompare('<', this)">&lt;</button>
           <button class="math-option" style="font-size:28px;width:80px;" onclick="answerCompare('=', this)">=</button>
@@ -960,7 +996,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <h2>好习惯打卡</h2>
       </div>
       <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-        💡 每完成一次点击一颗星星，集满7颗星星获得大奖章！
+        💡 每个习惯每天只能打卡 1 次；本周完成 7 天，就能集满 7 颗星星。
       </p>
       <div class="habit-list" id="habitList"></div>
     </div>
@@ -1192,6 +1228,9 @@ const poems = [
   { title: '古朗月行', author: '李白', lines: ['小时不识月，', '呼作白玉盘。', '又疑瑶台镜，', '飞在青云端。'], emoji: '🌙' },
   { title: '金木水火土', author: '识字课文', lines: ['一二三四五，', '金木水火土。', '天地分上下，', '日月照今古。'], emoji: '🌍' },
   { title: '对韵歌', author: '识字课文', lines: ['云对雨，雪对风，', '花对树，鸟对虫。', '山清对水秀，', '柳绿对桃红。'], emoji: '🎵' },
+  { category: '国学启蒙', title: '三字经（节选）', author: '王应麟等', lines: ['人之初，性本善。', '性相近，习相远。', '苟不教，性乃迁。', '教之道，贵以专。', '昔孟母，择邻处。', '子不学，断机杼。', '窦燕山，有义方。', '教五子，名俱扬。'], emoji: '📗' },
+  { category: '国学启蒙', title: '千字文（节选）', author: '周兴嗣', lines: ['天地玄黄，宇宙洪荒。', '日月盈昃，辰宿列张。', '寒来暑往，秋收冬藏。', '闰余成岁，律吕调阳。', '云腾致雨，露结为霜。', '金生丽水，玉出昆冈。'], emoji: '📘' },
+  { category: '国学启蒙', title: '弟子规（节选）', author: '李毓秀', lines: ['弟子规，圣人训。', '首孝弟，次谨信。', '泛爱众，而亲仁。', '有余力，则学文。', '父母呼，应勿缓。', '父母命，行勿懒。'], emoji: '📙' },
 ];
 
 // Habits
@@ -1208,7 +1247,7 @@ const habits = [
   { id: 'focus', icon: '🧩', name: '专注做一件事15分钟', target: 7 },
 ];
 
-const allFlashcards = [...charWrite, ...charRead];
+const allFlashcards = Array.from(new Map([...charWrite, ...charRead].map(card => [card.char, card])).values());
 
 // ==================== STATE ====================
 let state = {
@@ -1225,6 +1264,10 @@ let state = {
   pinyinToday: {},
   pinyinDate: '',
   starGranted: {},
+  profile: null,
+  schedule: null,
+  flashcardReview: {},
+  habitDays: {},
 };
 
 function loadState() {
@@ -1241,6 +1284,109 @@ function saveState() {
   try {
     localStorage.setItem('yxxj_state', JSON.stringify(state));
   } catch(e) {}
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>'"]/g, function(char) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char];
+  });
+}
+
+function buildScheduleFromProfile(profile) {
+  const schedule = dailySchedule.map(task => ({ ...task }));
+  const byTitle = function(title) { return schedule.find(task => task.title === title); };
+  const wake = byTitle('起床洗漱');
+  const breakfast = byTitle('营养早餐');
+  const bedtime = byTitle('睡前故事');
+  if (wake) wake.time = profile.wakeTime;
+  if (breakfast) breakfast.time = profile.breakfastTime;
+  if (bedtime) bedtime.time = profile.bedtime;
+  return schedule;
+}
+
+function getSchedule() {
+  return Array.isArray(state.schedule) && state.schedule.length ? state.schedule : dailySchedule;
+}
+
+function getLearningTip() {
+  const profile = state.profile;
+  if (!profile) return '先复习昨天学过的，再学习一点新内容。';
+  const target = Number(profile.age) <= 5 ? '拼音 5 分钟 + 3 张闪卡' : '拼音 10 分钟 + 5 张闪卡';
+  return `${profile.name}，今天建议：${target}，先复习再学习。`;
+}
+
+function saveProfile(event) {
+  event.preventDefault();
+  const profile = {
+    name: document.getElementById('profileName').value.trim() || '小朋友',
+    age: Number(document.getElementById('profileAge').value),
+    wakeTime: document.getElementById('profileWake').value,
+    breakfastTime: document.getElementById('profileBreakfast').value,
+    bedtime: document.getElementById('profileBedtime').value,
+  };
+  state.profile = profile;
+  state.schedule = buildScheduleFromProfile(profile);
+  saveState();
+  document.getElementById('profileSetup').style.display = 'none';
+  renderHome();
+  renderDailyPlan();
+}
+
+let parentGateAnswer = null;
+function openParentGate() {
+  const a = Math.floor(Math.random() * 8) + 12;
+  const b = Math.floor(Math.random() * 8) + 7;
+  parentGateAnswer = a + b;
+  document.getElementById('parentPanel').innerHTML = `
+    <h2>⚙️ 家长模式</h2><p>简单验证可减少孩子误改设置。本页不含账号或云端数据。</p>
+    <form onsubmit="unlockParent(event)"><label class="form-field"><span>请计算：${a} + ${b} =</span><input id="parentGateInput" inputmode="numeric" required autofocus></label>
+    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">进入设置</button></div></form>`;
+  document.getElementById('parentSetup').style.display = 'flex';
+}
+
+function closeParentMode() { document.getElementById('parentSetup').style.display = 'none'; }
+
+function unlockParent(event) {
+  event.preventDefault();
+  if (Number(document.getElementById('parentGateInput').value) !== parentGateAnswer) {
+    showToast('答案不对，请再试一次');
+    return;
+  }
+  renderParentEditor();
+}
+
+function renderParentEditor() {
+  const profile = state.profile || { name: '小朋友', age: 6, wakeTime: '07:00', breakfastTime: '07:30', bedtime: '21:00' };
+  const scheduleRows = getSchedule().map((task, index) => `<div class="parent-schedule-row"><input type="time" id="scheduleTime${index}" value="${escapeHtml(task.time)}"><input id="scheduleTitle${index}" maxlength="16" value="${escapeHtml(task.title)}" aria-label="第${index + 1}项任务名称"></div>`).join('');
+  document.getElementById('parentPanel').innerHTML = `
+    <h2>⚙️ 家长模式</h2><p>修改后立即保存到当前设备。起床、早餐和其他日程都可以按家庭实际情况调整。</p>
+    <form onsubmit="saveParentSettings(event)"><div class="form-grid">
+      <label class="form-field"><span>孩子昵称</span><input id="parentName" maxlength="12" value="${escapeHtml(profile.name)}" required></label>
+      <label class="form-field"><span>年龄</span><select id="parentAge">${[4,5,6,7].map(age => `<option value="${age}" ${Number(profile.age) === age ? 'selected' : ''}>${age}岁</option>`).join('')}</select></label>
+      <label class="form-field"><span>起床时间</span><input id="parentWake" type="time" value="${escapeHtml(profile.wakeTime)}" required></label>
+      <label class="form-field"><span>早餐时间</span><input id="parentBreakfast" type="time" value="${escapeHtml(profile.breakfastTime)}" required></label>
+      <label class="form-field full"><span>准备入睡时间</span><input id="parentBedtime" type="time" value="${escapeHtml(profile.bedtime)}" required></label>
+    </div><h3 style="margin-top:18px;">每日作息（时间和名称均可修改）</h3><div class="parent-schedule">${scheduleRows}</div>
+    <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">保存设置</button></div></form>`;
+}
+
+function saveParentSettings(event) {
+  event.preventDefault();
+  const profile = {
+    name: document.getElementById('parentName').value.trim() || '小朋友', age: Number(document.getElementById('parentAge').value),
+    wakeTime: document.getElementById('parentWake').value, breakfastTime: document.getElementById('parentBreakfast').value, bedtime: document.getElementById('parentBedtime').value,
+  };
+  const schedule = getSchedule().map((task, index) => ({ ...task, time: document.getElementById('scheduleTime' + index).value, title: document.getElementById('scheduleTitle' + index).value.trim() || task.title }));
+  if (schedule[0]) schedule[0].time = profile.wakeTime;
+  if (schedule[1]) schedule[1].time = profile.breakfastTime;
+  if (schedule.length) schedule[schedule.length - 1].time = profile.bedtime;
+  state.profile = profile;
+  state.schedule = schedule;
+  saveState();
+  closeParentMode();
+  renderHome();
+  renderDailyPlan();
+  showToast('家长设置已保存');
 }
 
 // Local-date helpers: toISOString() is UTC, which lands on the wrong day
@@ -1350,12 +1496,15 @@ function renderHome() {
   const now = new Date();
   const days = ['日', '一', '二', '三', '四', '五', '六'];
   const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 星期${days[now.getDay()]}`;
+  const profile = state.profile;
+  document.getElementById('welcomeTitle').textContent = `👋 早上好${profile ? '，' + profile.name : ''}！`;
   document.getElementById('dateDisplay').textContent = '📅 ' + dateStr + ' | 今天是美好的一天！';
+  document.getElementById('profileTip').textContent = getLearningTip();
 
   // Today's tasks
   const today = getToday();
   const container = document.getElementById('todayTasks');
-  const morningTasks = dailySchedule.filter((_, i) => i < 8);
+  const morningTasks = getSchedule().filter((_, i) => i < 8);
   
   container.innerHTML = morningTasks.map((task, i) => {
     const doneKey = `${today}_${i}`;
@@ -1380,7 +1529,7 @@ function toggleTask(key, idx) {
     grantStarOnce('task_' + key, 1, '完成任务！+1⭐');
     // Daily sweep bonus: every task on the schedule checked off
     const todayKey = getToday();
-    const allDone = dailySchedule.every(function(_, i) { return state.tasksDone[`${todayKey}_${i}`]; });
+    const allDone = getSchedule().every(function(_, i) { return state.tasksDone[`${todayKey}_${i}`]; });
     if (allDone) grantStarOnce('alldone_' + todayKey, 5, '今日任务全部完成！超级棒 +5⭐', true);
   }
 
@@ -1397,7 +1546,7 @@ function renderDailyPlan() {
   const container = document.getElementById('dailyTimeline');
   const today = getToday();
   
-  container.innerHTML = dailySchedule.map((task, i) => {
+  container.innerHTML = getSchedule().map((task, i) => {
     const doneKey = `${today}_${i}`;
     const done = state.tasksDone[doneKey];
     return `
@@ -1587,12 +1736,34 @@ function toggleChar(ch) {
 let fcIdx = 0;
 let fcFlipped = false;
 
+function dateAfter(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return localDateStr(d);
+}
+
+function flashcardDeck() {
+  const today = getToday();
+  return [...allFlashcards].sort(function(a, b) {
+    const aReview = state.flashcardReview[a.char] || {};
+    const bReview = state.flashcardReview[b.char] || {};
+    const aDue = !aReview.dueDate || aReview.dueDate <= today ? 0 : 1;
+    const bDue = !bReview.dueDate || bReview.dueDate <= today ? 0 : 1;
+    if (aDue !== bDue) return aDue - bDue;
+    return (aReview.dueDate || '') < (bReview.dueDate || '') ? -1 : 1;
+  });
+}
+
 function renderFlashcard() {
   fcFlipped = false;
-  const card = allFlashcards[fcIdx];
+  const deck = flashcardDeck();
+  if (fcIdx >= deck.length) fcIdx = 0;
+  const card = deck[fcIdx];
   document.getElementById('fcChar').textContent = card.char;
   document.getElementById('fcInfo').style.display = 'none';
-  document.getElementById('fcIndex').textContent = `${fcIdx + 1}/${allFlashcards.length}`;
+  document.getElementById('fcReviewActions').style.display = 'none';
+  const dueCount = deck.filter(item => { const review = state.flashcardReview[item.char] || {}; return !review.dueDate || review.dueDate <= getToday(); }).length;
+  document.getElementById('fcIndex').textContent = `待复习 ${dueCount} 张`;
   const fcEl = document.getElementById('flashcard');
   fcEl.classList.remove('flipped');
 }
@@ -1600,7 +1771,7 @@ function renderFlashcard() {
 function flipCard() {
   fcFlipped = !fcFlipped;
   const fcEl = document.getElementById('flashcard');
-  const card = allFlashcards[fcIdx];
+  const card = flashcardDeck()[fcIdx];
   if (fcFlipped) {
     document.getElementById('fcInfo').textContent = `${card.pinyin} · ${card.stroke}`;
     document.getElementById('fcInfo').style.display = 'block';
@@ -1609,13 +1780,31 @@ function flipCard() {
   }
   fcEl.classList.toggle('flipped', fcFlipped);
   if (fcFlipped) {
-    // Speak the Chinese character directly (not pinyin)
+    // Only reveal and pronounce the answer. The child decides whether it was known.
     speakText(card.char);
-    if (!state.charsLearned[card.char]) {
-      state.charsLearned[card.char] = true;
-      saveState();
-    }
+    document.getElementById('fcReviewActions').style.display = 'flex';
   }
+}
+
+function reviewFlashcard(known) {
+  if (!fcFlipped) { flipCard(); return; }
+  const card = flashcardDeck()[fcIdx];
+  const previous = state.flashcardReview[card.char] || { box: 0 };
+  const box = known ? Math.min((previous.box || 0) + 1, 4) : 0;
+  const intervals = [0, 1, 3, 7, 14];
+  state.flashcardReview[card.char] = { box: box, lastReviewed: getToday(), dueDate: dateAfter(intervals[box]) };
+  if (known) {
+    state.charsLearned[card.char] = true;
+    grantStarOnce(`flashcard_${getToday()}_${card.char}`, 1, `记住“${card.char}”了！下次 ${intervals[box]} 天后复习 +1⭐`);
+  } else {
+    delete state.charsLearned[card.char];
+    showToast(`“${card.char}”会在今天的复习中再出现`);
+  }
+  saveState();
+  renderCharGrid('charGrid1', charWrite);
+  renderCharGrid('charGrid2', charRead);
+  fcIdx = 0;
+  renderFlashcard();
 }
 
 function nextFlashcard() {
@@ -1629,7 +1818,12 @@ function prevFlashcard() {
 }
 
 function renderPoems() {
-  document.getElementById('poemList').innerHTML = poems.map((p, i) => `
+  let lastCategory = '';
+  document.getElementById('poemList').innerHTML = poems.map((p, i) => {
+    const category = p.category || '古诗童谣';
+    const heading = category === lastCategory ? '' : `<h3 style="margin:18px 2px 8px;font-size:16px;color:var(--chinese);">${category}</h3>`;
+    lastCategory = category;
+    return heading + `
     <div style="background:#FFF;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
         <span style="font-size:28px;">${p.emoji}</span>
@@ -1639,7 +1833,8 @@ function renderPoems() {
       </div>
       <div style="font-size:15px;line-height:2;color:#555;">${p.lines.join('<br>')}</div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function speakPoem(idx) {
@@ -1679,10 +1874,14 @@ function speakNumber(n) {
 
 // Number Bonds (分与合): n can be split into a and ?
 let currentSplitAnswer = 0;
+let currentSplitN = 0;
+let currentSplitPart = 0;
 
 function generateSplit() {
   const n = Math.floor(Math.random() * 9) + 2;       // 2..10
   const a = Math.floor(Math.random() * (n - 1)) + 1; // 1..n-1
+  currentSplitN = n;
+  currentSplitPart = a;
   currentSplitAnswer = n - a;
   document.getElementById('splitQuestion').textContent = `${n} 可以分成 ${a} 和 ?`;
 
@@ -1704,9 +1903,11 @@ function answerSplit(v, btn) {
   allBtns.forEach(b => b.style.pointerEvents = 'none');
   if (v === currentSplitAnswer) {
     btn.classList.add('correct');
+    speakText('回答正确，真棒！');
     addStars(1, '分与合正确！+1⭐');
   } else {
     btn.classList.add('wrong');
+    speakText('再想一想。');
     allBtns.forEach(b => {
       if (parseInt(b.textContent) === currentSplitAnswer) b.classList.add('correct');
     });
@@ -1717,6 +1918,21 @@ function answerSplit(v, btn) {
 // Math Quiz
 let currentMathAnswer = 0;
 let mathStreak = 0; // consecutive correct answers (runtime only)
+let currentMathA = 0, currentMathB = 0, currentMathOp = '+';
+
+function numberToChinese(n) {
+  const digits = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+  if (n <= 10) return digits[n];
+  if (n < 20) return '十' + digits[n - 10];
+  return '二十';
+}
+
+function speakMathQuestion(kind) {
+  if (kind === 'split') return speakText(`${numberToChinese(currentSplitN)}可以分成${numberToChinese(currentSplitPart)}和几？`, 'zh-CN', 0.75);
+  if (kind === 'compare') return speakText(`${numberToChinese(compareA)}和${numberToChinese(compareB)}，哪个数更大？`, 'zh-CN', 0.75);
+  const op = currentMathOp === '+' ? '加' : '减';
+  return speakText(`${numberToChinese(currentMathA)}${op}${numberToChinese(currentMathB)}等于几？`, 'zh-CN', 0.75);
+}
 
 function generateMath() {
   // Difficulty grows with usage: 5以内 → 10以内 → 20以内
@@ -1733,6 +1949,9 @@ function generateMath() {
   }
 
   currentMathAnswer = op === '+' ? a + b : a - b;
+  currentMathA = a;
+  currentMathB = b;
+  currentMathOp = op;
   document.getElementById('mathQuestion').textContent = `${a} ${op} ${b} = ?`;
 
   // 4 options from a bounded candidate pool. The old while-loop could spin
@@ -1757,6 +1976,7 @@ function answerMath(n, btn) {
   if (n === currentMathAnswer) {
     state.mathCorrect++;
     btn.classList.add('correct');
+    speakText('回答正确，真棒！');
     mathStreak++;
     if (mathStreak > 0 && mathStreak % 5 === 0) {
       addStars(2, `连续答对${mathStreak}题！+2⭐`, true);
@@ -1766,6 +1986,7 @@ function answerMath(n, btn) {
   } else {
     mathStreak = 0;
     btn.classList.add('wrong');
+    speakText('再想一想。');
     // Highlight correct
     allBtns.forEach(b => {
       if (parseInt(b.textContent) === currentMathAnswer) b.classList.add('correct');
@@ -1797,12 +2018,14 @@ function answerCompare(sym, btn) {
 
   if (correct) {
     if (btn) btn.classList.add('correct');
+    speakText('回答正确，真棒！');
     addStars(1, '比大小正确！+1⭐');
     setTimeout(generateCompare, 1000);
   } else if (btn) {
     // Wrong answer: shake the button but stay on the question,
     // so the kid gets feedback and can think again.
     btn.classList.add('wrong');
+    speakText('再想一想。');
     setTimeout(() => btn.classList.remove('wrong'), 500);
   }
 }
@@ -1812,10 +2035,14 @@ function answerCompare(sym, btn) {
 // ==================== HABITS PAGE ====================
 function renderHabits() {
   const container = document.getElementById('habitList');
+  const weekDates = getCurrentWeekDates();
+  const today = getToday();
   container.innerHTML = habits.map(h => {
-    const stars = state.habitStars[h.id] || 0;
+    const days = state.habitDays[h.id] || {};
+    const stars = weekDates.filter(date => days[date]).length;
+    const completedToday = Boolean(days[today]);
     const starHTML = Array.from({ length: h.target }, (_, i) => 
-      `<span class="habit-star ${i < stars ? 'earned' : ''}" onclick="toggleHabitStar('${h.id}', ${i+1})">⭐</span>`
+      `<span class="habit-star ${days[weekDates[i]] ? 'earned' : ''}">⭐</span>`
     ).join('');
     
     return `
@@ -1823,9 +2050,9 @@ function renderHabits() {
         <div class="habit-icon">${h.icon}</div>
         <div class="habit-info">
           <div class="habit-name">${h.name}</div>
-          <div class="habit-progress">${stars}/${h.target} 已完成</div>
+          <div class="habit-progress">本周 ${stars}/${h.target} 天${completedToday ? ' · 今天已完成' : ' · 今天待打卡'}</div>
         </div>
-        <div class="habit-stars">${starHTML}</div>
+        <div><div class="habit-stars">${starHTML}</div><button class="timer-btn ${completedToday ? 'reset' : 'start'}" style="padding:7px 12px;font-size:13px;margin-top:6px;" onclick="toggleHabitToday('${h.id}')" ${completedToday ? 'disabled' : ''}>${completedToday ? '今日已打卡' : '完成今日习惯'}</button></div>
       </div>
     `;
   }).join('');
@@ -1833,18 +2060,25 @@ function renderHabits() {
   renderWeekHistory();
 }
 
-function toggleHabitStar(habitId, starNum) {
-  const current = state.habitStars[habitId] || 0;
-  // Fill in order, one at a time: no skipping ahead, no accidental removal
-  if (starNum !== current + 1) return;
-  state.habitStars[habitId] = starNum;
-  addStars(1, '好习惯打卡 +1⭐');
-  // Record in week history
+function getCurrentWeekDates() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  return Array.from({ length: 7 }, (_, index) => { const d = new Date(today); d.setDate(today.getDate() + mondayOffset + index); return localDateStr(d); });
+}
+
+function toggleHabitToday(habitId) {
   const today = getToday();
+  if (!state.habitDays[habitId]) state.habitDays[habitId] = {};
+  // One habit can only earn one check-in and one star on a calendar day.
+  if (state.habitDays[habitId][today]) return;
+  state.habitDays[habitId][today] = true;
+  addStars(1, '好习惯打卡 +1⭐');
   if (!state.weekHistory[today]) state.weekHistory[today] = [];
   if (!state.weekHistory[today].includes(habitId)) {
     state.weekHistory[today].push(habitId);
   }
+  updateStreak();
   saveState();
   renderHabits();
   updateStarsDisplay();
@@ -1852,19 +2086,12 @@ function toggleHabitStar(habitId, starNum) {
 
 function renderWeekHistory() {
   const grid = document.getElementById('weekGrid');
-  const today = new Date();
-  const dayOfWeek = today.getDay(); // 0=Sun
-  const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  
   let html = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + mondayOffset + i);
-    const ds = localDateStr(d);
+  getCurrentWeekDates().forEach(function(ds) {
     const count = (state.weekHistory[ds] || []).length;
     const isToday = ds === getToday();
-    html += `<div class="week-day ${count > 0 ? 'done' : ''} ${isToday ? 'today' : ''}">${count > 0 ? '⭐' : d.getDate()}</div>`;
-  }
+    html += `<div class="week-day ${count > 0 ? 'done' : ''} ${isToday ? 'today' : ''}">${count > 0 ? '⭐' : ds.slice(-2)}</div>`;
+  });
   grid.innerHTML = html;
 }
 
@@ -2058,6 +2285,10 @@ function init() {
     armEyeTimer();
     
     updateStarsDisplay();
+
+    // First use: collect the minimum local profile required to personalize
+    // reminders and schedule. Existing learning records remain untouched.
+    if (!state.profile) document.getElementById('profileSetup').style.display = 'flex';
     
     // iOS Safari: prime speech synthesis on first touch
     document.addEventListener('touchstart', function primeSpeech() {
