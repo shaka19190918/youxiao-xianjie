@@ -832,7 +832,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div class="card">
         <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
         <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-          点击拼音可以听发音哦～（人教版一年级上册）
+          拼音使用内置真人普通话音节；声母卡显示“声母（示例音节）”，例如 f（fā）。先听，再和韵母拼读。
           <button onclick="speakPinyin('a','a1')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试拼音音频</button>
           <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
         </p>
@@ -1198,15 +1198,17 @@ const dailySchedule = [
 // teaching must never use browser TTS or a "carrier" Chinese character:
 // system voices can choose a different tone (for example 雌 is cí, not cī).
 const shengmu = [
-  { char: 'b', label: 'bō', audio: 'bo1' }, { char: 'p', label: 'pō', audio: 'po1' },
-  { char: 'm', label: 'mō', audio: 'mo1' }, { char: 'f', label: 'fō', audio: 'fo1' },
-  { char: 'd', label: 'dē', audio: 'de1' }, { char: 't', label: 'tē', audio: 'te1' },
-  { char: 'n', label: 'nē', audio: 'ne1' }, { char: 'l', label: 'lē', audio: 'le1' },
-  { char: 'g', label: 'gē', audio: 'ge1' }, { char: 'k', label: 'kē', audio: 'ke1' }, { char: 'h', label: 'hē', audio: 'he1' },
+  // 声母不能用英文字母名或无效音节示范。这里统一用“声母（有效示例音节）”，
+  // 让孩子先听准确普通话，再和韵母进行拼读。
+  { char: 'b', label: 'b（bā）', audio: 'ba1' }, { char: 'p', label: 'p（pā）', audio: 'pa1' },
+  { char: 'm', label: 'm（mā）', audio: 'ma1' }, { char: 'f', label: 'f（fā）', audio: 'fa1' },
+  { char: 'd', label: 'd（dā）', audio: 'da1' }, { char: 't', label: 't（tā）', audio: 'ta1' },
+  { char: 'n', label: 'n（nā）', audio: 'na1' }, { char: 'l', label: 'l（lā）', audio: 'la1' },
+  { char: 'g', label: 'g（gā）', audio: 'ga1' }, { char: 'k', label: 'k（kā）', audio: 'ka1' }, { char: 'h', label: 'h（hā）', audio: 'ha1' },
   { char: 'j', label: 'jī', audio: 'ji1' }, { char: 'q', label: 'qī', audio: 'qi1' }, { char: 'x', label: 'xī', audio: 'xi1' },
-  { char: 'zh', label: 'zhī', audio: 'zhi1' }, { char: 'ch', label: 'chī', audio: 'chi1' },
-  { char: 'sh', label: 'shī', audio: 'shi1' }, { char: 'r', label: 'rì', audio: 'ri4' },
-  { char: 'z', label: 'zī', audio: 'zi1' }, { char: 'c', label: 'cī', audio: 'ci1' }, { char: 's', label: 'sī', audio: 'si1' },
+  { char: 'zh', label: 'zh（zhā）', audio: 'zha1' }, { char: 'ch', label: 'ch（chā）', audio: 'cha1' },
+  { char: 'sh', label: 'sh（shā）', audio: 'sha1' }, { char: 'r', label: 'r（rì）', audio: 'ri4' },
+  { char: 'z', label: 'z（zā）', audio: 'za1' }, { char: 'c', label: 'c（cā）', audio: 'ca1' }, { char: 's', label: 's（sā）', audio: 'sa1' },
   { char: 'y', label: 'yī', audio: 'yi1' }, { char: 'w', label: 'wū', audio: 'wu1' },
 ];
 
@@ -1738,9 +1740,13 @@ function speakText(text, lang = 'zh-CN', rate = 0.7, onEnd) {
     u.lang = lang;
     u.rate = rate;
     u.volume = 1.0;
-    // Pick a Chinese voice if available (refresh the list if it loaded late)
+    // Prefer Mainland Mandarin explicitly. A generic `zh` match can select a
+    // Cantonese or Traditional-Chinese voice on some iPads.
     if (speechVoices.length === 0) speechVoices = speechSynthesis.getVoices();
-    const zhVoice = speechVoices.find(v => v.lang && v.lang.replace('_', '-').indexOf('zh') === 0);
+    const normalizeLang = v => String(v.lang || '').replace(/_/g, '-').toLowerCase();
+    const zhVoice = speechVoices.find(v => ['zh-cn', 'cmn-hans-cn', 'zh-hans-cn'].includes(normalizeLang(v)))
+      || speechVoices.find(v => normalizeLang(v).startsWith('zh-cn'))
+      || speechVoices.find(v => /^zh|^cmn/.test(normalizeLang(v)) && !/(yue|hk|tw|hant)/.test(normalizeLang(v)));
     if (zhVoice) u.voice = zhVoice;
     // Fire onEnd when the reading actually finishes. Some engines never fire
     // the event (especially on long texts), so arm a length-based fallback.
