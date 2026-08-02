@@ -832,13 +832,17 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div class="card">
         <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
         <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-          拼音使用内置真人普通话音节；声母卡显示“声母（示例音节）”，例如 f（fā）。先听，再和韵母拼读。
+          声母播放声母本音；韵母、整体认读音节和四声调用真人普通话音节。先听清音，再做拼读。
           <button onclick="speakPinyin('a','a1')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试拼音音频</button>
           <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
         </p>
         
         <h3 style="margin:12px 0 8px;font-size:16px;">声母 (23个)</h3>
         <div class="pinyin-grid" id="shengmuGrid"></div>
+
+        <h3 style="margin:16px 0 8px;font-size:16px;">四声调（以 a 为例）</h3>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">一声平、二声扬、三声拐弯、四声降。每张卡会播放对应声调。</p>
+        <div class="pinyin-grid" id="toneGrid"></div>
         
         <h3 style="margin:16px 0 8px;font-size:16px;">单韵母 (6个)</h3>
         <div class="pinyin-grid" id="danyunmuGrid"></div>
@@ -1198,18 +1202,25 @@ const dailySchedule = [
 // teaching must never use browser TTS or a "carrier" Chinese character:
 // system voices can choose a different tone (for example 雌 is cí, not cī).
 const shengmu = [
-  // 声母不能用英文字母名或无效音节示范。这里统一用“声母（有效示例音节）”，
-  // 让孩子先听准确普通话，再和韵母进行拼读。
-  { char: 'b', label: 'b（bā）', audio: 'ba1' }, { char: 'p', label: 'p（pā）', audio: 'pa1' },
-  { char: 'm', label: 'm（mā）', audio: 'ma1' }, { char: 'f', label: 'f（fā）', audio: 'fa1' },
-  { char: 'd', label: 'd（dā）', audio: 'da1' }, { char: 't', label: 't（tā）', audio: 'ta1' },
-  { char: 'n', label: 'n（nā）', audio: 'na1' }, { char: 'l', label: 'l（lā）', audio: 'la1' },
-  { char: 'g', label: 'g（gā）', audio: 'ga1' }, { char: 'k', label: 'k（kā）', audio: 'ka1' }, { char: 'h', label: 'h（hā）', audio: 'ha1' },
-  { char: 'j', label: 'jī', audio: 'ji1' }, { char: 'q', label: 'qī', audio: 'qi1' }, { char: 'x', label: 'xī', audio: 'xi1' },
-  { char: 'zh', label: 'zh（zhā）', audio: 'zha1' }, { char: 'ch', label: 'ch（chā）', audio: 'cha1' },
-  { char: 'sh', label: 'sh（shā）', audio: 'sha1' }, { char: 'r', label: 'r（rì）', audio: 'ri4' },
-  { char: 'z', label: 'z（zā）', audio: 'za1' }, { char: 'c', label: 'c（cā）', audio: 'ca1' }, { char: 's', label: 's（sā）', audio: 'sa1' },
-  { char: 'y', label: 'yī', audio: 'yi1' }, { char: 'w', label: 'wū', audio: 'wu1' },
+  // 声母必须播放声母本音，绝不能用 fā、fō 等“带韵母的音节”替代。
+  // initial 指向北京语言大学语料来源的独立声母录音。
+  { char: 'b', label: '声母 b', audio: 'b', source: 'initial' }, { char: 'p', label: '声母 p', audio: 'p', source: 'initial' },
+  { char: 'm', label: '声母 m', audio: 'm', source: 'initial' }, { char: 'f', label: '声母 f', audio: 'f', source: 'initial' },
+  { char: 'd', label: '声母 d', audio: 'd', source: 'initial' }, { char: 't', label: '声母 t', audio: 't', source: 'initial' },
+  { char: 'n', label: '声母 n', audio: 'n', source: 'initial' }, { char: 'l', label: '声母 l', audio: 'l', source: 'initial' },
+  { char: 'g', label: '声母 g', audio: 'g', source: 'initial' }, { char: 'k', label: '声母 k', audio: 'k', source: 'initial' }, { char: 'h', label: '声母 h', audio: 'h', source: 'initial' },
+  { char: 'j', label: '声母 j', audio: 'j', source: 'initial' }, { char: 'q', label: '声母 q', audio: 'q', source: 'initial' }, { char: 'x', label: '声母 x', audio: 'x', source: 'initial' },
+  { char: 'zh', label: '声母 zh', audio: 'zh', source: 'initial' }, { char: 'ch', label: '声母 ch', audio: 'ch', source: 'initial' },
+  { char: 'sh', label: '声母 sh', audio: 'sh', source: 'initial' }, { char: 'r', label: '声母 r', audio: 'r', source: 'initial' },
+  { char: 'z', label: '声母 z', audio: 'z', source: 'initial' }, { char: 'c', label: '声母 c', audio: 'c', source: 'initial' }, { char: 's', label: '声母 s', audio: 's', source: 'initial' },
+  { char: 'y', label: '声母 y', audio: 'y', source: 'initial' }, { char: 'w', label: '声母 w', audio: 'w', source: 'initial' },
+];
+
+const tonePractice = [
+  { char: 'ā', label: '第一声：高而平', audio: 'a1' },
+  { char: 'á', label: '第二声：从低到高', audio: 'a2' },
+  { char: 'ǎ', label: '第三声：先降后升', audio: 'a3' },
+  { char: 'à', label: '第四声：从高到低', audio: 'a4' },
 ];
 
 const danyunmu = [
@@ -1692,7 +1703,7 @@ document.getElementById('chineseTabs').addEventListener('click', function(e) {
 
 function renderPinyinGrid(id, data) {
   document.getElementById(id).innerHTML = data.map(p => `
-    <div class="pinyin-card" onclick="speakPinyin('${p.char}', '${p.audio}')">
+    <div class="pinyin-card" onclick="speakPinyin('${p.char}', '${p.audio}', '${p.source || 'syllable'}')">
       <div class="py-char">${p.char}</div>
       <div class="py-label">${p.label}</div>
     </div>
@@ -1779,23 +1790,27 @@ function speakText(text, lang = 'zh-CN', rate = 0.7, onEnd) {
 const pinyinAudioCache = new Map();
 let activePinyinAudio = null;
 
-function playPinyinAudio(audioId, onEnd) {
+function playPinyinAudio(audioId, source, onEnd) {
   let finished = false;
   const done = function(success) {
     if (finished) return;
     finished = true;
-    if (success && onEnd) onEnd();
+    if (onEnd) onEnd(success);
   };
   try {
     if (activePinyinAudio) {
       activePinyinAudio.pause();
       activePinyinAudio.currentTime = 0;
     }
-    let audio = pinyinAudioCache.get(audioId);
+    const cacheKey = source + ':' + audioId;
+    let audio = pinyinAudioCache.get(cacheKey);
     if (!audio) {
-      audio = new Audio(`assets/pinyin/${audioId}.mp3`);
+      const url = source === 'initial'
+        ? `https://www.qqxiuzi.cn/audio/pinyin/${audioId}.mp3`
+        : `assets/pinyin/${audioId}.mp3`;
+      audio = new Audio(url);
       audio.preload = 'auto';
-      pinyinAudioCache.set(audioId, audio);
+      pinyinAudioCache.set(cacheKey, audio);
     }
     activePinyinAudio = audio;
     audio.currentTime = 0;
@@ -1808,10 +1823,14 @@ function playPinyinAudio(audioId, onEnd) {
   }
 }
 
-function speakPinyin(py, audioId) {
+function speakPinyin(py, audioId, source = 'syllable') {
   // Pinyin learning uses bundled, verified recordings. Never fall back to TTS:
   // a speech engine can turn a correct spelling into an incorrect lesson.
-  playPinyinAudio(audioId, function() {
+  playPinyinAudio(audioId, source, function(success) {
+    if (!success) {
+      showToast('音频暂时不可用，已停止播放；不会使用错误的替代读音。');
+      return;
+    }
     // Only award star once per pinyin per day
     const today = getToday();
     if (state.pinyinDate !== today) {
@@ -2501,6 +2520,7 @@ function init() {
     
     // Chinese
     renderPinyinGrid('shengmuGrid', shengmu);
+    renderPinyinGrid('toneGrid', tonePractice);
     renderPinyinGrid('danyunmuGrid', danyunmu);
     renderPinyinGrid('fuyunmuGrid', fuyunmu);
     renderPinyinGrid('biyunmuGrid', biyunmu);
