@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="幼小衔接快乐营">
 <meta name="theme-color" content="#FF6B6B">
+<link rel="manifest" href="manifest.webmanifest">
 <title>幼小衔接快乐营</title>
 <style>
 :root {
@@ -321,6 +322,21 @@ body {
   border-radius: 16px;
   padding: 4px;
 }
+
+.pet-card { background:linear-gradient(135deg,#FFF7D6,#E7F9F2); border:2px solid #F4D06F; }
+.pet-card-inner { display:flex; align-items:center; gap:14px; }
+.pet-avatar { font-size:62px; line-height:1; filter:drop-shadow(0 4px 2px rgba(0,0,0,.12)); }
+.pet-info { flex:1; min-width:0; }
+.pet-name { font-size:18px; font-weight:800; }
+.pet-meta { font-size:13px; color:var(--text-light); margin-top:4px; }
+.pet-meter { height:10px; background:#fff; border-radius:999px; overflow:hidden; margin:8px 0; border:1px solid #eee; }
+.pet-meter span { display:block; height:100%; background:linear-gradient(90deg,#FF9F43,#FF6B6B); border-radius:inherit; }
+.pet-actions { display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; }
+.pet-actions button,.pet-choice-grid button { border:0; border-radius:12px; padding:9px 11px; font:inherit; font-weight:700; cursor:pointer; background:#fff; box-shadow:0 2px 7px rgba(0,0,0,.08); }
+.pet-choice-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+.pet-choice-grid button { min-height:132px; font-size:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; }
+.pet-choice-grid strong { font-size:14px; color:var(--text); }.pet-choice-grid small { font-size:11px; color:var(--text-light); font-weight:400; }
+@media (max-width:380px) { .pet-choice-grid { gap:6px; }.pet-choice-grid button { padding:7px 3px; font-size:32px; }.pet-choice-grid strong { font-size:12px; } }
 
 /* Math now has more learning routes; keep every tab comfortably tappable on iPad. */
 #mathTabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -717,7 +733,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 <!-- HEADER -->
 <div class="header">
   <span class="logo">🎒 幼小衔接快乐营</span>
-  <span class="stars-display" id="totalStars">⭐ 0</span>
+  <span class="stars-display" id="totalStars">💎 0</span>
   <button class="parent-mode-btn" onclick="openParentGate()">⚙️ 家长</button>
 </div>
 
@@ -745,6 +761,8 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 </div>
 
 <div class="setup-overlay" id="parentSetup" style="display:none;"><div class="setup-panel" id="parentPanel"></div></div>
+<div class="setup-overlay" id="petSetup" style="display:none;"><div class="setup-panel"><h2>🐾 领养我的学习伙伴</h2><p>选择一只小狗。完成真正的学习挑战可获得钻石，用来照顾它、陪它成长。</p><div class="pet-choice-grid"><button type="button" onclick="adoptPet('labrador')">🐕<strong>拉布拉多犬</strong><small>温暖、爱陪伴</small></button><button type="button" onclick="adoptPet('malinois')">🐕‍🦺<strong>比利时马里努阿犬</strong><small>勇敢、爱挑战</small></button><button type="button" onclick="adoptPet('husky')">🐺<strong>哈士奇</strong><small>活泼、爱探索</small></button></div></div></div>
+<div class="setup-overlay" id="restOverlay" style="display:none;"><div class="setup-panel" style="text-align:center;"><div style="font-size:56px;">🌳</div><h2>到休息时间啦</h2><p id="restMessage">今天的屏幕学习时间已到。请离开屏幕，喝水、活动眼睛或和小狗玩一会儿。</p><button class="btn-primary" type="button" onclick="closeRestOverlay()">我去休息</button><p style="font-size:12px;color:var(--text-light);margin-top:12px;">家长可在“家长模式”调整每日屏幕时长。</p></div></div>
 
 <!-- MAIN CONTENT -->
 <div class="main">
@@ -764,11 +782,13 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="stat-label">连续打卡天数</div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon">⭐</div>
+        <div class="stat-icon">💎</div>
         <div class="stat-value" id="totalStarsHome">0</div>
-        <div class="stat-label">累计小星星</div>
+        <div class="stat-label">累计学习钻石</div>
       </div>
     </div>
+
+    <div class="card pet-card" id="petCard"></div>
 
     <div class="card today-schedule-mini">
       <div class="card-header">
@@ -793,7 +813,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
           <div class="qa-label">数学思维</div>
         </div>
         <div class="quick-action" onclick="switchTab(3)">
-          <div class="qa-icon">⭐</div>
+          <div class="qa-icon">💎</div>
           <div class="qa-label">好习惯</div>
         </div>
         <div class="quick-action" onclick="switchTab(4)">
@@ -1032,7 +1052,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <h2>好习惯打卡</h2>
       </div>
       <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-        💡 每个习惯每天只能打卡 1 次；本周完成 7 天，就能集满 7 颗星星。
+        💡 每个习惯每天只能申请 1 次；由家长确认真实完成后才会记录。
       </p>
       <div class="habit-list" id="habitList"></div>
     </div>
@@ -1086,7 +1106,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       </div>
 
       <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">
-        ✅ 完成专注时段可以获得一颗小星星哦！
+        ✅ 完成专注时段并通过计时后，可以获得学习钻石。
       </p>
     </div>
 
@@ -1142,7 +1162,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <span class="nav-icon">🔢</span>数学
   </button>
   <button class="nav-item" data-tab="4" onclick="switchTab(4)">
-    <span class="nav-icon">⭐</span>习惯
+    <span class="nav-icon">💎</span>习惯
   </button>
   <button class="nav-item" data-tab="5" onclick="switchTab(5)">
     <span class="nav-icon">⏱️</span>专注
@@ -1166,9 +1186,9 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 <!-- REWARD OVERLAY -->
 <div class="reward-overlay" id="rewardOverlay" style="display:none;" onclick="hideReward()">
   <div class="reward-modal" onclick="event.stopPropagation()">
-    <div class="star-big">🌟</div>
+    <div class="star-big">💎</div>
     <h3>太棒了！</h3>
-    <p id="rewardMsg">获得一颗小星星！</p>
+    <p id="rewardMsg">获得学习钻石！</p>
     <button onclick="hideReward()">👍 继续加油</button>
   </div>
 </div>
@@ -1343,6 +1363,11 @@ const allFlashcards = Array.from(new Map([...charWrite, ...charRead].map(card =>
 // ==================== STATE ====================
 let state = {
   stars: 0,
+  points: 0,
+  pet: null,
+  verifiedRewards: {},
+  screenUsage: { date: '', seconds: 0 },
+  screenLimitMinutes: 30,
   streak: 0,
   lastActiveDate: '',
   tasksDone: {},
@@ -1367,6 +1392,9 @@ function loadState() {
     if (saved) {
       const parsed = JSON.parse(saved);
       state = { ...state, ...parsed };
+      // Preserve rewards earned in older versions while moving to diamonds.
+      if (!Object.prototype.hasOwnProperty.call(parsed, 'points') || !Number.isFinite(state.points) || state.points < 0) state.points = Number(state.stars) || 0;
+      if (!state.screenUsage || typeof state.screenUsage !== 'object') state.screenUsage = { date: '', seconds: 0 };
     }
   } catch(e) {}
 }
@@ -1427,6 +1455,7 @@ function saveProfile(event) {
   document.getElementById('profileSetup').style.display = 'none';
   renderHome();
   renderDailyPlan();
+  if (!state.pet) document.getElementById('petSetup').style.display = 'flex';
 }
 
 function openParentGate() {
@@ -1466,6 +1495,10 @@ function unlockParent(event) {
 function renderParentEditor() {
   const profile = state.profile || { name: '小朋友', age: 6, wakeTime: '07:00', breakfastTime: '07:30', bedtime: '21:00', parentPin: '' };
   const scheduleRows = getSchedule().map((task, index) => `<div class="parent-schedule-row"><input type="time" id="scheduleTime${index}" value="${escapeHtml(task.time)}"><input id="scheduleTitle${index}" maxlength="16" value="${escapeHtml(task.title)}" aria-label="第${index + 1}项任务名称"></div>`).join('');
+  const today = getToday();
+  const pendingTasks = getSchedule().map((task, i) => ({ task, i, status: state.tasksDone[`${today}_${i}`] })).filter(item => item.status && item.status.claimed && !item.status.verified);
+  const pendingHabits = habits.filter(h => { const s = state.habitDays[h.id] && state.habitDays[h.id][today]; return s && s.claimed && !s.verified; });
+  const approvals = [...pendingTasks.map(item => `<button class="btn-secondary" type="button" onclick="verifyTask(${item.i})">确认「${escapeHtml(item.task.title)}」+15💎</button>`), ...pendingHabits.map(h => `<button class="btn-secondary" type="button" onclick="verifyHabit('${h.id}')">确认「${h.icon}${escapeHtml(h.name)}」+10💎</button>`)].join('') || '<p style="font-size:13px;color:var(--text-light);">今天暂无待确认事项。</p>';
   document.getElementById('parentPanel').innerHTML = `
     <h2>⚙️ 家长模式</h2><p>修改后立即保存到当前设备。起床、早餐和其他日程都可以按家庭实际情况调整。</p>
     <form onsubmit="saveParentSettings(event)"><div class="form-grid">
@@ -1474,9 +1507,10 @@ function renderParentEditor() {
       <label class="form-field"><span>起床时间</span><input id="parentWake" type="time" value="${escapeHtml(profile.wakeTime)}" required></label>
       <label class="form-field"><span>早餐时间</span><input id="parentBreakfast" type="time" value="${escapeHtml(profile.breakfastTime)}" required></label>
       <label class="form-field full"><span>准备入睡时间</span><input id="parentBedtime" type="time" value="${escapeHtml(profile.bedtime)}" required></label>
+      <label class="form-field full"><span>每日屏幕学习上限（分钟）</span><input id="parentScreenLimit" type="number" min="15" max="60" step="5" value="${Number(state.screenLimitMinutes) || 30}" required><small>达到上限后锁定学习区，提醒孩子离屏活动。</small></label>
     </div><h3 style="margin-top:18px;">每日作息（时间和名称均可修改）</h3><div class="parent-schedule">${scheduleRows}</div>
     <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">保存设置</button></div></form>
-    <div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">数据管理</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">清空学习记录会保留孩子资料、家长密码和作息设置。</p><button class="btn-secondary" type="button" onclick="resetLearningData()">清空学习记录</button><button style="margin-left:8px;background:#fff0f0;color:#c0392b;border:1px solid #f1b7b1;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;" type="button" onclick="factoryReset()">恢复出厂设置</button></div>`;
+    <div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">今日真实完成确认</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">孩子只能申请；由家长确认真实完成后才会结算钻石。</p><div style="display:flex;gap:8px;flex-wrap:wrap;">${approvals}</div></div><div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">数据管理</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">清空学习记录会保留孩子资料、家长密码和作息设置。</p><button class="btn-secondary" type="button" onclick="resetLearningData()">清空学习记录</button><button style="margin-left:8px;background:#fff0f0;color:#c0392b;border:1px solid #f1b7b1;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;" type="button" onclick="factoryReset()">恢复出厂设置</button></div>`;
 }
 
 function saveParentSettings(event) {
@@ -1491,6 +1525,7 @@ function saveParentSettings(event) {
   if (schedule.length) schedule[schedule.length - 1].time = profile.bedtime;
   state.profile = profile;
   state.schedule = schedule;
+  state.screenLimitMinutes = Math.max(15, Math.min(60, Number(document.getElementById('parentScreenLimit').value) || 30));
   saveState();
   closeParentMode();
   renderHome();
@@ -1498,11 +1533,14 @@ function saveParentSettings(event) {
   showToast('家长设置已保存');
 }
 
+function verifyTask(index) { const key = `${getToday()}_${index}`; const status = state.tasksDone[key]; if (!status || !status.claimed || status.verified) return; state.tasksDone[key] = { claimed: true, verified: true }; updateStreak(); awardVerifiedPoints(`parent_task_${key}`, 15, '家长确认真实完成！+15💎'); saveState(); renderParentEditor(); renderHome(); renderDailyPlan(); }
+function verifyHabit(habitId) { const today = getToday(); const status = state.habitDays[habitId] && state.habitDays[habitId][today]; if (!status || !status.claimed || status.verified) return; state.habitDays[habitId][today] = { claimed: true, verified: true }; if (!state.weekHistory[today]) state.weekHistory[today] = []; if (!state.weekHistory[today].includes(habitId)) state.weekHistory[today].push(habitId); updateStreak(); awardVerifiedPoints(`parent_habit_${today}_${habitId}`, 10, '家长确认好习惯！+10💎'); saveState(); renderParentEditor(); renderHabits(); }
+
 function resetLearningData() {
-  if (!confirm('确定清空星星、打卡、识字复习、数学和专注记录吗？孩子资料和作息会保留。')) return;
+  if (!confirm('确定清空钻石、打卡、识字复习、数学和专注记录吗？孩子资料和作息会保留。')) return;
   const profile = state.profile;
   const schedule = state.schedule;
-  state = { ...state, stars: 0, streak: 0, lastActiveDate: '', tasksDone: {}, charsLearned: {}, mathCorrect: 0, mathTotal: 0, habitStars: {}, weekHistory: {}, focusMinutes: 0, pinyinToday: {}, pinyinDate: '', starGranted: {}, flashcardReview: {}, habitDays: {}, profile, schedule };
+  state = { ...state, stars: 0, points: 0, streak: 0, lastActiveDate: '', tasksDone: {}, charsLearned: {}, mathCorrect: 0, mathTotal: 0, habitStars: {}, weekHistory: {}, focusMinutes: 0, pinyinToday: {}, pinyinDate: '', starGranted: {}, verifiedRewards: {}, flashcardReview: {}, habitDays: {}, profile, schedule };
   saveState();
   closeParentMode();
   renderHome(); renderDailyPlan(); renderHabits(); renderFlashcard();
@@ -1554,12 +1592,29 @@ function grantStarOnce(key, n, msg, big) {
 }
 
 function addStars(n, msg, big) {
-  state.stars += n;
+  if (isScreenLocked()) { showToast('今天的屏幕学习时间已到，休息后再继续。'); return false; }
+  state.points = Math.max(0, (Number(state.points) || 0) + n);
+  // Kept only for backward-compatible saved data; all UI displays diamonds.
+  state.stars = state.points;
   updateStarsDisplay();
+  renderPet();
   saveState();
-  if (!msg) return;
+  if (!msg) return true;
   // Small frequent rewards use a light toast; only big moments get the modal.
   if (big) showReward(msg); else showToast(msg);
+  return true;
+}
+
+function awardVerifiedPoints(key, n, msg, big) {
+  const today = getToday();
+  if (isScreenLocked()) { showRestOverlay(); return false; }
+  if (state.verifiedRewards[key]) return false;
+  const dayKey = 'count_' + today;
+  const used = Number(state.verifiedRewards[dayKey]) || 0;
+  if (used >= 12) { showToast('今天的学习钻石已结算完毕，明天继续成长。'); return false; }
+  state.verifiedRewards[key] = true;
+  state.verifiedRewards[dayKey] = used + 1;
+  return addStars(n, msg, big);
 }
 
 // Reuse a single AudioContext: browsers cap how many can exist at once,
@@ -1604,10 +1659,36 @@ function showToast(msg) {
 }
 
 function updateStarsDisplay() {
-  document.getElementById('totalStars').textContent = '⭐ ' + state.stars;
-  document.getElementById('totalStarsHome').textContent = state.stars;
+  document.getElementById('totalStars').textContent = '💎 ' + (state.points || 0);
+  document.getElementById('totalStarsHome').textContent = state.points || 0;
   document.getElementById('streakDays').textContent = state.streak;
 }
+
+const pets = {
+  labrador: { name: '拉布拉多犬', emoji: '🐕', trait: '温暖陪伴' },
+  malinois: { name: '比利时马里努阿犬', emoji: '🐕‍🦺', trait: '勇敢挑战' },
+  husky: { name: '哈士奇', emoji: '🐺', trait: '活泼探索' },
+};
+function petLevel() { const fed = (state.pet && state.pet.care) || 0; return fed >= 8 ? 3 : fed >= 3 ? 2 : 1; }
+function adoptPet(type) { state.pet = { type, care: 0, adoptedAt: getToday() }; saveState(); document.getElementById('petSetup').style.display = 'none'; renderPet(); speakText('你好，我是你的学习伙伴。完成挑战后，我们一起成长。'); }
+function renderPet() {
+  const box = document.getElementById('petCard'); if (!box) return;
+  if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐾</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
+  const pet = pets[state.pet.type], level = petLevel(), care = state.pet.care || 0, progress = level === 3 ? 100 : ((care % 5) / 5) * 100;
+  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar">${pet.emoji}</div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button><button onclick="startVoiceCheck()">🎤 说“我完成了”</button></div></div></div>`;
+}
+function openPetAdoption() { document.getElementById('petSetup').style.display = 'flex'; }
+function feedPet() { if (!state.pet) return openPetAdoption(); if ((state.points || 0) < 30) return showToast('钻石不够，先完成学习挑战吧。'); state.points -= 30; state.stars = state.points; state.pet.care = (state.pet.care || 0) + 1; saveState(); updateStarsDisplay(); renderPet(); const level = petLevel(); speakText(`谢谢你照顾我！我现在是第${level}级学习伙伴。`); showToast('小狗吃饱啦，成长值 +1'); }
+function petSpeak() { const pet = state.pet && pets[state.pet.type]; const text = pet ? `${pet.name}说：先完成一道题，再来陪我玩。你已经有${state.points || 0}颗钻石啦！` : '先领养一只小狗吧。'; speakText(text, 'zh-CN', 0.8); }
+function startVoiceCheck() { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!Recognition) { speakText('这个设备暂不支持语音识别。请点击今天的任务，完成后请家长确认。'); return showToast('当前设备不支持语音识别，已切换为语音提示。'); } const r = new Recognition(); r.lang = 'zh-CN'; r.interimResults = false; r.maxAlternatives = 1; r.onresult = e => { const words = e.results[0][0].transcript || ''; speakText(words.includes('完成') ? '听到了。请家长确认任务完成，才能获得钻石。' : '我听到了，再试着说：我完成了。'); }; r.onerror = () => showToast('没有听清，请靠近麦克风再试。'); try { r.start(); showToast('请说：我完成了'); } catch(e) { showToast('语音识别正在准备，请稍后再试。'); } }
+
+let usageLastActive = 0;
+function currentUsageSeconds() { const today = getToday(); if (state.screenUsage.date !== today) state.screenUsage = { date: today, seconds: 0 }; return Number(state.screenUsage.seconds) || 0; }
+function isScreenLocked() { return currentUsageSeconds() >= (Number(state.screenLimitMinutes) || 30) * 60; }
+function syncScreenUsage() { if (!usageLastActive || document.visibilityState === 'hidden') return; const now = Date.now(); const elapsed = Math.max(0, Math.floor((now - usageLastActive) / 1000)); usageLastActive = now; currentUsageSeconds(); state.screenUsage.seconds += elapsed; saveState(); if (isScreenLocked()) showRestOverlay(); }
+function startScreenGuard() { currentUsageSeconds(); usageLastActive = Date.now(); setInterval(syncScreenUsage, 15000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { syncScreenUsage(); usageLastActive = 0; } else { usageLastActive = Date.now(); if (isScreenLocked()) showRestOverlay(); } }); }
+function showRestOverlay() { const el = document.getElementById('restOverlay'); if (el) el.style.display = 'flex'; }
+function closeRestOverlay() { document.getElementById('restOverlay').style.display = 'none'; }
 
 // ==================== NAVIGATION ====================
 function switchTab(idx) {
@@ -1637,13 +1718,15 @@ function renderHome() {
   
   container.innerHTML = morningTasks.map((task, i) => {
     const doneKey = `${today}_${i}`;
-    const done = state.tasksDone[doneKey];
+    const status = state.tasksDone[doneKey];
+    const done = status === true || (status && status.verified);
+    const pending = status && status.claimed && !status.verified;
     return `
       <div class="schedule-item">
         <span class="time-badge">${task.time}</span>
         <span class="task-name">${task.title}</span>
         <div class="task-done ${done ? 'done' : ''}" onclick="toggleTask('${doneKey}', ${i})">
-          ${done ? '✓' : ''}
+          ${done ? '✓' : pending ? '…' : ''}
         </div>
       </div>
     `;
@@ -1651,18 +1734,10 @@ function renderHome() {
 }
 
 function toggleTask(key, idx) {
-  if (state.tasksDone[key]) {
-    delete state.tasksDone[key];
-  } else {
-    state.tasksDone[key] = true;
-    grantStarOnce('task_' + key, 1, '完成任务！+1⭐');
-    // Daily sweep bonus: every task on the schedule checked off
-    const todayKey = getToday();
-    const allDone = getSchedule().every(function(_, i) { return state.tasksDone[`${todayKey}_${i}`]; });
-    if (allDone) grantStarOnce('alldone_' + todayKey, 5, '今日任务全部完成！超级棒 +5⭐', true);
-  }
-
-  updateStreak();
+  const previous = state.tasksDone[key];
+  if (previous && previous.verified) return showToast('该任务已由家长确认。');
+  state.tasksDone[key] = { claimed: true, verified: false };
+  showToast('已申请完成，请家长在家长模式确认后结算钻石。');
 
   saveState();
   renderHome();
@@ -1677,12 +1752,14 @@ function renderDailyPlan() {
   
   container.innerHTML = getSchedule().map((task, i) => {
     const doneKey = `${today}_${i}`;
-    const done = state.tasksDone[doneKey];
+    const status = state.tasksDone[doneKey];
+    const done = status === true || (status && status.verified);
+    const pending = status && status.claimed && !status.verified;
     return `
       <div class="timeline-item" onclick="toggleTask('${doneKey}', ${i})" style="cursor:pointer;">
         <div class="tl-time">⏰ ${task.time}</div>
-        <div class="tl-title">${done ? '✅ ' : ''}${task.title}</div>
-        <div class="tl-desc">${task.desc}</div>
+        <div class="tl-title">${done ? '✅ ' : pending ? '⏳ ' : ''}${task.title}</div>
+        <div class="tl-desc">${pending ? '已申请，等待家长确认' : task.desc}</div>
         <span class="tl-tag tag-${task.tag}">${task.tagLabel}</span>
       </div>
     `;
@@ -1840,7 +1917,7 @@ function speakPinyin(py, audioId, source = 'syllable') {
     if (!state.pinyinToday[py]) {
       state.pinyinToday[py] = true;
       saveState();
-      addStars(1, '学习拼音 +1⭐');
+      showToast('听清后，试着把声母和韵母拼出来。');
     }
   });
 }
@@ -1865,7 +1942,7 @@ function toggleChar(ch) {
     state.charsLearned[ch] = true;
     const count = Object.keys(state.charsLearned).length;
     speakText(ch, 'zh-CN', 0.7, function() {
-      grantStarOnce('char_' + ch, 1, `认识"${ch}"！已认识${count}个字 +1⭐`);
+      showToast(`已标记“${ch}”，完成闪卡复习后请家长确认。`);
     });
   }
   saveState();
@@ -1936,7 +2013,7 @@ function reviewFlashcard(known) {
   state.flashcardReview[card.char] = { box: box, lastReviewed: getToday(), dueDate: dateAfter(intervals[box]) };
   if (known) {
     state.charsLearned[card.char] = true;
-    grantStarOnce(`flashcard_${getToday()}_${card.char}`, 1, `记住“${card.char}”了！下次 ${intervals[box]} 天后复习 +1⭐`);
+    showToast(`下次 ${intervals[box]} 天后复习“${card.char}”`);
   } else {
     delete state.charsLearned[card.char];
     showToast(`“${card.char}”会在今天的复习中再出现`);
@@ -1983,7 +2060,7 @@ function speakPoem(idx) {
   const poem = poemLibrary[idx];
   // The star pops only after the whole poem has been read aloud.
   speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6, function() {
-    grantStarOnce(`poem_${getToday()}_${idx}`, 1, `《${poemLibrary[idx].title}》朗读完成！+1⭐`, true);
+    showToast(`《${poemLibrary[idx].title}》朗读结束，试着跟读一遍。`);
   });
 }
 
@@ -2048,7 +2125,7 @@ function answerSplit(v, btn) {
   if (v === currentSplitAnswer) {
     btn.classList.add('correct');
     speakText('回答正确，真棒！');
-    addStars(1, '分与合正确！+1⭐');
+    awardVerifiedPoints(`split_${getToday()}_${currentSplitN}_${currentSplitPart}`, 8, '分与合答对！+8💎');
   } else {
     btn.classList.add('wrong');
     speakText('再想一想。');
@@ -2138,9 +2215,9 @@ function answerMath(n, btn) {
     speakText('回答正确，真棒！');
     mathStreak++;
     if (mathStreak > 0 && mathStreak % 5 === 0) {
-      addStars(2, `连续答对${mathStreak}题！+2⭐`, true);
+      awardVerifiedPoints(`math_${getToday()}_${state.mathTotal}`, 12, `连续答对${mathStreak}题！+12💎`, true);
     } else {
-      addStars(1, '回答正确！+1⭐');
+      awardVerifiedPoints(`math_${getToday()}_${state.mathTotal}`, 8, '回答正确！+8💎');
     }
   } else {
     mathStreak = 0;
@@ -2178,7 +2255,7 @@ function answerCompare(sym, btn) {
   if (correct) {
     if (btn) btn.classList.add('correct');
     speakText('回答正确，真棒！');
-    addStars(1, '比大小正确！+1⭐');
+    awardVerifiedPoints(`compare_${getToday()}_${compareA}_${compareB}`, 8, '比大小答对！+8💎');
     setTimeout(generateCompare, 1000);
   } else if (btn) {
     // Wrong answer: shake the button but stay on the question,
@@ -2217,7 +2294,7 @@ function speakPatternQuestion() { speakText(patternQuestions[patternIndex].speec
 function answerPattern(value, btn) {
   const question = patternQuestions[patternIndex];
   document.querySelectorAll('#patternOptions .math-option').forEach(b => b.style.pointerEvents = 'none');
-  if (value === question.answer) { btn.classList.add('correct'); addStars(1, '规律推理正确！+1⭐'); speakText('回答正确，真棒！'); }
+  if (value === question.answer) { btn.classList.add('correct'); awardVerifiedPoints(`pattern_${getToday()}_${patternIndex}`, 8, '规律推理正确！+8💎'); speakText('回答正确，真棒！'); }
   else { btn.classList.add('wrong'); document.querySelectorAll('#patternOptions .math-option').forEach(b => { if (b.textContent === question.answer) b.classList.add('correct'); }); speakText('再看看规律。'); }
   setTimeout(() => { patternIndex = (patternIndex + 1) % patternQuestions.length; generatePattern(); }, 1300);
 }
@@ -2226,7 +2303,7 @@ function speakLifeQuestion() { speakText(lifeQuestions[lifeIndex].text, 'zh-CN',
 function answerLifeQuestion(value, btn) {
   const question = lifeQuestions[lifeIndex];
   document.querySelectorAll('#lifeOptions .math-option').forEach(b => b.style.pointerEvents = 'none');
-  if (value === question.answer) { btn.classList.add('correct'); addStars(1, '生活数学正确！+1⭐'); speakText('回答正确，真棒！'); }
+  if (value === question.answer) { btn.classList.add('correct'); awardVerifiedPoints(`life_${getToday()}_${lifeIndex}`, 8, '生活数学正确！+8💎'); speakText('回答正确，真棒！'); }
   else { btn.classList.add('wrong'); document.querySelectorAll('#lifeOptions .math-option').forEach(b => { if (b.textContent === question.answer) b.classList.add('correct'); }); speakText('再想一想。'); }
   setTimeout(() => { lifeIndex = (lifeIndex + 1) % lifeQuestions.length; generateLifeQuestion(); }, 1300);
 }
@@ -2240,10 +2317,12 @@ function renderHabits() {
   const today = getToday();
   container.innerHTML = habits.map(h => {
     const days = state.habitDays[h.id] || {};
-    const stars = weekDates.filter(date => days[date]).length;
-    const completedToday = Boolean(days[today]);
+    const verified = date => days[date] === true || (days[date] && days[date].verified);
+    const stars = weekDates.filter(verified).length;
+    const completedToday = verified(today);
+    const pendingToday = days[today] && days[today].claimed && !days[today].verified;
     const starHTML = Array.from({ length: h.target }, (_, i) => 
-      `<span class="habit-star ${days[weekDates[i]] ? 'earned' : ''}">⭐</span>`
+      `<span class="habit-star ${verified(weekDates[i]) ? 'earned' : ''}">💎</span>`
     ).join('');
     
     return `
@@ -2251,9 +2330,9 @@ function renderHabits() {
         <div class="habit-icon">${h.icon}</div>
         <div class="habit-info">
           <div class="habit-name">${h.name}</div>
-          <div class="habit-progress">本周 ${stars}/${h.target} 天${completedToday ? ' · 今天已完成' : ' · 今天待打卡'}</div>
+          <div class="habit-progress">本周 ${stars}/${h.target} 天${completedToday ? ' · 已确认' : pendingToday ? ' · 等待家长确认' : ' · 今天待申请'}</div>
         </div>
-        <div><div class="habit-stars">${starHTML}</div><button class="timer-btn ${completedToday ? 'reset' : 'start'}" style="padding:7px 12px;font-size:13px;margin-top:6px;" onclick="toggleHabitToday('${h.id}')" ${completedToday ? 'disabled' : ''}>${completedToday ? '今日已打卡' : '完成今日习惯'}</button></div>
+        <div><div class="habit-stars">${starHTML}</div><button class="timer-btn ${completedToday ? 'reset' : 'start'}" style="padding:7px 12px;font-size:13px;margin-top:6px;" onclick="toggleHabitToday('${h.id}')" ${completedToday ? 'disabled' : ''}>${completedToday ? '已确认' : pendingToday ? '待确认' : '申请确认'}</button></div>
       </div>
     `;
   }).join('');
@@ -2271,18 +2350,12 @@ function getCurrentWeekDates() {
 function toggleHabitToday(habitId) {
   const today = getToday();
   if (!state.habitDays[habitId]) state.habitDays[habitId] = {};
-  // One habit can only earn one check-in and one star on a calendar day.
-  if (state.habitDays[habitId][today]) return;
-  state.habitDays[habitId][today] = true;
-  addStars(1, '好习惯打卡 +1⭐');
-  if (!state.weekHistory[today]) state.weekHistory[today] = [];
-  if (!state.weekHistory[today].includes(habitId)) {
-    state.weekHistory[today].push(habitId);
-  }
-  updateStreak();
+  const previous = state.habitDays[habitId][today];
+  if (previous && (previous === true || previous.verified)) return;
+  state.habitDays[habitId][today] = { claimed: true, verified: false };
   saveState();
   renderHabits();
-  updateStarsDisplay();
+  showToast('已申请习惯打卡，请家长确认后结算钻石。');
 }
 
 function renderWeekHistory() {
@@ -2291,7 +2364,7 @@ function renderWeekHistory() {
   getCurrentWeekDates().forEach(function(ds) {
     const count = (state.weekHistory[ds] || []).length;
     const isToday = ds === getToday();
-    html += `<div class="week-day ${count > 0 ? 'done' : ''} ${isToday ? 'today' : ''}">${count > 0 ? '⭐' : ds.slice(-2)}</div>`;
+    html += `<div class="week-day ${count > 0 ? 'done' : ''} ${isToday ? 'today' : ''}">${count > 0 ? '💎' : ds.slice(-2)}</div>`;
   });
   grid.innerHTML = html;
 }
@@ -2347,7 +2420,7 @@ function toggleTimer() {
         timerRemaining = 0;
         updateTimerDisplay();
         const min = Math.floor(timerDuration / 60);
-        addStars(2, `专注${min}分钟完成！+2⭐`, true);
+        awardVerifiedPoints(`focus_${getToday()}_${min}_${Date.now()}`, min >= 10 ? 18 : 12, `专注${min}分钟完成！+${min >= 10 ? 18 : 12}💎`, true);
         state.focusMinutes += min;
         saveState();
       }
@@ -2411,7 +2484,7 @@ function clickSchulte(n, btn) {
       clearInterval(schulteInterval);
       const elapsed = ((Date.now() - schulteStartTime) / 1000).toFixed(1);
       document.getElementById('schulteTimer').textContent = '✅ ' + elapsed + '秒';
-      addStars(3, `舒尔特方格完成！用时${elapsed}秒 +3⭐`, true);
+      awardVerifiedPoints(`schulte_${getToday()}_${Math.round(schulteStartTime / 1000)}`, 15, `舒尔特方格完成！+15💎`, true);
     }
   }
 }
@@ -2442,7 +2515,7 @@ function checkMemoryGame() {
     memoryLength = Math.min(8, memoryLength + 1);
     document.getElementById('memorySequence').textContent = '✓ ' + memorySequence;
     document.getElementById('memoryHint').textContent = '记对了！下一轮会多一个数字。';
-    addStars(1, '数字记忆正确！+1⭐');
+    awardVerifiedPoints(`memory_${getToday()}_${memoryLength}_${memorySequence}`, 10, '数字记忆正确！+10💎');
   } else {
     memoryLength = Math.max(3, memoryLength - 1);
     document.getElementById('memorySequence').textContent = '答案：' + memorySequence;
@@ -2468,7 +2541,7 @@ function answerOddOneOut(value, btn) {
   if (value === oddAnswer) {
     document.querySelectorAll('#oddGrid button').forEach(b => b.style.pointerEvents = 'none');
     btn.classList.add('correct');
-    addStars(1, '观察力真棒！+1⭐');
+    awardVerifiedPoints(`odd_${getToday()}_${oddAnswer}_${Date.now()}`, 10, '观察力真棒！+10💎');
     document.getElementById('oddPrompt').textContent = '找到了！慢慢观察也能很厉害。';
   } else {
     btn.classList.add('wrong');
@@ -2502,9 +2575,13 @@ function init() {
       banner.style.display = 'block';
     } else if (/iPhone|iPad|iPod/i.test(ua) && window.navigator.standalone !== true) {
       banner.style.display = 'block';
+    } else if (/Android/i.test(ua)) {
+      banner.innerHTML = '💡 Android：建议用 Chrome 打开后点右上角 <b>⋮</b> → <b>安装应用</b> 或 <b>添加到主屏幕</b>。<button onclick="this.parentElement.style.display=\'none\'" style="margin-left:8px;background:none;border:none;font-size:16px;cursor:pointer;color:#856404;">✕</button>';
+      banner.style.display = 'block';
     }
 
     loadState();
+    startScreenGuard();
     updateStarsDisplay();
     
     // Streak display only: reset to 0 if the chain is already broken.
@@ -2516,6 +2593,7 @@ function init() {
     }
     
     renderHome();
+    renderPet();
     renderDailyPlan();
     
     // Chinese
@@ -2554,6 +2632,8 @@ function init() {
     // First use: collect the minimum local profile required to personalize
     // reminders and schedule. Existing learning records remain untouched.
     if (!state.profile) document.getElementById('profileSetup').style.display = 'flex';
+    else if (!state.pet) document.getElementById('petSetup').style.display = 'flex';
+    if (isScreenLocked()) showRestOverlay();
     
     // iOS Safari: prime speech synthesis on first touch
     document.addEventListener('touchstart', function primeSpeech() {

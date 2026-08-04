@@ -1,0 +1,9 @@
+{
+  "name": "幼小衔接快乐营",
+  "short_name": "快乐营",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#FF6B6B",
+  "lang": "zh-CN"
+}
