@@ -336,6 +336,10 @@ body {
 .pet-choice-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
 .pet-choice-grid button { min-height:132px; font-size:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; }
 .pet-choice-grid strong { font-size:14px; color:var(--text); }.pet-choice-grid small { font-size:11px; color:var(--text-light); font-weight:400; }
+.pet-choice-grid img { width:82px; height:82px; border-radius:50%; object-fit:cover; }
+.pet-avatar img { width:72px; height:72px; border-radius:50%; object-fit:cover; display:block; }
+@media (max-width:480px) { body { padding-bottom:calc(82px + env(safe-area-inset-bottom)); } .header { gap:5px; } .logo { font-size:14px; } .parent-mode-btn { padding:7px 8px; font-size:12px; } .card { border-radius:18px; } .math-options { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (min-width:768px) { .main { max-width:720px; margin:0 auto; } .bottom-nav { max-width:720px; left:50%; transform:translateX(-50%); border-radius:18px 18px 0 0; } }
 @media (max-width:380px) { .pet-choice-grid { gap:6px; }.pet-choice-grid button { padding:7px 3px; font-size:32px; }.pet-choice-grid strong { font-size:12px; } }
 
 /* Math now has more learning routes; keep every tab comfortably tappable on iPad. */
@@ -734,6 +738,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 <div class="header">
   <span class="logo">🎒 幼小衔接快乐营</span>
   <span class="stars-display" id="totalStars">💎 0</span>
+  <button class="parent-mode-btn" onclick="speakCurrentPage()">🔊 帮助</button>
   <button class="parent-mode-btn" onclick="openParentGate()">⚙️ 家长</button>
 </div>
 
@@ -761,7 +766,7 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 </div>
 
 <div class="setup-overlay" id="parentSetup" style="display:none;"><div class="setup-panel" id="parentPanel"></div></div>
-<div class="setup-overlay" id="petSetup" style="display:none;"><div class="setup-panel"><h2>🐾 领养我的学习伙伴</h2><p>选择一只小狗。完成真正的学习挑战可获得钻石，用来照顾它、陪它成长。</p><div class="pet-choice-grid"><button type="button" onclick="adoptPet('labrador')">🐕<strong>拉布拉多犬</strong><small>温暖、爱陪伴</small></button><button type="button" onclick="adoptPet('malinois')">🐕‍🦺<strong>比利时马里努阿犬</strong><small>勇敢、爱挑战</small></button><button type="button" onclick="adoptPet('husky')">🐺<strong>哈士奇</strong><small>活泼、爱探索</small></button></div></div></div>
+<div class="setup-overlay" id="petSetup" style="display:none;"><div class="setup-panel"><h2>🐾 领养我的学习伙伴</h2><p>选择一只小狗。完成真正的学习挑战可获得钻石，用来照顾它、陪它成长。</p><div class="pet-choice-grid"><button type="button" onclick="adoptPet('labrador')"><img src="assets/pets/labrador-cartoon.png" alt="拉布拉多犬"><strong>拉布拉多犬</strong><small>温暖、爱陪伴</small></button><button type="button" onclick="adoptPet('malinois')"><img src="assets/pets/malinois-cartoon.png" alt="比利时马里努阿犬"><strong>比利时马里努阿犬</strong><small>勇敢、爱挑战</small></button><button type="button" onclick="adoptPet('husky')"><img src="assets/pets/husky-cartoon.png" alt="哈士奇"><strong>哈士奇</strong><small>活泼、爱探索</small></button></div></div></div>
 <div class="setup-overlay" id="restOverlay" style="display:none;"><div class="setup-panel" style="text-align:center;"><div style="font-size:56px;">🌳</div><h2>到休息时间啦</h2><p id="restMessage">今天的屏幕学习时间已到。请离开屏幕，喝水、活动眼睛或和小狗玩一会儿。</p><button class="btn-primary" type="button" onclick="closeRestOverlay()">我去休息</button><p style="font-size:12px;color:var(--text-light);margin-top:12px;">家长可在“家长模式”调整每日屏幕时长。</p></div></div>
 
 <!-- MAIN CONTENT -->
@@ -1665,9 +1670,9 @@ function updateStarsDisplay() {
 }
 
 const pets = {
-  labrador: { name: '拉布拉多犬', emoji: '🐕', trait: '温暖陪伴' },
-  malinois: { name: '比利时马里努阿犬', emoji: '🐕‍🦺', trait: '勇敢挑战' },
-  husky: { name: '哈士奇', emoji: '🐺', trait: '活泼探索' },
+  labrador: { name: '拉布拉多犬', image: 'assets/pets/labrador-cartoon.png', trait: '温暖陪伴' },
+  malinois: { name: '比利时马里努阿犬', image: 'assets/pets/malinois-cartoon.png', trait: '勇敢挑战' },
+  husky: { name: '哈士奇', image: 'assets/pets/husky-cartoon.png', trait: '活泼探索' },
 };
 function petLevel() { const fed = (state.pet && state.pet.care) || 0; return fed >= 8 ? 3 : fed >= 3 ? 2 : 1; }
 function adoptPet(type) { state.pet = { type, care: 0, adoptedAt: getToday() }; saveState(); document.getElementById('petSetup').style.display = 'none'; renderPet(); speakText('你好，我是你的学习伙伴。完成挑战后，我们一起成长。'); }
@@ -1675,11 +1680,13 @@ function renderPet() {
   const box = document.getElementById('petCard'); if (!box) return;
   if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐾</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
   const pet = pets[state.pet.type], level = petLevel(), care = state.pet.care || 0, progress = level === 3 ? 100 : ((care % 5) / 5) * 100;
-  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar">${pet.emoji}</div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button><button onclick="startVoiceCheck()">🎤 说“我完成了”</button></div></div></div>`;
+  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar"><img src="${pet.image}" alt="${pet.name}"></div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button><button onclick="startVoiceCheck()">🎤 对话</button></div></div></div>`;
 }
 function openPetAdoption() { document.getElementById('petSetup').style.display = 'flex'; }
 function feedPet() { if (!state.pet) return openPetAdoption(); if ((state.points || 0) < 30) return showToast('钻石不够，先完成学习挑战吧。'); state.points -= 30; state.stars = state.points; state.pet.care = (state.pet.care || 0) + 1; saveState(); updateStarsDisplay(); renderPet(); const level = petLevel(); speakText(`谢谢你照顾我！我现在是第${level}级学习伙伴。`); showToast('小狗吃饱啦，成长值 +1'); }
-function petSpeak() { const pet = state.pet && pets[state.pet.type]; const text = pet ? `${pet.name}说：先完成一道题，再来陪我玩。你已经有${state.points || 0}颗钻石啦！` : '先领养一只小狗吧。'; speakText(text, 'zh-CN', 0.8); }
+function speakPet(text) { if (!('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=.92; u.pitch=1.28; u.volume=1; speechSynthesis.speak(u); } catch(e) { speakText(text,'zh-CN',.85); } }
+function petSpeak() { const pet = state.pet && pets[state.pet.type]; const text = pet ? `嗨，我是${pet.name}！我喜欢听你说今天学会了什么。先完成一道题，再来陪我玩吧！` : '先领养一只小狗吧。'; speakPet(text); }
+function speakCurrentPage() { const active=document.querySelector('.page.active'); const id=active&&active.id; const guides={ 'page-home':'这里是首页。先看看学习伙伴和今天的任务。完成后要请家长确认。','page-plan':'这里是每日计划。完成生活任务后点击申请确认。','page-chinese':'这里是语文。点击卡片听读音，慢慢跟读。','page-math':'这里是数学。请先听题目，再选择答案。','page-habits':'这里是好习惯。真实完成后申请家长确认。','page-focus':'这里是专注力训练。先听清要求，慢慢完成，不追求速度。' }; speakText(guides[id]||'请慢慢探索，完成后请家长确认。','zh-CN',.82); }
 function startVoiceCheck() { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!Recognition) { speakText('这个设备暂不支持语音识别。请点击今天的任务，完成后请家长确认。'); return showToast('当前设备不支持语音识别，已切换为语音提示。'); } const r = new Recognition(); r.lang = 'zh-CN'; r.interimResults = false; r.maxAlternatives = 1; r.onresult = e => { const words = e.results[0][0].transcript || ''; speakText(words.includes('完成') ? '听到了。请家长确认任务完成，才能获得钻石。' : '我听到了，再试着说：我完成了。'); }; r.onerror = () => showToast('没有听清，请靠近麦克风再试。'); try { r.start(); showToast('请说：我完成了'); } catch(e) { showToast('语音识别正在准备，请稍后再试。'); } }
 
 let usageLastActive = 0;
