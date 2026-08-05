@@ -490,13 +490,14 @@ body {
 .score-item .si-label { font-size: 12px; color: var(--text-light); }
 
 .number-line {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
   margin: 16px 0;
 }
 
 .num-dot {
-  width: 40px; height: 40px;
+  width: 100%; aspect-ratio: 1 / 1; min-height: 44px;
   border-radius: 50%;
   background: var(--math);
   display: flex;
@@ -724,6 +725,13 @@ body {
 /* Touch-friendly for iPad */
 button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item {
   min-height: 44px; min-width: 44px;
+}
+
+@media (max-width: 380px) {
+  .number-line { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  #memorySequence { font-size: 24px !important; letter-spacing: 4px !important; overflow-wrap: anywhere; }
+  #memorySequence + div { flex-wrap: wrap; }
+  #memoryInput { width: 100%; max-width: 100% !important; }
 }
 </style>
 </head>
@@ -1400,6 +1408,7 @@ function loadState() {
       // Preserve rewards earned in older versions while moving to diamonds.
       if (!Object.prototype.hasOwnProperty.call(parsed, 'points') || !Number.isFinite(state.points) || state.points < 0) state.points = Number(state.stars) || 0;
       if (!state.screenUsage || typeof state.screenUsage !== 'object') state.screenUsage = { date: '', seconds: 0 };
+      migratePetState();
     }
   } catch(e) {}
 }
@@ -1546,6 +1555,7 @@ function resetLearningData() {
   const profile = state.profile;
   const schedule = state.schedule;
   state = { ...state, stars: 0, points: 0, streak: 0, lastActiveDate: '', tasksDone: {}, charsLearned: {}, mathCorrect: 0, mathTotal: 0, habitStars: {}, weekHistory: {}, focusMinutes: 0, pinyinToday: {}, pinyinDate: '', starGranted: {}, verifiedRewards: {}, flashcardReview: {}, habitDays: {}, profile, schedule };
+  if (state.pet) state.pet = { ...state.pet, care: 0, xp: 0, hunger: 80, hygiene: 80, energy: 80, completedTasks: 0, lastCareDate: getToday() };
   saveState();
   closeParentMode();
   renderHome(); renderDailyPlan(); renderHabits(); renderFlashcard();
@@ -1619,7 +1629,9 @@ function awardVerifiedPoints(key, n, msg, big) {
   if (used >= 12) { showToast('今天的学习钻石已结算完毕，明天继续成长。'); return false; }
   state.verifiedRewards[key] = true;
   state.verifiedRewards[dayKey] = used + 1;
-  return addStars(n, msg, big);
+  const awarded = addStars(n, msg, big);
+  if (awarded) advancePetFromLearning(n);
+  return awarded;
 }
 
 // Reuse a single AudioContext: browsers cap how many can exist at once,
@@ -1680,14 +1692,73 @@ function renderPet() {
   const box = document.getElementById('petCard'); if (!box) return;
   if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐾</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
   const pet = pets[state.pet.type], level = petLevel(), care = state.pet.care || 0, progress = level === 3 ? 100 : ((care % 5) / 5) * 100;
-  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar"><img src="${pet.image}" alt="${pet.name}"></div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button><button onclick="startVoiceCheck()">🎤 对话</button></div></div></div>`;
+  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar"><img src="${pet.image}" alt="${pet.name}"></div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button></div></div></div>`;
 }
 function openPetAdoption() { document.getElementById('petSetup').style.display = 'flex'; }
 function feedPet() { if (!state.pet) return openPetAdoption(); if ((state.points || 0) < 30) return showToast('钻石不够，先完成学习挑战吧。'); state.points -= 30; state.stars = state.points; state.pet.care = (state.pet.care || 0) + 1; saveState(); updateStarsDisplay(); renderPet(); const level = petLevel(); speakText(`谢谢你照顾我！我现在是第${level}级学习伙伴。`); showToast('小狗吃饱啦，成长值 +1'); }
 function speakPet(text) { if (!('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=.92; u.pitch=1.28; u.volume=1; speechSynthesis.speak(u); } catch(e) { speakText(text,'zh-CN',.85); } }
 function petSpeak() { const pet = state.pet && pets[state.pet.type]; const text = pet ? `嗨，我是${pet.name}！我喜欢听你说今天学会了什么。先完成一道题，再来陪我玩吧！` : '先领养一只小狗吧。'; speakPet(text); }
 function speakCurrentPage() { const active=document.querySelector('.page.active'); const id=active&&active.id; const guides={ 'page-home':'这里是首页。先看看学习伙伴和今天的任务。完成后要请家长确认。','page-plan':'这里是每日计划。完成生活任务后点击申请确认。','page-chinese':'这里是语文。点击卡片听读音，慢慢跟读。','page-math':'这里是数学。请先听题目，再选择答案。','page-habits':'这里是好习惯。真实完成后申请家长确认。','page-focus':'这里是专注力训练。先听清要求，慢慢完成，不追求速度。' }; speakText(guides[id]||'请慢慢探索，完成后请家长确认。','zh-CN',.82); }
-function startVoiceCheck() { const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!Recognition) { speakText('这个设备暂不支持语音识别。请点击今天的任务，完成后请家长确认。'); return showToast('当前设备不支持语音识别，已切换为语音提示。'); } const r = new Recognition(); r.lang = 'zh-CN'; r.interimResults = false; r.maxAlternatives = 1; r.onresult = e => { const words = e.results[0][0].transcript || ''; speakText(words.includes('完成') ? '听到了。请家长确认任务完成，才能获得钻石。' : '我听到了，再试着说：我完成了。'); }; r.onerror = () => showToast('没有听清，请靠近麦克风再试。'); try { r.start(); showToast('请说：我完成了'); } catch(e) { showToast('语音识别正在准备，请稍后再试。'); } }
+
+// ===== Pet growth: all progress comes from verified learning, never tapping =====
+const petStages = [
+  { name: '幼犬', xp: 0 }, { name: '探索犬', xp: 80 },
+  { name: '成长犬', xp: 220 }, { name: '守护犬', xp: 450 }
+];
+function migratePetState() {
+  if (!state.pet || !pets[state.pet.type]) return;
+  state.pet = { care: 0, xp: 0, hunger: 80, hygiene: 80, energy: 80, completedTasks: 0, lastCareDate: getToday(), ...state.pet };
+  if (state.pet.lastCareDate !== getToday()) {
+    state.pet.hunger = Math.max(15, Number(state.pet.hunger) - 18);
+    state.pet.hygiene = Math.max(15, Number(state.pet.hygiene) - 12);
+    state.pet.energy = Math.max(15, Number(state.pet.energy) - 10);
+    state.pet.lastCareDate = getToday();
+  }
+}
+function petLevel() {
+  migratePetState();
+  const xp = (state.pet && Number(state.pet.xp)) || 0;
+  for (let i = petStages.length - 1; i >= 0; i--) if (xp >= petStages[i].xp) return i + 1;
+  return 1;
+}
+function petNextStageProgress() {
+  const level = petLevel(), xp = Number(state.pet.xp) || 0, next = petStages[level];
+  if (!next) return 100;
+  return Math.min(100, Math.round((xp - petStages[level - 1].xp) * 100 / (next.xp - petStages[level - 1].xp)));
+}
+function advancePetFromLearning(diamonds) {
+  if (!state.pet || !pets[state.pet.type]) return;
+  migratePetState();
+  const before = petLevel();
+  state.pet.xp += Math.max(5, Number(diamonds) || 0);
+  state.pet.completedTasks += 1;
+  state.pet.energy = Math.min(100, state.pet.energy + 5);
+  state.pet.hunger = Math.max(10, state.pet.hunger - 3);
+  const after = petLevel();
+  saveState(); renderPet();
+  if (after > before) speakPet(`太好了！我成长为${petStages[after - 1].name}啦！`);
+}
+function adoptPet(type) {
+  state.pet = { type, care: 0, xp: 0, hunger: 80, hygiene: 80, energy: 80, completedTasks: 0, adoptedAt: getToday(), lastCareDate: getToday() };
+  saveState(); document.getElementById('petSetup').style.display = 'none'; renderPet(); speakPet('你好，我是你的学习伙伴。完成挑战后，我们一起成长！');
+}
+function renderPet() {
+  const box = document.getElementById('petCard'); if (!box) return;
+  if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐶</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
+  migratePetState();
+  const pet = pets[state.pet.type], level = petLevel(), progress = petNextStageProgress();
+  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar"><img src="${pet.image}" alt="${pet.name}"></div><div class="pet-info"><div class="pet-name">${pet.name} · ${petStages[level - 1].name}</div><div class="pet-meta">${pet.trait} · 成长值 ${state.pet.xp} · 已完成 ${state.pet.completedTasks} 项</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-meta">🍖饱腹 ${state.pet.hunger}　🛁清洁 ${state.pet.hygiene}　⚡活力 ${state.pet.energy}</div><div class="pet-actions"><button onclick="feedPet()">🍖 20💎 喂食</button><button onclick="bathePet()">🛁 10💎 洗澡</button><button onclick="playWithPet()">🏃 一起玩</button><button onclick="petSpeak()">🔊 听小狗说</button></div></div></div>`;
+}
+function spendPetPoints(cost) { if ((state.points || 0) < cost) { showToast('钻石不够，先完成学习挑战吧！'); return false; } state.points -= cost; state.stars = state.points; return true; }
+function feedPet() { if (!state.pet) return openPetAdoption(); if (!spendPetPoints(20)) return; state.pet.care++; state.pet.hunger = Math.min(100, state.pet.hunger + 35); state.pet.xp += 4; saveState(); updateStarsDisplay(); renderPet(); speakPet('谢谢小主人！我吃饱啦，我们继续一起学习。'); }
+function bathePet() { if (!state.pet) return openPetAdoption(); if (!spendPetPoints(10)) return; state.pet.care++; state.pet.hygiene = Math.min(100, state.pet.hygiene + 45); state.pet.xp += 3; saveState(); updateStarsDisplay(); renderPet(); speakPet('身上香香的啦，谢谢你帮我洗澡！'); }
+function playWithPet() { if (!state.pet) return openPetAdoption(); if ((state.pet.completedTasks || 0) < 1) return speakPet('先完成一项学习任务，我们再一起出去玩！'); state.pet.energy = Math.min(100, state.pet.energy + 25); state.pet.hunger = Math.max(10, state.pet.hunger - 5); state.pet.xp += 2; saveState(); renderPet(); speakPet('我要出去和你玩～今天你真棒！'); }
+function speakPet(text) { return speakText(text, 'zh-CN', 0.88); }
+function petNeedMessage() { if (!state.pet) return '先领养一只小狗吧！'; migratePetState(); const p = state.pet; if (p.hunger < 45) return '我饿了，小主人。完成学习挑战后，用钻石给我准备小零食吧！'; if (p.hygiene < 45) return '身上臭了，快帮我洗洗吧！'; if (p.energy < 45) return '我要出去和你玩～先完成今天的一项学习任务，我们一起出发！'; return '我想听你认真学习。完成一项任务，我们就能一起长大！'; }
+function petSpeak() { speakPet(petNeedMessage()); }
+// Voice input is intentionally disabled: this product uses one-way pet prompts
+// so no microphone permission or child speech data is requested.
+function startVoiceCheck() { showToast('小狗会主动说出需要，不需要使用麦克风。'); }
 
 let usageLastActive = 0;
 function currentUsageSeconds() { const today = getToday(); if (state.screenUsage.date !== today) state.screenUsage = { date: today, seconds: 0 }; return Number(state.screenUsage.seconds) || 0; }
@@ -1857,12 +1928,10 @@ function speakText(text, lang = 'zh-CN', rate = 0.7, onEnd) {
     // Chrome/Android silently drops speak() calls made immediately after
     // cancel() — a short delay lets the cancel settle. And on iOS we only
     // resume (pausing right after speaking can mute the utterance).
-    setTimeout(function() {
-      try {
-        speechSynthesis.speak(u);
-        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) speechSynthesis.resume();
-      } catch(e) { done(); }
-    }, 60);
+    // Keep this in the original tap/click call stack: mobile Safari can drop
+    // delayed utterances as no longer initiated by a user gesture.
+    speechSynthesis.speak(u);
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) speechSynthesis.resume();
     return true;
   } catch(e) {
     console.log('Speech error:', e);
@@ -1905,6 +1974,24 @@ function playPinyinAudio(audioId, source, onEnd) {
   } catch (e) {
     done(false);
   }
+}
+
+// Read long material as short utterances. This avoids Safari truncating a
+// poem and gives every line a clean completion event.
+function speakLines(lines, rate = 0.72, onEnd) {
+  if (!('speechSynthesis' in window) || !Array.isArray(lines) || !lines.length) {
+    if (onEnd) onEnd();
+    return false;
+  }
+  let index = 0;
+  const readNext = function() {
+    if (index >= lines.length) { if (onEnd) onEnd(); return; }
+    const line = String(lines[index++]).trim();
+    if (!line) return readNext();
+    speakText(line, 'zh-CN', rate, readNext);
+  };
+  readNext();
+  return true;
 }
 
 function speakPinyin(py, audioId, source = 'syllable') {
@@ -2065,8 +2152,8 @@ function renderPoems() {
 
 function speakPoem(idx) {
   const poem = poemLibrary[idx];
-  // The star pops only after the whole poem has been read aloud.
-  speakText(poem.title + '。' + poem.lines.join(''), 'zh-CN', 0.6, function() {
+  // Mobile Safari is more reliable when a long poem is sent line by line.
+  speakLines([poem.title].concat(poem.lines), 0.68, function() {
     showToast(`《${poemLibrary[idx].title}》朗读结束，试着跟读一遍。`);
   });
 }
@@ -2097,7 +2184,7 @@ function renderNumberLine() {
 }
 
 function speakNumber(n) {
-  speakText(String(n));
+  speakText(numberToChinese(n), 'zh-CN', 0.78);
 }
 
 // Number Bonds (分与合): n can be split into a and ?
