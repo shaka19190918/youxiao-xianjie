@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FF6B6B">
 <link rel="manifest" href="manifest.webmanifest">
-<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3/dist/hanzi-writer.min.js" defer></script>
+<script src="assets/vendor/hanzi-writer.min.js" defer></script>
 <title>幼小衔接快乐营</title>
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px)}
@@ -211,6 +211,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 /* Child readability pass: one generous, rounded control language throughout. */
 body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--sb))}.card{border-radius:30px;padding:20px}.desc{font-size:16px}.back{min-width:48px;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:24px;background:#FFF;color:var(--pri);box-shadow:var(--sh);font-size:16px;font-weight:800;border:1px solid #EEE4FF}.back::after{content:'返回'}.qa-item{min-height:116px;border-radius:24px}.qa-item .ql{font-size:16px}.qa-item .qs{font-size:12px}.mq{font-size:42px}.moi{min-width:74px;min-height:62px;font-size:27px;border-radius:22px}.lb{min-height:44px;border-radius:18px;font-size:15px}.cg{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}.cc{border-radius:24px;padding:16px 8px}.cc .ch-b{font-size:52px;line-height:1.05}.cc .ch-p{font-size:17px}.cc .ch-s{font-size:13px}.pom{padding:20px;border-radius:26px}.pl{padding:10px 12px;border-radius:16px}.pl .tx{font-size:22px;font-weight:700;line-height:1.75}.pl .py{font-size:14px}.sg{max-width:min(94vw,430px)!important}.sc{width:auto;height:auto;min-height:62px;font-size:28px;border-radius:14px}.staff-wrap{padding:12px;background:#FFFEF7;border-radius:20px}.staff-wrap svg{min-width:620px;height:180px!important}.staff-card .sc-ti{font-size:18px}.staff-card .sc-ds{font-size:14px}.tian-grid{background-color:#FFFDF6;background-image:linear-gradient(#BFD6F6 1px,transparent 1px),linear-gradient(90deg,#BFD6F6 1px,transparent 1px);background-size:50% 50%;border:2px dashed #89B4E8;border-radius:20px}
 @media(max-width:380px){.qa-item{min-height:106px}.pl .tx{font-size:20px}.dog-acts{grid-template-columns:repeat(2,1fr)}}
+.back::after{content:'返回'}
+.writing-grid .cc{border:3px solid #e4d9ff;background:#fff;min-height:176px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font:inherit}
+.writing-grid .cc .ch-b{font-size:64px;line-height:1.02;color:#35256f}.writing-grid .cc .ch-p{font-size:20px;color:#6b5b95;font-weight:800}.writing-grid .cc .ch-s{font-size:16px;color:#766f8d}.trace-cta{font-size:15px;font-weight:900;color:#7654d6}
+#hwTarget.tian-grid{width:280px;height:280px;margin:12px auto;background-color:#fff;background-image:linear-gradient(to right,transparent 49.6%,#a6bce8 49.6%,#a6bce8 50.4%,transparent 50.4%),linear-gradient(to bottom,transparent 49.6%,#a6bce8 49.6%,#a6bce8 50.4%,transparent 50.4%),linear-gradient(45deg,transparent 49.65%,#cad7f0 49.65%,#cad7f0 50.35%,transparent 50.35%),linear-gradient(-45deg,transparent 49.65%,#cad7f0 49.65%,#cad7f0 50.35%,transparent 50.35%);border:2px dashed #91abe1;border-radius:18px}
+@media(max-width:380px){.writing-grid .cc .ch-b{font-size:56px}.writing-grid .cc{min-height:156px}}
 </style>
 </head>
 <body>
@@ -246,7 +251,7 @@ function gV(){if(!_vs.length)_vs=speechSynthesis.getVoices();return _vs.find(v=>
 function say(text,lang,rate,onEnd){primeS();if(!('speechSynthesis'in window)){if(onEnd)onEnd();return!1}try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang||'zh-CN';u.rate=rate||.7;u.volume=1;u.pitch=1;const v=gV();if(v)u.voice=v;let d=!1;const f=()=>{if(!d){d=!0;if(onEnd)onEnd()}};u.onend=f;u.onerror=f;setTimeout(f,Math.max(3000,text.length*500));speechSynthesis.speak(u);return!0}catch(e){if(onEnd)onEnd();return!1}}
 function sayLine(lines,rate,onEnd){if(!lines||!lines.length){if(onEnd)onEnd();return}let i=0;const nxt=()=>{if(i>=lines.length){if(onEnd)onEnd();return}const ln=String(lines[i++]).trim();if(!ln)return nxt();say(ln,'zh-CN',rate||.7,nxt)};nxt()}
 let _ac=null,_pc=new Map();
-function pA(aid,src,onEnd){let fin=!1;const done=r=>{if(!fin){fin=!0;if(onEnd)onEnd(r)}};try{if(_ac){_ac.pause();_ac.currentTime=0}const key=src+':'+aid;let a=_pc.get(key);if(!a){const url=src==='init'?`https://www.qqxiuzi.cn/audio/pinyin/${aid}.mp3`:`assets/pinyin/${aid}.mp3`;a=new Audio(url);a.preload='auto';_pc.set(key,a)}_ac=a;a.currentTime=0;a.onended=()=>done(!0);a.onerror=()=>done(!1);const p=a.play();if(p&&p.catch)p.catch(()=>done(!1))}catch(e){done(!1)}}
+function pA(aid,src,onEnd){let fin=!1;const done=r=>{if(!fin){fin=!0;if(onEnd)onEnd(r)}};if(src==='init'){toast('该声母的本地校验音频尚未安装，为避免误教不会播放。');return done(!1)}try{if(_ac){_ac.pause();_ac.currentTime=0}const key='local:'+aid;let a=_pc.get(key);if(!a){a=new Audio(`assets/pinyin/${aid}.mp3`);a.preload='auto';_pc.set(key,a)}_ac=a;a.currentTime=0;a.onended=()=>done(!0);a.onerror=()=>done(!1);const p=a.play();if(p&&p.catch)p.catch(()=>done(!1))}catch(e){done(!1)}}
 function sayPy(py,aid,src){src=src||'syl';pA(aid,src,ok=>{if(!ok){toast('音频暂不可用');return}const t=T();if(S.pinyinDate!==t){S.pinyinToday={};S.pinyinDate=t}if(!S.pinyinToday[py]){S.pinyinToday[py]=!0;S.pinyin[py]=!0;R()}})}
 // === 3D DOG images (Pixar-style rendered) ===
 function dogSVG(type,size){size=size||120;
@@ -452,7 +457,69 @@ function petImageV6(type,size,lazy){const p=PETS_V6[type]||PETS_V6.labrador;retu
 function showDogSelect(){document.getElementById('dogSelWrap').innerHTML=`<div class="dog-overlay"><div class="dog-ov-t">🐾 选一位成长伙伴吧</div><div class="dog-ov-s">完成学习，伙伴才会一起长大</div><div class="dog-cards" id="dsCards"></div><button class="dog-confirm" id="dsConfirm" onclick="confirmDog()">请选择一位伙伴</button></div>`;document.getElementById('dsCards').innerHTML=Object.entries(PETS_V6).map(([id,p])=>`<div class="dog-card" id="dsc_${id}" onclick="selDog('${id}')"><div class="d-chk">✓</div><div class="d-svg">${petImageV6(id,110,true)}</div><div class="d-nm">${p.n}</div><div class="d-br">${p.cn}</div></div>`).join('')}
 function selDog(id){_selDog=id;document.querySelectorAll('.dog-card').forEach(c=>c.classList.remove('sel'));document.getElementById('dsc_'+id).classList.add('sel');const b=document.getElementById('dsConfirm');b.classList.add('active');b.textContent=`选择${PETS_V6[id].n}，开始学习`}
 function confirmDog(){if(!_selDog)return toast('先选择一位伙伴');S.dog={type:_selDog,xp:0,hu:80,hy:80,en:80,tasks:0,ad:T()};R();saveDog();document.getElementById('dogSelWrap').innerHTML='';showPage('home')}
-function init(){migratePetsV6();uS();up();document.addEventListener('click',function(){primeS()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){primeS()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home')}}
+const TONE_COURSE=['ā','á','ǎ','à','ō','ó','ǒ','ò','ē','é','ě','è','ī','í','ǐ','ì','ū','ú','ǔ','ù','ǖ','ǘ','ǚ','ǜ'];
+PGS.pinyin={title:'🔤 汉语拼音',render:function(){const local=(p)=>`<button class="pc" onclick="sayPy('${p.c}','${p.a}','syl')"><div class="py-c">${p.c}</div><div class="py-l">${p.l}</div></button>`;document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">汉语拼音</div><p class="desc">教学音频只用本地校验资源；没有校验音频时不会使用设备声音。</p><h3>六个韵母的四声</h3><div class="pg">${TONE_COURSE.map((x,i)=>`<button class="pc" onclick="${i<4?`sayPy('${x}','a${i+1}','syl')`:`toast('该声调本地校验音频待补充，不播放不准确读音')`}"><div class="py-c">${x}</div><div class="py-l">第${i%4+1}声</div></button>`).join('')}</div><h3>韵母与整体认读</h3><div class="pg">${[...dy,...fy,...by,...zt].map(local).join('')}</div><h3>声母</h3><div class="pg">${sm.map(p=>`<button class="pc" onclick="toast('声母本地校验音频待补充，不播放不准确读音')"><div class="py-c">${p.c}</div><div class="py-l">${p.l}</div></button>`).join('')}</div></div>`}}
+
+/* Writing is assessed by the local HanziWriter stroke engine: it checks the
+   canonical stroke order and direction.  A card is only learned at 65+. */
+function openTraceV6(ch,py){
+  _hch=ch;primeS();
+  document.getElementById('hwTi').textContent='描红：'+ch+'（'+py+'）';
+  document.getElementById('hwTarget').innerHTML='';
+  document.getElementById('hwTarget').classList.add('tian-grid');
+  document.getElementById('hwFb').innerHTML='先看蓝色笔顺，再按顺序描红。65 分才算通过。';
+  document.getElementById('hwM').style.display='flex';
+  playCue('trace_start','先看笔顺，再描红。');
+  if(typeof HanziWriter==='undefined'){
+    document.getElementById('hwFb').innerHTML='描红笔顺资源正在准备，暂时不能评分。';return;
+  }
+  try{
+    _hw=HanziWriter.create('hwTarget',ch,{width:280,height:280,padding:20,strokeAnimationSpeed:0.8,delayBetweenStrokes:240,radicalColor:'#5d8cff',showCharacter:false,showOutline:true,outlineColor:'#b9cef9'});
+    _hw.loopCharacterAnimation();
+  }catch(e){document.getElementById('hwFb').innerHTML='这个字的笔顺资源暂不可用。'}
+}
+function beginTraceV6(){
+  if(!_hw)return;
+  let mistakes=0,correct=0;
+  document.getElementById('hwFb').innerHTML='按笔顺、方向和轮廓认真描红。';
+  _hw.quiz({
+    onMistake:function(){mistakes++;document.getElementById('hwFb').innerHTML='这一步不对，看看蓝色笔画后重试。'},
+    onCorrectStroke:function(){correct++;document.getElementById('hwFb').innerHTML='这一笔正确，继续！'},
+    onComplete:function(summary){
+      const score=Math.max(0,100-mistakes*18);
+      const passed=score>=65;
+      const feedback=passed?'通过！':'还没有通过，重看笔顺再写一次。';
+      document.getElementById('hwFb').innerHTML=`${passed?'✅':'🔄'} ${feedback}<br>得分 ${score} 分 · 正确 ${correct} 笔 · 错误 ${mistakes} 次`;
+      if(!passed){playCue('trace_retry','这次还没有通过，看看笔顺，再写一次。');return;}
+      const reward=score>=90?12:score>=75?8:5;
+      awd('trace_'+_hch+'_'+T(),reward,`描红 ${score} 分，获得 ${reward} 💎`);
+      S.chars[_hch]=true;R();
+      playCue('trace_pass','描红通过，写得真认真！');
+    }
+  });
+}
+function ohw(ch,py){openTraceV6(ch,py)}
+function startHQ(){beginTraceV6()}
+function resetHW(){if(_hw){_hw.cancelQuiz();_hw.loopCharacterAnimation();document.getElementById('hwFb').innerHTML='笔顺已重播，准备好后再开始。'}}
+PGS.chars={title:'✏️ 会写字',render:function(){
+  const card=(ch)=>`<button class="cc ${S.chars[ch.c]?'l':''}" onclick="openTraceV6('${ch.c}','${ch.p}')"><span class="ch-b">${ch.c}</span><span class="ch-p">${ch.p}</span><span class="ch-s">${ch.s}画</span><span class="trace-cta">${S.chars[ch.c]?'已通过，再练一次':'点字开始描红'}</span></button>`;
+  document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">会写字</div><p class="desc">点一个大字，先看标准笔顺，再描红。评分低于 65 分需要重写。</p><div class="cg writing-grid">${cw.map(card).join('')}</div></div><div class="card"><div class="child-task-title">会认字</div><div class="cg writing-grid">${cr.map(card).join('')}</div></div>`;
+}}
+/* Local cue audio: Safari may wait for the first touch, so a failed autoplay
+   is queued and played on the child's next tap. No microphone is requested. */
+let _cueAudio=null,_queuedCue='';
+function playCue(key,text){
+  try{if(_cueAudio){_cueAudio.pause();_cueAudio.currentTime=0}_cueAudio=new Audio('assets/voice/'+key+'.mp3');_cueAudio.preload='auto';const p=_cueAudio.play();if(p&&p.catch)p.catch(()=>{_queuedCue=key;toast(text||'轻点屏幕，听小伙伴说话')});return true}catch(e){toast(text||'提示音暂不可用');return false}
+}
+function playQueuedCue(){if(!_queuedCue)return;const key=_queuedCue;_queuedCue='';playCue(key)}
+function greetingCue(){const h=new Date().getHours();return h<8?'greeting_morning':h<12?'greeting_late_morning':h<14?'greeting_noon':h<18?'greeting_afternoon':h<20?'greeting_evening':'greeting_night'}
+Object.assign(DOGS,{labrador:{n:'小拉',cn:'拉布拉多犬',col:'#D99545',col2:'#B96C24',sounds:{}},husky:{n:'小哈',cn:'西伯利亚雪橇犬',col:'#718096',col2:'#4A5568',sounds:{}},shepherd:{n:'小牧',cn:'德国牧羊犬',col:'#9B6B45',col2:'#704529',sounds:{}},trex:{n:'小霸',cn:'毛绒霸王龙',col:'#78A65A',col2:'#4D7F3A',sounds:{}}});
+function dogSVG(type,size){return PETS_V6[type]?petImageV6(type,size,false):petImageV6('labrador',size,false)}
+function fDog(){if(!S.dog)return;if((S.pts||0)<15)return toast('钻石不够，完成学习再来喂食吧！');S.pts-=15;S.dog.hu=Math.min(100,S.dog.hu+35);R();saveDog();up();showPage('dog');playCue('pet_hello','好吃好吃！');dogAnim('feed');showBubble('好吃好吃！')}
+function pDog(){if(!S.dog)return;S.dog.en=Math.min(100,S.dog.en+20);R();saveDog();showPage('dog');playCue('pet_hello','好舒服～');dogAnim('pet');showBubble('好舒服～')}
+function bDog(){if(!S.dog)return;if((S.pts||0)<8)return toast('钻石不够，完成学习再来洗澡吧！');S.pts-=8;S.dog.hy=Math.min(100,S.dog.hy+40);R();saveDog();up();showPage('dog');playCue('pet_bath','洗干净啦！');dogAnim('bath');showBubble('洗干净啦！')}
+function tDog(){if(!S.dog)return;const p=S.dog;let key='pet_hello',m='我会陪你一起学习，一起长大！';if(p.hu<30){key='pet_hungry';m='我饿了，完成学习任务后给我准备食物吧！'}else if(p.hy<30){key='pet_bath';m='我要洗澡啦，身上臭了，快帮我洗洗！'}else if(p.en<30){key='pet_play';m='我想出去和你玩，先完成今天的学习任务吧！'}playCue(key,m);dogAnim('talk');showBubble(m)}
+function init(){migratePetsV6();uS();up();document.addEventListener('click',function(){primeS();playQueuedCue()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){primeS();playQueuedCue()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home');setTimeout(()=>playCue(greetingCue(),'欢迎回来，小主人！'),350)}}
 // INIT
 init();
 </script>
