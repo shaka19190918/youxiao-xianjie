@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FF6B6B">
 <link rel="manifest" href="manifest.webmanifest">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').then(()=>navigator.serviceWorker.ready).then(reg=>{const warm=()=>{const worker=reg.active||navigator.serviceWorker.controller;if(worker)worker.postMessage('prewarm-learning-audio')};if('requestIdleCallback'in window)requestIdleCallback(warm,{timeout:4000});else setTimeout(warm,1500)}).catch(()=>{}))}</script>
 <script src="assets/vendor/hanzi-writer.min.js" defer></script>
 <title>幼小衔接快乐营</title>
 <style>

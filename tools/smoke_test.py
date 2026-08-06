@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 
 def verify_page(page, width, height):
     page.set_viewport_size({"width": width, "height": height})
-    page.reload(wait_until="networkidle")
+    page.reload(wait_until="domcontentloaded")
     page.evaluate("showPage('pinyin')")
     assert page.locator(".pc").count() >= 24, "pinyin cards did not render"
     labels = page.locator(".pc .py-c").all_text_contents()
@@ -16,10 +16,10 @@ def verify_page(page, width, height):
 
 
 with sync_playwright() as p:
-    # Use the installed stable Chrome instead of requiring a browser download.
+    # Use the bundled headless test browser (not the user's browser profile).
     browser = p.chromium.launch(
         headless=True,
-        executable_path=r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        executable_path=os.path.expandvars(r"%LOCALAPPDATA%\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe"),
     )
     page = browser.new_page(viewport={"width": 390, "height": 844})
     played = []
@@ -32,7 +32,19 @@ with sync_playwright() as p:
       window.__played=[];
       HTMLMediaElement.prototype.play=function(){window.__played.push(this.src);return Promise.resolve();};
     """)
-    page.goto(os.environ.get("SMOKE_URL", "http://127.0.0.1:4173"), wait_until="networkidle")
+    # First load starts audio precaching, so the rendered application function
+    # rather than a quiet network window is the first-shell gate.
+    page.goto(os.environ.get("SMOKE_URL", "http://127.0.0.1:4173"), wait_until="commit")
+    page.wait_for_function("typeof showPage === 'function'", timeout=10000)
+    print("online shell loaded", flush=True)
+    page.evaluate("navigator.serviceWorker.ready")
+    print("service worker ready", flush=True)
+    page.reload(wait_until="domcontentloaded")
+    page.context.set_offline(True)
+    page.reload(wait_until="domcontentloaded")
+    assert "幼小衔接" in page.title(), "offline app shell did not load"
+    print("offline shell loaded", flush=True)
+    page.context.set_offline(False)
     for width, height in [(320, 568), (375, 667), (390, 844), (768, 1024)]:
         verify_page(page, width, height)
 
