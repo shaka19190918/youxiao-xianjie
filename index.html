@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="幼小衔接快乐营">
 <meta name="theme-color" content="#FF6B6B">
 <link rel="manifest" href="manifest.webmanifest">
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3/dist/hanzi-writer.min.js" defer></script>
 <title>幼小衔接快乐营</title>
 <style>
 :root {
@@ -924,6 +925,15 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   #memorySequence + div { flex-wrap: wrap; }
   #memoryInput { width: 100%; max-width: 100% !important; }
 }
+
+/* Hanzi Writer Modal */
+.hanzi-modal-overlay { position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:300;display:flex;align-items:center;justify-content:center; }
+.hanzi-modal { background:#FFF;border-radius:20px;padding:20px;max-width:340px;width:90%;box-shadow:0 10px 40px rgba(0,0,0,0.2); }
+.hanzi-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:8px; }
+#hanziWriterTarget { background:#FFFDF5;border:2px dashed #E0E0E0;border-radius:16px;overflow:hidden; }
+.char-btn { transition:all 0.2s; font-family:inherit; }
+.char-btn:active { transform:scale(0.95); }
+.char-card { display:flex;flex-direction:column;align-items:center;gap:2px; }
 </style>
 </head>
 <body>
@@ -990,13 +1000,103 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="stat-value" id="totalStarsHome">0</div>
         <div class="stat-label">累计学习钻石</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-icon">📖</div>
+        <div class="stat-value" id="charsLearnedHome">0</div>
+        <div class="stat-label">已学汉字</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔤</div>
+        <div class="stat-value" id="pinyinLearnedHome">0</div>
+        <div class="stat-label">已学拼音</div>
+      </div>
     </div>
 
-    <div class="card pet-card" id="petCard"></div>
+    <!-- 今日学习目标进度环 -->
+    <div class="card" id="dailyGoalCard"></div>
 
-    <!-- Growth Tree & Badges (成长树和徽章) -->
-    <div class="growth-tree-card" id="growthTreeCard"></div>
+    <!-- 今日任务清单 -->
+    <div class="card today-schedule-mini">
+      <div class="card-header">
+        <span class="icon">📋</span>
+        <h2><span class="py-ruby"><span class="rt">jīn rì rèn wu</span>今日任务清单</span></h2>
+      </div>
+      <div id="todayTasks"></div>
+    </div>
 
+    <!-- 习惯打卡快捷区 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🏆</span>
+        <h2><span class="py-ruby"><span class="rt">hǎo xí guàn dǎ kǎ</span>好习惯打卡</span></h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        💡 每个习惯每天只能申请 1 次；由家长确认真实完成后才会记录。
+      </p>
+      <div class="habit-list" id="habitList"></div>
+    </div>
+
+    <!-- 本周打卡记录 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📊</span>
+        <h2><span class="py-ruby"><span class="rt">běn zhōu jì lù</span>本周打卡记录</span></h2>
+      </div>
+      <div class="week-grid">
+        <div class="week-day-label">一</div>
+        <div class="week-day-label">二</div>
+        <div class="week-day-label">三</div>
+        <div class="week-day-label">四</div>
+        <div class="week-day-label">五</div>
+        <div class="week-day-label">六</div>
+        <div class="week-day-label">日</div>
+      </div>
+      <div class="week-grid" id="weekGrid" style="margin-top:4px;"></div>
+    </div>
+
+    <!-- 每日作息表 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📅</span>
+        <h2><span class="py-ruby"><span class="rt">měi rì zuò xí</span>每日作息表</span></h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+        💡 点击任务可以标记完成，养成好习惯从小开始！
+      </p>
+      <div class="timeline" id="dailyTimeline"></div>
+    </div>
+
+    <!-- 学习计时小工具 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">⏱️</span>
+        <h2><span class="py-ruby"><span class="rt">xué xí jì shí</span>学习计时</span></h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;text-align:center;">
+        🧠 每天专注学习一小段时间，慢慢就能坐得住啦！
+      </p>
+      <div class="timer-presets">
+        <button class="preset-btn active" onclick="setTimer(5)">5分钟</button>
+        <button class="preset-btn" onclick="setTimer(10)">10分钟</button>
+        <button class="preset-btn" onclick="setTimer(15)">15分钟</button>
+        <button class="preset-btn" onclick="setTimer(20)">20分钟</button>
+      </div>
+      <div class="timer-circle" id="timerCircle">
+        <div class="timer-inner">
+          <div class="timer-time" id="timerDisplay">05:00</div>
+          <div class="timer-label">专注学习</div>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">▶ 开始</button>
+        <button class="timer-btn reset" onclick="resetTimer()">↺ 重置</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">
+        ✅ 完成专注时段并通过计时后，可以获得学习钻石。
+      </p>
+    </div>
+
+    <!-- 徽章墙 -->
     <div class="card">
       <div class="card-header">
         <span class="icon">🏅</span>
@@ -1006,157 +1106,60 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <div class="badge-row" id="badgeRow"></div>
     </div>
 
-    <div class="card today-schedule-mini">
-      <div class="card-header">
-        <span class="icon">📋</span>
-        <h2><span class="py-ruby"><span class="rt">jīn rì rèn wu</span>今日任务清单</span></h2>
-      </div>
-      <div id="todayTasks"></div>
-    </div>
-
+    <!-- 快速入口 -->
     <div class="card">
       <div class="card-header">
         <span class="icon">🚀</span>
         <h2><span class="py-ruby"><span class="rt">kuài sù rù kǒu</span>快速入口</span></h2>
       </div>
       <div class="quick-actions">
+        <div class="quick-action" onclick="switchTab(1)">
+          <div class="qa-icon">🔤</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">pīn yīn</span>拼音城堡</span></div>
+        </div>
         <div class="quick-action" onclick="switchTab(2)">
-          <div class="qa-icon">📖</div>
-          <div class="qa-label"><span class="py-ruby"><span class="rt">yǔ wén</span>语文启蒙</span></div>
+          <div class="qa-icon">🧠</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">sī wéi</span>思维训练</span></div>
         </div>
         <div class="quick-action" onclick="switchTab(3)">
-          <div class="qa-icon">🔢</div>
-          <div class="qa-label"><span class="py-ruby"><span class="rt">shù xué</span>数学思维</span></div>
-        </div>
-        <div class="quick-action" onclick="switchTab(4)">
-          <div class="qa-icon">💎</div>
-          <div class="qa-label"><span class="py-ruby"><span class="rt">hǎo xí guàn</span>好习惯</span></div>
+          <div class="qa-icon">📖</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">shí zì</span>识字花园</span></div>
         </div>
         <div class="quick-action" onclick="switchTab(5)">
-          <div class="qa-icon">⏱️</div>
-          <div class="qa-label"><span class="py-ruby"><span class="rt">zhuān zhù lì</span>专注力</span></div>
+          <div class="qa-icon">📜</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">gǔ shī</span>古诗童谣</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== PAGE 1: DAILY PLAN ===== -->
-  <div class="page" id="page-plan">
+  <!-- ===== PAGE 1: PINYIN ===== -->
+  <div class="page" id="page-pinyin">
     <div class="card">
-      <div class="card-header">
-        <span class="icon">📅</span>
-        <h2>每日作息表</h2>
-      </div>
+      <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
       <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-        💡 点击任务可以标记完成，养成好习惯从小开始！
+        声母播放声母本音；韵母、整体认读音节和四声调用真人普通话音节。先听清音，再做拼读。
+        <button onclick="speakPinyin('a','a1')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试拼音音频</button>
+        <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
       </p>
-      <div class="timeline" id="dailyTimeline"></div>
+      <h3 style="margin:12px 0 8px;font-size:16px;">声母 (23个)</h3>
+      <div class="pinyin-grid" id="shengmuGrid"></div>
+      <h3 style="margin:16px 0 8px;font-size:16px;">四声调（以 a 为例）</h3>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">一声平、二声扬、三声拐弯、四声降。每张卡会播放对应声调。</p>
+      <div class="pinyin-grid" id="toneGrid"></div>
+      <h3 style="margin:16px 0 8px;font-size:16px;">单韵母 (6个)</h3>
+      <div class="pinyin-grid" id="danyunmuGrid"></div>
+      <h3 style="margin:16px 0 8px;font-size:16px;">复韵母 (8个) + 特殊韵母 er</h3>
+      <div class="pinyin-grid" id="fuyunmuGrid"></div>
+      <h3 style="margin:16px 0 8px;font-size:16px;">前鼻韵母 (5个) + 后鼻韵母 (4个)</h3>
+      <div class="pinyin-grid" id="biyunmuGrid"></div>
+      <h3 style="margin:16px 0 8px;font-size:16px;">整体认读音节 (16个)</h3>
+      <div class="pinyin-grid" id="zhengtiGrid"></div>
     </div>
   </div>
 
-  <!-- ===== PAGE 2: CHINESE ===== -->
-  <div class="page" id="page-chinese">
-    <div class="module-tabs" id="chineseTabs">
-      <button class="module-tab active" data-sub="pinyin"><span class="py-ruby"><span class="rt">pīn yīn chéng bǎo</span>拼音城堡</span></button>
-      <button class="module-tab" data-sub="chars"><span class="py-ruby"><span class="rt">hàn zì huā yuán</span>汉字花园</span></button>
-      <button class="module-tab" data-sub="flashcard"><span class="py-ruby"><span class="rt">shǎn kǎ shí zì</span>闪卡识字</span></button>
-      <button class="module-tab" data-sub="poem"><span class="py-ruby"><span class="rt">gǔ shī tóng yáo</span>古诗童谣</span></button>
-      <button class="module-tab" data-sub="english"><span class="py-ruby"><span class="rt">yīng yǔ dān cí</span>英语单词</span></button>
-    </div>
-
-    <!-- Pinyin Section -->
-    <div class="chinese-sub active" id="sub-pinyin">
-      <div class="card">
-        <div class="card-header"><span class="icon">🔤</span><h2>汉语拼音</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-          声母播放声母本音；韵母、整体认读音节和四声调用真人普通话音节。先听清音，再做拼读。
-          <button onclick="speakPinyin('a','a1')" style="background:var(--chinese);color:#FFF;border:none;padding:4px 12px;border-radius:10px;font-size:12px;cursor:pointer;">🔊 测试拼音音频</button>
-          <span style="display:block;margin-top:4px;">听不到？iPhone 请关掉左侧静音开关、调大音量；微信里请改用浏览器打开。</span>
-        </p>
-        
-        <h3 style="margin:12px 0 8px;font-size:16px;">声母 (23个)</h3>
-        <div class="pinyin-grid" id="shengmuGrid"></div>
-
-        <h3 style="margin:16px 0 8px;font-size:16px;">四声调（以 a 为例）</h3>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">一声平、二声扬、三声拐弯、四声降。每张卡会播放对应声调。</p>
-        <div class="pinyin-grid" id="toneGrid"></div>
-        
-        <h3 style="margin:16px 0 8px;font-size:16px;">单韵母 (6个)</h3>
-        <div class="pinyin-grid" id="danyunmuGrid"></div>
-        
-        <h3 style="margin:16px 0 8px;font-size:16px;">复韵母 (8个) + 特殊韵母 er</h3>
-        <div class="pinyin-grid" id="fuyunmuGrid"></div>
-
-        <h3 style="margin:16px 0 8px;font-size:16px;">前鼻韵母 (5个) + 后鼻韵母 (4个)</h3>
-        <div class="pinyin-grid" id="biyunmuGrid"></div>
-
-        <h3 style="margin:16px 0 8px;font-size:16px;">整体认读音节 (16个)</h3>
-        <div class="pinyin-grid" id="zhengtiGrid"></div>
-      </div>
-    </div>
-
-    <!-- Characters Section -->
-    <div class="chinese-sub" id="sub-chars" style="display:none;">
-      <div class="card">
-        <div class="card-header"><span class="icon">✏️</span><h2>会写字（一年级上册）</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">每天认识5个新字，点击可标记已学会</p>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">✍️ 写字姿势"三个一"：胸离桌边一拳，眼离本子一尺，手离笔尖一寸。</p>
-        <div class="char-grid" id="charGrid1"></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="icon">📝</span><h2>会认字（常用字）</h2></div>
-        <div class="char-grid" id="charGrid2"></div>
-      </div>
-    </div>
-
-    <!-- Flashcard Section -->
-    <div class="chinese-sub" id="sub-flashcard" style="display:none;">
-      <div class="card">
-        <div class="card-header"><span class="icon">🃏</span><h2>闪卡识字游戏</h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">先看字、在心里读一遍；翻开答案后再选择“认识”或“再练一次”。认识的字会按 1、3、7、14 天间隔复习。</p>
-        <div class="flashcard-container">
-          <div class="flashcard" id="flashcard" onclick="flipCard()">
-            <div class="fc-char" id="fcChar">一</div>
-            <div class="fc-info" id="fcInfo" style="display:none;">yī · 1画</div>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
-          <button class="timer-btn reset" onclick="prevFlashcard()">◀ 上一个</button>
-          <span style="line-height:44px;font-weight:700;" id="fcIndex">今日待复习</span>
-          <button class="timer-btn start" onclick="nextFlashcard()">下一张 ▶</button>
-        </div>
-        <div class="flashcard-actions" id="fcReviewActions" style="display:none;"><button class="again" onclick="reviewFlashcard(false)">🔁 再练一次</button><button class="known" onclick="reviewFlashcard(true)">✅ 我认识</button></div>
-      </div>
-    </div>
-
-    <!-- Poem Section -->
-    <div class="chinese-sub" id="sub-poem" style="display:none;">
-      <div class="card">
-        <div class="card-header"><span class="icon">📜</span><h2>古诗童谣与国学启蒙</h2></div>
-        <div id="poemList"></div>
-      </div>
-    </div>
-
-    <!-- English Words Section -->
-    <div class="chinese-sub" id="sub-english" style="display:none;">
-      <div class="card">
-        <div class="card-header"><span class="icon">🔤</span><h2><span class="py-ruby"><span class="rt">yīng yǔ dān cí</span>简单英语单词</span></h2></div>
-        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击卡片听英语发音，跟着读一读！</p>
-        <div class="eng-tabs" id="engTabs">
-          <button class="eng-tab active" data-engcat="animals">🐶 动物</button>
-          <button class="eng-tab" data-engcat="colors">🎨 颜色</button>
-          <button class="eng-tab" data-engcat="numbers">🔢 数字</button>
-          <button class="eng-tab" data-engcat="fruits">🍎 水果</button>
-          <button class="eng-tab" data-engcat="family">👨‍👩‍👧 家人</button>
-        </div>
-        <div class="eng-grid" id="engGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE 3: MATH ===== -->
-  <div class="page" id="page-math">
-    <!-- Level Map (闯关系统) -->
+  <!-- ===== PAGE 2: THINKING (MATH) ===== -->
+  <div class="page" id="page-thinking">
     <div class="card" style="margin-bottom:12px;">
       <div class="card-header">
         <span class="icon">🗺️</span>
@@ -1174,8 +1177,6 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
       <button class="module-tab" data-sub="pattern">找规律</button>
       <button class="module-tab" data-sub="life">生活数学</button>
     </div>
-
-    <!-- Count Section -->
     <div class="math-sub active" id="sub-count">
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">🔢</span><h2 style="margin:0 auto;">1~20 数数练习</h2></div>
@@ -1183,9 +1184,6 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="number-line" id="numberLine"></div>
       </div>
     </div>
-
-    <!-- Add/Sub Section -->
-    <!-- Number Bonds Section: 数的分与合是加减法的基础（人教版一上） -->
     <div class="math-sub" id="sub-split" style="display:none;">
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">🍎</span><h2 style="margin:0 auto;">数的分与合</h2></div>
@@ -1195,7 +1193,6 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="math-options" id="splitOptions"></div>
       </div>
     </div>
-
     <div class="math-sub" id="sub-addsub" style="display:none;">
       <div class="card">
         <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:14px;" id="mathLevelButtons">
@@ -1203,22 +1200,14 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         </div>
         <p style="font-size:13px;color:var(--text-light);text-align:center;margin:-4px 0 12px;">从适合孩子的难度开始；答对后再主动升级，不会强制超前。</p>
         <div class="score-bar">
-          <div class="score-item">
-            <div class="si-val good" id="correctCount">0</div>
-            <div class="si-label">✅ 做对</div>
-          </div>
-          <div class="score-item">
-            <div class="si-val" id="totalCount" style="color:var(--text);">0</div>
-            <div class="si-label">📝 总题</div>
-          </div>
+          <div class="score-item"><div class="si-val good" id="correctCount">0</div><div class="si-label">✅ 做对</div></div>
+          <div class="score-item"><div class="si-val" id="totalCount" style="color:var(--text);">0</div><div class="si-label">📝 总题</div></div>
         </div>
         <div class="math-question" id="mathQuestion">3 + 2 = ?</div>
         <button class="question-sound" onclick="speakMathQuestion('addsub')">🔊 听题目</button>
         <div class="math-options" id="mathOptions"></div>
       </div>
     </div>
-
-    <!-- Compare Section -->
     <div class="math-sub" id="sub-compare" style="display:none;">
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">⚖️</span><h2 style="margin:0 auto;">比大小</h2></div>
@@ -1232,39 +1221,29 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <p style="font-size:14px;color:var(--text-light);">口诀：开口朝大数，尖角对小数</p>
       </div>
     </div>
-
-    <!-- Shapes Section -->
     <div class="math-sub" id="sub-shapes" style="display:none;">
       <div class="card">
         <div class="card-header"><span class="icon">🔷</span><h2>认识立体图形</h2></div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
           <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="font-size:48px;">📦</div>
-            <div style="font-weight:700;margin:8px 0;">长方体</div>
-            <div style="font-size:12px;color:var(--text-light);">长长方方，6个平平的面</div>
+            <div style="font-size:48px;">📦</div><div style="font-weight:700;margin:8px 0;">长方体</div><div style="font-size:12px;color:var(--text-light);">长长方方，6个平平的面</div>
           </div>
           <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="font-size:48px;">🎲</div>
-            <div style="font-weight:700;margin:8px 0;">正方体</div>
-            <div style="font-size:12px;color:var(--text-light);">四四方方，6个面一样大</div>
+            <div style="font-size:48px;">🎲</div><div style="font-weight:700;margin:8px 0;">正方体</div><div style="font-size:12px;color:var(--text-light);">四四方方，6个面一样大</div>
           </div>
           <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="font-size:48px;">🥫</div>
-            <div style="font-weight:700;margin:8px 0;">圆柱</div>
-            <div style="font-size:12px;color:var(--text-light);">直直的，上下一样粗</div>
+            <div style="font-size:48px;">🥫</div><div style="font-weight:700;margin:8px 0;">圆柱</div><div style="font-size:12px;color:var(--text-light);">直直的，上下一样粗</div>
           </div>
           <div style="background:#FFF;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="font-size:48px;">⚽</div>
-            <div style="font-weight:700;margin:8px 0;">球</div>
-            <div style="font-size:12px;color:var(--text-light);">圆圆的，可以向任意方向滚动</div>
+            <div style="font-size:48px;">⚽</div><div style="font-weight:700;margin:8px 0;">球</div><div style="font-size:12px;color:var(--text-light);">圆圆的，可以向任意方向滚动</div>
           </div>
         </div>
         <p style="font-size:13px;color:var(--text-light);margin-top:12px;text-align:center;">
-          💡 小游戏：在家里找找这些形状的物品吧！
+          💡 小游戏：在家里找找这些形状的物品吧！<br>
+          <small style="color:var(--text-light);">内容范围：20 以内加减法，对标人教版一年级数学</small>
         </p>
       </div>
     </div>
-
     <div class="math-sub" id="sub-pattern" style="display:none;">
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">🔁</span><h2 style="margin:0 auto;">规律推理</h2></div>
@@ -1274,7 +1253,6 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div class="math-options" id="patternOptions"></div>
       </div>
     </div>
-
     <div class="math-sub" id="sub-life" style="display:none;">
       <div class="card" style="text-align:center;">
         <div class="card-header"><span class="icon">🛒</span><h2 style="margin:0 auto;">生活数学</h2></div>
@@ -1286,104 +1264,125 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     </div>
   </div>
 
-  <!-- ===== PAGE 4: HABITS ===== -->
-  <div class="page" id="page-habits">
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">🏆</span>
-        <h2>好习惯打卡</h2>
-      </div>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-        💡 每个习惯每天只能申请 1 次；由家长确认真实完成后才会记录。
-      </p>
-      <div class="habit-list" id="habitList"></div>
+  <!-- ===== PAGE 3: CHARS ===== -->
+  <div class="page" id="page-chars">
+    <div class="module-tabs" id="charsTabs">
+      <button class="module-tab active" data-sub="chars"><span class="py-ruby"><span class="rt">hàn zì huā yuán</span>汉字花园</span></button>
+      <button class="module-tab" data-sub="flashcard"><span class="py-ruby"><span class="rt">shǎn kǎ shí zì</span>闪卡识字</span></button>
     </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">📊</span>
-        <h2>本周打卡记录</h2>
+    <div class="chars-sub active" id="sub-chars">
+      <div class="card">
+        <div class="card-header"><span class="icon">✏️</span><h2>会写字（一年级上册）<small style="font-size:11px;color:var(--text-light);font-weight:400;margin-left:6px;">对标部编版小学语文一年级上册识字表</small></h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:4px;">每天认识5个新字，点击可标记已学会</p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">✍️ 写字姿势"三个一"：胸离桌边一拳，眼离本子一尺，手离笔尖一寸。</p>
+        <div class="char-grid" id="charGrid1"></div>
       </div>
-      <div class="week-grid">
-        <div class="week-day-label">一</div>
-        <div class="week-day-label">二</div>
-        <div class="week-day-label">三</div>
-        <div class="week-day-label">四</div>
-        <div class="week-day-label">五</div>
-        <div class="week-day-label">六</div>
-        <div class="week-day-label">日</div>
+      <div class="card">
+        <div class="card-header"><span class="icon">📝</span><h2>会认字（常用字）</h2></div>
+        <div class="char-grid" id="charGrid2"></div>
       </div>
-      <div class="week-grid" id="weekGrid" style="margin-top:4px;"></div>
+    </div>
+    <div class="chars-sub" id="sub-flashcard" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">🃏</span><h2>闪卡识字游戏</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">先看字、在心里读一遍；翻开答案后再选择"认识"或"再练一次"。认识的字会按 1、3、7、14 天间隔复习。</p>
+        <div class="flashcard-container">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="fc-char" id="fcChar">一</div>
+            <div class="fc-info" id="fcInfo" style="display:none;">yī · 1画</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
+          <button class="timer-btn reset" onclick="prevFlashcard()">◀ 上一个</button>
+          <span style="line-height:44px;font-weight:700;" id="fcIndex">今日待复习</span>
+          <button class="timer-btn start" onclick="nextFlashcard()">下一张 ▶</button>
+        </div>
+        <div class="flashcard-actions" id="fcReviewActions" style="display:none;"><button class="again" onclick="reviewFlashcard(false)">🔁 再练一次</button><button class="known" onclick="reviewFlashcard(true)">✅ 我认识</button></div>
+      </div>
     </div>
   </div>
 
-  <!-- ===== PAGE 5: FOCUS ===== -->
-  <div class="page" id="page-focus">
+  <!-- ===== PAGE 4: ENGLISH ===== -->
+  <div class="page" id="page-english">
     <div class="card">
-      <div class="card-header">
-        <span class="icon">⏱️</span>
-        <h2>专注力时钟</h2>
+      <div class="card-header"><span class="icon">🔤</span><h2><span class="py-ruby"><span class="rt">yīng yǔ dān cí</span>简单英语单词</span></h2></div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击卡片听英语发音，跟着读一读！</p>
+      <div class="eng-tabs" id="engTabs">
+        <button class="eng-tab active" data-engcat="animals">🐶 动物</button>
+        <button class="eng-tab" data-engcat="colors">🎨 颜色</button>
+        <button class="eng-tab" data-engcat="numbers">🔢 数字</button>
+        <button class="eng-tab" data-engcat="fruits">🍎 水果</button>
+        <button class="eng-tab" data-engcat="family">👨‍👩‍👧 家人</button>
       </div>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;text-align:center;">
-        🧠 每天专注学习一小段时间，慢慢就能坐得住啦！
-      </p>
-      
-      <div class="timer-presets">
-        <button class="preset-btn active" onclick="setTimer(5)">5分钟</button>
-        <button class="preset-btn" onclick="setTimer(10)">10分钟</button>
-        <button class="preset-btn" onclick="setTimer(15)">15分钟</button>
-        <button class="preset-btn" onclick="setTimer(20)">20分钟</button>
-      </div>
+      <div class="eng-grid" id="engGrid"></div>
+    </div>
+  </div>
 
-      <div class="timer-circle" id="timerCircle">
-        <div class="timer-inner">
-          <div class="timer-time" id="timerDisplay">05:00</div>
-          <div class="timer-label">专注学习</div>
+  <!-- ===== PAGE 5: POEM ===== -->
+  <div class="page" id="page-poem">
+    <div class="card">
+      <div class="card-header"><span class="icon">📜</span><h2>古诗童谣与国学启蒙<small style="font-size:11px;color:var(--text-light);font-weight:400;margin-left:6px;">篇目来自《义务教育语文课程标准》一二年级必背诗文</small></h2></div>
+      <div id="poemList"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 6: SPORT ===== -->
+  <div class="page" id="page-sport">
+    <div class="card">
+      <div class="card-header"><span class="icon">⚽</span><h2><span class="py-ruby"><span class="rt">yùn dòng duàn liàn</span>运动锻炼</span></h2></div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">听指令做动作，完成后打卡，由家长确认后获得钻石奖励！</p>
+      <div class="sport-grid" id="sportGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 7: GAME ===== -->
+  <div class="page" id="page-game">
+    <div class="module-tabs" id="gameTabs">
+      <button class="module-tab active" data-sub="puzzle">🧩 益智游戏</button>
+      <button class="module-tab" data-sub="pet">🐾 宠物乐园</button>
+    </div>
+    <div class="game-sub active" id="sub-puzzle">
+      <div class="card">
+        <div class="card-header"><span class="icon">🎯</span><h2>专注力小游戏</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">舒尔特方格：按顺序从1点到25，看看你需要多长时间！</p>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:300px;margin:0 auto;" id="schulteGrid"></div>
+        <div style="text-align:center;margin-top:12px;">
+          <span id="schulteNext" style="font-size:18px;font-weight:700;">下一个: 1</span>
+          <span id="schulteTimer" style="margin-left:12px;font-size:14px;color:var(--text-light);">⏱️ 0.0秒</span>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+          <button class="timer-btn reset" onclick="initSchulte()">🔄 重新开始</button>
         </div>
       </div>
-
-      <div class="timer-controls">
-        <button class="timer-btn start" id="timerStartBtn" onclick="toggleTimer()">▶ 开始</button>
-        <button class="timer-btn reset" onclick="resetTimer()">↺ 重置</button>
+      <div class="card">
+        <div class="card-header"><span class="icon">🧠</span><h2>数字记忆</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">先看一串数字，3 秒后它会藏起来；再按顺序输入。答对后会逐步加长。</p>
+        <div id="memorySequence" style="font-size:30px;letter-spacing:8px;text-align:center;font-weight:800;padding:12px;min-height:62px;color:var(--focus);">点击开始</div>
+        <div style="display:flex;gap:8px;justify-content:center;align-items:center;"><input id="memoryInput" inputmode="numeric" maxlength="8" style="max-width:170px;padding:12px;border:2px solid #eee;border-radius:12px;font-size:18px;text-align:center;" placeholder="输入数字" disabled><button class="timer-btn start" onclick="startMemoryGame()">开始</button><button class="timer-btn reset" onclick="checkMemoryGame()">提交</button></div>
+        <p id="memoryHint" style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">每轮只需专心几秒钟。</p>
       </div>
-
-      <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">
-        ✅ 完成专注时段并通过计时后，可以获得学习钻石。
-      </p>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">🎯</span>
-        <h2>专注力小游戏</h2>
-      </div>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
-        舒尔特方格：按顺序从1点到25，看看你需要多长时间！
-      </p>
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:300px;margin:0 auto;" id="schulteGrid"></div>
-      <div style="text-align:center;margin-top:12px;">
-        <span id="schulteNext" style="font-size:18px;font-weight:700;">下一个: 1</span>
-        <span id="schulteTimer" style="margin-left:12px;font-size:14px;color:var(--text-light);">⏱️ 0.0秒</span>
-      </div>
-      <div style="text-align:center;margin-top:8px;">
-        <button class="timer-btn reset" onclick="initSchulte()">🔄 重新开始</button>
+      <div class="card">
+        <div class="card-header"><span class="icon">🔎</span><h2>找一找</h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">在一排相同符号里，找出唯一不一样的一个。看清楚再点，不追求速度。</p>
+        <div id="oddPrompt" style="text-align:center;font-weight:700;margin-bottom:8px;">点击"换一题"开始</div>
+        <div id="oddGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:320px;margin:0 auto;"></div>
+        <div style="text-align:center;margin-top:10px;"><button class="timer-btn reset" onclick="generateOddOneOut()">换一题</button></div>
       </div>
     </div>
-
-    <div class="card">
-      <div class="card-header"><span class="icon">🧠</span><h2>数字记忆</h2></div>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">先看一串数字，3 秒后它会藏起来；再按顺序输入。答对后会逐步加长。</p>
-      <div id="memorySequence" style="font-size:30px;letter-spacing:8px;text-align:center;font-weight:800;padding:12px;min-height:62px;color:var(--focus);">点击开始</div>
-      <div style="display:flex;gap:8px;justify-content:center;align-items:center;"><input id="memoryInput" inputmode="numeric" maxlength="8" style="max-width:170px;padding:12px;border:2px solid #eee;border-radius:12px;font-size:18px;text-align:center;" placeholder="输入数字" disabled><button class="timer-btn start" onclick="startMemoryGame()">开始</button><button class="timer-btn reset" onclick="checkMemoryGame()">提交</button></div>
-      <p id="memoryHint" style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">每轮只需专心几秒钟。</p>
-    </div>
-
-    <div class="card">
-      <div class="card-header"><span class="icon">🔎</span><h2>找一找</h2></div>
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">在一排相同符号里，找出唯一不一样的一个。看清楚再点，不追求速度。</p>
-      <div id="oddPrompt" style="text-align:center;font-weight:700;margin-bottom:8px;">点击“换一题”开始</div>
-      <div id="oddGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:320px;margin:0 auto;"></div>
-      <div style="text-align:center;margin-top:10px;"><button class="timer-btn reset" onclick="generateOddOneOut()">换一题</button></div>
+    <div class="game-sub" id="sub-pet" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">🐾</span><h2>宠物乐园</h2></div>
+        <div id="petCardGame" style="text-align:center;padding:12px;"></div>
+        <div id="petPlayground" style="text-align:center;padding:12px;">
+          <div id="petAvatarBig" class="pet-bounce"></div>
+          <div id="petHearts"></div>
+          <div class="pet-actions" style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+            <button class="timer-btn start" onclick="feedPet();petAnimate('bounce')">🍖 喂食</button>
+            <button class="timer-btn start" onclick="bathePet();petAnimate('heart')">🛁 洗澡</button>
+            <button class="timer-btn start" onclick="playWithPet();petAnimate('jump')">🏃 玩耍</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1395,19 +1394,25 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <span class="nav-icon">🏠</span><span class="py-ruby"><span class="rt">shǒu yè</span>首页</span>
   </button>
   <button class="nav-item" data-tab="1" onclick="switchTab(1)">
-    <span class="nav-icon">📋</span><span class="py-ruby"><span class="rt">měi rì jì huà</span>每日计划</span>
+    <span class="nav-icon">🔤</span><span class="py-ruby"><span class="rt">pīn yīn</span>拼音</span>
   </button>
   <button class="nav-item" data-tab="2" onclick="switchTab(2)">
-    <span class="nav-icon">📖</span><span class="py-ruby"><span class="rt">yǔ wén</span>语文</span>
+    <span class="nav-icon">🧠</span><span class="py-ruby"><span class="rt">sī wéi</span>思维</span>
   </button>
   <button class="nav-item" data-tab="3" onclick="switchTab(3)">
-    <span class="nav-icon">🔢</span><span class="py-ruby"><span class="rt">shù xué</span>数学</span>
+    <span class="nav-icon">📖</span><span class="py-ruby"><span class="rt">shí zì</span>识字</span>
   </button>
   <button class="nav-item" data-tab="4" onclick="switchTab(4)">
-    <span class="nav-icon">💎</span><span class="py-ruby"><span class="rt">hǎo xí guàn</span>习惯</span>
+    <span class="nav-icon">🔠</span><span class="py-ruby"><span class="rt">yīng yǔ</span>英语</span>
   </button>
   <button class="nav-item" data-tab="5" onclick="switchTab(5)">
-    <span class="nav-icon">⏱️</span><span class="py-ruby"><span class="rt">zhuān zhù lì</span>专注</span>
+    <span class="nav-icon">📜</span><span class="py-ruby"><span class="rt">gǔ shī</span>古诗</span>
+  </button>
+  <button class="nav-item" data-tab="6" onclick="switchTab(6)">
+    <span class="nav-icon">⚽</span><span class="py-ruby"><span class="rt">yùn dòng</span>运动</span>
+  </button>
+  <button class="nav-item" data-tab="7" onclick="switchTab(7)">
+    <span class="nav-icon">🎮</span><span class="py-ruby"><span class="rt">yóu xì</span>游戏</span>
   </button>
 </div>
 
@@ -1432,6 +1437,23 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <h3>太棒了！</h3>
     <p id="rewardMsg">获得学习钻石！</p>
     <button onclick="hideReward()">👍 继续加油</button>
+  </div>
+</div>
+
+<!-- HANZI WRITER MODAL -->
+<div class="hanzi-modal-overlay" id="hanziOverlay" style="display:none;" onclick="closeHanziWriter()">
+  <div class="hanzi-modal" onclick="event.stopPropagation()">
+    <div class="hanzi-header">
+      <span style="font-weight:700;font-size:18px;" id="hanziTitle">描红练习</span>
+      <button style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-light);" onclick="closeHanziWriter()">✕</button>
+    </div>
+    <div id="hanziWriterTarget" style="width:200px;height:200px;margin:20px auto;"></div>
+    <div style="text-align:center;margin-bottom:12px;">
+      <button class="timer-btn start" onclick="startHanziQuiz()">🎯 开始描红</button>
+      <button class="timer-btn reset" onclick="resetHanziWriter()" style="margin-left:8px;">🔄 重播</button>
+    </div>
+    <p id="hanziFeedback" style="font-size:13px;color:var(--text-light);text-align:center;margin:8px 0;"></p>
+    <p style="font-size:11px;color:var(--text-light);text-align:center;">离线时如无法加载笔顺动画，请参考笔顺说明：<br/>先上后下，先左后右，先横后竖，先撇后捺。</p>
   </div>
 </div>
 
@@ -1627,8 +1649,13 @@ let state = {
   flashcardReview: {},
   habitDays: {},
   levelProgress: {},
-  growthTreeXP: 0,
+  growthTreeXP: 0,        // 历史占位，不再读写（老数据一次性并入 pet.xp）
   badges: {},
+  pinyinLearned: {},      // 永久记录已学拼音 key → true
+  poemsRead: {},          // 已朗读完成的古诗 title → true
+  dailyGoal: { tasks: 3, chars: 5 },  // 今日学习目标（家长可调）
+  hanziWriterDone: {},    // 已完成笔顺描红的字 → true
+  sportDone: {},          // 运动打卡 `${today}_${sportId}` → {claimed, verified}
 };
 
 function loadState() {
@@ -1641,6 +1668,18 @@ function loadState() {
       if (!Object.prototype.hasOwnProperty.call(parsed, 'points') || !Number.isFinite(state.points) || state.points < 0) state.points = Number(state.stars) || 0;
       if (!state.screenUsage || typeof state.screenUsage !== 'object') state.screenUsage = { date: '', seconds: 0 };
       migratePetState();
+      // v2 迁移：老 growthTreeXP 一次性并入 pet.xp
+      if (Number(parsed.growthTreeXP) > 0 && state.pet && !parsed._growthMerged) {
+        state.pet.xp = (Number(state.pet.xp) || 0) + Number(parsed.growthTreeXP);
+        state._growthMerged = true;
+        saveState();
+      }
+      // v2 迁移：pinyinToday 历史回填到永久表
+      if (state.pinyinToday && !parsed._pinyinBackfilled) {
+        Object.keys(state.pinyinToday).forEach(k => { state.pinyinLearned[k] = true; });
+        state._pinyinBackfilled = true;
+        saveState();
+      }
     }
   } catch(e) {}
 }
@@ -1971,19 +2010,7 @@ const pets = {
   malinois: { name: '比利时马里努阿犬', image: 'assets/pets/malinois-cartoon.png', trait: '勇敢挑战' },
   husky: { name: '哈士奇', image: 'assets/pets/husky-cartoon.png', trait: '活泼探索' },
 };
-function petLevel() { const fed = (state.pet && state.pet.care) || 0; return fed >= 8 ? 3 : fed >= 3 ? 2 : 1; }
-function adoptPet(type) { state.pet = { type, care: 0, adoptedAt: getToday() }; saveState(); document.getElementById('petSetup').style.display = 'none'; renderPet(); speakText('你好，我是你的学习伙伴。完成挑战后，我们一起成长。'); }
-function renderPet() {
-  const box = document.getElementById('petCard'); if (!box) return;
-  if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐾</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
-  const pet = pets[state.pet.type], level = petLevel(), care = state.pet.care || 0, progress = level === 3 ? 100 : ((care % 5) / 5) * 100;
-  box.innerHTML = `<div class="pet-card-inner"><div class="pet-avatar"><img src="${pet.image}" alt="${pet.name}"></div><div class="pet-info"><div class="pet-name">${pet.name} · ${['幼犬','成长犬','守护犬'][level - 1]}</div><div class="pet-meta">${pet.trait} · 已照顾 ${care} 次 · 钻石 ${state.points || 0}</div><div class="pet-meter"><span style="width:${progress}%"></span></div><div class="pet-actions"><button onclick="feedPet()">🍖 30💎 照顾</button><button onclick="petSpeak()">🔊 小狗说话</button></div></div></div>`;
-}
-function openPetAdoption() { document.getElementById('petSetup').style.display = 'flex'; }
-function feedPet() { if (!state.pet) return openPetAdoption(); if ((state.points || 0) < 30) return showToast('钻石不够，先完成学习挑战吧。'); state.points -= 30; state.stars = state.points; state.pet.care = (state.pet.care || 0) + 1; saveState(); updateStarsDisplay(); renderPet(); const level = petLevel(); speakText(`谢谢你照顾我！我现在是第${level}级学习伙伴。`); showToast('小狗吃饱啦，成长值 +1'); }
-function speakPet(text) { if (!('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=.92; u.pitch=1.28; u.volume=1; speechSynthesis.speak(u); } catch(e) { speakText(text,'zh-CN',.85); } }
-function petSpeak() { const pet = state.pet && pets[state.pet.type]; const text = pet ? `嗨，我是${pet.name}！我喜欢听你说今天学会了什么。先完成一道题，再来陪我玩吧！` : '先领养一只小狗吧。'; speakPet(text); }
-function speakCurrentPage() { const active=document.querySelector('.page.active'); const id=active&&active.id; const guides={ 'page-home':'这里是首页。先看看学习伙伴和今天的任务。完成后要请家长确认。','page-plan':'这里是每日计划。完成生活任务后点击申请确认。','page-chinese':'这里是语文。点击卡片听读音，慢慢跟读。','page-math':'这里是数学。请先听题目，再选择答案。','page-habits':'这里是好习惯。真实完成后申请家长确认。','page-focus':'这里是专注力训练。先听清要求，慢慢完成，不追求速度。' }; speakText(guides[id]||'请慢慢探索，完成后请家长确认。','zh-CN',.82); }
+function speakCurrentPage() { const active=document.querySelector('.page.active'); const id=active&&active.id; const guides={ 'page-home':'这里是首页。先看看今天的学习任务和目标。完成后要请家长确认。','page-pinyin':'这里是拼音城堡。点击卡片听读音，跟着大声读。','page-thinking':'这里是思维训练。请先听题目，再选择答案。','page-chars':'这里是识字。点汉字听读音，还可以练习描红。','page-english':'这里是英语单词。点卡片听发音，跟读三遍。','page-poem':'这里是古诗童谣。点每一句听朗读，也可以整首听。','page-sport':'这里是运动时间。听指令做动作，完成后打卡。','page-game':'这里是游戏乐园。有益智游戏，还可以和宠物互动。' }; speakText(guides[id]||'请慢慢探索，完成后请家长确认。','zh-CN',.82); }
 
 // ===== Pet growth: all progress comes from verified learning, never tapping =====
 const petStages = [
@@ -2028,7 +2055,7 @@ function adoptPet(type) {
   saveState(); document.getElementById('petSetup').style.display = 'none'; renderPet(); speakPet('你好，我是你的学习伙伴。完成挑战后，我们一起成长！');
 }
 function renderPet() {
-  const box = document.getElementById('petCard'); if (!box) return;
+  const box = document.getElementById('petCardGame') || document.getElementById('petCard'); if (!box) return;
   if (!state.pet || !pets[state.pet.type]) { box.innerHTML = '<div class="pet-card-inner"><div class="pet-avatar">🐶</div><div class="pet-info"><div class="pet-name">还没有学习伙伴</div><div class="pet-meta">先领养一只小狗，完成挑战赚钻石照顾它。</div></div><button class="timer-btn start" onclick="openPetAdoption()">去领养</button></div>'; return; }
   migratePetState();
   const pet = pets[state.pet.type], level = petLevel(), progress = petNextStageProgress();
@@ -2045,16 +2072,7 @@ function petSpeak() { speakPet(petNeedMessage()); }
 // so no microphone permission or child speech data is requested.
 function startVoiceCheck() { showToast('小狗会主动说出需要，不需要使用麦克风。'); }
 
-// ==================== GROWTH TREE & BADGES ====================
-const growthStages = [
-  { xp: 0, name: '种子', emoji: '🌰' },
-  { xp: 20, name: '小苗', emoji: '🌱' },
-  { xp: 50, name: '小树', emoji: '🌿' },
-  { xp: 100, name: '大树', emoji: '🌳' },
-  { xp: 200, name: '开花树', emoji: '🌸' },
-  { xp: 400, name: '结果树', emoji: '🍎' },
-];
-
+// ==================== BADGES ====================
 const badgeDefs = [
   { id: 'first_star', icon: '🌟', name: '第一颗钻石', desc: '获得第一颗学习钻石' },
   { id: 'ten_stars', icon: '💎', name: '小富翁', desc: '累计10颗钻石' },
@@ -2072,30 +2090,6 @@ const badgeDefs = [
   { id: 'english_start', icon: '🌐', name: '英语启蒙', desc: '学习第一个英语单词' },
   { id: 'schulte_done', icon: '🎯', name: '专注力高手', desc: '完成舒尔特方格' },
 ];
-
-function growthStage() {
-  const xp = Number(state.growthTreeXP) || 0;
-  for (let i = growthStages.length - 1; i >= 0; i--) {
-    if (xp >= growthStages[i].xp) return i;
-  }
-  return 0;
-}
-
-function renderGrowthTree() {
-  const stageIdx = growthStage();
-  const stage = growthStages[stageIdx];
-  const nextStage = growthStages[stageIdx + 1];
-  const xp = Number(state.growthTreeXP) || 0;
-  const progress = nextStage ? Math.min(100, Math.round((xp - stage.xp) * 100 / (nextStage.xp - stage.xp))) : 100;
-  const el = document.getElementById('growthTreeCard');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="growth-tree-emoji">${stage.emoji}</div>
-    <div class="growth-tree-name">${stage.name} · 成长值 ${xp}</div>
-    ${nextStage ? `<div class="growth-tree-progress">距离${nextStage.name}还需 ${nextStage.xp - xp} XP</div>` : '<div class="growth-tree-progress">已达到最高阶段！</div>'}
-    <div class="level-progress-bar" style="margin-top:8px;"><span style="width:${progress}%"></span></div>
-  `;
-}
 
 function renderBadges() {
   const badges = state.badges || {};
@@ -2140,14 +2134,11 @@ function checkBadges() {
   renderBadges();
 }
 
-// Add growth XP when earning verified points
+// Check badges when earning verified points (growth tree removed, pet XP handled by advancePetFromLearning)
 const _origAward = awardVerifiedPoints;
 awardVerifiedPoints = function(key, n, msg, big) {
   const result = _origAward(key, n, msg, big);
   if (result) {
-    state.growthTreeXP = (Number(state.growthTreeXP) || 0) + Math.max(2, Math.round(n * 1.5));
-    saveState();
-    renderGrowthTree();
     checkBadges();
   }
   return result;
@@ -2202,6 +2193,19 @@ function renderHome() {
       </div>
     `;
   }).join('');
+
+  // Stats row
+  renderStatsRow();
+  // Daily goal
+  renderDailyGoalCard();
+  // Habits
+  renderHabits();
+  // Week grid
+  renderWeekHistory();
+  // Daily plan timeline
+  renderDailyPlan();
+  // Badges
+  renderBadges();
 }
 
 function toggleTask(key, idx) {
@@ -2236,17 +2240,154 @@ function renderDailyPlan() {
     `;
   }).join('');
 }
+bindModuleTabs('charsTabs', 'chars', { chars: null, flashcard: renderFlashcard });
+bindModuleTabs('gameTabs', 'game', { puzzle: initSchulte, pet: renderPetGame });
 
-// ==================== CHINESE PAGE ====================
-// Sub-tab switching
-document.getElementById('chineseTabs').addEventListener('click', function(e) {
-  if (e.target.classList.contains('module-tab')) {
-    this.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
-    e.target.classList.add('active');
-    const sub = e.target.dataset.sub;
-    document.querySelectorAll('.chinese-sub').forEach(s => s.style.display = 'none');
-    document.getElementById('sub-' + sub).style.display = 'block';
+// ===== Stats Row =====
+function renderStatsRow() {
+  const streak = Number(state.streak) || 0;
+  const stars = Number(state.points) || 0;
+  const charsLearned = Object.keys(state.charsLearned || {}).length;
+  const pinyinLearned = Object.keys(state.pinyinLearned || {}).length;
+  document.getElementById('streakDays').textContent = streak;
+  document.getElementById('totalStarsHome').textContent = stars;
+  document.getElementById('charsLearnedHome').textContent = charsLearned;
+  document.getElementById('pinyinLearnedHome').textContent = pinyinLearned;
+}
+
+// ===== Daily Goal Card =====
+function renderDailyGoalCard() {
+  const today = getToday();
+  const goal = state.dailyGoal || { tasks: 3, chars: 5 };
+  const tasksDone = Object.values(state.tasksDone || {}).filter(v => v && v.verified).length;
+  const charsDone = (state.charsLearnedTodayDate === today) ? (state.charsLearnedToday || 0) : 0;
+  const taskPct = Math.min(100, Math.round(tasksDone * 100 / goal.tasks));
+  const charPct = Math.min(100, Math.round(charsDone * 100 / goal.chars));
+  document.getElementById('dailyGoalCard').innerHTML = `
+    <div class="card-header"><span class="icon">🎯</span><h2><span class="py-ruby"><span class="rt">jīn rì mù biāo</span>今日学习目标</span></h2></div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;padding:8px 0;">
+      <div style="text-align:center;">
+        <div style="width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--success) ${taskPct}%, #eee ${taskPct}%);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin:0 auto 6px;">${tasksDone}/${goal.tasks}</div>
+        <div style="font-size:13px;color:var(--text-light);">完成任务</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--chinese) ${charPct}%, #eee ${charPct}%);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin:0 auto 6px;">${charsDone}/${goal.chars}</div>
+        <div style="font-size:13px;color:var(--text-light);">学习新字</div>
+      </div>
+    </div>`;
+}
+
+// ===== Sport Data & Rendering (对标一二年级体育课程标准) =====
+const sports = [
+  { id: 'eye', name: '眼保健操', emoji: '👀', desc: '闭眼，跟着节拍按揉四白穴、睛明穴，共4节', duration: 300, tip: '保护视力，每天必做！' },
+  { id: 'jump', name: '跳绳', emoji: '🪢', desc: '双脚并拢跳绳，连续跳20个为一组', duration: 120, tip: '锻炼协调能力' },
+  { id: 'ball', name: '拍球', emoji: '🏀', desc: '单手连续拍球，计数20次', duration: 120, tip: '左右手各练习1组' },
+  { id: 'stretch', name: '伸展操', emoji: '🤸', desc: '两手向上伸展→弯腰触脚尖→左右体转，每个动作保持10秒', duration: 180, tip: '放松身体，提高柔韧性' },
+  { id: 'squat', name: '小青蛙跳', emoji: '🐸', desc: '双手背后，蹲下→跳起，连续10次', duration: 90, tip: '锻炼腿部力量' },
+  { id: 'balance', name: '单脚站立', emoji: '🦵', desc: '双手叉腰，单脚站立保持平衡，左右脚各30秒', duration: 60, tip: '提高平衡感，闭上眼更有挑战！' },
+  { id: 'run', name: '原地踏步跑', emoji: '🏃', desc: '高抬腿原地跑，手臂自然摆动', duration: 180, tip: '用节拍器控制频率，每分钟120步' },
+  { id: 'throw', name: '投掷练习', emoji: '🥏', desc: '用软球或纸团，练习肩上投掷动作', duration: 120, tip: '注意投掷姿势：侧身→转体→挥臂' },
+];
+
+function renderSport() {
+  const el = document.getElementById('sportGrid');
+  if (!el) return;
+  const today = getToday();
+  el.innerHTML = sports.map(s => {
+    const key = `sport_${s.id}_${today}`;
+    const status = state.sportDone ? state.sportDone[key] : null;
+    const verified = status === true;
+    const pending = status === 'claimed';
+    return `<div class="sport-card" style="background:#FFF;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.04);display:flex;align-items:center;gap:12px;margin-bottom:10px;${verified ? 'border-left:4px solid var(--success);' : ''}">
+      <div style="font-size:40px;">${s.emoji}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:15px;">${s.name}</div>
+        <div style="font-size:12px;color:var(--text-light);margin:2px 0;">${s.desc}</div>
+        <div style="font-size:11px;color:var(--focus);">💡 ${s.tip}</div>
+      </div>
+      <button style="flex-shrink:0;min-width:70px;padding:10px 14px;border-radius:12px;border:none;font-size:13px;font-weight:700;cursor:pointer;background:${verified ? 'var(--success)' : pending ? '#ccc' : 'var(--focus)'};color:#FFF;" onclick="claimSport('${key}', ${s.duration})" ${pending ? 'disabled' : ''}>${verified ? '✅' : pending ? '等待确认' : '申请打卡'}</button>
+    </div>`;
+  }).join('');
+}
+
+function claimSport(key, duration) {
+  if (!key) return;
+  if (!state.sportDone) state.sportDone = {};
+  state.sportDone[key] = 'claimed';
+  saveState();
+  renderSport();
+  showToast(`运动打卡申请已提交！家长确认后结算钻石。`);
+  speakText(`太棒了！完成了${Math.round(duration/60)}分钟运动，记得请家长确认哦！`, 'zh-CN', 0.85);
+}
+
+// ===== Pet Game Page Rendering =====
+function renderPetGame() {
+  const card = document.getElementById('petCardGame');
+  const avatar = document.getElementById('petAvatarBig');
+  if (!card || !avatar) return;
+  if (!state.pet || !pets[state.pet.type]) {
+    card.innerHTML = `<div style="padding:20px;text-align:center;">
+      <div style="font-size:64px;margin-bottom:12px;">🐾</div>
+      <div style="font-weight:700;font-size:18px;margin-bottom:8px;">还没有学习伙伴</div>
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:16px;">先领养一只小狗，完成挑战赚钻石照顾它。</div>
+      <button class="timer-btn start" onclick="openPetAdoption()">🐶 去领养</button>
+    </div>`;
+    avatar.style.display = 'none';
+    document.getElementById('petHearts').innerHTML = '';
+    return;
   }
+  const pet = pets[state.pet.type];
+  const level = petLevel();
+  const stageNames = ['幼犬', '探索犬', '成长犬', '守护犬'];
+  const stageName = stageNames[Math.min(level, stageNames.length - 1)] || '守护犬';
+  const xp = Number(state.pet.xp) || 0;
+  const next = petNextStageProgress();
+  card.innerHTML = `<div style="text-align:center;padding:12px;">
+    <div style="font-size:80px;margin-bottom:4px;" id="petAnimTarget"><img src="${pet.image}" alt="${pet.name}" style="width:80px;height:80px;"></div>
+    <div style="font-weight:700;font-size:18px;">${pet.name}</div>
+    <div style="font-size:13px;color:var(--text-light);">${stageName} · ${pet.trait}</div>
+    <div style="font-size:12px;color:var(--text-light);">成长值 ${xp} · 钻石 💎${state.points || 0}</div>
+    ${next > 0 ? `<div style="margin-top:6px;font-size:12px;color:var(--focus);">距离下一阶段还需 ${next} XP</div>` : '<div style="margin-top:6px;font-size:12px;color:var(--success);">已是最高阶段！</div>'}
+  </div>`;
+  avatar.style.display = 'block';
+  const img = document.getElementById('petAnimTarget');
+  if (img) avatar.innerHTML = img.outerHTML;
+  document.getElementById('petHearts').innerHTML = '';
+}
+
+function petAnimate(type) {
+  const target = document.getElementById('petAvatarBig');
+  if (!target) return;
+  target.classList.remove('pet-bounce', 'pet-shake', 'pet-heart');
+  void target.offsetWidth;
+  switch (type) {
+    case 'bounce': target.classList.add('pet-bounce'); break;
+    case 'heart':
+      target.classList.add('pet-heart');
+      const hearts = document.getElementById('petHearts');
+      if (hearts) { hearts.innerHTML = '<span style="font-size:32px;animation:floatUp 1.5s ease-out forwards;">❤️</span>'; setTimeout(() => { hearts.innerHTML = ''; }, 1600); }
+      break;
+    case 'jump': target.classList.add('pet-bounce'); break;
+    case 'shake': target.classList.add('pet-shake'); break;
+  }
+  setTimeout(() => target.classList.remove('pet-bounce', 'pet-shake', 'pet-heart'), 1000);
+}
+
+// Pet animation CSS keyframes (appended to style)
+document.addEventListener('DOMContentLoaded', function() {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes petBounce { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-20px); } 50% { transform: translateY(0); } 70% { transform: translateY(-10px); } }
+    @keyframes petShake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } 75% { transform: rotate(-5deg); } }
+    @keyframes petHeartBeat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.3); } 30% { transform: scale(1); } }
+    @keyframes floatUp { 0% { opacity:1; transform:translateY(0); } 100% { opacity:0; transform:translateY(-60px); } }
+    .pet-bounce { animation: petBounce 0.8s ease; }
+    .pet-shake { animation: petShake 0.6s ease; }
+    .pet-heart { animation: petHeartBeat 0.6s ease; }
+    .sport-card { transition: transform 0.2s, box-shadow 0.2s; }
+    .sport-card:active { transform: scale(0.98); }
+  `;
+  document.head.appendChild(style);
 });
 
 function renderPinyinGrid(id, data) {
@@ -2403,6 +2544,7 @@ function speakPinyin(py, audioId, source = 'syllable') {
     }
     if (!state.pinyinToday[py]) {
       state.pinyinToday[py] = true;
+      state.pinyinLearned[py] = true;
       saveState();
       showToast('听清后，试着把声母和韵母拼出来。');
     }
@@ -2413,10 +2555,12 @@ function renderCharGrid(id, data) {
   document.getElementById(id).innerHTML = data.map(c => {
     const learned = state.charsLearned[c.char];
     return `
-      <div class="char-card ${learned ? 'learned' : ''}" onclick="toggleChar('${c.char}')">
-        <div class="char-big">${c.char}</div>
-        <div class="char-pinyin">${c.pinyin}</div>
+      <div class="char-card ${learned ? 'learned' : ''}">
+        <div class="char-big" onclick="speakChar('${c.char}', '${c.pinyin}')">${c.char}</div>
+        <div class="char-pinyin" onclick="speakChar('${c.char}', '${c.pinyin}')">${c.pinyin}</div>
         <div class="char-stroke">${c.stroke}</div>
+        <button class="char-btn" onclick="toggleChar('${c.char}');event.stopPropagation();" style="font-size:11px;padding:4px 8px;border-radius:8px;border:1px solid #ddd;background:#FFF;cursor:pointer;margin-top:4px;">${learned ? '✓已学' : '标记学会'}</button>
+        <button class="char-btn" onclick="openHanziWriter('${c.char}');event.stopPropagation();" style="font-size:11px;padding:4px 8px;border-radius:8px;border:1px solid var(--chinese);background:#FFF;color:var(--chinese);cursor:pointer;margin-top:2px;">✍️ 描红</button>
       </div>
     `;
   }).join('');
@@ -2433,6 +2577,87 @@ function toggleChar(ch) {
     });
   }
   saveState();
+  renderCharGrid('charGrid1', charWrite);
+  renderCharGrid('charGrid2', charRead);
+}
+
+function speakChar(ch, pinyin) {
+  speakText(`${ch}，${pinyin}`, 'zh-CN', 0.7);
+}
+
+// ===== Hanzi Writer (笔顺描红) =====
+let hanziWriterInstance = null;
+let hanziCurrentChar = '';
+
+function openHanziWriter(ch) {
+  hanziCurrentChar = ch;
+  document.getElementById('hanziTitle').textContent = `描红练习：${ch}`;
+  document.getElementById('hanziWriterTarget').innerHTML = '';
+  document.getElementById('hanziFeedback').textContent = '加载笔顺动画中…';
+  document.getElementById('hanziOverlay').style.display = 'flex';
+  speakText(`我们来写${ch}字`, 'zh-CN', 0.8);
+
+  if (typeof HanziWriter === 'undefined') {
+    document.getElementById('hanziFeedback').textContent = '⚠️ 笔顺动画加载失败（需网络）。笔顺口诀：先上后下，先左后右，先横后竖，先撇后捺。';
+    return;
+  }
+
+  try {
+    hanziWriterInstance = HanziWriter.create('hanziWriterTarget', ch, {
+      width: 200,
+      height: 200,
+      padding: 5,
+      strokeAnimationSpeed: 1,
+      delayBetweenStrokes: 300,
+      radicalColor: '#FF6B6B',
+      showCharacter: false,
+      showOutline: true,
+      outlineColor: '#E0E0E0'
+    });
+    hanziWriterInstance.loopCharacterAnimation();
+    document.getElementById('hanziFeedback').textContent = '先看一遍笔画顺序，然后点"开始描红"跟着写。';
+  } catch(e) {
+    document.getElementById('hanziFeedback').textContent = '⚠️ 该字暂不支持笔顺动画。笔顺口诀：先上后下，先左后右，先横后竖，先撇后捺。';
+  }
+}
+
+function startHanziQuiz() {
+  if (!hanziWriterInstance) {
+    document.getElementById('hanziFeedback').textContent = '请先加载笔顺动画。';
+    return;
+  }
+  document.getElementById('hanziFeedback').textContent = '按住笔顺描红，写完每一笔后松手。';
+  hanziWriterInstance.quiz({
+    onMistake: function(strokeData) {
+      document.getElementById('hanziFeedback').textContent = '这笔不太对，再试一次！';
+    },
+    onCorrectStroke: function(strokeData) {
+      document.getElementById('hanziFeedback').textContent = '✅ 这一笔写得好！继续下一笔…';
+    },
+    onComplete: function(summaryData) {
+      const pct = Math.round(summaryData.totalMistakes / summaryData.strokes * 100);
+      const key = `hanzi_${hanziCurrentChar}_${getToday()}`;
+      awardVerifiedPoints(key, 10, `完成"${hanziCurrentChar}"描红！+10💎`);
+      speakText(`太棒了！${hanziCurrentChar}字写得真好！`, 'zh-CN', 0.8);
+      document.getElementById('hanziFeedback').textContent = `🎉 描红完成！共 ${summaryData.strokes} 笔，获 10 钻石奖励。`;
+      if (!state.charsLearned[hanziCurrentChar]) {
+        state.charsLearned[hanziCurrentChar] = true;
+        saveState();
+      }
+    }
+  });
+}
+
+function resetHanziWriter() {
+  if (hanziWriterInstance) {
+    hanziWriterInstance.loopCharacterAnimation();
+    document.getElementById('hanziFeedback').textContent = '笔顺动画重播中…';
+  }
+}
+
+function closeHanziWriter() {
+  document.getElementById('hanziOverlay').style.display = 'none';
+  hanziWriterInstance = null;
   renderCharGrid('charGrid1', charWrite);
   renderCharGrid('charGrid2', charRead);
 }
@@ -2525,10 +2750,11 @@ function prevFlashcard() {
 function renderPoems() {
   let lastCategory = '';
   poemLibrary = [...poems.filter(p => !p.title.includes('（节选）')), ...extendedPoems];
-  document.getElementById('poemList').innerHTML = `<p style="font-size:13px;color:var(--text-light);margin:0 2px 12px;">已收录 ${poemLibrary.length} 篇完整诗文。长篇国学会逐步增加完整篇章，不用孤立节选替代全文。</p>` + poemLibrary.map((p, i) => {
+  document.getElementById('poemList').innerHTML = `<p style="font-size:13px;color:var(--text-light);margin:0 2px 12px;">已收录 ${poemLibrary.length} 篇完整诗文。点击每一句可以点读，整首朗读点击右侧🔊按钮。</p>` + poemLibrary.map((p, i) => {
     const category = p.category || '古诗童谣';
     const heading = category === lastCategory ? '' : `<h3 style="margin:18px 2px 8px;font-size:16px;color:var(--chinese);">${category}</h3>`;
     lastCategory = category;
+    const pinyinLines = textToPinyinLines(p.lines);
     return heading + `
     <div style="background:#FFF;border-radius:16px;padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
@@ -2537,7 +2763,12 @@ function renderPoems() {
         <span style="color:var(--text-light);font-size:13px;">— ${p.author}</span>
         <button style="margin-left:auto;background:var(--focus);color:#FFF;border:none;padding:6px 14px;border-radius:12px;font-size:13px;cursor:pointer;" onclick="speakPoem(${i})">🔊 朗读</button>
       </div>
-      <div style="font-size:15px;line-height:2;color:#555;">${p.lines.join('<br>')}</div>
+      ${p.lines.map((line, li) => `
+        <div style="cursor:pointer;margin-bottom:4px;line-height:1.8;" onclick="speakPoemLine(${i}, ${li})" title="点击听这一句">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:-2px;">${pinyinLines[li] || ''}</div>
+          <div style="font-size:16px;color:#333;">${line}</div>
+        </div>
+      `).join('')}
     </div>
   `;
   }).join('');
@@ -2545,9 +2776,69 @@ function renderPoems() {
 
 function speakPoem(idx) {
   const poem = poemLibrary[idx];
-  // Mobile Safari is more reliable when a long poem is sent line by line.
+  if (poem) {
+    state.poemsRead[poem.title] = true;
+    saveState();
+  }
   speakLines([poem.title].concat(poem.lines), 0.68, function() {
     showToast(`《${poemLibrary[idx].title}》朗读结束，试着跟读一遍。`);
+  });
+}
+
+function speakPoemLine(idx, lineIdx) {
+  const poem = poemLibrary[idx];
+  if (!poem || !poem.lines[lineIdx]) return;
+  speakText(poem.lines[lineIdx], 'zh-CN', 0.72);
+}
+
+// Simple character-to-pinyin mapping for common poem characters (approx. 200 chars)
+const _pinyinMap = {
+  '春':'chūn','眠':'mián','不':'bù','觉':'jué','晓':'xiǎo','处':'chù','处':'chù','闻':'wén','啼':'tí','鸟':'niǎo',
+  '夜':'yè','来':'lái','风':'fēng','雨':'yǔ','声':'shēng','花':'huā','落':'luò','知':'zhī','多':'duō','少':'shǎo',
+  '白':'bái','日':'rì','依':'yī','山':'shān','尽':'jìn','黄':'huáng','河':'hé','入':'rù','海':'hǎi','流':'liú',
+  '欲':'yù','穷':'qióng','千':'qiān','里':'lǐ','目':'mù','更':'gèng','上':'shàng','一':'yī','层':'céng','楼':'lóu',
+  '床':'chuáng','前':'qián','明':'míng','月':'yuè','光':'guāng','疑':'yí','是':'shì','地':'dì','霜':'shuāng',
+  '举':'jǔ','头':'tóu','望':'wàng','低':'dī','思':'sī','故':'gù','乡':'xiāng','锄':'chú','禾':'hé','当':'dāng',
+  '午':'wǔ','汗':'hàn','滴':'dī','下':'xià','土':'tǔ','谁':'shéi','知':'zhī','盘':'pán','中':'zhōng','餐':'cān',
+  '粒':'lì','皆':'jiē','辛':'xīn','苦':'kǔ','鹅':'é','鹅':'é','曲':'qǔ','项':'xiàng','向':'xiàng','天':'tiān',
+  '歌':'gē','毛':'máo','浮':'fú','绿':'lǜ','水':'shuǐ','红':'hóng','掌':'zhǎng','拨':'bō','清':'qīng','波':'bō',
+  '小':'xiǎo','时':'shí','识':'shí','呼':'hū','作':'zuò','白':'bái','玉':'yù','飞':'fēi','在':'zài','青':'qīng',
+  '云':'yún','端':'duān','两':'liǎng','岸':'àn','猿':'yuán','啼':'tí','万':'wàn','重':'zhòng','远':'yuǎn','近':'jìn',
+  '高':'gāo','看':'kàn','遥':'yáo','瀑':'pù','布':'bù','挂':'guà','长':'cháng','川':'chuān','飞':'fēi','流':'liú',
+  '直':'zhí','三':'sān','尺':'chǐ','疑':'yí','银':'yín','九':'jiǔ','落':'luò','门':'mén','泊':'bó','东':'dōng',
+  '吴':'wú','好':'hǎo','学':'xué','童':'tóng','早':'zǎo','归':'guī','大':'dà','南':'nán','西':'xī','北':'běi',
+  '松':'sōng','问':'wèn','言':'yán','师':'shī','采':'cǎi','药':'yào','去':'qù','只':'zhǐ','此':'cǐ','深':'shēn',
+  '草':'cǎo','离':'lí','离':'lí','原':'yuán','岁':'suì','枯':'kū','荣':'róng','野':'yě','火':'huǒ','烧':'shāo',
+  '又':'yòu','生':'shēng','江':'jiāng','雪':'xuě','千':'qiān','万':'wàn','径':'jìng','踪':'zōng','灭':'miè',
+  '孤':'gū','舟':'zhōu','蓑':'suō','笠':'lì','翁':'wēng','独':'dú','钓':'diào','寒':'hán','空':'kōng','人':'rén',
+  '古':'gǔ','月':'yuè','行':'xíng','岁':'suì','仲':'zhòng','尼':'ní','师':'shī','项':'xiàng','橐':'tuó','七':'qī',
+  '后':'hòu','若':'ruò','冠':'guān','道':'dào','长':'zhǎng','孺':'rú','子':'zǐ','可':'kě','教':'jiào','桥':'qiáo',
+  '进':'jìn','履':'lǚ','心':'xīn','诚':'chéng','善':'shàn','良':'liáng','忍':'rěn','让':'ràng','尊':'zūn','敬':'jìng',
+  '静':'jìng','夜':'yè','思':'sī','望':'wàng','庐':'lú','瀑':'pù','赠':'zèng','汪':'wāng','伦':'lún','乘':'chéng',
+  '将':'jiāng','欲':'yù','踏':'tà','歌':'gē','桃':'táo','潭':'tán','深':'shēn','送':'sòng','我':'wǒ','情':'qíng',
+  '村':'cūn','居':'jū','拂':'fú','堤':'dī','杨':'yáng','柳':'liǔ','醉':'zuì','烟':'yān','散':'sàn','忙':'máng',
+  '纸':'zhǐ','鸢':'yuān','咏':'yǒng','碧':'bì','妆':'zhuāng','成':'chéng','条':'tiáo','丝':'sī','绦':'tāo','细':'xì',
+  '谁':'shuí','裁':'cái','似':'sì','剪':'jiǎn','刀':'dāo','所':'suǒ','见':'jiàn','牧':'mù','骑':'qí','振':'zhèn',
+  '樾':'yuè','鸣':'míng','蝉':'chán','立':'lì','闭':'bì','池':'chí','泉':'quán','惜':'xī','树':'shù','照':'zhào',
+  '爱':'ài','晴':'qíng','柔':'róu','荷':'hé','露':'lù','角':'jiǎo','蜻':'qīng','蜓':'tíng','夜':'yè','书':'shū',
+  '萧':'xiāo','梧':'wú','叶':'yè','送':'sòng','客':'kè','挑':'tiāo','促':'cù','织':'zhī','篱':'lí','落':'luò',
+  '灯':'dēng','梅':'méi','墙':'qiáng','遥':'yáo','暗':'àn','为':'wèi','雪':'xuě','香':'xiāng','子':'zǐ','曰':'yuē',
+  '时':'shí','习':'xí','之':'zhī','说':'yuè','朋':'péng','自':'zì','方':'fāng','乐':'lè','愠':'yùn','君':'jūn',
+  '温':'wēn','新':'xīn','师':'shī','矣':'yǐ','思':'sī','齐':'qí','内':'nèi','省':'xǐng'
+};
+
+function charToPinyin(ch) {
+  return _pinyinMap[ch] || '';
+}
+
+function textToPinyinLines(lines) {
+  return lines.map(line => {
+    let pinyinLine = '';
+    for (const ch of line) {
+      const py = charToPinyin(ch);
+      pinyinLine += py ? py + ' ' : ch + ' ';
+    }
+    return pinyinLine.trim();
   });
 }
 
@@ -2751,20 +3042,36 @@ function answerLevelMath(n, btn) {
 }
 
 // ==================== MATH PAGE ====================
-// Sub-tab switching
-document.getElementById('mathTabs').addEventListener('click', function(e) {
-  if (e.target.classList.contains('module-tab')) {
-    this.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
-    e.target.classList.add('active');
-    const sub = e.target.dataset.sub;
-    document.querySelectorAll('.math-sub').forEach(s => s.style.display = 'none');
-    document.getElementById('sub-' + sub).style.display = 'block';
-    if (sub === 'addsub') generateMath();
-    if (sub === 'split') generateSplit();
-    if (sub === 'compare') generateCompare();
-    if (sub === 'pattern') generatePattern();
-    if (sub === 'life') generateLifeQuestion();
-  }
+// Generic sub-tab switching (for any page: math, thinking, chars, english, etc.)
+function bindModuleTabs(containerId, subPrefix, initMap) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.addEventListener('click', function(e) {
+    if (e.target.classList.contains('module-tab')) {
+      this.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      const sub = e.target.dataset.sub;
+      document.querySelectorAll('.' + subPrefix + '-sub').forEach(s => s.style.display = 'none');
+      const target = document.getElementById('sub-' + sub);
+      if (target) target.style.display = 'block';
+      if (initMap && initMap[sub]) initMap[sub]();
+    }
+  });
+}
+bindModuleTabs('mathTabs', 'math', {
+  addsub: generateMath,
+  split: generateSplit,
+  compare: generateCompare,
+  pattern: generatePattern,
+  life: generateLifeQuestion
+});
+bindModuleTabs('charsTabs', 'chars', {
+  chars: null,
+  flashcard: renderFlashcard
+});
+bindModuleTabs('gameTabs', 'game', {
+  puzzle: initSchulte,
+  pet: renderPetGame
 });
 
 function renderNumberLine() {
@@ -3279,27 +3586,17 @@ function init() {
     }
     
     renderHome();
-    renderPet();
-    renderGrowthTree();
-    renderBadges();
-    renderDailyPlan();
+    // renderHome already calls: renderStatsRow, renderDailyGoalCard, renderHabits, renderWeekHistory, renderDailyPlan, renderBadges
     
-    // Chinese
+    // Pinyin (PAGE 1)
     renderPinyinGrid('shengmuGrid', shengmu);
     renderPinyinGrid('toneGrid', tonePractice);
     renderPinyinGrid('danyunmuGrid', danyunmu);
     renderPinyinGrid('fuyunmuGrid', fuyunmu);
     renderPinyinGrid('biyunmuGrid', biyunmu);
     renderPinyinGrid('zhengtiGrid', zhengti);
-    renderCharGrid('charGrid1', charWrite);
-    renderCharGrid('charGrid2', charRead);
-    renderFlashcard();
-    renderPoems();
     
-    // English
-    renderEnglishGrid('animals');
-    
-    // Math
+    // Thinking/Math (PAGE 2)
     renderNumberLine();
     mathLevel = recommendedMathLevel();
     setMathLevel(mathLevel);
@@ -3309,12 +3606,22 @@ function init() {
     generateLifeQuestion();
     renderLevelMap();
     
-    // Habits
-    renderHabits();
+    // Chars (PAGE 3)
+    renderCharGrid('charGrid1', charWrite);
+    renderCharGrid('charGrid2', charRead);
+    renderFlashcard();
     
-    // Focus
-    updateTimerDisplay();
-    initSchulte();
+    // English (PAGE 4)
+    renderEnglishGrid('animals');
+    
+    // Poem (PAGE 5)
+    renderPoems();
+    
+    // Sport (PAGE 6)
+    renderSport();
+    
+    // Game (PAGE 7): initSchulte called by bindModuleTabs on puzzle tab switch
+    // Pet rendered by renderPetGame on pet tab
 
     // Eye care
     armEyeTimer();
