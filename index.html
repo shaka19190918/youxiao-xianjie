@@ -707,6 +707,197 @@ body {
 .flashcard-actions { display:flex; justify-content:center; gap:10px; margin-top:14px; flex-wrap:wrap; }.flashcard-actions button { border:none; border-radius:18px; padding:10px 16px; font:inherit; font-weight:700; cursor:pointer; }.flashcard-actions .known { background:var(--habit); color:#FFF; }.flashcard-actions .again { background:#FFF0EE; color:#D94A3D; }
 .question-sound { border:none; background:#EEF3FF; color:#3A63C7; border-radius:14px; padding:7px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; margin:2px auto 10px; display:block; }
 
+/* ============ PINYIN RUBY (拼音辅助标注) ============ */
+.py-ruby {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  line-height: 1.1;
+}
+.py-ruby .rt {
+  font-size: 10px;
+  color: var(--text-light);
+  font-weight: 400;
+  margin-bottom: 1px;
+  letter-spacing: 0;
+}
+/* For nav labels */
+.nav-item .py-ruby .rt { font-size: 9px; }
+/* For card headers */
+.card-header .py-ruby .rt { font-size: 11px; }
+/* For quick action labels */
+.quick-action .py-ruby .rt { font-size: 9px; }
+
+/* ============ ENGLISH MODULE ============ */
+.eng-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+.eng-tab {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 16px;
+  border: 2px solid #E0E0E0;
+  background: #FFF;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  font-weight: 600;
+}
+.eng-tab.active { background: #4ECDC4; color: #FFF; border-color: #4ECDC4; }
+
+.eng-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+.eng-card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid #F0F0F0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.eng-card:active { transform: scale(0.92); }
+.eng-card .eng-emoji { font-size: 36px; }
+.eng-card .eng-word { font-size: 16px; font-weight: 800; color: #333; margin-top: 4px; }
+.eng-card .eng-cn { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+/* ============ LEVEL / STAGE SYSTEM (闯关系统) ============ */
+.level-map {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.level-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.level-node .ln-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  border: 3px solid #E0E0E0;
+  background: #FFF;
+  transition: all 0.3s;
+}
+.level-node.unlocked .ln-circle { border-color: var(--chinese); background: #E0FBF7; }
+.level-node.completed .ln-circle { border-color: var(--habit); background: #E8F5E9; color: var(--habit); }
+.level-node.locked .ln-circle { border-color: #DDD; background: #F5F5F5; color: #BBB; }
+.level-node .ln-label { font-size: 10px; color: var(--text-light); text-align: center; max-width: 60px; }
+.level-node.locked { cursor: not-allowed; opacity: 0.55; }
+
+.level-progress-bar {
+  height: 8px;
+  background: #F0F0F0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+.level-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #4ECDC4, #6BCB77);
+  border-radius: inherit;
+  transition: width 0.5s ease;
+}
+
+/* ============ GROWTH TREE & BADGES ============ */
+.growth-tree-card {
+  background: linear-gradient(135deg, #F0FFF0, #FFF9E6);
+  border: 2px solid #C8E6C9;
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.growth-tree-emoji { font-size: 56px; transition: all 0.5s; }
+.growth-tree-name { font-size: 16px; font-weight: 700; margin-top: 6px; }
+.growth-tree-progress { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+
+.badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  justify-content: center;
+}
+.badge-item {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: #F5F5F5;
+  border: 2px solid #E0E0E0;
+  position: relative;
+  transition: all 0.3s;
+}
+.badge-item.earned { background: #FFF8E1; border-color: #FFD93D; animation: pulse 0.5s; }
+.badge-item .badge-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  background: rgba(0,0,0,0.8);
+  color: #FFF;
+  padding: 3px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  margin-bottom: 4px;
+  transition: opacity 0.2s;
+}
+.badge-item:hover .badge-tooltip { opacity: 1; }
+
+/* ============ PARENT PROGRESS PANEL ============ */
+.progress-subject-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+.progress-subject-row:last-child { border-bottom: none; }
+.progress-subject-icon { font-size: 24px; }
+.progress-subject-name { font-size: 14px; font-weight: 600; min-width: 60px; }
+.progress-subject-bar {
+  flex: 1;
+  height: 14px;
+  background: #F0F0F0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-subject-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.5s;
+}
+.progress-subject-pct { font-size: 13px; font-weight: 700; min-width: 36px; text-align: right; }
+
 /* ============ RESPONSIVE ============ */
 @media (min-width: 768px) {
   .main { padding: 24px 32px; padding-bottom: calc(110px + var(--safe-bottom)); }
@@ -803,10 +994,22 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 
     <div class="card pet-card" id="petCard"></div>
 
+    <!-- Growth Tree & Badges (成长树和徽章) -->
+    <div class="growth-tree-card" id="growthTreeCard"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🏅</span>
+        <h2><span class="py-ruby"><span class="rt">biāo zhāng qiáng</span>徽章墙</span></h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">完成学习挑战，收集闪亮徽章！</p>
+      <div class="badge-row" id="badgeRow"></div>
+    </div>
+
     <div class="card today-schedule-mini">
       <div class="card-header">
         <span class="icon">📋</span>
-        <h2>今日任务清单</h2>
+        <h2><span class="py-ruby"><span class="rt">jīn rì rèn wu</span>今日任务清单</span></h2>
       </div>
       <div id="todayTasks"></div>
     </div>
@@ -814,24 +1017,24 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
     <div class="card">
       <div class="card-header">
         <span class="icon">🚀</span>
-        <h2>快速入口</h2>
+        <h2><span class="py-ruby"><span class="rt">kuài sù rù kǒu</span>快速入口</span></h2>
       </div>
       <div class="quick-actions">
-        <div class="quick-action" onclick="switchTab(1)">
-          <div class="qa-icon">📖</div>
-          <div class="qa-label">语文启蒙</div>
-        </div>
         <div class="quick-action" onclick="switchTab(2)">
-          <div class="qa-icon">🔢</div>
-          <div class="qa-label">数学思维</div>
+          <div class="qa-icon">📖</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">yǔ wén</span>语文启蒙</span></div>
         </div>
         <div class="quick-action" onclick="switchTab(3)">
-          <div class="qa-icon">💎</div>
-          <div class="qa-label">好习惯</div>
+          <div class="qa-icon">🔢</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">shù xué</span>数学思维</span></div>
         </div>
         <div class="quick-action" onclick="switchTab(4)">
+          <div class="qa-icon">💎</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">hǎo xí guàn</span>好习惯</span></div>
+        </div>
+        <div class="quick-action" onclick="switchTab(5)">
           <div class="qa-icon">⏱️</div>
-          <div class="qa-label">专注力</div>
+          <div class="qa-label"><span class="py-ruby"><span class="rt">zhuān zhù lì</span>专注力</span></div>
         </div>
       </div>
     </div>
@@ -854,10 +1057,11 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
   <!-- ===== PAGE 2: CHINESE ===== -->
   <div class="page" id="page-chinese">
     <div class="module-tabs" id="chineseTabs">
-      <button class="module-tab active" data-sub="pinyin">拼音城堡</button>
-      <button class="module-tab" data-sub="chars">汉字花园</button>
-      <button class="module-tab" data-sub="flashcard">闪卡识字</button>
-      <button class="module-tab" data-sub="poem">古诗童谣</button>
+      <button class="module-tab active" data-sub="pinyin"><span class="py-ruby"><span class="rt">pīn yīn chéng bǎo</span>拼音城堡</span></button>
+      <button class="module-tab" data-sub="chars"><span class="py-ruby"><span class="rt">hàn zì huā yuán</span>汉字花园</span></button>
+      <button class="module-tab" data-sub="flashcard"><span class="py-ruby"><span class="rt">shǎn kǎ shí zì</span>闪卡识字</span></button>
+      <button class="module-tab" data-sub="poem"><span class="py-ruby"><span class="rt">gǔ shī tóng yáo</span>古诗童谣</span></button>
+      <button class="module-tab" data-sub="english"><span class="py-ruby"><span class="rt">yīng yǔ dān cí</span>英语单词</span></button>
     </div>
 
     <!-- Pinyin Section -->
@@ -932,10 +1136,35 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
         <div id="poemList"></div>
       </div>
     </div>
+
+    <!-- English Words Section -->
+    <div class="chinese-sub" id="sub-english" style="display:none;">
+      <div class="card">
+        <div class="card-header"><span class="icon">🔤</span><h2><span class="py-ruby"><span class="rt">yīng yǔ dān cí</span>简单英语单词</span></h2></div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">点击卡片听英语发音，跟着读一读！</p>
+        <div class="eng-tabs" id="engTabs">
+          <button class="eng-tab active" data-engcat="animals">🐶 动物</button>
+          <button class="eng-tab" data-engcat="colors">🎨 颜色</button>
+          <button class="eng-tab" data-engcat="numbers">🔢 数字</button>
+          <button class="eng-tab" data-engcat="fruits">🍎 水果</button>
+          <button class="eng-tab" data-engcat="family">👨‍👩‍👧 家人</button>
+        </div>
+        <div class="eng-grid" id="engGrid"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ===== PAGE 3: MATH ===== -->
   <div class="page" id="page-math">
+    <!-- Level Map (闯关系统) -->
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-header">
+        <span class="icon">🗺️</span>
+        <h2><span class="py-ruby"><span class="rt">guān qiā tiāo zhàn</span>关卡挑战</span></h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:8px;">每关5道题，答对4道就能解锁下一关！</p>
+      <div id="levelMap"></div>
+    </div>
     <div class="module-tabs" id="mathTabs">
       <button class="module-tab active" data-sub="count">数数认数</button>
       <button class="module-tab" data-sub="split">分与合</button>
@@ -1163,22 +1392,22 @@ button, .char-card, .pinyin-card, .num-dot, .habit-star, .math-option, .nav-item
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-item active" data-tab="0" onclick="switchTab(0)">
-    <span class="nav-icon">🏠</span>首页
+    <span class="nav-icon">🏠</span><span class="py-ruby"><span class="rt">shǒu yè</span>首页</span>
   </button>
   <button class="nav-item" data-tab="1" onclick="switchTab(1)">
-    <span class="nav-icon">📋</span>每日计划
+    <span class="nav-icon">📋</span><span class="py-ruby"><span class="rt">měi rì jì huà</span>每日计划</span>
   </button>
   <button class="nav-item" data-tab="2" onclick="switchTab(2)">
-    <span class="nav-icon">📖</span>语文
+    <span class="nav-icon">📖</span><span class="py-ruby"><span class="rt">yǔ wén</span>语文</span>
   </button>
   <button class="nav-item" data-tab="3" onclick="switchTab(3)">
-    <span class="nav-icon">🔢</span>数学
+    <span class="nav-icon">🔢</span><span class="py-ruby"><span class="rt">shù xué</span>数学</span>
   </button>
   <button class="nav-item" data-tab="4" onclick="switchTab(4)">
-    <span class="nav-icon">💎</span>习惯
+    <span class="nav-icon">💎</span><span class="py-ruby"><span class="rt">hǎo xí guàn</span>习惯</span>
   </button>
   <button class="nav-item" data-tab="5" onclick="switchTab(5)">
-    <span class="nav-icon">⏱️</span>专注
+    <span class="nav-icon">⏱️</span><span class="py-ruby"><span class="rt">zhuān zhù lì</span>专注</span>
   </button>
 </div>
 
@@ -1397,6 +1626,9 @@ let state = {
   schedule: null,
   flashcardReview: {},
   habitDays: {},
+  levelProgress: {},
+  growthTreeXP: 0,
+  badges: {},
 };
 
 function loadState() {
@@ -1506,6 +1738,58 @@ function unlockParent(event) {
   renderParentEditor();
 }
 
+function renderParentProgress() {
+  // 拼音学习进度
+  const pinyinLearned = Object.keys(state.pinyinToday || {}).length;
+  const totalPinyin = 23 + 6 + 9 + 9 + 16; // 声母+单韵母+复韵母+鼻韵母+整体认读
+  const pinyinPct = Math.min(100, Math.round(pinyinLearned * 100 / totalPinyin));
+  // 识字进度
+  const charsLearned = Object.keys(state.charsLearned || {}).length;
+  const totalChars = charWrite.length + charRead.length;
+  const charPct = Math.min(100, Math.round(charsLearned * 100 / totalChars));
+  // 数学正确率
+  const mathCorrect = Number(state.mathCorrect) || 0;
+  const mathTotal = Number(state.mathTotal) || 0;
+  const mathPct = mathTotal > 0 ? Math.round(mathCorrect * 100 / mathTotal) : 0;
+  // 闯关进度
+  const completedLevels = Object.values(state.levelProgress || {}).filter(l => l && l.completed).length;
+  const levelPct = Math.round(completedLevels * 100 / levelDefs.length);
+  // 习惯打卡
+  const weekDates = getCurrentWeekDates();
+  const habitCount = weekDates.reduce((sum, d) => sum + (state.weekHistory[d] || []).length, 0);
+  const totalHabitsWeek = habits.length * 7;
+  const habitPct = Math.min(100, Math.round(habitCount * 100 / totalHabitsWeek));
+  // 专注训练
+  const focusMin = Number(state.focusMinutes) || 0;
+  // 薄弱环节分析
+  const weaknesses = [];
+  if (mathTotal >= 5 && mathPct < 70) weaknesses.push('数学正确率偏低，建议多练习基础题');
+  if (pinyinLearned < 10) weaknesses.push('拼音学习刚开始，继续加油');
+  if (charsLearned < 10) weaknesses.push('识字量较少，多使用闪卡复习');
+  if (completedLevels < 3) weaknesses.push('闯关进度较慢，建议从5以内加减法开始');
+  if (habitPct < 50) weaknesses.push('习惯打卡不够稳定，注意每天坚持');
+  if (!weaknesses.length) weaknesses.push('各科目进展均衡，继续保持！');
+
+  const bar = function(pct, color) {
+    return `<div class="progress-subject-bar"><span style="width:${pct}%;background:${color};"></span></div>`;
+  };
+  const row = function(icon, name, pct, color, detail) {
+    return `<div class="progress-subject-row"><span class="progress-subject-icon">${icon}</span><span class="progress-subject-name">${name}</span>${bar(pct, color)}<span class="progress-subject-pct">${pct}%</span></div>${detail ? `<div style="font-size:12px;color:var(--text-light);padding-left:34px;margin-bottom:4px;">${detail}</div>` : ''}`;
+  };
+  return `
+    ${row('🔤', '拼音', pinyinPct, '#4ECDC4', `已学 ${pinyinLearned} / ${totalPinyin} 个`)}
+    ${row('✏️', '识字', charPct, '#FF6B6B', `已学 ${charsLearned} / ${totalChars} 个`)}
+    ${row('🔢', '数学', mathPct, '#FFD93D', `正确 ${mathCorrect} / ${mathTotal} 题`)}
+    ${row('🗺️', '闯关', levelPct, '#6BCB77', `通过 ${completedLevels} / ${levelDefs.length} 关`)}
+    ${row('💎', '习惯', habitPct, '#A66CFF', `本周 ${habitCount} 次打卡`)}
+    ${row('⏱️', '专注', Math.min(100, Math.round(focusMin / 30 * 100)), '#4ECDC4', `累计 ${focusMin} 分钟`)}
+    <div style="margin-top:14px;padding:12px;background:#FFF8E1;border-radius:12px;border:1px solid #FFE082;">
+      <div style="font-size:13px;font-weight:700;color:#F57F17;margin-bottom:4px;">💡 薄弱环节分析</div>
+      ${weaknesses.map(w => `<div style="font-size:12px;color:#5D4037;margin:2px 0;">• ${w}</div>`).join('')}
+    </div>
+  `;
+}
+
 function renderParentEditor() {
   const profile = state.profile || { name: '小朋友', age: 6, wakeTime: '07:00', breakfastTime: '07:30', bedtime: '21:00', parentPin: '' };
   const scheduleRows = getSchedule().map((task, index) => `<div class="parent-schedule-row"><input type="time" id="scheduleTime${index}" value="${escapeHtml(task.time)}"><input id="scheduleTitle${index}" maxlength="16" value="${escapeHtml(task.title)}" aria-label="第${index + 1}项任务名称"></div>`).join('');
@@ -1524,6 +1808,7 @@ function renderParentEditor() {
       <label class="form-field full"><span>每日屏幕学习上限（分钟）</span><input id="parentScreenLimit" type="number" min="15" max="60" step="5" value="${Number(state.screenLimitMinutes) || 30}" required><small>达到上限后锁定学习区，提醒孩子离屏活动。</small></label>
     </div><h3 style="margin-top:18px;">每日作息（时间和名称均可修改）</h3><div class="parent-schedule">${scheduleRows}</div>
     <div class="setup-actions"><button class="btn-secondary" type="button" onclick="closeParentMode()">取消</button><button class="btn-primary" type="submit">保存设置</button></div></form>
+    <div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">📊 学习进度追踪</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">各科目完成情况和薄弱环节一目了然。</p>${renderParentProgress()}</div>
     <div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">今日真实完成确认</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">孩子只能申请；由家长确认真实完成后才会结算钻石。</p><div style="display:flex;gap:8px;flex-wrap:wrap;">${approvals}</div></div><div style="border-top:1px solid #eee;margin-top:20px;padding-top:16px;"><h3 style="margin:0 0 6px;">数据管理</h3><p style="font-size:13px;color:var(--text-light);margin:0 0 10px;">清空学习记录会保留孩子资料、家长密码和作息设置。</p><button class="btn-secondary" type="button" onclick="resetLearningData()">清空学习记录</button><button style="margin-left:8px;background:#fff0f0;color:#c0392b;border:1px solid #f1b7b1;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;" type="button" onclick="factoryReset()">恢复出厂设置</button></div>`;
 }
 
@@ -1759,6 +2044,114 @@ function petSpeak() { speakPet(petNeedMessage()); }
 // Voice input is intentionally disabled: this product uses one-way pet prompts
 // so no microphone permission or child speech data is requested.
 function startVoiceCheck() { showToast('小狗会主动说出需要，不需要使用麦克风。'); }
+
+// ==================== GROWTH TREE & BADGES ====================
+const growthStages = [
+  { xp: 0, name: '种子', emoji: '🌰' },
+  { xp: 20, name: '小苗', emoji: '🌱' },
+  { xp: 50, name: '小树', emoji: '🌿' },
+  { xp: 100, name: '大树', emoji: '🌳' },
+  { xp: 200, name: '开花树', emoji: '🌸' },
+  { xp: 400, name: '结果树', emoji: '🍎' },
+];
+
+const badgeDefs = [
+  { id: 'first_star', icon: '🌟', name: '第一颗钻石', desc: '获得第一颗学习钻石' },
+  { id: 'ten_stars', icon: '💎', name: '小富翁', desc: '累计10颗钻石' },
+  { id: 'fifty_stars', icon: '🏆', name: '勤奋学习', desc: '累计50颗钻石' },
+  { id: 'hundred_stars', icon: '👑', name: '学习达人', desc: '累计100颗钻石' },
+  { id: 'streak_3', icon: '🔥', name: '坚持3天', desc: '连续学习3天' },
+  { id: 'streak_7', icon: '⚡', name: '坚持7天', desc: '连续学习7天' },
+  { id: 'streak_14', icon: '🌈', name: '坚持14天', desc: '连续学习14天' },
+  { id: 'first_poem', icon: '📜', name: '古诗新星', desc: '朗读第一首古诗' },
+  { id: 'first_math', icon: '✅', name: '数学新星', desc: '答对第一道数学题' },
+  { id: 'level_1', icon: '🗺️', name: '闯关勇士', desc: '通过第1关' },
+  { id: 'level_4', icon: '🏅', name: '闯关高手', desc: '通过第4关' },
+  { id: 'level_8', icon: '🥇', name: '闯关大师', desc: '通过全部8关' },
+  { id: 'pinyin_master', icon: '🔤', name: '拼音小达人', desc: '学习10个拼音' },
+  { id: 'english_start', icon: '🌐', name: '英语启蒙', desc: '学习第一个英语单词' },
+  { id: 'schulte_done', icon: '🎯', name: '专注力高手', desc: '完成舒尔特方格' },
+];
+
+function growthStage() {
+  const xp = Number(state.growthTreeXP) || 0;
+  for (let i = growthStages.length - 1; i >= 0; i--) {
+    if (xp >= growthStages[i].xp) return i;
+  }
+  return 0;
+}
+
+function renderGrowthTree() {
+  const stageIdx = growthStage();
+  const stage = growthStages[stageIdx];
+  const nextStage = growthStages[stageIdx + 1];
+  const xp = Number(state.growthTreeXP) || 0;
+  const progress = nextStage ? Math.min(100, Math.round((xp - stage.xp) * 100 / (nextStage.xp - stage.xp))) : 100;
+  const el = document.getElementById('growthTreeCard');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="growth-tree-emoji">${stage.emoji}</div>
+    <div class="growth-tree-name">${stage.name} · 成长值 ${xp}</div>
+    ${nextStage ? `<div class="growth-tree-progress">距离${nextStage.name}还需 ${nextStage.xp - xp} XP</div>` : '<div class="growth-tree-progress">已达到最高阶段！</div>'}
+    <div class="level-progress-bar" style="margin-top:8px;"><span style="width:${progress}%"></span></div>
+  `;
+}
+
+function renderBadges() {
+  const badges = state.badges || {};
+  const el = document.getElementById('badgeRow');
+  if (!el) return;
+  const earnedCount = badgeDefs.filter(b => badges[b.id]).length;
+  el.innerHTML = badgeDefs.map(b => {
+    const earned = badges[b.id];
+    return `<div class="badge-item ${earned ? 'earned' : ''}">
+      ${earned ? b.icon : '🔒'}
+      <span class="badge-tooltip">${b.name}：${b.desc}</span>
+    </div>`;
+  }).join('') + `<div style="width:100%;text-align:center;font-size:12px;color:var(--text-light);margin-top:8px;">已获得 ${earnedCount}/${badgeDefs.length} 枚徽章</div>`;
+}
+
+function checkBadges() {
+  if (!state.badges) state.badges = {};
+  const points = Number(state.points) || 0;
+  const streak = Number(state.streak) || 0;
+  const newBadges = [];
+  const tryBadge = function(id, condition) {
+    if (!state.badges[id] && condition) {
+      state.badges[id] = true;
+      newBadges.push(badgeDefs.find(b => b.id === id));
+    }
+  };
+  tryBadge('first_star', points >= 1);
+  tryBadge('ten_stars', points >= 10);
+  tryBadge('fifty_stars', points >= 50);
+  tryBadge('hundred_stars', points >= 100);
+  tryBadge('streak_3', streak >= 3);
+  tryBadge('streak_7', streak >= 7);
+  tryBadge('streak_14', streak >= 14);
+  tryBadge('level_1', state.levelProgress && state.levelProgress[1] && state.levelProgress[1].completed);
+  tryBadge('level_4', state.levelProgress && state.levelProgress[4] && state.levelProgress[4].completed);
+  tryBadge('level_8', state.levelProgress && state.levelProgress[8] && state.levelProgress[8].completed);
+  tryBadge('schulte_done', state.focusMinutes > 0 || (state.verifiedRewards && Object.keys(state.verifiedRewards).some(k => k.startsWith('schulte_'))));
+  if (newBadges.length) {
+    newBadges.forEach(b => showToast(`🏅 获得徽章：${b.name}！`));
+    if (newBadges.length >= 2) speakText(`太棒了！获得了${newBadges.length}枚新徽章！`, 'zh-CN', 0.9);
+  }
+  renderBadges();
+}
+
+// Add growth XP when earning verified points
+const _origAward = awardVerifiedPoints;
+awardVerifiedPoints = function(key, n, msg, big) {
+  const result = _origAward(key, n, msg, big);
+  if (result) {
+    state.growthTreeXP = (Number(state.growthTreeXP) || 0) + Math.max(2, Math.round(n * 1.5));
+    saveState();
+    renderGrowthTree();
+    checkBadges();
+  }
+  return result;
+};
 
 let usageLastActive = 0;
 function currentUsageSeconds() { const today = getToday(); if (state.screenUsage.date !== today) state.screenUsage = { date: today, seconds: 0 }; return Number(state.screenUsage.seconds) || 0; }
@@ -2156,6 +2549,205 @@ function speakPoem(idx) {
   speakLines([poem.title].concat(poem.lines), 0.68, function() {
     showToast(`《${poemLibrary[idx].title}》朗读结束，试着跟读一遍。`);
   });
+}
+
+// ==================== ENGLISH WORDS ====================
+const englishWords = {
+  animals: [
+    { emoji: '🐶', en: 'dog', cn: '狗' }, { emoji: '🐱', en: 'cat', cn: '猫' },
+    { emoji: '🐰', en: 'rabbit', cn: '兔子' }, { emoji: '🐦', en: 'bird', cn: '鸟' },
+    { emoji: '🐟', en: 'fish', cn: '鱼' }, { emoji: '🐷', en: 'pig', cn: '猪' },
+    { emoji: '🐮', en: 'cow', cn: '牛' }, { emoji: '🐴', en: 'horse', cn: '马' },
+    { emoji: '🐑', en: 'sheep', cn: '羊' }, { emoji: '🦆', en: 'duck', cn: '鸭子' },
+  ],
+  colors: [
+    { emoji: '🔴', en: 'red', cn: '红色' }, { emoji: '🟠', en: 'orange', cn: '橙色' },
+    { emoji: '🟡', en: 'yellow', cn: '黄色' }, { emoji: '🟢', en: 'green', cn: '绿色' },
+    { emoji: '🔵', en: 'blue', cn: '蓝色' }, { emoji: '🟣', en: 'purple', cn: '紫色' },
+    { emoji: '⚫', en: 'black', cn: '黑色' }, { emoji: '⚪', en: 'white', cn: '白色' },
+  ],
+  numbers: [
+    { emoji: '1️⃣', en: 'one', cn: '一' }, { emoji: '2️⃣', en: 'two', cn: '二' },
+    { emoji: '3️⃣', en: 'three', cn: '三' }, { emoji: '4️⃣', en: 'four', cn: '四' },
+    { emoji: '5️⃣', en: 'five', cn: '五' }, { emoji: '6️⃣', en: 'six', cn: '六' },
+    { emoji: '7️⃣', en: 'seven', cn: '七' }, { emoji: '8️⃣', en: 'eight', cn: '八' },
+    { emoji: '9️⃣', en: 'nine', cn: '九' }, { emoji: '🔟', en: 'ten', cn: '十' },
+  ],
+  fruits: [
+    { emoji: '🍎', en: 'apple', cn: '苹果' }, { emoji: '🍌', en: 'banana', cn: '香蕉' },
+    { emoji: '🍇', en: 'grape', cn: '葡萄' }, { emoji: '🍊', en: 'orange', cn: '橙子' },
+    { emoji: '🍉', en: 'watermelon', cn: '西瓜' }, { emoji: '🍓', en: 'strawberry', cn: '草莓' },
+    { emoji: '🍑', en: 'peach', cn: '桃子' }, { emoji: '🍐', en: 'pear', cn: '梨' },
+  ],
+  family: [
+    { emoji: '👨', en: 'father', cn: '爸爸' }, { emoji: '👩', en: 'mother', cn: '妈妈' },
+    { emoji: '👴', en: 'grandpa', cn: '爷爷' }, { emoji: '👵', en: 'grandma', cn: '奶奶' },
+    { emoji: '👦', en: 'brother', cn: '兄弟' }, { emoji: '👧', en: 'sister', cn: '姐妹' },
+    { emoji: '👶', en: 'baby', cn: '宝宝' }, { emoji: '👨‍👩‍👧', en: 'family', cn: '家庭' },
+  ],
+};
+let currentEngCat = 'animals';
+
+function renderEnglishGrid(cat) {
+  currentEngCat = cat;
+  const list = englishWords[cat] || [];
+  document.getElementById('engGrid').innerHTML = list.map((w, i) => `
+    <div class="eng-card" onclick="speakEnglish('${w.en}', '${w.cn}', ${i})">
+      <div class="eng-emoji">${w.emoji}</div>
+      <div class="eng-word">${w.en}</div>
+      <div class="eng-cn">${w.cn}</div>
+    </div>
+  `).join('');
+}
+
+function speakEnglish(en, cn, idx) {
+  // Use English TTS for the word, then Chinese for meaning
+  speakText(en, 'en-US', 0.8, function() {
+    // After English, speak Chinese meaning softly
+    setTimeout(() => speakText(cn, 'zh-CN', 0.7), 300);
+  });
+  // Award once per word per day
+  const key = 'eng_' + currentEngCat + '_' + en + '_' + getToday();
+  if (!state.verifiedRewards[key]) {
+    awardVerifiedPoints(key, 1, '学了新单词 +1💎');
+  }
+}
+
+// English sub-tab switching
+document.getElementById('engTabs').addEventListener('click', function(e) {
+  if (e.target.classList.contains('eng-tab')) {
+    this.querySelectorAll('.eng-tab').forEach(t => t.classList.remove('active'));
+    e.target.classList.add('active');
+    renderEnglishGrid(e.target.dataset.engcat);
+  }
+});
+
+// ==================== LEVEL / STAGE SYSTEM (闯关系统) ====================
+const levelDefs = [
+  { id: 1, name: '5以内加法', type: 'add', max: 5, icon: '🌱' },
+  { id: 2, name: '5以内减法', type: 'sub', max: 5, icon: '🌿' },
+  { id: 3, name: '10以内加法', type: 'add', max: 10, icon: '🌳' },
+  { id: 4, name: '10以内减法', type: 'sub', max: 10, icon: '🌸' },
+  { id: 5, name: '10以内混合', type: 'mix', max: 10, icon: '.apple' },
+  { id: 6, name: '20以内加法', type: 'add', max: 20, icon: '⭐' },
+  { id: 7, name: '20以内减法', type: 'sub', max: 20, icon: '🌟' },
+  { id: 8, name: '20以内混合', type: 'mix', max: 20, icon: '🏆' },
+];
+
+function levelState() {
+  if (!state.levelProgress) state.levelProgress = {};
+  return state.levelProgress;
+}
+
+function getCurrentLevel() {
+  const lp = levelState();
+  for (const lv of levelDefs) {
+    if (!lp[lv.id] || !lp[lv.id].completed) return lv.id;
+  }
+  return levelDefs.length; // all done
+}
+
+function renderLevelMap() {
+  const lp = levelState();
+  const current = getCurrentLevel();
+  const html = levelDefs.map(lv => {
+    const st = lp[lv.id];
+    const completed = st && st.completed;
+    const unlocked = lv.id === 1 || (lp[lv.id - 1] && lp[lv.id - 1].completed);
+    const cls = completed ? 'completed' : unlocked ? 'unlocked' : 'locked';
+    const scoreText = st ? `${st.correctCount}/${st.totalCount}` : '';
+    return `<div class="level-node ${cls}" onclick="${unlocked ? `startLevel(${lv.id})` : ''}">
+      <div class="ln-circle">${completed ? '✓' : unlocked ? lv.icon : '🔒'}</div>
+      <div class="ln-label">${lv.name}${scoreText ? '<br>' + scoreText : ''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('levelMap').innerHTML = '<div class="level-map">' + html + '</div>';
+}
+
+let activeLevelId = 0;
+let levelCorrectCount = 0;
+let levelTotalCount = 0;
+let levelQuestions = [];
+
+function startLevel(lvId) {
+  const lv = levelDefs.find(l => l.id === lvId);
+  if (!lv) return;
+  activeLevelId = lvId;
+  levelCorrectCount = 0;
+  levelTotalCount = 0;
+  // Switch to addsub tab for quiz
+  document.querySelectorAll('#mathTabs .module-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('#mathTabs [data-sub="addsub"]').classList.add('active');
+  document.querySelectorAll('.math-sub').forEach(s => s.style.display = 'none');
+  document.getElementById('sub-addsub').style.display = 'block';
+  setMathLevel(lv.max);
+  generateLevelQuestion();
+  speakText(`第${numberToChinese(lvId)}关：${lv.name}，开始挑战！`, 'zh-CN', 0.85);
+}
+
+function generateLevelQuestion() {
+  if (!activeLevelId) return generateMath();
+  const lv = levelDefs.find(l => l.id === activeLevelId);
+  if (!lv) return;
+  const maxNum = lv.max;
+  let op;
+  if (lv.type === 'mix') op = Math.random() > 0.5 ? '+' : '-';
+  else op = lv.type === 'add' ? '+' : '-';
+  let a, b;
+  if (op === '+') { a = Math.floor(Math.random() * (maxNum - 1)) + 1; b = Math.floor(Math.random() * (maxNum - a)) + 1; }
+  else { a = Math.floor(Math.random() * maxNum) + 1; b = Math.floor(Math.random() * a) + 1; }
+  currentMathAnswer = op === '+' ? a + b : a - b;
+  currentMathA = a; currentMathB = b; currentMathOp = op;
+  document.getElementById('mathQuestion').textContent = `${a} ${op} ${b} = ?`;
+  const pool = [];
+  for (let n = Math.max(0, currentMathAnswer - 8); n <= Math.min(maxNum * 2, currentMathAnswer + 8); n++) {
+    if (n !== currentMathAnswer) pool.push(n);
+  }
+  pool.sort(() => Math.random() - 0.5);
+  const options = [currentMathAnswer, ...pool.slice(0, 3)].sort(() => Math.random() - 0.5);
+  const lvLabel = `第${activeLevelId}关 · ${lv.name} · 第${levelTotalCount + 1}/5题`;
+  document.getElementById('mathQuestion').innerHTML = `${a} ${op} ${b} = ?<div style="font-size:14px;color:var(--text-light);font-weight:400;margin-top:6px;">${lvLabel}</div>`;
+  document.getElementById('mathOptions').innerHTML = options.map(n => `
+    <button class="math-option" onclick="answerLevelMath(${n}, this)">${n}</button>
+  `).join('');
+}
+
+function answerLevelMath(n, btn) {
+  const allBtns = document.querySelectorAll('#mathOptions .math-option');
+  allBtns.forEach(b => b.style.pointerEvents = 'none');
+  levelTotalCount++;
+  if (n === currentMathAnswer) {
+    levelCorrectCount++;
+    btn.classList.add('correct');
+    speakText('回答正确，真棒！');
+  } else {
+    btn.classList.add('wrong');
+    speakText('再想一想。');
+    allBtns.forEach(b => { if (parseInt(b.textContent) === currentMathAnswer) b.classList.add('correct'); });
+  }
+  if (levelTotalCount >= 5) {
+    // Level finished
+    const passed = levelCorrectCount >= 4;
+    const lvId = activeLevelId;
+    const lp = levelState();
+    lp[lvId] = { completed: passed, correctCount: levelCorrectCount, totalCount: levelTotalCount };
+    saveState();
+    setTimeout(() => {
+      if (passed) {
+        awardVerifiedPoints(`level_${lvId}_${getToday()}`, 15, `第${lvId}关通过！+15💎`, true);
+        speakText(`恭喜通关！第${numberToChinese(lvId)}关挑战成功！`, 'zh-CN', 0.85);
+      } else {
+        speakText(`差一点点，再挑战一次吧！`, 'zh-CN', 0.85);
+      }
+      activeLevelId = 0;
+      renderLevelMap();
+      generateMath(); // resume normal mode
+    }, 1500);
+  } else {
+    setTimeout(generateLevelQuestion, 1500);
+  }
+  document.getElementById('correctCount').textContent = state.mathCorrect;
+  document.getElementById('totalCount').textContent = state.mathTotal;
 }
 
 // ==================== MATH PAGE ====================
@@ -2688,6 +3280,8 @@ function init() {
     
     renderHome();
     renderPet();
+    renderGrowthTree();
+    renderBadges();
     renderDailyPlan();
     
     // Chinese
@@ -2702,6 +3296,9 @@ function init() {
     renderFlashcard();
     renderPoems();
     
+    // English
+    renderEnglishGrid('animals');
+    
     // Math
     renderNumberLine();
     mathLevel = recommendedMathLevel();
@@ -2710,6 +3307,7 @@ function init() {
     generateCompare();
     generatePattern();
     generateLifeQuestion();
+    renderLevelMap();
     
     // Habits
     renderHabits();
