@@ -46,5 +46,11 @@ with sync_playwright() as p:
     page.get_by_role("button", name="翻译").first.click()
     page.wait_for_timeout(50)
     assert any("/assets/english-cn/dog.mp3" in src for src in page.evaluate("window.__played"))
+
+    page.evaluate("showPage('poems')")
+    assert "今日课程 1 / 7" in page.locator("#ct").inner_text()
+    page.evaluate("playPoemV6(0)")
+    page.wait_for_timeout(50)
+    assert any("/assets/voice/poem_yong_e.mp3" in src for src in page.evaluate("window.__played"))
     print("browser smoke test: PASS")
     browser.close()
