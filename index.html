@@ -217,6 +217,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 #hwTarget.tian-grid{width:280px;height:280px;margin:12px auto;background-color:#fff;background-image:linear-gradient(to right,transparent 49.6%,#a6bce8 49.6%,#a6bce8 50.4%,transparent 50.4%),linear-gradient(to bottom,transparent 49.6%,#a6bce8 49.6%,#a6bce8 50.4%,transparent 50.4%),linear-gradient(45deg,transparent 49.65%,#cad7f0 49.65%,#cad7f0 50.35%,transparent 50.35%),linear-gradient(-45deg,transparent 49.65%,#cad7f0 49.65%,#cad7f0 50.35%,transparent 50.35%);border:2px dashed #91abe1;border-radius:18px}
 @media(max-width:380px){.writing-grid .cc .ch-b{font-size:56px}.writing-grid .cc{min-height:156px}}
 .poem-progress{margin:10px 0 16px;padding:10px 14px;background:#f2ecff;border-radius:18px;font-size:16px;font-weight:800;color:#6545bf}.poem-meta{font-size:17px;color:#6b5b95;margin:6px 0 12px}.math-objects{min-height:48px;text-align:center;font-size:30px;letter-spacing:3px;color:#ff9f43;overflow-wrap:anywhere;margin:18px 0 6px}.difficulty{display:flex;gap:10px;justify-content:center;margin:12px 0}.sudoku-big{max-width:360px!important;gap:5px;padding:8px;background:#ebe2ff;border-radius:24px}.sudoku-big .sc{min-width:64px;min-height:64px;border-radius:16px;background:#fff;border:0;font-size:32px}.sudoku-big .sc.given{background:#f5efff;color:#5837ac}.sudoku-big .sc.err{background:#ffe4e7;color:#cf3357}
+.think-kind{display:inline-block;margin-top:18px;padding:7px 14px;border-radius:16px;background:#e8f8ef;color:#21824a;font-size:16px;font-weight:900}.think-prompt{font-size:21px;font-weight:800;margin:14px 0}.english-v6-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.english-word{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border:2px solid #dfe9ff;border-radius:24px;background:#fff;font-size:22px}.english-word .em{font-size:44px}.english-word .btn{width:100%;min-height:42px;font-size:14px}
 </style>
 </head>
 <body>
@@ -541,6 +542,26 @@ function selectSudokuV6(r,c){if(sudokuV6.given[r][c])return;sudokuSelV6={r,c};re
 function fillSudokuV6(v){if(!sudokuSelV6)return;sudokuV6.grid[sudokuSelV6.r][sudokuSelV6.c]=v;sudokuSelV6=null;renderSudokuV6()}
 function checkSudokuV6(){let bad=0;const cells=document.querySelectorAll('#sudokuTaskV6 .sc');sudokuV6.grid.forEach((r,ri)=>r.forEach((v,ci)=>{if(v!==sudokuV6.solution[ri][ci]){bad++;cells[ri*4+ci].classList.add('err')} }));if(bad){playCue('retry','红色格子需要再检查。');return}awd('sudokuv6_'+T(),10,'数独完成，获得 10 💎');playCue('correct','数独全对啦！')}
 PGS.sudoku={title:'🧮 数独',render:function(){document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">4 × 4 儿童数独</div><p class="desc">每一行、每一列和每个小方格都要有 1、2、3、4，不能重复。</p><div id="sudokuTaskV6"></div><button class="btn b1" onclick="newSudokuV6()">🔄 换一题</button></div>`;newSudokuV6()}}
+const THINK_V6=[
+  {kind:'规律',prompt:'看一看，下一张应该是什么？',seq:'🔴  🔵  🔴  🔵  ？',options:['🔴','🔵','🟡','🟢'],answer:'🔴'},
+  {kind:'分类',prompt:'哪一个和其他三个不属于一类？',seq:'🐶   🐱   🐰   🍎',options:['🐶','🐱','🐰','🍎'],answer:'🍎'},
+  {kind:'空间',prompt:'小箭头转半圈后朝哪里？',seq:'⬆️  →  ⬇️  ？',options:['⬅️','⬆️','➡️','⬇️'],answer:'⬅️'},
+  {kind:'逻辑',prompt:'小熊比小兔高，小兔比小猫高，谁最高？',seq:'🐻  >  🐰  >  🐱',options:['🐻','🐰','🐱','一样高'],answer:'🐻'}
+];let thinkV6=0;
+function nextThinkV6(){thinkV6=(thinkV6+1)%THINK_V6.length;renderThinkV6()}
+function renderThinkV6(){const q=THINK_V6[thinkV6];document.getElementById('thinkTaskV6').innerHTML=`<div class="think-kind">${q.kind}小游戏</div><p class="think-prompt">${q.prompt}</p><div class="mq">${q.seq}</div><div class="mo">${q.options.map(v=>`<button class="moi" onclick="answerThinkV6('${v}',this)">${v}</button>`).join('')}</div>`}
+function answerThinkV6(v,el){if(v!==THINK_V6[thinkV6].answer){el.classList.add('b');playCue('retry','再观察一下。');return}el.classList.add('g');awd('thinkv6_'+T()+'_'+thinkV6,5,'思维挑战完成，获得 5 💎');playCue('correct','找对啦！');setTimeout(nextThinkV6,700)}
+PGS.thinking={title:'🧩 思维训练',render:function(){document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">思维训练</div><p class="desc">观察规律、分类、空间方向和逻辑关系。选对才能进入下一题。</p><button class="btn b3" onclick="playCue('pet_hello','认真观察，再选择答案。')">🔊 听提示</button><div id="thinkTaskV6"></div></div>`;renderThinkV6()}}
+const ENGLISH_V6={
+  animals:[['🐶','dog','狗'],['🐱','cat','猫'],['🐰','rabbit','兔子'],['🐦','bird','鸟']],
+  colors:[['🔴','red','红色'],['🔵','blue','蓝色'],['🟡','yellow','黄色'],['🟢','green','绿色']],
+  family:[['👩','mother','妈妈'],['👨','father','爸爸'],['👧','sister','姐姐/妹妹'],['👦','brother','哥哥/弟弟']],
+  body:[['👁️','eye','眼睛'],['👂','ear','耳朵'],['👃','nose','鼻子'],['✋','hand','手']],
+  actions:[['🏃','run','跑'],['🍽️','eat','吃'],['😴','sleep','睡觉'],['🎨','draw','画画']]
+};let englishTabV6='animals';
+function sayEnglishV6(word){say(word,'en-US',.72)}
+function translateEnglishV6(cn){playCue('pet_hello',cn);toast('中文：'+cn)}
+PGS.english={title:'🔠 英语',render:function(){const words=ENGLISH_V6[englishTabV6];document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">英语小词卡</div><p class="desc">先听英文；想知道中文时，再点“翻译”。</p><div class="etabs">${Object.keys(ENGLISH_V6).map(k=>`<button class="etab ${k===englishTabV6?'on':''}" onclick="englishTabV6='${k}';showPage('english')">${({animals:'动物',colors:'颜色',family:'家庭',body:'身体',actions:'动作'})[k]}</button>`).join('')}</div><div class="english-v6-grid">${words.map(w=>`<article class="english-word"><div class="em">${w[0]}</div><strong>${w[1]}</strong><button class="btn b3" onclick="sayEnglishV6('${w[1]}')">🔊 English</button><button class="btn b1" onclick="translateEnglishV6('${w[2]}')">翻译</button></article>`).join('')}</div></div>`}}
 function init(){migratePetsV6();uS();up();document.addEventListener('click',function(){primeS();playQueuedCue()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){primeS();playQueuedCue()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home');setTimeout(()=>playCue(greetingCue(),'欢迎回来，小主人！'),350)}}
 // INIT
 init();
