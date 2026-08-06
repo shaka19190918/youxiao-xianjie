@@ -437,8 +437,20 @@ function showParentLock(){let pinInput='';const renPin=()=>{document.getElementB
 function saveParent(){S._setup.name=document.getElementById('pName').value.trim();S.dailyGoal.tasks=parseInt(document.getElementById('pTasks').value)||5;S.dailyGoal.chars=parseInt(document.getElementById('pChars').value)||3;const np=document.getElementById('pPin').value;if(np&&np.length===4)S.parentPin=np;R();toast('设置已保存！')}
 function restoreDefaults(){if(!confirm('确定恢复默认设置吗？\n\n重置：PIN码、每日目标、孩子昵称和年级\n学习数据不会被清除。'))return;S.parentPin='1234';S.dailyGoal={tasks:5,chars:3};S._setup={done:true,name:'',grade:'幼升小'};R();toast('已恢复默认设置');showPage('parent')}
 function confirmClearData(){if(!confirm('⚠️ 确定清除所有数据吗？\n\n将永久删除：\n• 所有学习记录\n• 狗狗和成长数据\n• 打卡记录\n• 钻石和徽章\n\n不可恢复！'))return;if(!confirm('再次确认：真的要清除所有数据吗？'))return;localStorage.removeItem('yxxj_s');localStorage.removeItem('yxxj_dog');S={pts:0,strk:0,dog:null,vR:{},ld:'',chars:{},pinyin:{},pinyinToday:{},pinyinDate:'',poems:{},mathC:0,mathT:0,focusM:0,badges:{},sport:{},sudoku:{},cal:{},pianoLog:{},pianoStart:0,pianoSec:0,parentPin:'1234',dailyGoal:{tasks:5,chars:3},_setup:{done:false,name:'',grade:'幼升小'},_parentAuth:false};R();toast('所有数据已清除');showWizard()}
+// ===== v6 pet roster: four requested companions =====
+const PETS_V6={
+  labrador:{n:'小拉',cn:'拉布拉多犬',img:'labrador-cartoon.png',col:'#D99545'},
+  husky:{n:'小哈',cn:'西伯利亚雪橇犬',img:'husky-cartoon.png',col:'#718096'},
+  shepherd:{n:'小牧',cn:'德国牧羊犬',img:'german-shepherd-cartoon.png',col:'#9B6B45'},
+  trex:{n:'小霸',cn:'毛绒霸王龙',img:'trex-plush.png',col:'#78A65A'}
+};
+function migratePetsV6(){if(!S.dog)return;const old={golden:'labrador',corgi:'labrador',malinois:'shepherd'};const type=old[S.dog.type]||S.dog.type;S.dog={...S.dog,type:PETS_V6[type]?type:'labrador',xp:Number(S.dog.xp)||0,hu:Number(S.dog.hu)||80,hy:Number(S.dog.hy)||80,en:Number(S.dog.en)||80,tasks:Number(S.dog.tasks)||0};R()}
+function petImageV6(type,size,lazy){const p=PETS_V6[type]||PETS_V6.labrador;return `<img src="assets/pets/${p.img}" width="${size}" height="${size}" ${lazy?'loading="lazy"':''} decoding="async" style="object-fit:contain" alt="${p.cn}">`}
+function showDogSelect(){document.getElementById('dogSelWrap').innerHTML=`<div class="dog-overlay"><div class="dog-ov-t">🐾 选一位成长伙伴吧</div><div class="dog-ov-s">完成学习，伙伴才会一起长大</div><div class="dog-cards" id="dsCards"></div><button class="dog-confirm" id="dsConfirm" onclick="confirmDog()">请选择一位伙伴</button></div>`;document.getElementById('dsCards').innerHTML=Object.entries(PETS_V6).map(([id,p])=>`<div class="dog-card" id="dsc_${id}" onclick="selDog('${id}')"><div class="d-chk">✓</div><div class="d-svg">${petImageV6(id,110,true)}</div><div class="d-nm">${p.n}</div><div class="d-br">${p.cn}</div></div>`).join('')}
+function selDog(id){_selDog=id;document.querySelectorAll('.dog-card').forEach(c=>c.classList.remove('sel'));document.getElementById('dsc_'+id).classList.add('sel');const b=document.getElementById('dsConfirm');b.classList.add('active');b.textContent=`选择${PETS_V6[id].n}，开始学习`}
+function confirmDog(){if(!_selDog)return toast('先选择一位伙伴');S.dog={type:_selDog,xp:0,hu:80,hy:80,en:80,tasks:0,ad:T()};R();saveDog();document.getElementById('dogSelWrap').innerHTML='';showPage('home')}
+function init(){migratePetsV6();uS();up();document.addEventListener('click',function(){primeS()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){primeS()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home')}}
 // INIT
-function init(){uS();up();document.addEventListener('click',function(){primeS()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){primeS()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home')}}
 init();
 </script>
 </body>
