@@ -519,7 +519,8 @@ function greetingCue(){const h=new Date().getHours();return h<8?'greeting_mornin
 Object.assign(DOGS,{labrador:{n:'小拉',cn:'拉布拉多犬',col:'#D99545',col2:'#B96C24',sounds:{}},husky:{n:'小哈',cn:'西伯利亚雪橇犬',col:'#718096',col2:'#4A5568',sounds:{}},shepherd:{n:'小牧',cn:'德国牧羊犬',col:'#9B6B45',col2:'#704529',sounds:{}},trex:{n:'小霸',cn:'毛绒霸王龙',col:'#78A65A',col2:'#4D7F3A',sounds:{}}});
 function dogSVG(type,size){return PETS_V6[type]?petImageV6(type,size,false):petImageV6('labrador',size,false)}
 function fDog(){if(!S.dog)return;if((S.pts||0)<15)return toast('钻石不够，完成学习再来喂食吧！');S.pts-=15;S.dog.hu=Math.min(100,S.dog.hu+35);R();saveDog();up();showPage('dog');playCue('pet_hello','好吃好吃！');dogAnim('feed');showBubble('好吃好吃！')}
-function pDog(){if(!S.dog)return;S.dog.en=Math.min(100,S.dog.en+20);R();saveDog();showPage('dog');playCue('pet_hello','好舒服～');dogAnim('pet');showBubble('好舒服～')}
+function hasTodayLearningV6(){const suffix='_'+T();return Object.keys(S.vR||{}).some(k=>k.endsWith(suffix)&&!k.startsWith('pianodone_'))}
+function pDog(){if(!S.dog)return;if(!hasTodayLearningV6())return toast('先完成一项今天的学习任务，再来陪伙伴玩吧！');S.dog.en=Math.min(100,S.dog.en+20);R();saveDog();showPage('dog');playCue('pet_hello','好舒服～');dogAnim('pet');showBubble('好舒服～')}
 function bDog(){if(!S.dog)return;if((S.pts||0)<8)return toast('钻石不够，完成学习再来洗澡吧！');S.pts-=8;S.dog.hy=Math.min(100,S.dog.hy+40);R();saveDog();up();showPage('dog');playCue('pet_bath','洗干净啦！');dogAnim('bath');showBubble('洗干净啦！')}
 function tDog(){if(!S.dog)return;const p=S.dog;let key='pet_hello',m='我会陪你一起学习，一起长大！';if(p.hu<30){key='pet_hungry';m='我饿了，完成学习任务后给我准备食物吧！'}else if(p.hy<30){key='pet_bath';m='我要洗澡啦，身上臭了，快帮我洗洗！'}else if(p.en<30){key='pet_play';m='我想出去和你玩，先完成今天的学习任务吧！'}playCue(key,m);dogAnim('talk');showBubble(m)}
 const POEM_COURSE_V6=[
