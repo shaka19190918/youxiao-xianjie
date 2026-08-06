@@ -9,18 +9,18 @@
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3/dist/hanzi-writer.min.js" defer></script>
 <title>幼小衔接快乐营</title>
 <style>
-:root{--pri:#FF6B6B;--pri-l:#FFE0E0;--cn:#4ECDC4;--math:#FFD93D;--habit:#6BCB77;--focus:#A66CFF;--bg:#FFF8F0;--card:#FFF;--txt:#333;--tx2:#888;--sh:0 4px 20px rgba(0,0,0,.08);--r:24px;--sb:env(safe-area-inset-bottom,20px)}
+:root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;user-select:none;-webkit-user-select:none}
 #app{max-width:600px;margin:0 auto;min-height:100vh}
-.header{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#FF6B6B,#FF8E53);padding:14px 18px;padding-top:max(14px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(255,107,107,.3)}
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(120deg,#AD7BFF,#F28AB2);padding:14px 18px;padding-top:max(14px,env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 22px rgba(154,104,222,.28)}
 .header .logo{font-size:20px;font-weight:800;color:#FFF;letter-spacing:1px;flex:1}
 .header .pill{background:rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;color:#FFF;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;margin-left:6px}
 .main{padding:14px 16px;padding-bottom:calc(40px + var(--sb))}
 .page{display:none}.page.active{display:block;animation:fadeIn .3s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .btn{padding:12px 20px;border-radius:16px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;border:none;font-family:inherit}.btn:active{transform:scale(.95)}
-.b1{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#FFF;box-shadow:0 4px 12px rgba(255,107,107,.3)}
+.b1{background:linear-gradient(135deg,#A66CFF,#E879B0);color:#FFF;box-shadow:0 5px 14px rgba(166,108,255,.28)}
 .b2{background:linear-gradient(135deg,#FFD93D,#FFA726);color:#5D4037}
 .b3{background:#FFF;color:var(--pri);border:2px solid var(--pri)}
 .bs{padding:8px 14px;font-size:13px;border-radius:12px}
@@ -29,7 +29,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .desc{font-size:13px;color:var(--tx2);margin-bottom:10px}
 .back{font-size:22px;color:var(--pri);padding:4px;cursor:pointer}
 /* Home */
-.welcome{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:var(--r);padding:22px;color:#FFF;margin-bottom:14px;position:relative;overflow:hidden}
+.welcome{background:linear-gradient(135deg,#A66CFF,#E879B0);border-radius:var(--r);padding:22px;color:#FFF;margin-bottom:14px;position:relative;overflow:hidden}
 .welcome::after{content:'🎒📚✏️🌈';position:absolute;right:16px;top:16px;font-size:36px;opacity:.35}
 .welcome h1{font-size:20px;margin-bottom:4px}.welcome p{font-size:13px;opacity:.9}
 .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
@@ -64,7 +64,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .moi{padding:12px 22px;border-radius:16px;border:2px solid #E0E0E0;background:#FFF;font-size:20px;font-weight:700;cursor:pointer;min-width:56px;text-align:center;transition:all .2s;box-shadow:0 2px 6px rgba(0,0,0,.04)}
 .moi:active{transform:scale(.93)}.moi.g{background:linear-gradient(135deg,#6BCB77,#4CAF50);border-color:var(--habit);color:#FFF}.moi.b{background:#FFEBEE;border-color:var(--bad);color:var(--bad)}
 .lb{padding:8px 14px;border-radius:14px;border:2px solid #E0E0E0;background:#FFF;font-size:13px;cursor:pointer;font-weight:600;transition:all .2s}
-.lb.on{background:linear-gradient(135deg,#FF6B6B,#FF8E53);color:#FFF;border-color:transparent}
+.lb.on{background:linear-gradient(135deg,#A66CFF,#E879B0);color:#FFF;border-color:transparent}
 /* Sudoku */
 .sg{display:grid;gap:2px;justify-content:center;margin:14px auto;max-width:260px}
 .sc{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;background:#FFF;border:1px solid #E0E0E0;cursor:pointer;border-radius:8px}
@@ -129,6 +129,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .dog-display.wag svg{animation:dogWag .5s ease}
 .dog-display.bounce svg{animation:dogBounce .6s ease}
 .dog-display.shake svg{animation:dogShake .7s ease}
+/* Pet stage: a calmer, more premium home for the companion. */
+.dog-overlay{background:radial-gradient(circle at 20% 10%,rgba(255,255,255,.35),transparent 32%),linear-gradient(135deg,#8F70ED,#E982B0)}
+.dog-card{border-radius:30px;background:linear-gradient(180deg,#FFF,#FAF6FF);box-shadow:0 14px 34px rgba(66,39,110,.22)}
+.dog-card.sel{border-color:#A66CFF;box-shadow:0 18px 46px rgba(166,108,255,.34)}
+.dog-card .d-svg{border-radius:22px;overflow:hidden;background:#FFF9E8}
+.dog-card .d-svg img{border-radius:20px}
+.dog-confirm{background:linear-gradient(135deg,#FFD86B,#F6A645);box-shadow:0 8px 22px rgba(246,166,69,.34)}
+.dog-main{position:relative;overflow:hidden;padding:22px 18px;background:linear-gradient(160deg,#FFF 0%,#F8F1FF 60%,#FDF7FB 100%);border:1px solid rgba(166,108,255,.16)}
+.dog-main::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;right:-110px;top:-128px;background:radial-gradient(circle,rgba(255,214,103,.32),rgba(255,214,103,0) 68%);pointer-events:none}
+.dog-main .card-hd,.dog-main .dog-display,.dog-main .dog-level,.dog-main .dog-bar-wrap,.dog-main .dog-stats,.dog-main .dog-acts{position:relative;z-index:1}
+.dog-display{border-radius:38px;background:radial-gradient(circle at 50% 24%,#FFFDF3 0%,#F8EFD9 65%,#EFD9B9 100%);box-shadow:inset 0 0 0 6px rgba(255,255,255,.7),0 12px 28px rgba(110,78,143,.16);overflow:visible}
+.dog-display img{position:relative;z-index:1;border-radius:32px;filter:drop-shadow(0 10px 12px rgba(77,51,51,.18))!important;transition:transform .28s ease}
+.dog-display.wag img{animation:dogWag .5s ease}.dog-display.bounce img{animation:dogBounce .6s ease}.dog-display.shake img{animation:dogShake .7s ease}
+.dog-bubble{max-width:245px;white-space:normal;line-height:1.45;border:2px solid #FFF3B3;color:#5D4A70;background:#FFFEFA;box-shadow:0 8px 22px rgba(82,57,107,.16)}
+.dog-bubble.show{top:-58px}
+.dog-level{margin-top:16px;color:#4A365A}.dog-level small{display:block;margin-top:3px}
+.dog-bar-wrap{height:14px;background:#EAE1F4}.dog-acts{gap:8px}.dog-btn{border:1px solid rgba(112,84,151,.09);box-shadow:0 4px 10px rgba(80,53,108,.07)}
 /* === PIANO === */
 .staff-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
 .staff-card{background:#FFFEF7;border:2px solid #F0E6C0;border-radius:14px;padding:14px;margin:8px 0}
@@ -230,7 +247,7 @@ function pA(aid,src,onEnd){let fin=!1;const done=r=>{if(!fin){fin=!0;if(onEnd)on
 function sayPy(py,aid,src){src=src||'syl';pA(aid,src,ok=>{if(!ok){toast('音频暂不可用');return}const t=T();if(S.pinyinDate!==t){S.pinyinToday={};S.pinyinDate=t}if(!S.pinyinToday[py]){S.pinyinToday[py]=!0;S.pinyin[py]=!0;R()}})}
 // === 3D DOG images (Pixar-style rendered) ===
 function dogSVG(type,size){size=size||120;
-  const map={golden:'labrador-cartoon.png',corgi:'corgi-cartoon.png',husky:'husky-cartoon.png'};
+  const map={golden:'labrador-cartoon.png',corgi:'corgi-cartoon-v2.png',husky:'husky-cartoon.png'};
   const f=map[type]||'labrador-cartoon.png';
   return `<img src="assets/pets/${f}" width="${size}" height="${size}" style="object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.2))" alt="dog">`;
 }
