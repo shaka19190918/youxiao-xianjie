@@ -52,5 +52,9 @@ with sync_playwright() as p:
     page.evaluate("playPoemV6(0)")
     page.wait_for_timeout(50)
     assert any("/assets/voice/poem_yong_e.mp3" in src for src in page.evaluate("window.__played"))
+
+    page.evaluate("showPage('math'); mathV6.q={a:3,b:2,plus:true,ans:5}; playMathQuestionV6()")
+    page.wait_for_timeout(50)
+    assert any("/assets/math/3.mp3" in src for src in page.evaluate("window.__played"))
     print("browser smoke test: PASS")
     browser.close()
