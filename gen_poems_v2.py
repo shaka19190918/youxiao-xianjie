@@ -5,8 +5,20 @@ import asyncio, edge_tts, os
 VOICE = 'zh-CN-XiaoxiaoNeural'  # 清晰朗读
 RATE = '-15%'   # 稍慢，适合跟读
 
+# 咏鹅：用 py 音素强制三个「鹅」为 e2（第二声 é），输出到新文件名以破除缓存
+YONG_E_SSML = (
+    '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">'
+    '<voice name="zh-CN-XiaoxiaoNeural">'
+    '咏鹅。唐代，骆宾王。下面来听古诗咏鹅。'
+    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
+    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
+    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
+    '曲项向天歌。白毛浮绿水，红掌拨清波。'
+    '</voice></speak>'
+)
+
 POEMS = {
-    'poem_yong_e': '咏鹅。唐代，骆宾王。\n下面来听古诗咏鹅。\n鹅，鹅，鹅，\n曲项向天歌。\n白毛浮绿水，\n红掌拨清波。',
+    'poem_yong_e_v2': YONG_E_SSML,
     'poem_hua': '画。唐代，王维。\n远看山有色，\n近听水无声。\n春去花还在，\n人来鸟不惊。',
     'poem_min_nong': '悯农。唐代，李绅。\n锄禾日当午，\n汗滴禾下土。\n谁知盘中餐，\n粒粒皆辛苦。',
     'poem_jing_ye_si': '静夜思。唐代，李白。\n床前明月光，\n疑是地上霜。\n举头望明月，\n低头思故乡。',
