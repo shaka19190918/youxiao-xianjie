@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v10';
+const CACHE = 'child-learning-v11';
 const PINYIN = ['a1','a2','a3','a4','o1','o2','o3','o4','e1','e2','e3','e4','yi1','i2','i3','i4','wu1','u2','u3','u4','yu1','v2','v3','v4'].map(x=>`./assets/pinyin/${x}.mp3`);
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
 const MATH = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','equals','minus','plus','what'].map(x=>`./assets/math/${x}.mp3`);
