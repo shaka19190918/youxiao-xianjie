@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v17';
+const CACHE = 'child-learning-v18';
 const PINYIN = []; // 拼音已改用浏览器SpeechSynthesis，不再需要预缓存mp3
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
 const MATH = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','equals','minus','plus','what'].map(x=>`./assets/math/${x}.mp3`);
