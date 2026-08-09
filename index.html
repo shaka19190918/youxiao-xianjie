@@ -239,6 +239,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 <div class="mo" id="hwM" style="display:none" onclick="clHW()"><div class="md" onclick="event.stopPropagation()"><div class="md-hd"><span id="hwTi"></span><button onclick="clHW()">✕</button></div><div id="hwTarget"></div><p id="hwFb" style="font-size:12px;color:var(--tx2);text-align:center;margin:6px 0"></p><div style="display:flex;gap:8px;justify-content:center"><button class="btn b1 bs" onclick="startHQ()">🎯 描红</button><button class="btn b3 bs" onclick="resetHW()">🔄 重播</button></div></div></div>
 <div class="mo" id="rwM" style="display:none" onclick="hideRw()"><div class="md rw" onclick="event.stopPropagation()"><div style="font-size:56px">💎</div><div id="rwMsg" style="font-size:17px;font-weight:700"></div></div></div>
 <div id="dogSelWrap"></div><div id="wizWrap"></div>
+<input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(event)">
 <div class="toast" id="toast"></div>
 <script>
 // STATE
