@@ -2,23 +2,12 @@
 """古诗音频生成 V2 — 标题+作者+全文，教学式朗读"""
 import asyncio, edge_tts, os
 
-VOICE = 'zh-CN-XiaoxiaoNeural'  # 清晰朗读
-RATE = '-15%'   # 稍慢，适合跟读
-
-# 咏鹅：用 py 音素强制三个「鹅」为 e2（第二声 é），输出到新文件名以破除缓存
-YONG_E_SSML = (
-    '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-CN">'
-    '<voice name="zh-CN-XiaoxiaoNeural">'
-    '咏鹅。唐代，骆宾王。下面来听古诗咏鹅。'
-    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
-    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
-    '<phoneme alphabet="py" ph="e2">鹅</phoneme>，'
-    '曲项向天歌。白毛浮绿水，红掌拨清波。'
-    '</voice></speak>'
-)
+VOICE = 'zh-CN-XiaoxiaoNeural'
+RATE = '-15%'
 
 POEMS = {
-    'poem_yong_e_v2': YONG_E_SSML,
+    # 用拼音 é é é 替代"鹅鹅鹅"，TTS读到带声调拼音自然读第二声
+    'poem_yong_e_v2': '咏鹅。唐代，骆宾王。\né é é，\n曲项向天歌。\n白毛浮绿水，\n红掌拨清波。',
     'poem_hua': '画。唐代，王维。\n远看山有色，\n近听水无声。\n春去花还在，\n人来鸟不惊。',
     'poem_min_nong': '悯农。唐代，李绅。\n锄禾日当午，\n汗滴禾下土。\n谁知盘中餐，\n粒粒皆辛苦。',
     'poem_jing_ye_si': '静夜思。唐代，李白。\n床前明月光，\n疑是地上霜。\n举头望明月，\n低头思故乡。',
@@ -40,18 +29,13 @@ async def gen(key, text):
         return key, False, str(e)
 
 async def main():
-    items = list(POEMS.items())
+    items = [('poem_yong_e_v2', POEMS['poem_yong_e_v2'])]  # 只重生成咏鹅
     print(f'语音: {VOICE}, 语速: {RATE}')
-    print(f'共 {len(items)} 首古诗')
-    ok, fail = 0, []
     for key, text in items:
         k, success, info = await gen(key, text)
         if success:
-            ok += 1
             print(f'OK {k}: {info}字节')
         else:
-            fail.append((k, info))
             print(f'FAIL {k}: {info}')
-    print(f'成功 {ok}，失败 {len(fail)}')
 
 asyncio.run(main())
