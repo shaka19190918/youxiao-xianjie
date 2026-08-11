@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FF6B6B">
 <link rel="manifest" href="manifest.webmanifest">
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').then(reg=>{if(reg.waiting){window.location.reload();return}reg.onupdatefound=()=>{const s=reg.installing;s.onstatechange=()=>{if(s.state==='installed'&&navigator.serviceWorker.controller)window.location.reload()}};reg.ready.then(()=>{const wkr=reg.active||navigator.serviceWorker.controller;if(wkr)wkr.postMessage('prewarm-learning-audio')}).catch(()=>{})}).catch(()=>{})})}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').then(reg=>{if(reg.waiting){window.location.reload();return}reg.onupdatefound=()=>{const s=reg.installing;s.onstatechange=()=>{if(s.state==='installed'&&navigator.serviceWorker.controller)window.location.reload()}};reg.ready.then(()=>{const warm=()=>{const wkr=reg.active||navigator.serviceWorker.controller;if(wkr)wkr.postMessage('prewarm-learning-audio')};if('requestIdleCallback' in window)requestIdleCallback(warm,{timeout:5000});else setTimeout(warm,3000)}).catch(()=>{})}).catch(()=>{})})}</script>
 <script src="assets/vendor/hanzi-writer.min.js" defer></script>
 <title>幼小衔接快乐营</title>
 <style>
@@ -286,8 +286,8 @@ const PINYIN_READ={b:'播',p:'坡',m:'摸',f:'佛',d:'得',t:'特',n:'讷',l:'�
 function sayPy(py,aid,src){src=src||'syl';let done=!1;const record=function(){if(done)return;done=!0;const t=T();if(S.pinyinDate!==t){S.pinyinToday={};S.pinyinDate=t}if(!S.pinyinToday[py]){S.pinyinToday[py]=!0;S.pinyin[py]=!0;R()}};pA(aid,src,function(ok){if(ok){record();return}const txt=PINYIN_READ[aid]||py;if(!say(txt,'zh-CN',.65,record)){toast('发音暂时不可用，请再试一次')}})}
 // === 3D DOG images (Pixar-style rendered) ===
 function dogSVG(type,size){size=size||120;
-  const map={golden:'labrador-cartoon.png',corgi:'corgi-cartoon-v2.png',husky:'husky-cartoon.png'};
-  const f=map[type]||'labrador-cartoon.png';
+  const map={golden:'labrador-cartoon.webp',corgi:'corgi-cartoon-v2.webp',husky:'husky-cartoon.webp'};
+  const f=map[type]||'labrador-cartoon.webp';
   return `<img src="assets/pets/${f}" width="${size}" height="${size}" style="object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.2))" alt="dog">`;
 }
 const DOGS={
@@ -582,10 +582,10 @@ function exportData(){try{const payload={v:1,app:"youxiao-xianjie",exportedAt:ne
 function confirmClearData(){if(!confirm('⚠️ 确定清除所有数据吗？\n\n将永久删除：\n• 所有学习记录\n• 狗狗和成长数据\n• 打卡记录\n• 钻石和徽章\n\n不可恢复！'))return;if(!confirm('再次确认：真的要清除所有数据吗？'))return;localStorage.removeItem('yxxj_s');localStorage.removeItem('yxxj_dog');S={pts:0,strk:0,dog:null,vR:{},gifts:[],ld:'',chars:{},pinyin:{},pinyinToday:{},pinyinDate:'',poems:{},mathC:0,mathT:0,focusM:0,badges:{},sport:{},sudoku:{},cal:{},pianoLog:{},pianoStart:0,pianoSec:0,parentPin:'1234',dailyGoal:{tasks:5,chars:3},_setup:{done:false,name:'',grade:'幼升小'},_parentAuth:false,scr:{on:!0,contMin:20,restMin:5,dayMin:30,extMin:0,used:0,cont:0,day:''}};R();toast('所有数据已清除');showWizard()}
 // ===== v6 pet roster: four requested companions =====
 const PETS_V6={
-  labrador:{n:'小拉',cn:'拉布拉多犬',img:'labrador-cartoon.png',col:'#D99545'},
-  husky:{n:'小哈',cn:'西伯利亚雪橇犬',img:'husky-cartoon.png',col:'#718096'},
-  shepherd:{n:'小牧',cn:'德国牧羊犬',img:'german-shepherd-cartoon.png',col:'#9B6B45'},
-  trex:{n:'勒勒',cn:'毛绒霸王龙',img:'trex-plush.png',col:'#78A65A'}
+  labrador:{n:'小拉',cn:'拉布拉多犬',img:'labrador-cartoon.webp',col:'#D99545'},
+  husky:{n:'小哈',cn:'西伯利亚雪橇犬',img:'husky-cartoon.webp',col:'#718096'},
+  shepherd:{n:'小牧',cn:'德国牧羊犬',img:'german-shepherd-cartoon.webp',col:'#9B6B45'},
+  trex:{n:'勒勒',cn:'毛绒霸王龙',img:'trex-plush.webp',col:'#78A65A'}
 };
 function migratePetsV6(){if(!S.dog)return;const old={golden:'labrador',corgi:'labrador',malinois:'shepherd'};const type=old[S.dog.type]||S.dog.type;S.dog={...S.dog,type:PETS_V6[type]?type:'labrador',xp:Number(S.dog.xp)||0,hu:Number(S.dog.hu)||80,hy:Number(S.dog.hy)||80,en:Number(S.dog.en)||80,tasks:Number(S.dog.tasks)||0};R()}
 function petImageV6(type,size,lazy){const p=PETS_V6[type]||PETS_V6.labrador;return `<img src="assets/pets/${p.img}" width="${size}" height="${size}" ${lazy?'loading="lazy"':''} decoding="async" style="object-fit:contain" alt="${p.cn}">`}
