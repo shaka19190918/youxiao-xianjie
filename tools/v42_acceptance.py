@@ -1,4 +1,4 @@
-"""Full browser acceptance audit for curriculum v42."""
+"""Full browser acceptance audit for curriculum v43."""
 import os
 import sys
 from pathlib import Path
@@ -42,7 +42,7 @@ with sync_playwright() as p:
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.on("response", lambda response: errors.append(f"http {response.status}: {response.url}") if response.status >= 400 else None)
     page.goto(BASE, wait_until="networkidle")
-    page.wait_for_function("typeof v42State === 'function' && typeof showPage === 'function'")
+    page.wait_for_function("typeof v42State === 'function' && typeof V43_TEXTBOOK !== 'undefined' && typeof showPage === 'function'")
 
     assert page.locator("#v42CourseCard").count() == 1
     assert "一年级核心课程" in page.locator("#v42CourseCard").inner_text()
@@ -57,9 +57,19 @@ with sync_playwright() as p:
 
     page.evaluate("showPage('curriculum')")
     course_text = page.locator("#ct").inner_text()
-    for label in ["拼音与正音", "识字与写字", "阅读与表达", "数学核心", "古诗积累", "思维实践"]:
+    for label in ["教材同步路线", "拼音与正音", "识字与写字", "阅读与表达", "数学核心", "古诗积累", "思维实践"]:
         assert label in course_text, label
     assert "二年级" not in page.locator("body").inner_text()
+
+    page.evaluate("showPage('textbook')")
+    assert page.locator(".tb-unit").count() == 9
+    assert page.locator(".tb-lesson").count() == 45
+    textbook_text = page.locator("#ct").text_content()
+    for label in ["统编版语文", "2024新教材", "1 ɑ o e", "14 ɑng eng ing ong", "秋天", "乌鸦喝水"]:
+        assert label in textbook_text, label
+    assert "不复制教材课文" in textbook_text
+    page.evaluate("playTextbookV43(0,0)")
+    assert any("assets/textbook/tb_00_01.mp3" in x for x in page.evaluate("window.__media"))
 
     page.evaluate("showPage('pinyin');playPinyinV42('fo2','f');playPinyinV42('a2','á')")
     media = page.evaluate("window.__media")
@@ -102,7 +112,8 @@ with sync_playwright() as p:
         ...V42_INITIALS.map(x=>'assets/pinyin/'+x[2]+'.mp3'),
         ...V42_TONES.map(x=>'assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])),
         ...V42_FINALS.map(x=>'assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1]))
-        ,...POEM_COURSE_V6.flatMap(p=>['assets/voice/'+p.key+'_info.mp3',...p.lns.map((_,i)=>'assets/voice/'+p.key+'_l'+(i+1)+(p.key==='poem_yong_e'&&i===0?'.wav':'.mp3'))])
+        ,...POEM_COURSE_V6.flatMap(p=>['assets/voice/'+p.key+'_info.mp3',...p.lns.map((_,i)=>'assets/voice/'+p.key+'_l'+(i+1)+(p.key==='poem_yong_e'&&i===0?'.wav':'.mp3'))]),
+        ...V43_TEXTBOOK.flatMap((u,ui)=>u.items.map((_,i)=>'assets/textbook/tb_'+String(ui).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3'))
       ];
       const unique=[...new Set(paths)];
       return Promise.all(unique.map(async p=>[p,(await fetch(p)).status]));
@@ -125,4 +136,4 @@ with sync_playwright() as p:
     assert page.locator("#v42CourseCard").count() == 1
     context.set_offline(False)
     browser.close()
-    print(f"v42 acceptance: PASS ({len(routes)} routes, 4 viewports, offline reload)")
+    print(f"v43 acceptance: PASS ({len(routes)} routes, 4 viewports, 45 textbook nodes, offline reload)")
