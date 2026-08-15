@@ -50,6 +50,9 @@ with sync_playwright() as p:
     page.evaluate("S._parentAuth=true;showPage('parent')")
     parent_text = page.locator("#ct").inner_text()
     assert "今日家长小结" in parent_text and "教学音频核对" in parent_text
+    assert "二年级" not in parent_text
+    page.evaluate("S._setup.grade='二年级';v41NormalizeStage()")
+    assert page.evaluate("S._setup.grade") == "一年级"
     page.evaluate("v41AuditPlay(0)")
     page.wait_for_timeout(50)
     assert any("poem_yong_e" in x for x in page.evaluate("window.__played"))
