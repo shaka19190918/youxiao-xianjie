@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v40';
+const CACHE = 'child-learning-v41';
 const PINYIN_KEYS = '';
 const PINYIN = [];
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
@@ -17,7 +17,9 @@ self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).the
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('message', event => {
   if (event.data !== 'prewarm-learning-audio') return;
-  const learningAudio = [...MATH, ...VOICE.map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
+  /* Keep first interaction fast: cache core teaching sounds and a small pet
+     starter set now; the full replay library stays cache-on-demand. */
+  const learningAudio = [...MATH, ...VOICE.slice(0, 36).map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
     `./assets/english/${x}.mp3`, `./assets/english-cn/${x}.mp3`
   ])];
   event.waitUntil(caches.open(CACHE).then(async cache => {

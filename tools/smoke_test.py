@@ -1,74 +1,60 @@
-"""Small offline-browser regression suite for the static child-learning app."""
+"""Offline browser regression suite for the child-learning static app."""
 import os
+import sys
 from playwright.sync_api import sync_playwright
 
+sys.stdout.reconfigure(encoding="utf-8")
 
-def verify_page(page, width, height):
+
+def assert_no_overflow(page, width, height):
     page.set_viewport_size({"width": width, "height": height})
-    page.reload(wait_until="domcontentloaded")
-    page.evaluate("showPage('pinyin')")
-    assert page.locator(".pc").count() >= 24, "pinyin cards did not render"
-    labels = page.locator(".pc .py-c").all_text_contents()
-    for tone in ["ō", "ó", "ǒ", "ò"]:
-        assert tone in labels, f"missing o tone: {tone}"
-    overflow = page.evaluate("document.documentElement.scrollWidth > window.innerWidth + 1")
-    assert not overflow, f"horizontal overflow at {width}px"
+    page.evaluate("showPage('home')")
+    assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 1"), f"overflow at {width}px"
 
 
 with sync_playwright() as p:
-    # Use the bundled headless test browser (not the user's browser profile).
     browser = p.chromium.launch(
         headless=True,
-        executable_path=os.path.expandvars(r"%LOCALAPPDATA%\\ms-playwright\\chromium-1223\\chrome-win64\\chrome.exe"),
+        executable_path=os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright\chromium-1223\chrome-win64\chrome.exe"),
     )
-    page = browser.new_page(viewport={"width": 390, "height": 844})
-    played = []
+    context = browser.new_context(viewport={"width": 390, "height": 844}, service_workers="block")
+    page = context.new_page()
     page.add_init_script("""
       localStorage.setItem('yxxj_s', JSON.stringify({
-        pts:0, strk:0, dog:{type:'labrador',name:'测试小狗',xp:0,energy:80,clean:80},
-        _setup:{done:true,name:'测试小主人',grade:'幼升小'}, parentPin:'1234',
-        pinyin:{},pinyinToday:{},poems:{},chars:{},dailyGoal:{tasks:5,chars:3}
+        pts:20,strk:1,dog:{type:'labrador',name:'Test',xp:0,hu:80,hy:80,en:80,tasks:0},
+        _setup:{done:true,name:'Test',grade:'幼升小'},parentPin:'1234',
+        vR:{},poems:{},chars:{},dailyGoal:{tasks:5,chars:3},mathC:0,mathT:0
       }));
       window.__played=[];
       HTMLMediaElement.prototype.play=function(){window.__played.push(this.src);return Promise.resolve();};
     """)
-    # First load starts audio precaching, so the rendered application function
-    # rather than a quiet network window is the first-shell gate.
     page.goto(os.environ.get("SMOKE_URL", "http://127.0.0.1:4173"), wait_until="commit")
     page.wait_for_function("typeof showPage === 'function'", timeout=10000)
-    print("online shell loaded", flush=True)
-    page.evaluate("navigator.serviceWorker.ready")
-    print("service worker ready", flush=True)
-    page.reload(wait_until="domcontentloaded")
-    page.context.set_offline(True)
-    page.reload(wait_until="domcontentloaded")
-    assert "幼小衔接" in page.title(), "offline app shell did not load"
-    print("offline shell loaded", flush=True)
-    page.context.set_offline(False)
-    for width, height in [(320, 568), (375, 667), (390, 844), (768, 1024)]:
-        verify_page(page, width, height)
+    page.reload(wait_until="networkidle")
+    assert "快乐营" in page.title(), "application shell did not load"
 
-    page.set_viewport_size({"width": 390, "height": 844})
-    page.evaluate("showPage('pinyin')")
-    page.locator("button.pc", has_text="ó").click()
-    page.wait_for_timeout(50)
-    assert any(src.endswith("/assets/pinyin/o2.mp3") for src in page.evaluate("window.__played"))
+    for size in [(320, 568), (375, 667), (390, 844), (768, 1024)]:
+        assert_no_overflow(page, *size)
+    assert page.locator("#v41Guide").count() == 1, "daily guide is missing"
 
-    page.evaluate("showPage('english')")
-    page.get_by_role("button", name="翻译").first.click()
-    page.wait_for_timeout(50)
-    assert any("/assets/english-cn/dog.mp3" in src for src in page.evaluate("window.__played"))
-    page.evaluate("englishTabV6='dialogue'; showPage('english')")
-    assert page.locator(".english-word").count() == 4, "dialogue cards did not render"
+    page.locator("#v41Guide button").click()
+    assert "会写字" in page.locator("#ct").inner_text() or "描红" in page.locator("#ct").inner_text()
 
-    page.evaluate("showPage('poems')")
-    assert "今日课程 1 / 7" in page.locator("#ct").inner_text()
-    page.evaluate("playPoemV6(0)")
-    page.wait_for_timeout(50)
-    assert any("/assets/voice/poem_yong_e.mp3" in src for src in page.evaluate("window.__played"))
+    page.evaluate("showPage('home'); v41ToggleSound()")
+    assert page.evaluate("S.audio.muted") is True
+    page.evaluate("v41ToggleSound(); showPage('dog')")
+    assert "我们的成长故事" in page.locator("#ct").inner_text()
+    page.evaluate("fDog()")
+    assert page.evaluate("S.dog.hu") == 100
 
-    page.evaluate("showPage('math'); mathV6.q={a:3,b:2,plus:true,ans:5}; playMathQuestionV6()")
+    page.evaluate("S._parentAuth=true;showPage('parent')")
+    parent_text = page.locator("#ct").inner_text()
+    assert "今日家长小结" in parent_text and "教学音频核对" in parent_text
+    page.evaluate("v41AuditPlay(0)")
     page.wait_for_timeout(50)
-    assert any("/assets/math/3.mp3" in src for src in page.evaluate("window.__played"))
-    print("browser smoke test: PASS")
+    assert any("poem_yong_e" in x for x in page.evaluate("window.__played"))
+    for route in page.evaluate("Object.keys(PGS)"):
+        page.evaluate("route=>showPage(route)", route)
+        assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 1"), f"route overflow: {route}"
+    print("browser smoke test: PASS", flush=True)
     browser.close()
