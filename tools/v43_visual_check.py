@@ -1,4 +1,4 @@
-"""Capture the mobile textbook route for visual inspection."""
+"""Capture the mobile textbook and sync routes for visual inspection."""
 import os
 from pathlib import Path
 
@@ -28,4 +28,11 @@ with sync_playwright() as playwright:
     page.evaluate("showPage('textbook')")
     page.locator(".tb-unit").nth(1).evaluate("element => { element.open = true; }")
     page.screenshot(path="v43-textbook-mobile.png", full_page=True)
+    page.evaluate("textbookSubjectSetV44('数学')")
+    page.locator(".tb-unit").nth(1).evaluate("element => { element.open = true; }")
+    page.screenshot(path="v44-textbook-math-mobile.png", full_page=True)
+    page.evaluate("showPage('mathsync')")
+    page.screenshot(path="v44-math-mobile.png", full_page=True)
+    page.evaluate("showPage('englishsync')")
+    page.screenshot(path="v44-english-mobile.png", full_page=True)
     browser.close()
