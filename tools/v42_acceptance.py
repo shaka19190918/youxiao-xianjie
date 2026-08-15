@@ -1,4 +1,4 @@
-"""Full browser acceptance audit for curriculum v44."""
+"""Full browser acceptance audit for curriculum v45."""
 import os
 import sys
 from pathlib import Path
@@ -6,7 +6,7 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 sys.stdout.reconfigure(encoding="utf-8")
-BASE = os.environ.get("SMOKE_URL", "http://127.0.0.1:4173")
+BASE = os.environ.get("SMOKE_URL", "http://127.0.0.1:4199")
 
 
 def profile_script():
@@ -42,7 +42,7 @@ with sync_playwright() as p:
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.on("response", lambda response: errors.append(f"http {response.status}: {response.url}") if response.status >= 400 else None)
     page.goto(BASE, wait_until="networkidle")
-    page.wait_for_function("typeof v42State === 'function' && typeof V44_MATH !== 'undefined' && typeof V44_ENGLISH !== 'undefined' && typeof showPage === 'function'")
+    page.wait_for_function("typeof v42State === 'function' && typeof V45_MATH_LOWER !== 'undefined' && typeof V45_TIME !== 'undefined' && typeof showPage === 'function'")
 
     assert page.locator("#v42CourseCard").count() == 1
     assert "一年级核心课程" in page.locator("#v42CourseCard").inner_text()
@@ -59,15 +59,23 @@ with sync_playwright() as p:
     assert page.evaluate("V44_ENGLISHBOOK.length") == 8
     assert page.evaluate("V44_ENGLISHBOOK.reduce((n,u)=>n+u.items.length,0)") == 40
     assert page.evaluate("V44_MATH.length") == 42
+    assert page.evaluate("V45_MATHBOOK_LOWER.length") == 8
+    assert page.evaluate("V45_MATHBOOK_LOWER.reduce((n,u)=>n+u.items.length,0)") == 37
+    assert page.evaluate("V45_MATH_LOWER.length") == 48
+    assert page.evaluate("V45_TIME.length") == 18
     assert page.evaluate("V44_ENGLISH.reduce((n,u)=>n+u.items.length,0)") == 24
     assert page.evaluate("V44_MATH.every(q=>q.o.includes(q.a)&&new Set(q.o).size===q.o.length)")
     assert page.evaluate("[0,1,2,3,4,5,6].every(u=>V44_MATH.filter(q=>q.unit===u).length===6)")
+    assert page.evaluate("V45_MATH_LOWER.every(q=>q.o.includes(q.a)&&new Set(q.o).size===q.o.length)")
+    assert page.evaluate("[0,1,2,3,4,5,6,7].every(u=>V45_MATH_LOWER.filter(q=>q.unit===u).length===6)")
+    assert page.evaluate("V45_TIME.every(q=>q.o.includes(q.a)&&new Set(q.o).size===q.o.length)")
 
     page.evaluate("showPage('curriculum')")
     course_text = page.locator("#ct").inner_text()
     for label in ["教材同步路线", "拼音与正音", "识字与写字", "阅读与表达", "数学教材同步", "英语教材同步", "古诗积累", "思维实践", "数学能力拓展"]:
         assert label in course_text, label
-    assert "二年级" not in page.locator("body").inner_text()
+    assert "二年级核心课程" not in page.locator("body").inner_text()
+    assert "二年级下册预备选学" in course_text
 
     page.evaluate("showPage('textbook')")
     assert page.locator(".tb-unit").count() == 9
@@ -79,14 +87,23 @@ with sync_playwright() as p:
     page.evaluate("playTextbookV43(0,0)")
     assert any("assets/textbook/tb_00_01.mp3" in x for x in page.evaluate("window.__media"))
 
-    page.evaluate("textbookSubjectSetV44('数学')")
+    page.evaluate("textbookSubjectSetV44('数学上册')")
     assert page.locator(".tb-unit").count() == 7
     assert page.locator(".tb-lesson").count() == 42
     math_book_text = page.locator("#ct").text_content()
     for label in ["人教版数学", "5以内数", "6～10", "认识立体图形", "20以内的进位加法"]:
         assert label in math_book_text, label
-    page.evaluate("bookNodeV44('数学',0,0)")
+    page.evaluate("bookNodeV44('数学上册',0,0)")
     assert any("assets/textbook-v44/math_unit_01.mp3" in x for x in page.evaluate("window.__media"))
+
+    page.evaluate("textbookSubjectSetV44('数学下册')")
+    assert page.locator(".tb-unit").count() == 8
+    assert page.locator(".tb-lesson").count() == 37
+    lower_book_text = page.locator("#ct").text_content()
+    for label in ["一年级下册", "认识平面图形", "20以内的退位减法", "100以内数的认识", "欢乐购物街"]:
+        assert label in lower_book_text, label
+    page.evaluate("bookNodeV44('数学下册',0,0)")
+    assert any("assets/textbook-v45/math_lower_unit_01.mp3" in x for x in page.evaluate("window.__media"))
 
     page.evaluate("textbookSubjectSetV44('英语')")
     assert page.locator(".tb-unit").count() == 8
@@ -126,6 +143,25 @@ with sync_playwright() as p:
     assert page.evaluate("v42State().mastery['math44_1'].score") == 1
     assert "math44_1" not in page.evaluate("v42State().wrong")
 
+    page.evaluate("showPage('mathlower');v45MathLowerQ=V45_MATH_LOWER[0];renderMathLower45()")
+    assert "一年级下册数学" in page.locator("#ct").inner_text()
+    page.evaluate("answerMathLower45('2条',document.querySelector('#math45LowerTask .v42-answer'))")
+    assert "math45l_1" in page.evaluate("v42State().wrong")
+    page.evaluate("v45MathLowerQ=V45_MATH_LOWER[0];renderMathLower45();answerMathLower45('4条',document.querySelectorAll('#math45LowerTask .v42-answer')[2])")
+    assert page.evaluate("v42State().mastery['math45l_1'].score") == 1
+    page.evaluate("playMathLower45()")
+    assert any("assets/math-v45-lower/question_01.mp3" in x for x in page.evaluate("window.__media"))
+
+    page.evaluate("showPage('timeextra');v45TimeQ=V45_TIME[0];renderTime45()")
+    time_text = page.locator("#ct").inner_text()
+    assert "二年级下册预备知识" in time_text and "不计入一年级教材同步完成率" in time_text
+    page.evaluate("answerTime45('分针',document.querySelectorAll('#time45Task .v42-answer')[1])")
+    assert "time45_1" in page.evaluate("v42State().wrong")
+    page.evaluate("v45TimeQ=V45_TIME[0];renderTime45();answerTime45('时针',document.querySelector('#time45Task .v42-answer'))")
+    assert page.evaluate("v42State().mastery['time45_1'].score") == 1
+    page.evaluate("playTime45()")
+    assert any("assets/time-v45/question_01.mp3" in x for x in page.evaluate("window.__media"))
+
     page.evaluate("showPage('englishsync')")
     before_cn = page.evaluate("window.__media.filter(x=>x.includes('english-v44-cn')).length")
     page.evaluate("playEnglish44(0,0)")
@@ -160,7 +196,10 @@ with sync_playwright() as p:
         ,...POEM_COURSE_V6.flatMap(p=>['assets/voice/'+p.key+'_info.mp3',...p.lns.map((_,i)=>'assets/voice/'+p.key+'_l'+(i+1)+(p.key==='poem_yong_e'&&i===0?'.wav':'.mp3'))]),
         ...V43_TEXTBOOK.flatMap((u,ui)=>u.items.map((_,i)=>'assets/textbook/tb_'+String(ui).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3')),
         ...V44_MATH.map(q=>'assets/math-v44/question_'+String(q.id).padStart(2,'0')+'.mp3'),
+        ...V45_MATH_LOWER.map(q=>'assets/math-v45-lower/question_'+String(q.id).padStart(2,'0')+'.mp3'),
+        ...V45_TIME.map(q=>'assets/time-v45/question_'+String(q.id).padStart(2,'0')+'.mp3'),
         ...V44_MATHBOOK.map((_,i)=>'assets/textbook-v44/math_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
+        ...V45_MATHBOOK_LOWER.map((_,i)=>'assets/textbook-v45/math_lower_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V44_ENGLISHBOOK.map((_,i)=>'assets/textbook-v44/english_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V44_ENGLISH.flatMap((u,ui)=>u.items.flatMap((_,i)=>['assets/english-v44/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3','assets/english-v44-cn/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3']))
       ];
@@ -185,4 +224,4 @@ with sync_playwright() as p:
     assert page.locator("#v42CourseCard").count() == 1
     context.set_offline(False)
     browser.close()
-    print(f"v44 acceptance: PASS ({len(routes)} routes, 4 viewports, 127 textbook nodes, offline reload)")
+    print(f"v45 acceptance: PASS ({len(routes)} routes, 4 viewports, 164 textbook nodes, offline reload)")

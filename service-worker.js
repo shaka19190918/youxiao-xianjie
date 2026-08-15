@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v44';
+const CACHE = 'child-learning-v45';
 const PINYIN_KEYS = '';
 const PINYIN = [];
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
@@ -7,6 +7,9 @@ const MATH = ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','
 const TEXTBOOK_COUNTS = [4,6,5,6,6,5,5,4,4];
 const TEXTBOOK = TEXTBOOK_COUNTS.flatMap((count,u)=>Array.from({length:count},(_,i)=>`./assets/textbook/tb_${String(u).padStart(2,'0')}_${String(i+1).padStart(2,'0')}.mp3`));
 const MATH_V44 = Array.from({length:42},(_,i)=>`./assets/math-v44/question_${String(i+1).padStart(2,'0')}.mp3`);
+const MATH_V45_LOWER = Array.from({length:48},(_,i)=>`./assets/math-v45-lower/question_${String(i+1).padStart(2,'0')}.mp3`);
+const TIME_V45 = Array.from({length:18},(_,i)=>`./assets/time-v45/question_${String(i+1).padStart(2,'0')}.mp3`);
+const BOOK_V45 = Array.from({length:8},(_,i)=>`./assets/textbook-v45/math_lower_unit_${String(i+1).padStart(2,'0')}.mp3`);
 const BOOK_V44 = [
   ...Array.from({length:7},(_,i)=>`./assets/textbook-v44/math_unit_${String(i+1).padStart(2,'0')}.mp3`),
   ...Array.from({length:8},(_,i)=>`./assets/textbook-v44/english_unit_${String(i+1).padStart(2,'0')}.mp3`)
@@ -30,7 +33,7 @@ self.addEventListener('message', event => {
   if (event.data !== 'prewarm-learning-audio') return;
   /* Keep first interaction fast: cache core teaching sounds and a small pet
      starter set now; the full replay library stays cache-on-demand. */
-  const learningAudio = [...MATH, ...TEXTBOOK, ...MATH_V44, ...BOOK_V44, ...ENGLISH_V44, ...VOICE.slice(0, 36).map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
+  const learningAudio = [...MATH, ...TEXTBOOK, ...MATH_V44, ...MATH_V45_LOWER, ...TIME_V45, ...BOOK_V44, ...BOOK_V45, ...ENGLISH_V44, ...VOICE.slice(0, 36).map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
     `./assets/english/${x}.mp3`, `./assets/english-cn/${x}.mp3`
   ])];
   event.waitUntil(caches.open(CACHE).then(async cache => {
