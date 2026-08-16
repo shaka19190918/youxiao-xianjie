@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v45';
+const CACHE = 'child-learning-v46';
 const PINYIN_KEYS = '';
 const PINYIN = [];
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
@@ -24,7 +24,10 @@ const PET_LINES = ['peta_01389bba','peta_018de43e','peta_03523f95','peta_0373a59
 const VOICE = ['correct','greeting_afternoon','greeting_evening','greeting_late_morning','greeting_morning','greeting_night','greeting_noon','pet_bath','pet_hello','pet_hungry','pet_play','retry','trace_pass','trace_retry','trace_start',...POEM_LINES,...PET_LINES];
 const PRECACHE = [
   './','./index.html','./manifest.webmanifest','./assets/vendor/hanzi-writer.min.js',
-  './assets/pets/labrador-cartoon.webp','./assets/voice/correct.mp3','./assets/voice/retry.mp3'
+  './pet_voice_map.json','./assets/illustrations/curriculum-v46.webp',
+  './assets/pets/labrador-cartoon.webp','./assets/voice/correct.mp3','./assets/voice/retry.mp3','./assets/voice/pet_hello.mp3',
+  './assets/voice/eye_rest.mp3','./assets/voice/eye_limit.mp3','./assets/voice/eye_done.mp3',
+  './assets/pinyin-v46/k-ke1.mp3','./assets/pinyin-v46/ing-ying1.mp3','./assets/pinyin-v46/ong-zhong1.mp3'
 ];
 
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PRECACHE)).then(() => self.skipWaiting())));
@@ -33,7 +36,7 @@ self.addEventListener('message', event => {
   if (event.data !== 'prewarm-learning-audio') return;
   /* Keep first interaction fast: cache core teaching sounds and a small pet
      starter set now; the full replay library stays cache-on-demand. */
-  const learningAudio = [...MATH, ...TEXTBOOK, ...MATH_V44, ...MATH_V45_LOWER, ...TIME_V45, ...BOOK_V44, ...BOOK_V45, ...ENGLISH_V44, ...VOICE.slice(0, 36).map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
+  const learningAudio = ['./assets/pinyin-v46/k-ke1.mp3','./assets/pinyin-v46/ing-ying1.mp3','./assets/pinyin-v46/ong-zhong1.mp3', ...MATH, ...TEXTBOOK, ...MATH_V44, ...MATH_V45_LOWER, ...TIME_V45, ...BOOK_V44, ...BOOK_V45, ...ENGLISH_V44, ...VOICE.slice(0, 36).map(x=>`./assets/voice/${x}.mp3`), './assets/voice/poem_yong_e_l1.wav', ...ENGLISH.flatMap(x => [
     `./assets/english/${x}.mp3`, `./assets/english-cn/${x}.mp3`
   ])];
   event.waitUntil(caches.open(CACHE).then(async cache => {

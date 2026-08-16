@@ -43,7 +43,8 @@ with sync_playwright() as p:
     page.evaluate("showPage('home'); v41ToggleSound()")
     assert page.evaluate("S.audio.muted") is True
     page.evaluate("v41ToggleSound(); showPage('dog')")
-    assert "我们的成长故事" in page.locator("#ct").inner_text()
+    assert page.locator(".pet-growth").count() == 1
+    assert page.locator(".pet-listen").count() == 1
     page.evaluate("fDog()")
     assert page.evaluate("S.dog.hu") == 100
 

@@ -1,4 +1,4 @@
-"""Full browser acceptance audit for curriculum v45."""
+"""Full browser acceptance audit for curriculum v46."""
 import os
 import sys
 from pathlib import Path
@@ -42,7 +42,8 @@ with sync_playwright() as p:
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.on("response", lambda response: errors.append(f"http {response.status}: {response.url}") if response.status >= 400 else None)
     page.goto(BASE, wait_until="networkidle")
-    page.wait_for_function("typeof v42State === 'function' && typeof V45_MATH_LOWER !== 'undefined' && typeof V45_TIME !== 'undefined' && typeof showPage === 'function'")
+    page.wait_for_function("typeof v42State === 'function' && typeof V45_MATH_LOWER !== 'undefined' && typeof V45_TIME !== 'undefined' && typeof V46_PINYIN_AUDIO !== 'undefined' && typeof showPage === 'function'")
+    page.evaluate("PET_VOICE_READY")
 
     assert page.locator("#v42CourseCard").count() == 1
     assert "一年级核心课程" in page.locator("#v42CourseCard").inner_text()
@@ -116,11 +117,38 @@ with sync_playwright() as p:
     media = page.evaluate("window.__media")
     assert any("assets/pinyin/fo2.mp3" in x for x in media)
     assert any("assets/pinyin/a2.wav" in x for x in media)
+    page.evaluate("window.__media=[];playPinyinV42('ke1','k');playPinyinV42('ying1','ing');playPinyinV42('zhong1','ong')")
+    special_media = page.evaluate("window.__media")
+    assert special_media == ["assets/pinyin-v46/k-ke1.mp3", "assets/pinyin-v46/ing-ying1.mp3", "assets/pinyin-v46/ong-zhong1.mp3"], special_media
+    assert not any("greeting_" in x or "textbook" in x for x in special_media)
+
+    page.evaluate("showPage('dog');window.__media=[]")
+    assert page.locator(".pet-listen").count() == 1
+    assert page.locator(".dog-btn").count() == 4
+    assert page.locator(".pet-stage").count() == 4
+    assert page.evaluate("Object.keys(PET_VOICE).length >= 100")
+    pet_line = page.evaluate("SPEECH_DATA[3][1][0]")
+    expected_pet = page.evaluate("(line)=>'assets/voice/'+PET_VOICE[line]+'.mp3'", pet_line)
+    page.evaluate("line=>speakPet(line)", pet_line)
+    page.wait_for_timeout(10)
+    assert expected_pet in page.evaluate("window.__media")
+    assert page.locator(".pet-listen").evaluate("e=>e.getBoundingClientRect().height") >= 60
+    assert page.locator(".dog-btn").first.evaluate("e=>e.getBoundingClientRect().height") >= 100
 
     page.evaluate("showPage('chars');playCharV42(0,false)")
     assert page.locator(".v42-char").count() == 12
     assert any("assets/chars/u4e00.mp3" in x for x in page.evaluate("window.__media"))
     assert page.get_by_role("button", name="学会", exact=True).count() == 0
+    assert page.locator(".v42-char .glyph").first.evaluate("e=>parseFloat(getComputedStyle(e).fontSize)") >= 70
+    assert page.locator(".v42-char .cbtn").first.evaluate("e=>e.getBoundingClientRect().height") >= 56
+    assert "听一听" in page.locator(".v42-char .cbtn").first.inner_text()
+
+    page.evaluate("window.__media=[];eyeOpen('rest')")
+    assert page.locator("#eyeLock").evaluate("e=>getComputedStyle(e).display") == "flex"
+    assert page.locator(".eye-t").evaluate("e=>parseFloat(getComputedStyle(e).fontSize)") >= 28
+    assert page.locator(".eye-p").evaluate("e=>parseFloat(getComputedStyle(e).fontSize)") >= 17
+    assert any("assets/voice/eye_rest.mp3" in x for x in page.evaluate("window.__media"))
+    page.evaluate("_eyeMode=null;eyeRender()")
 
     page.evaluate("showPage('reading')")
     page.evaluate("answerReadingV42(0,'家门口',document.querySelector('.v42-answer'))")
@@ -190,9 +218,9 @@ with sync_playwright() as p:
         ...V42_CHARS.map(x=>'assets/chars/u'+x[0].codePointAt(0).toString(16)+'.mp3'),
         ...V42_READINGS.map((_,i)=>'assets/reading/reading_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V42_MATH.map(q=>'assets/math-v42/question_'+String(q.id).padStart(2,'0')+'.mp3'),
-        ...V42_INITIALS.map(x=>'assets/pinyin/'+x[2]+'.mp3'),
+        ...V42_INITIALS.map(x=>V46_PINYIN_AUDIO[x[0]]||('assets/pinyin/'+x[2]+'.mp3')),
         ...V42_TONES.map(x=>'assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])),
-        ...V42_FINALS.map(x=>'assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1]))
+        ...V42_FINALS.map(x=>V46_PINYIN_AUDIO[x[0]]||('assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])))
         ,...POEM_COURSE_V6.flatMap(p=>['assets/voice/'+p.key+'_info.mp3',...p.lns.map((_,i)=>'assets/voice/'+p.key+'_l'+(i+1)+(p.key==='poem_yong_e'&&i===0?'.wav':'.mp3'))]),
         ...V43_TEXTBOOK.flatMap((u,ui)=>u.items.map((_,i)=>'assets/textbook/tb_'+String(ui).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3')),
         ...V44_MATH.map(q=>'assets/math-v44/question_'+String(q.id).padStart(2,'0')+'.mp3'),
@@ -201,7 +229,8 @@ with sync_playwright() as p:
         ...V44_MATHBOOK.map((_,i)=>'assets/textbook-v44/math_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V45_MATHBOOK_LOWER.map((_,i)=>'assets/textbook-v45/math_lower_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V44_ENGLISHBOOK.map((_,i)=>'assets/textbook-v44/english_unit_'+String(i+1).padStart(2,'0')+'.mp3'),
-        ...V44_ENGLISH.flatMap((u,ui)=>u.items.flatMap((_,i)=>['assets/english-v44/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3','assets/english-v44-cn/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3']))
+        ...V44_ENGLISH.flatMap((u,ui)=>u.items.flatMap((_,i)=>['assets/english-v44/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3','assets/english-v44-cn/u'+String(ui+1).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3'])),
+        'assets/voice/eye_rest.mp3','assets/voice/eye_limit.mp3','assets/voice/eye_done.mp3'
       ];
       const unique=[...new Set(paths)];
       return Promise.all(unique.map(async p=>[p,(await fetch(p)).status]));
@@ -224,4 +253,4 @@ with sync_playwright() as p:
     assert page.locator("#v42CourseCard").count() == 1
     context.set_offline(False)
     browser.close()
-    print(f"v45 acceptance: PASS ({len(routes)} routes, 4 viewports, 164 textbook nodes, offline reload)")
+    print(f"v46 acceptance: PASS ({len(routes)} routes, 4 viewports, 164 textbook nodes, pet/pinyin/eye audio, offline reload)")
