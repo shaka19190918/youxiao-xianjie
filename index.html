@@ -1016,7 +1016,7 @@ initScreenGuard=function(){scrFix();scrBadge();if(_eyeTimer)return;_eyeTimer=set
 
 /* v47：选项也能听。喇叭只朗读，不会提交答案；不把数百条选项
    音频塞进首屏，避免拖慢手机加载。拼音、古诗等教学读音仍使用校验本地音频。 */
-function v47PlayOption(text){if(v41EnsureAudio().muted){toast('声音已关闭，点右下角 🔇 可开启');return}v46StopAudio();if(!say(text,'zh-CN',.78))toast('此设备暂时不能朗读选项')}
+function v47PlayOption(text){if(v41EnsureAudio().muted){toast('声音已关闭，点右下角 🔇 可开启');return}v46StopAudio();try{if(!('speechSynthesis'in window)){throw new Error('no speech')}const voices=speechSynthesis.getVoices(),voice=voices.find(v=>/^zh-CN/i.test(v.lang))||voices.find(v=>/^zh/i.test(v.lang)&&!/yue|hk|tw/i.test(v.lang));const u=new SpeechSynthesisUtterance(text);u.lang='zh-CN';u.rate=.78;u.pitch=1;if(voice)u.voice=voice;speechSynthesis.speak(u)}catch(e){toast('此设备暂时不能朗读选项')}}
 function v47AddOptionAudio(root){(root||document).querySelectorAll('.v42-answer:not([data-option-audio])').forEach(btn=>{const text=btn.textContent.trim();if(!text)return;btn.dataset.optionAudio='1';const wrap=document.createElement('div');wrap.className='v47-choice';btn.parentNode.replaceChild(wrap,btn);const hear=document.createElement('button');hear.type='button';hear.className='v47-choice-hear';hear.setAttribute('aria-label','听选项：'+text);hear.title='听选项';hear.textContent='🔊';hear.onclick=e=>{e.preventDefault();e.stopPropagation();v47PlayOption(text)};wrap.append(hear,btn)})}
 const v47AnswerObserver=new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(node=>{if(node.nodeType===1)v47AddOptionAudio(node)})));
 v47AnswerObserver.observe(document.getElementById('ct'),{childList:true,subtree:true});
