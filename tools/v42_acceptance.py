@@ -20,6 +20,8 @@ def profile_script():
       window.__media=[];
       HTMLMediaElement.prototype.play=function(){window.__media.push(this.getAttribute('src')||this.src);queueMicrotask(()=>this.oncanplay&&this.oncanplay());return Promise.resolve();};
       HTMLMediaElement.prototype.pause=function(){};
+      window.__spoken=[];
+      try { speechSynthesis.cancel=function(){}; speechSynthesis.getVoices=function(){return [{lang:'zh-CN',name:'测试中文'}]}; speechSynthesis.speak=function(u){window.__spoken.push(u.text);queueMicrotask(()=>u.onend&&u.onend())} } catch (_) {}
     """
 
 
@@ -151,6 +153,14 @@ with sync_playwright() as p:
     page.evaluate("_eyeMode=null;eyeRender()")
 
     page.evaluate("showPage('reading')")
+    page.wait_for_timeout(20)
+    assert page.locator(".v47-choice").count() == page.locator(".v42-answer").count()
+    page.evaluate("window.__choiceHeard=[];window.__realChoicePlay=v47PlayOption;v47PlayOption=text=>window.__choiceHeard.push(text)")
+    first_reading_option = page.locator(".v42-answer").first.inner_text()
+    page.locator(".v47-choice-hear").first.click()
+    assert page.evaluate("window.__choiceHeard.at(-1)") == first_reading_option
+    assert "read_0" not in page.evaluate("v42State().wrong")
+    page.evaluate("v47PlayOption=window.__realChoicePlay")
     page.evaluate("answerReadingV42(0,'家门口',document.querySelector('.v42-answer'))")
     assert "read_0" in page.evaluate("v42State().wrong")
     page.evaluate("answerReadingV42(0,'校门口',document.querySelectorAll('.v42-answer')[1])")
@@ -158,6 +168,8 @@ with sync_playwright() as p:
     assert "read_0" not in page.evaluate("v42State().wrong")
 
     page.evaluate("showPage('math')")
+    page.wait_for_timeout(20)
+    assert page.locator("#mathTaskV42 .v47-choice").count() == 4
     page.evaluate("v42MathQ=V42_MATH[0];renderMathV42();answerMathV42('7',document.querySelector('.v42-answer'))")
     assert "math_1" in page.evaluate("v42State().wrong")
     page.evaluate("v42MathQ=V42_MATH[0];renderMathV42();answerMathV42('9',document.querySelectorAll('.v42-answer')[1])")
@@ -165,6 +177,8 @@ with sync_playwright() as p:
     assert page.evaluate("new Set(V42_MATH.map(q=>q.cat)).size") == 8
 
     page.evaluate("showPage('mathsync');v44MathQ=V44_MATH[0];renderMath44()")
+    page.wait_for_timeout(20)
+    assert page.locator("#math44Task .v47-choice").count() == 4
     page.evaluate("answerMath44('3',document.querySelector('#math44Task .v42-answer'))")
     assert "math44_1" in page.evaluate("v42State().wrong")
     page.evaluate("v44MathQ=V44_MATH[0];renderMath44();answerMath44('4',document.querySelectorAll('#math44Task .v42-answer')[1])")
@@ -172,6 +186,8 @@ with sync_playwright() as p:
     assert "math44_1" not in page.evaluate("v42State().wrong")
 
     page.evaluate("showPage('mathlower');v45MathLowerQ=V45_MATH_LOWER[0];renderMathLower45()")
+    page.wait_for_timeout(20)
+    assert page.locator("#math45LowerTask .v47-choice").count() == 4
     assert "一年级下册数学" in page.locator("#ct").inner_text()
     page.evaluate("answerMathLower45('2条',document.querySelector('#math45LowerTask .v42-answer'))")
     assert "math45l_1" in page.evaluate("v42State().wrong")
@@ -181,6 +197,8 @@ with sync_playwright() as p:
     assert any("assets/math-v45-lower/question_01.mp3" in x for x in page.evaluate("window.__media"))
 
     page.evaluate("showPage('timeextra');v45TimeQ=V45_TIME[0];renderTime45()")
+    page.wait_for_timeout(20)
+    assert page.locator("#time45Task .v47-choice").count() == 4
     time_text = page.locator("#ct").inner_text()
     assert "二年级下册预备知识" in time_text and "不计入一年级教材同步完成率" in time_text
     page.evaluate("answerTime45('分针',document.querySelectorAll('#time45Task .v42-answer')[1])")
@@ -198,6 +216,8 @@ with sync_playwright() as p:
     page.evaluate("translateEnglish44(0,0)")
     assert any("assets/english-v44-cn/u01_01.mp3" in x for x in page.evaluate("window.__media"))
     page.evaluate("v44EnglishQuiz={u:0,i:0,a:'你好！',opts:['再见。','你好！','谢谢你。']};renderEnglishQuiz44()")
+    page.wait_for_timeout(20)
+    assert page.locator("#englishQuiz44 .v47-choice").count() == 3
     page.evaluate("answerEnglish44('再见。',document.querySelector('#englishQuiz44 .v42-answer'))")
     assert "english44_0_0" in page.evaluate("v42State().wrong")
     page.evaluate("answerEnglish44('你好！',document.querySelectorAll('#englishQuiz44 .v42-answer')[1])")
