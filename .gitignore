@@ -1,2 +1,8 @@
 _backup_cleanup/
 _tmp*
+_chrome_prof/
+_shots/
+_check.js
+_test.html
+_online_*
+_v53_*
