@@ -152,6 +152,36 @@ button{font-family:inherit}
 .mu{background:var(--blue);color:var(--main)} .md{background:var(--blue);color:var(--main)} .mxx{background:var(--red);color:#c0392b}
 .addBtn{border:2px dashed var(--blueline);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:800;color:var(--main);cursor:pointer;background:#F4F9FE;margin-top:6px}
 .addBtn:active{transform:scale(.98)}
+/* ============ 一年级素材板块样式 ============ */
+.pyGrid{display:flex;flex-wrap:wrap;gap:10px}
+.pyBtn{flex:0 1 calc(25% - 10px);min-width:76px;border:2px solid var(--blueline);background:#F0F8FF;border-radius:14px;padding:14px 4px 10px;text-align:center;font-size:24px;font-weight:900;color:var(--main);cursor:pointer;transition:all .12s}
+.pyBtn small{display:block;font-size:11px;color:var(--soft);font-weight:600;margin-top:4px}
+.pyBtn:active{transform:scale(.96)}
+.chGrid{display:flex;flex-wrap:wrap;gap:12px}
+.chCard{width:92px;background:#FFFDF7;border:2px solid var(--line);border-radius:14px;padding:8px 4px;text-align:center;cursor:pointer;transition:all .12s}
+.chCard:hover{transform:translateY(-2px);border-color:var(--greenline)}
+.chBig{font-size:44px;font-weight:900;line-height:1.15}
+.chPy{font-size:15px;color:var(--main);font-weight:800;margin-top:2px}
+.chW{font-size:11px;color:var(--soft);margin-top:2px}
+.poemLine{cursor:pointer;margin:8px 0;padding:7px 10px;border-radius:10px;background:#FFFDF6;transition:background .12s}
+.poemLine:hover{background:var(--yellow)}
+.poemLine .poemPy{display:block;font-size:12px;color:var(--main);font-weight:600;margin-bottom:2px}
+.poemLine .poemTx{display:block;font-size:17px;font-weight:800}
+.petGrid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.petCard{width:150px;background:#FFFDF7;border:2px solid var(--line);border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .12s}
+.petCard:hover{transform:translateY(-3px);border-color:var(--yellowline)}
+.petEm{font-size:52px;line-height:1.2}
+.petNm{font-size:17px;font-weight:900;margin-top:6px}
+.petCn{font-size:12px;color:var(--soft)}
+.petTr{font-size:12px;font-weight:800;margin-top:6px}
+.petDisp{position:relative}
+.petBar{height:12px;background:#EEE8D8;border-radius:8px;overflow:hidden;margin:10px auto 2px;max-width:260px}
+.petBar i{display:block;height:100%;background:linear-gradient(90deg,var(--greenline),var(--yellowline),var(--orline));border-radius:8px}
+.petActs{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.mQ{font-size:26px;font-weight:900;text-align:center;margin:14px 0}
+.mb{margin-top:12px;text-align:center}
+.tip{font-size:13px;color:var(--soft);line-height:1.6}
+.readCard{line-height:2;font-size:16px;background:#FFFDF6;border-left:5px solid var(--yellowline);border-radius:0 12px 12px 0;padding:12px 15px;margin:10px 0}
 /* ============ 竖屏 ============ */
 @media (max-width:860px){
   body{overflow:auto}
@@ -221,197 +251,201 @@ button{font-family:inherit}
 <script>
 "use strict";
 /* =============================================================
- * 幼小衔接学习桌面 · 核心引擎
- * 数据驱动 · 九大板块 · 家长可视化编辑 · 完全离线单文件
+ * 幼小衔接学习桌面 · 核心引擎（一年级素材版）
+ * 数据驱动 · 板块可家长编辑 · 完全离线单文件
+ * 拼音/古诗/生字/英语/数学/阅读均使用本地 assets 真人音频
  * ============================================================*/
-var LS="learningDesk_v1";
+var LS="learningDesk_v2";
 var CFG=null;   /* 内容(家长可改, localStorage) */
 var DB=null;    /* 学习进度 */
 var SC={b:"pinyin",g:""};
 
-/* ================= 默认内容 ================= */
+/* 拼音真人音频资源映射（assets/pinyin 目录，wav/mp3） */
+var PINYIN_AUDIO={a1:'a1.mp3',a2:'a2.wav',a3:'a3.wav',a4:'a4.wav',o1:'o1.mp3',o2:'o2.wav',o3:'o3.wav',o4:'o4.wav',e1:'e1.mp3',e2:'e2.mp3',e3:'e3.wav',e4:'e4.mp3',i1:'i1.mp3',i2:'i2.mp3',i3:'i3.mp3',i4:'i4.mp3',u1:'u1.mp3',u2:'u2.mp3',u3:'u3.mp3',u4:'u4.mp3',v1:'v1.mp3',v2:'v2.mp3',v3:'v3.mp3',v4:'v4.mp3',
+bo1:'bo1.mp3',po1:'po1.mp3',mo1:'mo1.mp3',fo2:'fo2.mp3',de1:'de1.mp3',te1:'te1.mp3',ne1:'ne1.mp3',le1:'le1.mp3',ge1:'ge1.mp3',ke1:'ke1.mp3',he1:'he1.mp3',ji1:'ji1.mp3',qi1:'qi1.mp3',xi1:'xi1.mp3',zhi1:'zhi1.mp3',chi1:'chi1.mp3',shi1:'shi1.mp3',ri4:'ri4.mp3',zi1:'zi1.mp3',ci1:'ci1.mp3',si1:'si1.mp3',yi1:'yi1.mp3',wu1:'wu1.mp3',
+ai1:'ai1.mp3',ei1:'ei1.mp3',ao1:'ao1.mp3',ou1:'ou1.mp3',er2:'er2.mp3',an1:'an1.mp3',en1:'en1.mp3',in1:'in1.mp3',un1:'un1.mp3',yun1:'yun1.mp3',ang1:'ang1.mp3',eng1:'eng1.mp3',ing1:'ing1.mp3',ong1:'ong1.mp3',yue1:'yue1.mp3',yuan1:'yuan1.mp3',yin1:'yin1.mp3',ying1:'ying1.mp3',ye1:'ye1.mp3',yu1:'yu1.mp3'};
+function pinyinUrl(id){return 'assets/pinyin/'+(PINYIN_AUDIO[id]||(id+'.mp3'))}
+
+/* ================= 默认内容（一年级素材版） ================= */
+var DOGS=[
+ {id:'golden',n:'小金',cn:'金毛寻回犬',tr:'温柔陪伴',col:'#F4A460',col2:'#C87F3A',voice:'汪汪！我是小金，最喜欢和你一起玩！',sounds:{feed:'汪汪！好吃好吃，谢谢你！',pet:'嗯～好舒服，再摸摸我的头好不好？',bath:'呜～洗干净了好开心！我要香喷喷地陪你学习！',talk:'汪汪！主人我们来学习吧！写完字我们出去跑步！'}},
+ {id:'corgi',n:'小柯',cn:'彭布罗克柯基',tr:'活泼好动',col:'#E8923F',col2:'#B86A1E',voice:'汪！我是小柯，短腿也能跑得飞快！',sounds:{feed:'汪汪汪！太好吃啦！',pet:'嘿嘿嘿，别停别停，再抓抓我的小短腿～',bath:'噗噜噜～我不喜欢水，但为了香香我忍了！',talk:'汪汪！快去看看今天有什么好玩的！学习完我们去跑步！'}},
+ {id:'husky',n:'小哈',cn:'西伯利亚哈士奇',tr:'调皮捣蛋',col:'#8B8B9B',col2:'#5A5A6A',voice:'嗷呜～我是小哈！今天学什么？我帮你做题！',sounds:{feed:'嗷呜嗷呜！再来一碗！我还要！',pet:'好痒好痒，再抓抓！对对对就是那里～',play:'呜嗷嗷！太开心啦！',talk:'嗷呜～这道题我来帮你做！'}},
+ {id:'labrador',n:'小拉',cn:'拉布拉多犬',tr:'温柔陪伴',col:'#D99545',col2:'#B97A2F',voice:'汪汪！我是小拉，最喜欢和你一起玩！',sounds:{feed:'汪汪！好吃好吃，谢谢你！',pet:'嗯～好舒服～，再摸摸我的头吧！',play:'汪汪！一起玩！',talk:'汪汪！主人我们来学习吧！'}},
+ {id:'shepherd',n:'小牧',cn:'德国牧羊犬',tr:'忠诚可靠',col:'#9B6B45',col2:'#7A5234',voice:'汪！我是小牧，忠诚的守护者！',sounds:{feed:'汪！谢谢小主人，这顿真香！',pet:'主人的手真温暖，小牧最喜欢了！',play:'汪！一起跑！',talk:'汪！学习完，我们一起巡逻！'}},
+ {id:'trex',n:'勒勒',cn:'毛绒霸王龙',tr:'温柔猛龙',col:'#78A65A',col2:'#5E8A44',voice:'吼～我是勒勒，温柔的霸王龙！',sounds:{feed:'嗷呜！肉肉好吃！',pet:'勒勒好舒服～',play:'吼吼！一起冒险！',talk:'吼～一起来学习吧！'}}
+];
+var DST=[{xp:0,n:'幼体',sz:90},{xp:80,n:'成长期',sz:105},{xp:200,n:'进化体',sz:120},{xp:400,n:'完全体',sz:135}];
+
+/* 古诗词全集（12首，含完整拼音注音） */
+var POEMS=[
+ {ti:'咏鹅',au:'骆宾王',em:'🦢',key:'poem_yong_e',lns:['鹅，鹅，鹅，','曲项向天歌。','白毛浮绿水，','红掌拨清波。'],py:['é é é','qǔ xiàng xiàng tiān gē','bái máo fú lǜ shuǐ','hóng zhǎng bō qīng bō']},
+ {ti:'画',au:'王维',em:'🖼️',key:'poem_hua',lns:['远看山有色，','近听水无声。','春去花还在，','人来鸟不惊。'],py:['yuǎn kàn shān yǒu sè','jìn tīng shuǐ wú shēng','chūn qù huā hái zài','rén lái niǎo bù jīng']},
+ {ti:'悯农',au:'李绅',em:'🌾',key:'poem_min_nong',lns:['锄禾日当午，','汗滴禾下土。','谁知盘中餐，','粒粒皆辛苦。'],py:['chú hé rì dāng wǔ','hàn dī hé xià tǔ','shéi zhī pán zhōng cān','lì lì jiē xīn kǔ']},
+ {ti:'静夜思',au:'李白',em:'🌙',key:'poem_jing_ye_si',lns:['床前明月光，','疑是地上霜。','举头望明月，','低头思故乡。'],py:['chuáng qián míng yuè guāng','yí shì dì shàng shuāng','jǔ tóu wàng míng yuè','dī tóu sī gù xiāng']},
+ {ti:'春晓',au:'孟浩然',em:'🌸',key:'poem_chun_xiao',lns:['春眠不觉晓，','处处闻啼鸟。','夜来风雨声，','花落知多少。'],py:['chūn mián bù jué xiǎo','chù chù wén tí niǎo','yè lái fēng yǔ shēng','huā luò zhī duō shǎo']},
+ {ti:'登鹳雀楼',au:'王之涣',em:'🏯',key:'poem_deng_guan_que_lou',lns:['白日依山尽，','黄河入海流。','欲穷千里目，','更上一层楼。'],py:['bái rì yī shān jìn','huáng hé rù hǎi liú','yù qióng qiān lǐ mù','gèng shàng yī céng lóu']},
+ {ti:'江雪',au:'柳宗元',em:'❄️',key:'poem_jiang_xue',lns:['千山鸟飞绝，','万径人踪灭。','孤舟蓑笠翁，','独钓寒江雪。'],py:['qiān shān niǎo fēi jué','wàn jìng rén zōng miè','gū zhōu suō lì wēng','dú diào hán jiāng xuě']},
+ {ti:'风',au:'李峤',em:'🍃',key:'poem_feng',lns:['解落三秋叶，','能开二月花。','过江千尺浪，','入竹万竿斜。'],py:['xiè luò sān qiū yè','néng kāi èr yuè huā','guò jiāng qiān chǐ làng','rù zhú wàn gān xié']},
+ {ti:'画鸡',au:'唐寅',em:'🐓',key:'poem_hua_ji',lns:['头上红冠不用裁，','满身雪白走将来。','平生不敢轻言语，','一叫千门万户开。'],py:['tóu shàng hóng guān bú yòng cái','mǎn shēn xuě bái zǒu jiāng lái','píng shēng bù gǎn qīng yán yǔ','yí jiào qiān mén wàn hù kāi']},
+ {ti:'寻隐者不遇',au:'贾岛',em:'🌲',key:'poem_xun_yin_zhe_bu_yu',lns:['松下问童子，','言师采药去。','只在此山中，','云深不知处。'],py:['sōng xià wèn tóng zǐ','yán shī cǎi yào qù','zhǐ zài cǐ shān zhōng','yún shēn bù zhī chù']},
+ {ti:'池上',au:'白居易',em:'🪷',key:'poem_chi_shang',lns:['小娃撑小艇，','偷采白莲回。','不解藏踪迹，','浮萍一道开。'],py:['xiǎo wá chēng xiǎo tǐng','tōu cǎi bái lián huí','bù jiě cáng zōng jì','fú píng yī dào kāi']},
+ {ti:'小池',au:'杨万里',em:'🌿',key:'poem_xiao_chi',lns:['泉眼无声惜细流，','树阴照水爱晴柔。','小荷才露尖尖角，','早有蜻蜓立上头。'],py:['quán yǎn wú shēng xī xì liú','shù yīn zhào shuǐ ài qíng róu','xiǎo hé cái lù jiān jiān jiǎo','zǎo yǒu qīng tíng lì shàng tóu']}
+];
+var POEM_KEY={ '咏鹅':'poem_yong_e','画':'poem_hua','悯农':'poem_min_nong','静夜思':'poem_jing_ye_si','春晓':'poem_chun_xiao','登鹳雀楼':'poem_deng_guan_que_lou','江雪':'poem_jiang_xue','风':'poem_feng','画鸡':'poem_hua_ji','寻隐者不遇':'poem_xun_yin_zhe_bu_yu','池上':'poem_chi_shang','小池':'poem_xiao_chi'};
+
+/* 拼音真人音频数据 */
+var TONES=[['ā','a1'],['á','a2'],['ǎ','a3'],['à','a4'],['ō','o1'],['ó','o2'],['ǒ','o3'],['ò','o4'],['ē','e1'],['é','e2'],['ě','e3'],['è','e4'],['ī','i1'],['í','i2'],['ǐ','i3'],['ì','i4'],['ū','u1'],['ú','u2'],['ǔ','u3'],['ù','u4'],['ǖ','v1'],['ǘ','v2'],['ǚ','v3'],['ǜ','v4']];
+var INITIALS=[['b','博','bo1'],['p','坡','po1'],['m','摸','mo1'],['f','佛','fo2'],['d','得','de1'],['t','特','te1'],['n','讷','ne1'],['l','勒','le1'],['g','哥','ge1'],['k','科','ke1'],['h','喝','he1'],['j','鸡','ji1'],['q','期','qi1'],['x','西','xi1'],['zh','织','zhi1'],['ch','吃','chi1'],['sh','诗','shi1'],['r','日','ri4'],['z','资','zi1'],['c','次','ci1'],['s','思','si1'],['y','衣','yi1'],['w','屋','wu1']];
+var FINALS=[['a','a1'],['o','o1'],['e','e1'],['i','i1'],['u','u1'],['ü','v1'],['ai','ai1'],['ei','ei1'],['ao','ao1'],['ou','ou1'],['er','er2'],['an','an1'],['en','en1'],['in','in1'],['un','un1'],['ün','yun1'],['ang','ang1'],['eng','eng1'],['ing','ing1'],['ong','ong1'],['zhi','zhi1'],['chi','chi1'],['shi','shi1'],['ri','ri4'],['zi','zi1'],['ci','ci1'],['si','si1'],['yi','yi1'],['wu','wu1'],['yu','yu1'],['ye','ye1'],['yue','yue1'],['yuan','yuan1'],['yin','yin1'],['yun','yun1'],['ying','ying1']];
+
+/* 部编版一年级基础字（会写字/会认字，含读音文件名 u+unicode） */
+var CHARS1=[['一','yī',1,'一个'],['二','èr',2,'二月'],['三','sān',3,'三人'],['上','shàng',3,'上面'],['下','xià',3,'下面'],['口','kǒu',3,'开口'],['目','mù',5,'目光'],['耳','ěr',6,'耳朵'],['手','shǒu',4,'小手'],['日','rì',4,'日子'],['田','tián',5,'田地'],['禾','hé',5,'禾苗']];
+var CHARS2=[['火','huǒ',4,'大火'],['虫','chóng',6,'小虫'],['云','yún',4,'白云'],['山','shān',3,'高山'],['八','bā',2,'八个'],['十','shí',2,'十只'],['了','le',2,'好了'],['子','zǐ',3,'儿子'],['人','rén',2,'大人'],['大','dà',3,'大小'],['月','yuè',4,'月亮'],['儿','ér',2,'儿女']];
+var CHARS3=[['头','tóu',5,'抬头'],['天','tiān',4,'天空'],['地','dì',6,'土地'],['你','nǐ',7,'你好'],['我','wǒ',7,'我们'],['他','tā',5,'他们'],['四','sì',5,'四方'],['五','wǔ',4,'五月'],['花','huā',7,'花朵'],['鸟','niǎo',5,'小鸟'],['六','liù',4,'六本'],['七','qī',2,'七天']];
+var CHARS4=[['九','jiǔ',2,'九月'],['水','shuǐ',4,'河水'],['风','fēng',4,'春风'],['雨','yǔ',8,'下雨'],['鱼','yú',8,'小鱼'],['马','mǎ',3,'白马'],['中','zhōng',4,'中间'],['小','xiǎo',3,'小心'],['多','duō',6,'多少'],['少','shǎo',4,'很少'],['左','zuǒ',5,'左边'],['右','yòu',5,'右手']];
+var CHARS5=[['早','zǎo',6,'早上'],['晚','wǎn',11,'晚上'],['来','lái',7,'回来'],['去','qù',5,'出去'],['书','shū',4,'书本'],['本','běn',5,'本子'],['学','xué',8,'学习'],['校','xiào',10,'学校'],['老','lǎo',6,'老师'],['师','shī',6,'老师'],['同','tóng',6,'同学'],['开','kāi',4,'开门'],['关','guān',6,'关门'],['前','qián',9,'前面'],['后','hòu',6,'后面'],['男','nán',7,'男生'],['女','nǚ',3,'女生'],['爸','bà',8,'爸爸'],['妈','mā',6,'妈妈'],['好','hǎo',6,'好人'],['心','xīn',4,'开心']];
+
+/* 人教版一年级上册数学同步题（原创） */
+var MATH44=[
+ [0,'图中有四面小旗，应该选哪个数？',['3','4','5','6'],'4'],
+ [0,'小红站在小明的左边，小明在小红的哪边？',['左边','右边','前面','后面'],'右边'],
+ [0,'铅笔、橡皮、苹果，哪一个不是文具？',['铅笔','橡皮','苹果','都是文具'],'苹果'],
+ [0,'三把椅子配三个小朋友，够不够？',['正好够','多一把','少一把','不能判断'],'正好够'],
+ [0,'一、二、三，接下来是几？',['2','3','4','5'],'4'],
+ [0,'圆形、正方形、小狗，哪一个不是图形？',['圆形','正方形','小狗','都是图形'],'小狗'],
+ [1,'三和五，哪个数更大？',['3','4','5','一样大'],'5'],
+ [1,'排队时，小军前面有两人，他排第几？',['第一','第二','第三','第四'],'第三'],
+ [1,'五可以分成二和几？',['1','2','3','4'],'3'],
+ [1,'二加三等于几？',['3','4','5','6'],'5'],
+ [1,'五减二等于几？',['2','3','4','5'],'3'],
+ [1,'零加四等于几？',['0','3','4','5'],'4'],
+ [2,'七里面有几个一？',['5','6','7','8'],'7'],
+ [2,'六可以分成一和几？',['4','5','6','7'],'5'],
+ [2,'八可以分成三和几？',['4','5','6','7'],'5'],
+ [2,'七减三等于几？',['3','4','5','6'],'4'],
+ [2,'小猫有六条鱼，又得到三条，一共有几条？',['7','8','9','10'],'9'],
+ [2,'十减四等于几？',['4','5','6','7'],'6'],
+ [3,'哪个物体最像球？',['足球','文具盒','魔方','书本'],'足球'],
+ [3,'魔方最像哪种立体图形？',['球','正方体','圆柱','长方体'],'正方体'],
+ [3,'易拉罐最像哪种立体图形？',['球','正方体','圆柱','长方体'],'圆柱'],
+ [3,'书盒最像哪种立体图形？',['球','正方体','圆柱','长方体'],'长方体'],
+ [3,'哪种物体容易滚动？',['球','正方体','长方体','书本'],'球'],
+ [3,'搭积木时，哪种形状通常更容易放在下面？',['平平的长方体','球','鸡蛋形','圆球'],'平平的长方体'],
+ [4,'十三里面有几个十和几个一？',['1个十和3个一','3个十和1个一','13个十','3个一'],'1个十和3个一'],
+ [4,'十七前面的数是多少？',['15','16','17','18'],'16'],
+ [4,'十加五等于几？',['13','14','15','16'],'15'],
+ [4,'十八减三等于几？',['14','15','16','17'],'15'],
+ [4,'盒里有十支笔，外面有六支，一共有几支？',['14','15','16','17'],'16'],
+ [4,'十二和二十，哪个数更大？',['12','20','一样大','不能判断'],'20'],
+ [5,'九加四等于几？',['12','13','14','15'],'13'],
+ [5,'八加七等于几？',['13','14','15','16'],'15'],
+ [5,'七加六等于几？',['12','13','14','15'],'13'],
+ [5,'六加五等于几？',['10','11','12','13'],'11'],
+ [5,'车上有九人，又上来六人，现在有几人？',['13','14','15','16'],'15'],
+ [5,'两盒球一共十四个，一盒有八个，另一盒有几个？',['5','6','7','8'],'6'],
+ [6,'五加五再加三等于几？',['11','12','13','14'],'13'],
+ [6,'十七减七等于几？',['9','10','11','12'],'10'],
+ [6,'九加八等于几？',['15','16','17','18'],'17'],
+ [6,'十五里面有几个十和几个一？',['1个十和5个一','5个十和1个一','15个十','5个一'],'1个十和5个一'],
+ [6,'足球和魔方，哪个更容易滚动？',['足球','魔方','都一样','不能判断'],'足球'],
+ [6,'小红有七朵花，小明有九朵，两人共有几朵？',['14','15','16','17'],'16']
+].map((x,i)=>({u:x[0],q:x[1],o:x[2],a:x[3],id:i+1}));
+
+/* 北京版英语一年级上册单元 */
+var ENGL=[
+ ['👋',"Hello! I'm Maomao.",'你好！我是毛毛。'],
+ ['🌅','Good morning.','早上好。'],
+ ['☀️','Good afternoon.','下午好。'],
+ ['🌙','Good night.','晚安。'],
+ ['😊','How are you?','你好吗？'],
+ ['🙂',"I'm fine.",'我很好。'],
+ ['🙏','Thank you.','谢谢你。'],
+ ['🤝','Nice to meet you.','很高兴认识你。'],
+ ['🧒','This is my friend.','这是我的朋友。'],
+ ['🎤','I can sing.','我会唱歌。'],
+ ['💃','I can dance.','我会跳舞。'],
+ ['🎨','Can you draw?','你会画画吗？'],
+ ['🏃','I can run.','我会跑步。'],
+ ['👨‍👩‍👧','I love my family.','我爱我的家人。'],
+ ['🐱','cat','猫'],['🐶','dog','狗'],['🐦','bird','鸟'],['🐟','fish','鱼'],['🐰','rabbit','兔子'],['🐻','bear','熊'],
+ ['🔴','red','红色'],['🟡','yellow','黄色'],['🔵','blue','蓝色'],['🟢','green','绿色']
+];
+
+/* 阅读理解（原创12篇） */
+var READS=[
+ {t:'早晨，太阳出来了。小雨背上书包，向妈妈说再见。她在校门口看见老师，笑着说：“老师早！”',q:'小雨在哪里看见老师？',o:['家门口','校门口','公园里','车站'],a:'校门口'},
+ {t:'小河边长着一棵柳树。春风吹来，细细的柳条轻轻摆动，像在和小鱼打招呼。',q:'柳条为什么轻轻摆动？',o:['春风吹来','小鱼推动','小鸟拉动','下起大雪'],a:'春风吹来'},
+ {t:'下雨了，小猫没有带伞。小兔把伞往小猫那边移了移。两个人一起走回家，谁也没有淋湿。',q:'谁主动帮助了小猫？',o:['小兔','小狗','老师','妈妈'],a:'小兔'},
+ {t:'今天轮到明明整理图书角。他把大的书放在下面，小的书放在上面，把书脊摆得整整齐齐。',q:'明明把大书放在哪里？',o:['下面','上面','窗外','书包里'],a:'下面'},
+ {t:'奶奶种了三盆花。红花每天浇一次水，绿萝两天浇一次水。奶奶说，照顾植物要先了解它们的需要。',q:'哪盆植物不是每天浇水？',o:['绿萝','红花','两种都是','文中没说'],a:'绿萝'},
+ {t:'操场上，小朋友排队跳绳。轮到乐乐时，他先看清前面的人已经离开，才走进绳圈。',q:'乐乐为什么先等待？',o:['注意安全','不想运动','忘了排队','在找书'],a:'注意安全'},
+ {t:'一只小蚂蚁找到一粒米，搬不动，就回去叫来伙伴，大家一起用力，终于把米搬回了家。',q:'蚂蚁怎样把米搬走？',o:['合作','自己搬','风刮走','没搬走'],a:'合作'},
+ {t:'夜晚，月亮像一条弯弯的小船，星星一闪一闪，远处偶尔传来几声虫鸣。',q:'这段话写的是什么时间？',o:['夜晚','早晨','中午','下午'],a:'夜晚'},
+ {t:'爸爸给小安十元钱买文具。铅笔两元，橡皮三元。小安买了一支铅笔和一块橡皮，还剩五元。',q:'小安一共花了多少钱？',o:['5元','3元','7元','10元'],a:'5元'},
+ {t:'周末，东东先整理书桌，再读20分钟故事书，最后和爸爸去公园骑车，觉得这一天很充实。',q:'东东最后做了什么？',o:['去公园骑车','整理书桌','读故事书','吃早餐'],a:'去公园骑车'},
+ {t:'教室里有一盆植物。叶子朝着窗户生长，因为那里有阳光。小朋友每周转动一次花盆，让叶子均匀受光。',q:'为什么要转动花盆？',o:['让叶子均匀受光','让花盆更重','让泥土变少','让窗户变亮'],a:'让叶子均匀受光'},
+ {t:'小熊想过河，可木桥中间有块松动的木板。它没有急着走过去，而是请河狸叔叔先来检查。',q:'小熊的做法说明什么？',o:['先确认安全','胆子小','不想过河','不会走'],a:'先确认安全'}
+].map((x,i)=>({t:x.t,q:x.q,o:x.o,a:x.a,id:i+1}));
+
+/* 拼读音节组合（儿童友好） */
+var PINDU=[
+ ['b-a','ba'],['p-o','po'],['m-a','ma'],['f-o','fo'],['d-i','di'],['t-a','ta'],['n-i','ni'],['l-a','la'],['g-u','gu'],['k-a','ka'],['h-e','he'],['j-i','ji'],['q-a','qa'],['x-a','xa'],['zh-a','zha'],['ch-a','cha'],['sh-a','sha'],['r-i','ri'],['z-a','za'],['c-a','ca'],['s-a','sa'],['y-a','ya'],['w-a','wa']
+];
+
 var DEFAULT_BOARDS=[
-{id:"pinyin",name:"拼音乐园",icon:"🔤",sub:"声母·韵母·整体认读·拼读与声调",color:"EAF3FB",groups:[
- {id:"shengmu",name:"声母",sub:"点击卡片，听一听、读一读",kind:"cards",items:[
-   ["b","广播 b b b"],["p","爬坡 p p p"],["m","摸摸 m m m"],["f","佛像 f f f"],
-   ["d","马儿跑 d d d"],["t","伞把 t t t"],["n","城门洞 n n n"],["l","小旗杆 l l l"],
-   ["g","鸽子 g g g"],["k","蝌蚪 k k k"],["h","椅子 h h h"],["j","鸡叫 j j j"],
-   ["q","气球 q q q"],["x","西瓜 x x x"],["zh","织毛衣 zh"],["ch","吃果子 ch"],
-   ["sh","狮子 sh"],["r","小太阳 r"],["z","写字 z z"],["c","刺猬 c c"],
-   ["s","丝线 s s"],["y","小树丫 y"],["w","屋顶 w w"]]},
- {id:"yunmu",name:"韵母",cards:[
-   ["a","张大嘴 a a"],["o","圆圆嘴 o o"],["e","扁嘴 e e"],["i","衣服 i i"],
-   ["u","乌鸦 u u"],["v","小鱼吐泡 v v"],["ai","挨着 ai"],["ei","诶 ei"],
-   ["ui","围巾 ui"],["ao","棉袄 ao"],["ou","海鸥 ou"],["iu","邮筒 iu"],
-   ["ie","夜晚 ie"],["ue","月儿 ue"],["er","耳朵 er"],
-   ["an","平安 an"],["en","门铃 en"],["in","录音 in"],["un","蚊子 un"],
-   ["vn","白云 vn"],["ang","羊角 ang"],["eng","台灯 eng"],["ing","老鹰 ing"],["ong","铃声 ong"]]},
- {id:"zhengti",name:"整体认读音节",cards:[
-   ["zhi","织毛衣 zhi"],["chi","吃果子 chi"],["shi","狮子 shi"],["ri","太阳 ri"],
-   ["zi","字宝宝 zi"],["ci","刺猬 ci"],["si","丝线 si"],
-   ["yi","衣服 yi"],["wu","乌鸦 wu"],["yu","小鱼 yu"],
-   ["ye","树叶 ye"],["yue","月亮 yue"],["yuan","汤圆 yuan"],
-   ["yin","声音 yin"],["yun","云朵 yun"],["ying","老鹰 ying"]]},
- {id:"pindu",name:"拼读小工",kind:"quiz",quiz:[
-   {q:"b + a → ?",o:["ba","pa","da"],a:0},
-   {q:"m + a → ?",o:["na","ma","ba"],a:1},
-   {q:"p + o → ?",o:["po","bo","pu"],a:0},
-   {q:"d + i → ?",o:["di","de","du"],a:0},
-   {q:"g + u → ?",o:["cu","gu","ku"],a:1},
-   {q:"j + i → ?",o:["qi","ji","xi"],a:2},
-   {q:"z + a → ?",o:["za","ca","sa"],a:0},
-   {q:"zh + a → ?",o:["zha","ja","ra"],a:0}]},
- {id:"shengdiao",name:"声调",kind:"quiz",quiz:[
-   {q:"mā 是第几声",o:["一声","二声","三声"],a:0},
-   {q:"má 是第几声",o:["一声","二声","三声"],a:1},
-   {q:"mǎ 是第几声",o:["三声","二声","四声"],a:0},
-   {q:"mà 是第几声",o:["四声","三声","一声"],a:0}]}
+{id:"pet",name:"我的宠物",icon:"🐶",sub:"选一只伙伴，一起学习成长",color:"FDE9D6",kind:"pet",groups:[]},
+{id:"pinyin",name:"拼音乐园",icon:"🔤",sub:"单韵母四声·声母·韵母·整体认读",color:"EAF3FB",groups:[
+ {id:"danyun",name:"单韵母四声",kind:"pinyin",data:TONES},
+ {id:"shengmu",name:"声母(23个)",kind:"pinyin2",data:INITIALS},
+ {id:"yunmu",name:"韵母与整体认读",kind:"pinyin2",data:FINALS},
+ {id:"pindu",name:"拼读练习",kind:"quiz",quiz:[
+   {q:"b-a 拼成?",o:["ba","pa","da"],a:0},
+   {q:"m-a 拼成?",o:["na","ma","ba"],a:1},
+   {q:"p-o 拼成?",o:["po","bo","pu"],a:0},
+   {q:"d-i 拼成?",o:["di","de","du"],a:0},
+   {q:"g-u 拼成?",o:["cu","gu","ku"],a:1},
+   {q:"j-i 拼成?",o:["qi","ji","xi"],a:2},
+   {q:"zh-a 拼成?",o:["zha","ja","ra"],a:0}]}
 ]},
-{id:"hanzi",name:"汉字启蒙",icon:"✍️",sub:"基础字·笔画·偏旁·看图识字",color:"EAF6EA",groups:[
- {id:"jiben",name:"基础字卡",kind:"cards",items:[
-   ["日","太阳"],["月","月亮"],["水","水滴"],["火","火苗"],
-   ["山","高山"],["木","大树"],["人","一个人"],["口","嘴巴"],
-   ["手","手掌"],["大","大的"],["小","小的"],["天","天空"],
-   ["上","上面"],["下","下面"],["多","很多"],["少","很少"],
-   ["心","爱心"],["风","刮风"],["雨","下雨"],["花","花朵"]]},
- {id:"bihua",name:"笔画",kind:"cards",items:[
-   ["一","横"],["丨","竖"],["丿","撇"],["捺","捺"],
-   ["点","点"],["横折","折"],["竖钩","钩"],["卧钩","卧钩"]]},
- {id:"pianpang",name:"偏旁",kind:"cards",items:[
-   ["亻","单人旁"],["氵","三点水"],["扌","提手旁"],["口","口字旁"],
-   ["木","木字旁"],["日","日字旁"],["月","月字旁"],["女","女字旁"],
-   ["心","心字底"],["人","人字头"]]},
- {id:"kantu",name:"看图识字",kind:"quiz",quiz:[
-   {q:"☀️ 这是什么字？",o:["日","月","天"],a:0},
-   {q:"🌙 这是什么字？",o:["日","月","明"],a:1},
-   {q:"💧 这是什么字？",o:["水","雨","火"],a:0},
-   {q:"🔥 这个字是？",o:["火","水","泉"],a:0},
-   {q:"⛰️ 这是？",o:["山","石","丘"],a:0},
-   {q:"🌳 这是？",o:["木","林","叶"],a:0},
-   {q:"👤 这是？",o:["人","大","入"],a:0},
-   {q:"👄 这是？",o:["口","日","田"],a:0}]},
- {id:"duizi",name:"字对图",kind:"match",match:[
-   ["☀️","日",["月","白"]],["🌙","月",["日","明"]],["💧","水",["火","小"]],
-   ["🔥","火",["水","泉"]],["⛰️","山",["石","丘"]],["🌳","木",["林","叶"]],
-   ["👤","人",["大","入"]],["👄","口",["日","田"]]]}
+{id:"hanzi",name:"汉字启蒙",icon:"✍️",sub:"部编版一年级基础字",color:"EAF6EA",groups:[
+ {id:"hui",name:"会写字·组1",kind:"chars",data:CHARS1},
+ {id:"hui2",name:"会写字·组2",kind:"chars",data:CHARS2},
+ {id:"hui3",name:"会写字·组3",kind:"chars",data:CHARS3},
+ {id:"hui4",name:"会写字·组4",kind:"chars",data:CHARS4},
+ {id:"hui5",name:"会写字·组5",kind:"chars",data:CHARS5},
+ {id:"charsm",name:"认字小测",kind:"quiz",quiz:[
+   {q:"“日”的读音是？",o:["rì","yuè","mù"],a:0},
+   {q:"“水”的读音是？",o:["huǒ","shuǐ","fēng"],a:1},
+   {q:"“山”的读音是？",o:["shān","shuǐ","tiān"],a:0},
+   {q:"“人”的读音是？",o:["rén","rì","dà"],a:0},
+   {q:"“天”的读音是？",o:["tiān","tián","dà"],a:0}]}
 ]},
-{id:"read",name:"阅读表达",icon:"📖",sub:"儿歌·故事·排序·说一说",color:"FDE9D6",groups:[
- {id:"duoyu",name:"我会读-儿歌",kind:"story",story:"小老鼠，上灯台，坐不住，滑下来，吱吱吱吱叫妈妈。小白兔，白又白，两只耳朵竖起来，爱吃萝卜和青菜。",imgs:"🐭🐭",qs:[
-   {q:"小老鼠从哪里滑下来？",o:["灯台","屋顶","树上"],a:0},
-   {q:"小白兔爱吃什么？",o:["萝卜青菜","米饭","大肉"],a:0}],
-   say:"跟家长说一说：小老鼠为什么要上灯台？站不住会怎样？"},
- {id:"gushi2",name:"小小故事-大象的鼻子",kind:"story",story:"大象有一根长长的鼻子，它用鼻子卷起香蕉，送给小猴子。小猴子开心地说：“谢谢大象！”大家互相帮助，真快乐。",qs:[
-   {q:"大象用什么卷香蕉？",o:["鼻子","手","尾巴"],a:0},
-   {q:"小猴子说了什么？",o:["谢谢","再见","不行"],a:0}],say:"想一想：你有帮过别人吗？"},
- {id:"kanpeitu",name:"看图讲故事",kind:"cards",cards:[
-   ["🎨","画画","我会画彩虹"],
-   ["🚲","骑车","骑得好开心"],
-   ["👨‍👩‍👦","一家人","感恩"],
-   ["🌳","大树","给我们乘凉"],
-   ["🎒","上幼儿园","新朋友"]]},
- {id:"ciyu",name:"词语积累",kind:"cards",cards:[
-   ["慢慢","慢慢地走"],["轻轻","轻轻地关"],["快乐","开开心心"],
-   ["勇敢","不怕困难"],["香甜","糖果香甜"],["明亮","眼睛明亮"],
-   ["整整齐齐","玩具整齐"],["安安静静","认真听讲"]]},
- {id:"paixu",name:"句子排一排",kind:"sort",sort:[
-   {p:["我","去","上学"],a:[0,2,1,3]},
-   {p:["小猫","在","睡觉"],a:[0,1,2]},
-   {p:["风","轻轻","吹过"],a:[0,1,2]},
-   {p:["妈妈","给我","讲故事"],a:[0,2,1,3]},
-   {p:["我","和爸爸","去散步"],a:[0,1,2]}]},
- {id:"shuoyi",name:"说一说",kind:"say",tips:[
-   "你最喜欢的一天是？为什么？",
-   "介绍你的好朋友。",
-   "今天早上你做了什么？",
-   "你喜欢什么动物？为什么？",
-   "想象一下，明天你想做什么？"]}
-]},
-{id:"math",name:"数学思维",icon:"🔢",sub:"数数·数字·比大小·加减·逻辑",color:"EAF6EA",groups:[
- {id:"shushu",name:"数一数",kind:"gen",gen:"count"},
- {id:"shuzi",name:"写数字",kind:"gen",gen:"write"},
- {id:"duizhao",name:"数量对应",kind:"gen",gen:"match"},
- {id:"bisize",name:"比大小",kind:"gen",gen:"compare"},
- {id:"jiajian",name:"加减法",kind:"gen",gen:"add"},
- {id:"fenlei",name:"分类",kind:"gen",gen:"classify"},
- {id:"guilv",name:"找规律",kind:"gen",gen:"pattern"},
- {id:"tuxing",name:"图形",kind:"quiz",quiz:[
-    {q:"△ 是什么？",o:["三角形","圆形","方形"],a:0},
-    {q:"○ 是什么？",o:["长方形","圆形","三角形"],a:1},
-    {q:"□ 是什么？",o:["正方形","椭圆","圆"],a:0}]},
- {id:"fangwei",name:"上下",kind:"quiz",quiz:[
-    {q:"苹果在桌子的(上/下)",o:["上","下","旁"],a:0},
-    {q:"椅子在桌子的下面吗？",o:["对","不对","不知道"],a:0},
-    {q:"小鸟的上面是？",o:["天空","地面","水里"],a:0},
-    {q:"小鱼的下面可能是？",o:["水草","天空","月亮"],a:0}]},
- {id:"shijian",name:"认识时间",kind:"gen",gen:"clock",sub:"整点时间练习"}
-]},
-{id:"english",name:"英语启蒙",icon:"🔠",sub:"字母·颜色·动物·家庭·食物",color:"E8EFFB",groups:[
- {id:"zimu",name:"字母ABC",kind:"cards",cards:(function(){var a=[];for(var i=0;i<26;i++){a.push([String.fromCharCode(65+i),String.fromCharCode(97+i)])}return a})()},
- {id:"color",name:"颜色",kind:"cards",cards:[
-   ["red","红色"],["blue","蓝色"],["green","绿色"],["yellow","黄色"],
-   ["orange","橙色"],["pink","粉红"],["black","黑色"],["white","白色"],
-   ["purple","紫色"]]},
- {id:"dongwu",name:"动物",kind:"cards",cards:[
-   ["cat","猫"],["dog","狗"],["bird","鸟"],["fish","鱼"],["elephant","大象"],
-   ["tiger","老虎"],["monkey","猴子"],["panda","熊猫"]]},
- {id:"jiating",name:"家庭",kind:"cards",cards:[
-   ["father","爸爸"],["mother","妈妈"],["sister","姐妹"],["brother","兄弟"],
-   ["baby","宝宝"],["grandpa","爷爷"],["grandma","奶奶"]]},
- {id:"food",name:"食物",kind:"quiz",quiz:[
-   {q:"🍎 是 apple 吗？",o:["是","不是"],a:0},
-   {q:"🍌 英语是？",o:["banana","apple","milk"],a:0},
-   {q:"🥛 英语是？",o:["milk","egg","juice"],a:0},
-   {q:"🍰 英语是？",o:["cake","rice","bread"],a:0}]},
- {id:"body",name:"身体",kind:"quiz",quiz:[
-   {q:"👀 是 eye",o:["对","错"],a:0},
-   {q:"✋ 是 hand",o:["对","错"],a:0},
-   {q:"👄 是 mouth",o:["对","错"],a:0},
-   {q:"👃 是 nose",o:["对","错"],a:0}]}
-]},
-{id:"science",name:"科学常识",icon:"🌍",sub:"季节·动物·大自然·安全",color:"EAF6EA",groups:[
- {id:"季节",name:"四季",kind:"cards",cards:[
-   ["春","春暖花开"],["夏","夏天热热"],["秋","秋高气爽"],["冬","冬天下雪"]]},
- {id:"dongwu",name:"小小动物",kind:"cards",cards:[
-   ["🐸","青蛙呱呱"],["🐝","蜜蜂采蜜"],["🐘","大象喷水"],["🐶","小狗汪汪"],
-   ["🐱","小猫喵喵"],["🐟","小鱼游游"]]},
- {id:"animals",name:"动物爱吃什么",kind:"quiz",quiz:[
-   {q:"小白兔最爱吃？",o:["萝卜","肉","草"],a:0},
-   {q:"大熊猫爱吃什么？",o:["竹叶","香蕉","鱼"],a:0},
-   {q:"小鱼游在？",o:["水里","天上","土里"],a:0},
-   {q:"麻雀在？",o:["树上","水下","洞里"],a:0}]},
- {id:"bew",name:"身体的秘密",kind:"quiz",quiz:[
-   {q:"我们要饭前洗手",o:["对","错"],a:0},
-   {q:"看屏幕太近对眼睛好？",o:["错","对"],a:1},
-   {q:"早晚要牙？",o:["对","错"],a:0}]},
- {id:"traffic",name:"交通安全",kind:"quiz",quiz:[
-   {q:"红灯亮了要？",o:["停下来","快跑","踢球"],a:0},
-   {q:"绿灯亮了可以？",o:["走","停","玩"],a:0},
-   {q:"坐车要系？",o:["安全带","帽子","腰带"],a:0}]},
- {id:"weather",name:"天气",kind:"cards",cards:[
-   ["☀️","晴天"],["🌧️","下雨"],["❄️","下雪"],["🌤️","多云"],["⛈️","雷雨"]]}
-]},
-{id:"focus",name:"专注力",icon:"🎯",sub:"记忆·找不同·迷宫",color:"F4ECF7",groups:[
- {id:"mem",name:"视觉记忆",kind:"gen",gen:"mem"},
- {id:"diff",name:"找不同",kind:"gen",gen:"diff"},
- {id:"maze",name:"月亮迷宫",kind:"maze"},
- {id:"seq",name:"数字记忆",kind:"gen",gen:"seq"},
- {id:"class",name:"按颜色分类？",kind:"gen",gen:"classify"}
-]},
+{id:"read",name:"古诗启蒙",icon:"📜",sub:"12首经典古诗 逐句注音·真人朗读",kind:"poem",data:POEMS,groups:[]},
+{id:"reading",name:"阅读表达",icon:"📖",sub:"原创分级阅读短文",kind:"reading",groups:[],data:READS},
+{id:"math",name:"数学思维",icon:"🔢",sub:"一年级上册同步数学",kind:"math",groups:[],data:MATH44},
+{id:"english",name:"英语启蒙",icon:"🔠",sub:"北京版一年级英语",kind:"english",groups:[],data:ENGL},
+{id:"pindu",name:"拼读游戏",icon:"🎵",sub:"拼一拼，读一读",kind:"pindu",groups:[]},
 {id:"achieve",name:"学习成果",icon:"🏆",sub:"进度·掌握·正确率",kind:"achieve"}
 ];
-/* 修正颜色占位(每个板块一个主色) */
+
+/* 默认板块颜色修正 */
 DEFAULT_BOARDS.forEach(function(b){if(!b.color)b.color="EAF3FB"});
 
 /* ================= 持久化 ================= */
-var DB_EMPTY={known:{},right:{},total:{},done:{},last:{},nick:"",topic:"",pomo:{d:"",n:0,run:0,end:0}};
+var DB_EMPTY={known:{},right:{},total:{},done:{},last:{},nick:"",topic:"",pet:{},pomo:{d:"",n:0,run:0,end:0}};
 function loadAll(){
   CFG=JSON.parse(JSON.stringify(DEFAULT_BOARDS));
   try{var raw=localStorage.getItem(LS);if(raw){var o=JSON.parse(raw);if(o&&o.boards)CFG=o.boards;if(o&&o.db)DB=o.db}}catch(e){}
   if(!DB)DB=JSON.parse(JSON.stringify(DB_EMPTY));
   repairDB();
 }
-function repairDB(){if(!DB.known)DB.known={};if(!DB.right)DB.right={};if(!DB.total)DB.total={};if(!DB.done)DB.done={};if(!DB.last)DB.last={};if(!DB.pomo)DB.pomo={d:"",n:0,run:0,end:0};}
-function save(){try{localStorage.setItem(LS,JSON.stringify({content:CFG,db:DB}))}catch(e){}};
+function repairDB(){if(!DB.known)DB.known={};if(!DB.right)DB.right={};if(!DB.total)DB.total={};if(!DB.done)DB.done={};if(!DB.last)DB.last={};if(!DB.pet)DB.pet={};if(!DB.pomo)DB.pomo={d:"",n:0,run:0,end:0};if(!DB.pts)DB.pts=0;}
+function save(){try{localStorage.setItem(LS,JSON.stringify({boards:CFG,db:DB}))}catch(e){}};
+
+/* =============================================================
+ * END CORE
+ * ============================================================*/
 /* ================= 工具与进度 ================= */
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
@@ -500,6 +534,13 @@ function renderContent(){
   $("stTitle").textContent=b.name;
   $("stSub").textContent=b.sub||"";
   if(b.kind==="achieve"){c.innerHTML=renderAchieve();return}
+  /* 板块级渲染（无子项但有 data/kind: pet/poem/math/english/reading/pinyin） */
+  var bkind=b.kind||"";
+  if((!b.groups||!b.groups.length)&&(b.data||bkind==="pet"||bkind==="poem"||bkind==="math"||bkind==="english"||bkind==="reading")){
+    var body=renderBoard?renderBoard(b,b):"";
+    c.innerHTML=body||"<div class='card'>这个板块还没有内容，家长可编辑添加。</div>";
+    return;
+  }
   var g=grp(SC.b,SC.g);if(!g&&b.groups&&b.groups[0]){SC.g=b.groups[0].id;g=b.groups[0]}
   if(!g){c.innerHTML="<div class='card'>这个板块还没有子项，家长可编辑添加。</div>";return}
   var tabs="<div class='subTabs'>"+b.groups.map(function(g0){
@@ -511,6 +552,8 @@ function renderContent(){
 function renderGroup(b,g){
   var html="<div class='card'><h3>"+esc(g.name)+"</h3>"+(g.sub?"<div class='des'>"+esc(g.sub)+"</div>":"")+"</div>";
   var kind=g.kind||"cards";
+  var rb=renderBoard?renderBoard(b,g):null;
+  if(rb&&rb.length>0){html+=rb;return html;}
   switch(kind){
     case "cards":html+=renderCards(g);break;
     case "quiz": html+=renderQuiz(g,b.id);break;
@@ -914,6 +957,7 @@ function renderAchieve(){
 }
 function lastRecord(){if(!DB.last)DB.last={};return DB.last}
 /* ================= 家长编辑 ================= */
+var pmSel=null;   /* 当前选中的编辑目标 {t:'board'|'group',b,g,i} */
 function openPM(){
   $("pm").classList.add("on");
   pmRender();
@@ -932,7 +976,7 @@ function pmRender(){
     if(b){
       h+="<div class='pm-sec'>📂 「"+esc(b.name)+"」的子项</div>";
       b.groups.forEach(function(g,gIdx){
-        h+="<div class='pmTi "+(pmSel.t==="group"&&pmSel.g===gIdx?"sel":"")+"' onclick=\"pmSel({t:'group',b:"+pmSel.b+",g:"+gIdx+",i:-1});pmRender()\">📄 "+esc(g.name)+"</div>";
+        h+="<div class='pmTi "+(pmSel.t==="group"&&pmSel.g===gIdx?"sel":"")+"' onclick=\"pmSel={t:'group',b:"+pmSel.b+",g:"+gIdx+",i:-1};pmRender()\">📄 "+esc(g.name)+"</div>";
       });
       h+="<button class='addBtn' onclick='pmAddGroup("+pmSel.b+")'>➕ 新增子项</button>";
     }
@@ -991,7 +1035,6 @@ function pmGroupOptions(b,g){
   return html;
 }
 /* ============== 家长数据操作 ============== */
-function pmSel(){}
 function pmAddBoard(){CFG.push({id:"b"+Date.now(),name:"新板块",icon:"📘",sub:"",groups:[{id:"g"+Date.now(),name:"新主题",kind:"cards",cards:[["新内容","点这里读"]]}]});save();toast("已添加板块");pmRender()}
 function pmAddGroup(bi){var b=CFG[bi];b.groups.push({id:"g"+Date.now(),name:"新主题",kind:"cards",cards:[["新内容","点这里读"]]});save();toast("已添加子项");pmRender()}
 function pmAddCard(bi,gi){var g=CFG[bi].groups[gi];(g.cards||(g.cards=[])).push(["新字","读一读"]);save();pmRender()}
@@ -1050,6 +1093,253 @@ function renderAchieveCache(){}
 /* 重学当前 */
 function relearnNow(){SC={b:(CFG[0]||{}).id||"pinyin",g:""};renderAll();toast("已重新开始本主题")}
 window.addEventListener("load",boot);
+/* =============================================================
+ * 一年级素材渲染器 09
+ * 宠物 · 拼音真人音频 · 古诗 · 生字 · 数学 · 英语 · 阅读
+ * 全部使用本地 assets 音频（离线可用）
+ * ============================================================*/
+
+var _curAudio=null;
+function playLocal(src,fb){
+  try{
+    if(_curAudio){try{_curAudio.pause()}catch(e){}}
+    var a=new Audio(src);
+    a.preload='auto';
+    _curAudio=a;
+    a.onerror=function(){if(fb){try{speak(fb)}catch(e2){}}};
+    var p=a.play();
+    if(p&&p.catch){p.catch(function(){if(fb){try{speak(fb)}catch(e2){}}})}
+    return a;
+  }catch(e){if(fb){try{speak(fb)}catch(e2){}}return null}
+}
+function pyUrl2(id){return 'assets/pinyin/'+(PINYIN_AUDIO[id]||(id+'.mp3'))}
+function esz(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+/* ================= 宠物乐园 ================= */
+var PET={sel:null};
+function dogEmoji(id){
+  var m={'golden':'🐕','corgi':'🐕','husky':'🐺','labrador':'🐕‍🦺','shepherd':'🐩','trex':'🦖'};
+  return m[id]||'🐶';
+}
+function getDog(id){for(var i=0;i<DOGS.length;i++){if(DOGS[i].id===id)return DOGS[i]}return DOGS[0]}
+function renderPet(b,g){
+  var sel=DB.pet&&DB.pet.type;
+  if(!sel){return petSelect()}
+  return petHTML(sel);
+}
+function petSelect(){
+  var h="<div class='card'><h3>🐶 选一只宠物伙伴</h3><p class='des' style='color:var(--soft)'>它会陪你一起学习、一起成长</p><div class='petGrid'>";
+  DOGS.forEach(function(d){
+    h+="<div class='petCard' onclick=\"pickPet('"+d.id+"')\"><div class='petEm'>"+dogEmoji(d.id)+"</div><div class='petNm'>"+esz(d.n)+"</div><div class='petCn'>"+esz(d.cn)+"</div><div class='petTr' style='color:"+d.col2+"'>"+esz(d.tr)+"</div></div>";
+  });
+  h+="</div><div style='margin-top:12px;color:var(--soft);font-size:13px'>学习任务答对一题 +2 成长值，伙伴会慢慢长大</div></div>";
+  return h;
+}
+function petHTML(id){
+  var d=getDog(id),XP=DB.pet&&DB.pet.xp||0,lv=0;
+  for(var i=0;i<DST.length;i++){if(XP>=DST[i].xp)lv=i}
+  var st=DST[lv];
+  var pg=lv>=DST.length-1?100:Math.round((XP-DST[lv].xp)/(DST[lv+1].xp-DST[lv].xp)*100);
+  var acts=[['🍖 喂食','feed'],['🤚 摸摸','pet'],['🛁 洗澡','bath'],['💬 说话','talk']];
+  var h="<div class='card' style='text-align:center'><div class='petDisp' style='background:linear-gradient(135deg,"+d.col+"22,"+d.col+"55);border-radius:24px;padding:22px 12px'><span style='font-size:82px;line-height:1'>"+dogEmoji(id)+"</span><div id='petBub' style='margin:8px auto;max-width:240px;min-height:22px;font-size:14px;color:"+d.col2+";font-weight:700'></div></div>";
+  h+="<h3 style='margin-top:10px'>"+esz(d.n)+" <span style='color:var(--soft);font-size:13px'>· "+st.n+" · 成长值 "+XP+"</span></h3>";
+  h+="<div class='petBar'><i style='width:"+pg+"%'></i></div><div style='font-size:11px;color:var(--soft)'>"+pg+"% → "+(lv<DST.length-1?DST[lv+1].n:"满级")+"</div>";
+  h+="<div class='petActs'>";
+  acts.forEach(function(a){h+="<button class='pbtn' style='background:var(--blue);color:var(--main)' onclick=\"petAct('"+a[1]+"')\">"+a[0]+"</button>"});
+  h+="</div><div style='margin-top:14px;color:var(--soft);font-size:12px'>每天一起学习，完成练习让伙伴成长</div>";
+  h+="<button class='btn' style='margin-top:14px;background:#fff;border:2px solid var(--line);color:var(--soft)' onclick='switchPet()'>🐾 换一只伙伴</button></div>";
+  return h;
+}
+function dogEmoji1(d){var id=(typeof d==='string')?d:d.id;var m={'golden':'🐶','corgi':'🐕','husky':'🐴','labrador':'🐕‍🦺','shepherd':'🐩','trex':'🦖'};return m[id]||'🐶'}
+function pickPet(id){DB.pet=DB.pet||{};DB.pet.type=id;save();renderAll();toast('欢迎，和'+getDog(id).n+'一起学习！')}
+function switchPet(){DB.pet&&(DB.pet.type='');save();renderAll()}
+function petAct(k){
+  var d=getDog(DB.pet&&DB.pet.type);
+  if(!d)return;
+  var snd=d.sounds[k]||d.voice||'汪汪！';
+  var b=$("petBub");if(b)b.textContent=snd;
+  var file={'feed':'pet_hello','pet':'pet_hello','bath':'pet_bath','talk':'pet_play'}[k]||'pet_hello';
+  playLocal('assets/voice/'+file+'.mp3',snd);
+  if(k==='feed'){DB.pet.xp=(DB.pet.xp||0)+2;save();renderAll();toast('🍖 +2 成长值')}
+}
+
+/* ================= 拼音真人音频 ================= */
+function renderPyTones(g){
+  var data=g.data||TONES;
+  var h="<div class='pyGrid'>";
+  data.forEach(function(x){h+="<button class='pyBtn' onclick=\"playPinyin2('"+x[1]+"')\">"+x[0]+"<small>听读音</small></button>"});
+  h+="</div><div class='tip' style='margin-top:12px'>点击播放本地普通话读音</div>";
+  return h;
+}
+function renderPyList(g){
+  var data=g.data||INITIALS;
+  var h="<div class='pyGrid'>";
+  data.forEach(function(x){h+="<button class='pyBtn' onclick=\"playPinyin2('"+(x[2]||x[1])+"')\">"+x[0]+"<small>"+esz(x[1]||'')+"</small></button>"});
+  h+="</div><div class='tip' style='margin-top:12px'>点击播放真人读音</div>";
+  return h;
+}
+function playPinyin2(file){playLocal(pyUrl2(file),'')}
+
+/* ================= 古诗 ================= */
+function renderPoem(g){
+  var data=g.data||POEMS;
+  var h="<div class='card'><h3>📜 "+esz(g.name||'古诗诵读')+"</h3><p class='tip' style='margin-bottom:10px'>点击句子听单句，点整首听全诗</p>";
+  data.forEach(function(p,i){
+    var key=POEM_KEY[p.ti]||('poem_'+p.ti.replace(/[^\w]/g,'_'));
+    h+="<div style='margin-bottom:14px;padding:14px;border:2px solid var(--yellowline);border-radius:16px;background:#FFFDF6'><div style='display:flex;align-items:center;gap:8px'><span style='font-size:24px'>"+p.em+"</span><strong style='font-size:17px'>《"+esz(p.ti)+"》</strong><span style='font-size:12px;color:var(--soft)'>"+esz(p.au)+"</span><button class='btn' style='margin-left:auto;background:var(--yellow);border:2px solid var(--yellowline);color:#B07D2A' onclick='playPoemFull("+i+")'>🔊 整首</button></div>";
+    (p.lns||[]).forEach(function(l,li){
+      var py=(p.py||[])[li]||'';
+      h+="<div class='poemLine' onclick=\"playPoemLine2("+i+","+li+")\"><span class='poemPy'>"+py+"</span><span class='poemTx'>"+esz(l)+"</span></div>";
+    });
+    h+="</div>";
+  });
+  h+="</div>";
+  return h;
+}
+function poemKey(i){var p=POEMS[i];return p.key||FORMAT2(p.ti)}
+function FORMAT_KEY(t){return 'poem_'+t.replace(/[^\w]/g,'_')}
+function playPoemLine2(i,li){
+  var p=POEMS[i];if(!p||!p.lns[li])return;
+  var key=p.key||('poem_'+p.ti.replace(/[^\w]/g,'_'));
+  var u='assets/voice/'+key+'_l'+(li+1)+'.mp3';
+  playLocal(u,p.lns[li]);
+}
+/* 整首：依次逐句播放 */
+function playPoemFull(i){
+  var p=POEMS[i];if(!p)return;
+  var j=0;
+  (function next(){
+    if(j>=p.lns.length)return;
+    var li=j;j++;
+    var p2=POEMS[i];
+    var key=p2.key||('poem_'+p2.ti.replace(/[^\w]/g,'_'));
+    var u='assets/voice/'+key+'_l'+(li+1)+'.mp3';
+    var a=playLocal(u,p2.lns[li]);
+    if(a&&a.onended)a.onended=null;
+    if(a){a.onended=next}else{next()}
+  })();
+}
+
+/* ================= 生字 ================= */
+function renderChars(g){
+  var data=g.data||CHARS1;
+  var h="<div class='chGrid'>";
+  data.forEach(function(x){
+    var f=x[0].codePointAt(0).toString(16);
+    h+="<div class='chCard' onclick=\"playChar('"+f+"','"+esz(x[0])+"')\"><div class='chBig'>"+x[0]+"</div><div class='chPy'>"+x[1]+"</div><div class='chW'>"+esz(x[3]||'')+" · "+x[2]+"画</div></div>";
+  });
+  h+="</div><div class='tip' style='margin-top:12px'>点击卡片播放真人字音</div>";
+  return h;
+}
+function playChar(f,ch){playLocal('assets/chars/u'+f+'.mp3',ch)}
+
+/* ================= 数学 ================= */
+var _mathIdx=0,_mathQ=null;
+function renderMathB(b,g){
+  var pool=(g&&g.data)||b.data||MATH44;
+  if(!_mathQ||!pool.length)_mathQ=pool[0];
+  return "<div class='card'><h3>➕ 数学练习</h3><div class='mQ'>"+_mathQ.q+"</div><div class='opts'>"+
+    _mathQ.o.map(function(o,oi){return"<button class='opt' data-k='mtarget' data-a='"+oi+"' onclick='chkMath(this,"+oi+")' >"+esz(o)+"</button>"}).join('')+
+    "</div><div id='mfb' style='margin-top:10px' class='feed'></div><div class='mb'><button class='btn b1' onclick='nextMathQ()'>🔄 换一题</button></div></div>";
+}
+function nextMathQ(){
+  var b=bds(SC.b);if(!b)return;
+  var pool=b.data||MATH44,idx=Math.floor(Math.random()*pool.length);
+  _mathQ=pool[idx];renderAll();
+}
+function chkMath(el,oi){
+  if(!DB.total)DB.total={};if(!DB.right)DB.right={};
+  var k='math_'+_mathQ.id;DB.total[k]=(DB.total[k]||0)+1;
+  var ok2=(oi===_mathQ.a);
+  var fb=document.getElementById('mfb');
+  if(ok2){DB.right[k]=(DB.right[k]||0)+1;if(fb){fb.className='feed good';fb.textContent='🌟 答对了！'}toast('真棒！+1 正确')}
+  else{if(fb){fb.className='feed bad';fb.textContent='再想一想，正确答案是 '+_mathQ.a}}
+  save();renderAll();
+}
+
+/* ================= 英语 ================= */
+function renderEnglishB(b,g){
+  var data=(g&&g.data)||b.data||ENGL;
+  return "<div class='card'><h3>🔠 英语单词</h3><div class='eGrid'>"+
+    data.map(function(x,i){return"<div class='eCard'><span class='eEm'>"+x[0]+"</span><strong>"+esz(x[1])+"</strong><button class='btn b3' onclick=\"playEnglish('"+esz(x[1])+"')\">🔊 听</button></div>"}).join('')+
+    "</div><div class='tip' style='margin-top:12px'>点 听 播放英文发音</div></div>";
+}
+function playEnglish(w){
+  var key=w.toLowerCase().replace(/[^a-z]/g,'_');
+  var p='assets/english/';
+  playLocal(p+key+'.mp3',w);
+}
+
+/* ================= 阅读 ================= */
+function renderReading(b,g){
+  var data=(g&&g.data)||b.data||READS;
+  var idx=(DB.readIdx||0)%data.length;
+  var q=data[idx];
+  return "<div class='card'><h3>📖 阅读小站</h3><div style='display:flex;gap:8px;align-items:center;margin:8px 0'><button class='btn b3' onclick='readNav(-1)'>←</button><b>"+(idx+1)+" / "+data.length+"</b><button class='btn b3' onclick='readNav(1)'>→</button><button class='btn b1' style='margin-left:auto' onclick=\"playLocal('assets/reading/reading_"+String(idx+1).padStart(2,'0')+".mp3','')\">🔊 听朗读</button></div><div class='rBody'>"+esz(q.t)+"</div><h3 style='margin:12px 0 8px'>想一想："+esz(q.q)+"</h3><div class='opts'>"+
+    q.o.map(function(o,oi){return"<button class='opt' onclick='chkRead(this,"+idx+","+oi+")'>"+esz(o)+"</button>"}).join('')+
+    "</div><div id='rfb' class='feed' style='margin-top:10px'></div></div>";
+}
+function readNav(d){
+  var b=bds(SC.b);var len=((b&&b.data)||READS).length;
+  DB.readIdx=((DB.readIdx||0)+d+999)%len;save();renderAll();
+}
+function chkRead(el,qi,oi){
+  var b=bds(SC.b),data=(b&&b.data)||READS,q=data[qi],k='read_'+qi;
+  if(!DB.total)DB.total={};DB.total[k]=(DB.total[k]||0)+1;
+  var ok=(String(q.a)===String(q.o[oi]));
+  var fb=document.getElementById('rfb');
+  if(ok){DB.right[k]=(DB.right[k]||0)+1;if(fb){fb.className='feed good';fb.textContent='🌟 你从短文里找到了答案！'}toast('✅')}
+  else{if(fb){fb.className='feed bad';fb.textContent='再读一遍短文，想一想哦（答案：'+q.a+'）'}}
+  save();
+}
+
+/* ================= 渲染派发 ================= */
+function renderBoard(b,g){
+  if(!b)return "";
+  /* 组级：优先用 g.kind 路由（拼音/声母/韵母/生字/古诗等） */
+  if(g&&g.kind){
+    switch(g.kind){
+      case "pinyin": return renderPyTones(g);
+      case "pinyin2": return renderPyList(g);
+      case "poem": return renderPoem(g);
+      case "chars": return renderChars(g);
+      default: break;
+    }
+  }
+  /* 板块级：无 groups 的整板渲染 */
+  var k=b.kind||"";
+  if(k==="pet")return renderPet(b,g);
+  if(k==="pinyin")return renderPyTones(b);
+  if(k==="pinyin2")return renderPyList(b);
+  if(k==="poem")return renderPoem(b);
+  if(k==="chars")return renderChars(b);
+  if(k==="math")return renderMathB(b,g);
+  if(k==="english")return renderEnglishB(b,g);
+  if(k==="reading")return renderReading(b,g);
+  if(k==="pindu")return renderPindu(b);
+  return "";
+}
+function renderPindu(b){
+  var data=b.data||PINDU;
+  return "<div class='card'><h3>🎵 拼读游戏</h3><div class='pinduWall'>"+
+    data.map(function(x){return"<button class='btn' style='margin:4px;background:var(--blue);border:2px solid var(--blueline);color:var(--main)' onclick=\"pinduSpeak('"+x[0]+"','"+x[1]+"')\">"+x[0]+" → "+x[1]+"</button>"}).join('')+
+    "</div><div class='tip' style='margin-top:12px'>点击音节，听真人拼读</div></div>";
+}
+function pinduSpeak(pair,result){
+  /* 播放组成音（声母+韵母）: 用 assets/pinyin 里已有的音节文件,没有则 TTS 兜底 */
+  var parts=pair.split("-");
+  if(parts.length===2){
+    var smP=parts[0][0],ymP=parts[1];
+    /* 播放韵母即组成音，声母用参考音文件(X) */
+    var ymFile=PINYIN_AUDIO[ymP+'1']||(ymP+'.mp3');
+    playLocal('assets/pinyin/'+ymFile,result);
+  }else{
+    playLocal('assets/pinyin/'+result+'.mp3',result);
+  }
+}
+
+/* 便捷别名（保留旧版函数名，部分兼容） */
+function oldSay(t){try{speak(t)}catch(e){}}
 
 </script>
 </body>

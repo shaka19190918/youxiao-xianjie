@@ -1,5 +1,5 @@
-/* Offline shell for child-learning desk (root page). v53 */
-const CACHE = 'child-learning-v53';
+/* Offline shell for child-learning desk (root page). v54 */
+const CACHE = 'child-learning-v54';
 const PRECACHE = ['./', './index.html'];
 
 self.addEventListener('install', event => {
