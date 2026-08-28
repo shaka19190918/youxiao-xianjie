@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v48';
+const CACHE = 'child-learning-v49';
 const PINYIN_KEYS = '';
 const PINYIN = [];
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];

@@ -604,16 +604,16 @@ function todayPickCard(){
     }
     const rows=items.slice(0,2).map(it=>{
       const sub=it.s||(it.tag==='今日古诗'&&POEM_COURSE_V6[poemDayIndexV6()]?('《'+POEM_COURSE_V6[poemDayIndexV6()].ti+'》'):'');
-      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:12px;background:#fff;margin-bottom:8px;cursor:pointer" onclick="showPage('${it.pg}')">
-        <span style="font-size:26px;flex-shrink:0">${it.ic}</span>
+      return `<div style="display:flex;align-items:center;gap:12px;padding:16px 12px;border-radius:16px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);margin-bottom:12px;cursor:pointer" onclick="showPage('${it.pg}')">
+        <span style="font-size:32px;flex-shrink:0">${it.ic}</span>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:800;font-size:14px;color:var(--tx)">${it.t||(it.tag==='算术挑战'?'算术练习':'写字')}</div>
-          <div style="font-size:11px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sub}</div>
+          <div style="font-weight:800;font-size:18px;color:var(--tx)">${it.t||(it.tag==='算术挑战'?'算术练习':'写字')}</div>
+          <div style="font-size:13px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sub}</div>
         </div>
-        ${it.pct>0?`<div style="font-size:11px;color:var(--habit);font-weight:700;flex-shrink:0">${it.pct}%</div>`:''}
+        ${it.pct>0?`<div style="font-size:13px;color:var(--habit);font-weight:700;flex-shrink:0">${it.pct}%</div>`:''}
       </div>`;
     }).join('');
-    return `<div class="card"><div class="card-hd"><span class="ic">🎯</span><h2>今日推荐</h2><small>${dow>=1&&dow<=5?'工作日学习':'周末趣味'}</small></div>${rows}</div>`;
+    return `<div class="card" style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border:none"><div class="card-hd" style="justify-content:flex-start"><h2 style="font-size:22px;font-weight:800">🎯 今日推荐</h2><small style="font-size:14px;color:var(--tx2);margin-left:auto">${dow>=1&&dow<=5?'工作日学习':'周末趣味'}</small></div>${rows}</div>`;
   }catch(e){return ''}
 }
 
