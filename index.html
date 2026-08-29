@@ -1063,5 +1063,52 @@ init();
 </script>
 <div id="eyeBar" onclick="eyeInfo()" style="display:none"></div>
 <div id="eyeLock" style="display:none"></div>
+<style id="v54-child-flow">
+/* v54: one obvious next step, five stable child destinations, shorter pinyin lessons. */
+.v54-home{display:grid;gap:14px}.v54-hello{position:relative;overflow:hidden;padding:22px;border-radius:32px;background:linear-gradient(135deg,#7658D8,#D96BB6);color:#fff;box-shadow:0 12px 28px rgba(87,57,166,.23)}
+.v54-hello h1{font-size:clamp(24px,7vw,34px);line-height:1.25;margin:0 0 5px}.v54-hello p{font-size:16px;opacity:.94}.v54-stats{display:inline-flex;gap:14px;margin-top:13px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.2);font-weight:850}
+.v54-pet{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center;background:linear-gradient(135deg,#FFF8E7,#F7F1FF)!important;border:0!important}.v54-pet img{width:96px!important;height:96px!important}.v54-pet strong{display:block;font-size:22px}.v54-pet small{display:block;margin:3px 0 9px;color:var(--tx2);font-size:14px}.v54-pet button{min-height:48px;border:0;border-radius:18px;padding:0 18px;background:#FFD567;color:#5D4037;font:900 16px inherit}
+.v54-home>.card{margin:0}.v54-home>.card .card-hd h2{font-size:22px}.v54-home>.card>div[onclick]{min-height:66px!important;padding:12px!important;border:2px solid #EEE4FF;border-radius:20px!important}.v54-home>.card>div[onclick] span:first-child{font-size:32px!important}
+.v54-quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.v54-quick button{min-height:92px;border:0;border-radius:23px;background:#fff;box-shadow:0 5px 15px rgba(67,48,96,.09);font:850 14px inherit;color:var(--txt);padding:10px 4px}.v54-quick span{display:block;font-size:31px;margin-bottom:5px}.v54-parent{min-height:48px;border:0;background:transparent;color:var(--tx2);font:750 14px inherit;text-decoration:underline}
+.v54-pinyin-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}.v54-pinyin-tabs button{min-height:52px;border:2px solid #E7DEF2;border-radius:19px;background:#fff;color:var(--tx2);font:850 15px inherit}.v54-pinyin-tabs button.on{background:#7658D8;border-color:#7658D8;color:#fff}.v54-pinyin-tip{padding:12px 14px;border-radius:18px;background:#FFF7D9;color:#715A16;font-size:14px;line-height:1.6}.v54-pinyin-section h3{font-size:21px;margin:16px 0 10px}.v54-local-audio{display:inline-flex;align-items:center;gap:5px;margin-top:14px;padding:5px 9px;border-radius:999px;background:#F0EBFF;color:#6545BF;font-size:12px;font-weight:850}
+#kidDock{display:none}
+@media(max-width:700px){
+  .main{padding-bottom:calc(116px + env(safe-area-inset-bottom))!important}.header{padding:10px 13px;padding-top:max(10px,env(safe-area-inset-top))}.header .logo{font-size:17px}.header .pill{padding:4px 8px;font-size:12px}
+  #kidDock{position:fixed;z-index:1190;left:10px;right:10px;bottom:max(9px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr);gap:5px;max-width:580px;margin:auto;padding:7px;background:rgba(255,255,255,.96);border:2px solid #E7DEF2;border-radius:27px;box-shadow:0 10px 35px rgba(60,39,105,.22);backdrop-filter:blur(14px)}
+  #kidDock button{min-width:0;min-height:58px;border:0;border-radius:20px;background:transparent;color:#756B82;font:800 11px inherit;padding:5px 2px}#kidDock button span{display:block;font-size:24px;line-height:1.1;margin-bottom:2px}#kidDock button.on{background:#7658D8;color:#fff}
+  #v41Sound{bottom:calc(89px + env(safe-area-inset-bottom))!important;width:48px!important;height:48px!important;background:#7658D8!important}#eyeBar{bottom:calc(145px + env(safe-area-inset-bottom))!important}
+  .subject-art{height:130px}.v54-quick button{min-height:84px}
+}
+@media(max-width:360px){.v54-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.v54-pet{grid-template-columns:82px minmax(0,1fr)}.v54-pet img{width:82px!important;height:82px!important}.v54-pinyin-tabs{grid-template-columns:1fr}}
+@media(min-width:701px){#app{max-width:760px}.v54-home{max-width:700px;margin:0 auto}.v54-hello{padding:28px}.v54-quick button{min-height:108px}}
+@media(prefers-reduced-motion:reduce){.page,.btn,.dog-display img{animation:none!important;transition:none!important}}
+</style>
+<script>
+(function(){
+  const audioCache=new Map();
+  function primeAudio(path){if(!path||audioCache.has(path))return audioCache.get(path);const a=new Audio(path);a.preload='auto';audioCache.set(path,a);return a}
+  v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=primeAudio(path);a.pause();a.currentTime=0;a.onerror=()=>fallback&&toast(fallback);a.onended=()=>{if(v46ActiveAudio===a)v46ActiveAudio=null};v46ActiveAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>fallback&&toast(fallback));return a}catch(e){fallback&&toast(fallback);return null}};
+  ['assets/voice/correct.mp3','assets/voice/retry.mp3','assets/voice/pet_hello.mp3'].forEach(primeAudio);
+
+  let pinyinPart='tones';
+  window.setPinyinPartV54=function(part){pinyinPart=part;showPage('pinyin')};
+  PGS.pinyin={title:'🔤 汉语拼音',render:function(){
+    const parts={
+      tones:['六个单韵母的四声',V42_TONES.map((x,i)=>`<button class="v42-py" data-id="${x[1]}" data-label="${x[0]}" onclick="playPinyinV42('${x[1]}','${x[0]}')">${x[0]}<small>第 ${i%4+1} 声</small></button>`).join('')],
+      initials:['声母：听参考字的开头音',V42_INITIALS.map(x=>`<button class="v42-py" data-id="${x[2]}" data-label="${x[0]}" onclick="playPinyinV42('${x[2]}','${x[0]}')">${x[0]}<small>${x[1]} · 听开头音</small></button>`).join('')],
+      finals:['韵母与整体认读',V42_FINALS.map(x=>`<button class="v42-py" data-id="${x[1]}" data-label="${x[0]}" onclick="playPinyinV42('${x[1]}','${x[0]}')">${x[0]}${x[0]==='ing'?'<small>“英”中的韵母</small>':x[0]==='ong'?'<small>“钟”中的韵母</small>':''}</button>`).join('')]
+    };const part=parts[pinyinPart]||parts.tones;
+    document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('curriculum')">← <span>返回</span></button><div class="card"><div class="child-task-title">汉语拼音</div><div class="subject-art zh" role="img" aria-label="拼音学习插图"></div><div class="v54-pinyin-tip">👂 每次只学一组、只播放一个音。这里不会混入问候、按钮文字或设备合成读音。</div><div class="v54-pinyin-tabs"><button class="${pinyinPart==='tones'?'on':''}" onclick="setPinyinPartV54('tones')">四声</button><button class="${pinyinPart==='initials'?'on':''}" onclick="setPinyinPartV54('initials')">声母</button><button class="${pinyinPart==='finals'?'on':''}" onclick="setPinyinPartV54('finals')">韵母</button></div><section class="v54-pinyin-section"><h3>${part[0]}</h3><div class="v42-pinyin-grid">${part[1]}</div></section><div class="v54-local-audio">🔒 教学音频使用本地固定文件</div></div>`;
+    document.querySelectorAll('#ct .v42-py').forEach(b=>b.addEventListener('pointerdown',()=>{const label=b.dataset.label,id=b.dataset.id;primeAudio(V46_PINYIN_AUDIO[label]||('assets/pinyin/'+id+'.'+pinyinExtV42(id)))},{once:true,passive:true}));
+  }};
+
+  PGS.home.render=function(){const d=S.dog?(DOGS[S.dog.type]||DOGS.labrador):null,lv=dlv(),st=DST[lv],name=S._setup.name||'小朋友';document.getElementById('ct').innerHTML=`<div class="v54-home"><section class="v54-hello"><h1>你好，${name}！</h1><p>今天完成一个小目标，就去陪伙伴玩。</p><div class="v54-stats"><span>🔥 ${S.strk||0} 天</span><span>💎 ${S.pts||0}</span></div></section>${d?`<section class="card v54-pet"><div>${dogSVG(S.dog.type,96)}</div><div><strong>${d.n}在等你</strong><small>${st.n} · 成长值 ${S.dog.xp||0}</small><button onclick="showPage('dog')">去看看伙伴</button></div></section>`:''}${todayPickCard()}<nav class="v54-quick" aria-label="学习分类"><button onclick="hubGo('yuwen')"><span>📚</span>语文</button><button onclick="hubGo('shuxue')"><span>🔢</span>数学</button><button onclick="hubGo('yingyu')"><span>🔠</span>英语</button><button onclick="hubGo('xingqu')"><span>🎨</span>兴趣</button></nav><button class="v54-parent" onclick="showPage('parent')">👨‍👩‍👧 家长设置与学习报告</button></div>`};
+
+  function learningRoute(id){return ['curriculum','pinyin','chars','reading','poems','math','mathsync','mathlower','timeextra','english','englishsync','sudoku','thinking','science','piano'].includes(id)}
+  function mountDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;document.body.appendChild(dock)}dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)))}
+  const oldShow=showPage;showPage=function(id){oldShow(id);mountDock()};
+  mountDock();showPage(CP||'home');
+})();
+</script>
 </body>
 </html>

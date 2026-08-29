@@ -1,5 +1,5 @@
 /* Offline-first shell for the installed child-learning tool. */
-const CACHE = 'child-learning-v49';
+const CACHE = 'child-learning-v54';
 const PINYIN_KEYS = '';
 const PINYIN = [];
 const ENGLISH = ['bird','blue','brother','cat','dog','draw','ear','eat','eye','father','green','hand','mother','nose','rabbit','red','run','sister','sleep','yellow','hello','thank_you','how_are_you','i_am_fine'];
@@ -25,7 +25,8 @@ const VOICE = ['correct','greeting_afternoon','greeting_evening','greeting_late_
 const PRECACHE = [
   './','./index.html','./manifest.webmanifest','./assets/vendor/hanzi-writer.min.js',
   './pet_voice_map.json','./assets/illustrations/curriculum-v46.webp',
-  './assets/pets/labrador-cartoon.webp','./assets/voice/correct.mp3','./assets/voice/retry.mp3','./assets/voice/pet_hello.mp3',
+  './assets/pets/labrador-cartoon.webp','./assets/pets/husky-cartoon.webp','./assets/pets/german-shepherd-cartoon.webp','./assets/pets/trex-plush.webp',
+  './assets/voice/correct.mp3','./assets/voice/retry.mp3','./assets/voice/pet_hello.mp3','./assets/voice/pet_hungry.mp3','./assets/voice/pet_bath.mp3','./assets/voice/pet_play.mp3',
   './assets/voice/eye_rest.mp3','./assets/voice/eye_limit.mp3','./assets/voice/eye_done.mp3',
   './assets/pinyin-v46/k-ke1.mp3','./assets/pinyin-v46/ing-ying1.mp3','./assets/pinyin-v46/ong-zhong1.mp3'
 ];

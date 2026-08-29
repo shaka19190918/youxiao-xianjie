@@ -5,13 +5,13 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 
-BASE = os.environ.get("SMOKE_URL", "http://127.0.0.1:4199")
-OUT = Path(os.environ.get("VISUAL_OUT", ".visual-v46"))
+BASE = os.environ.get("SMOKE_URL", Path("index.html").resolve().as_uri())
+OUT = Path(os.environ.get("VISUAL_OUT", ".visual-v54"))
 OUT.mkdir(exist_ok=True)
 
 with sync_playwright() as playwright:
     executable = Path.home() / "AppData/Local/ms-playwright/chromium-1223/chrome-win64/chrome.exe"
-    browser = playwright.chromium.launch(headless=True, executable_path=str(executable) if executable.exists() else None)
+    browser = playwright.chromium.launch(headless=True, executable_path=str(executable) if executable.exists() else None, args=["--no-proxy-server"])
     context = browser.new_context(viewport={"width": 390, "height": 844})
     context.add_init_script("""
       localStorage.setItem('yxxj_s', JSON.stringify({
@@ -24,7 +24,7 @@ with sync_playwright() as playwright:
     """)
     page = context.new_page()
     page.goto(BASE, wait_until="networkidle")
-    for route in ("dog", "chars", "pinyin"):
+    for route in ("home", "dog", "chars", "pinyin"):
         page.evaluate("route=>showPage(route)", route)
         page.screenshot(path=str(OUT / f"{route}-390.png"), full_page=True)
     page.evaluate("showPage('textbook');textbookSubjectSetV44('数学上册')")
