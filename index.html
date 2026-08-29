@@ -302,7 +302,7 @@ let _ac=null,_pc=new Map();function playLocalSeq(paths,ttsText,onEnd){let i=0,fa
 
 // === 3D DOG images (Pixar-style rendered) ===
 function dogSVG(type,size){size=size||120;
-  const map={golden:'labrador-cartoon.webp',corgi:'corgi-cartoon-v2.webp',husky:'husky-cartoon.webp'};
+  const map={golden:'labrador-cartoon.webp',husky:'husky-cartoon.webp'};
   const f=map[type]||'labrador-cartoon.webp';
   return `<img src="assets/pets/${f}" width="${size}" height="${size}" style="object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.2))" alt="dog">`;
 }
