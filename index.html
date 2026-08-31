@@ -269,6 +269,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 <div id="app">
   <header class="header">
     <div class="logo" id="hLogo">幼小衔接快乐营</div>
+    <nav id="wideNav" aria-label="主要导航"><button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button></nav>
     <span class="pill">💎<span id="pts">0</span></span>
     <span class="pill">🔥<span id="strk">0</span></span>
   </header>
@@ -1080,8 +1081,68 @@ init();
   .subject-art{height:130px}.v54-quick button{min-height:84px}
 }
 @media(max-width:360px){.v54-quick{grid-template-columns:repeat(2,minmax(0,1fr))}.v54-pet{grid-template-columns:82px minmax(0,1fr)}.v54-pet img{width:82px!important;height:82px!important}.v54-pinyin-tabs{grid-template-columns:1fr}}
-@media(min-width:701px){#app{max-width:760px}.v54-home{max-width:700px;margin:0 auto}.v54-hello{padding:28px}.v54-quick button{min-height:108px}}
+@media(min-width:701px){#app{max-width:960px}.v54-hello{padding:24px}.v54-quick button{min-height:96px}}
+@media(min-width:1200px){#app{max-width:1280px}}
 @media(prefers-reduced-motion:reduce){.page,.btn,.dog-display img{animation:none!important;transition:none!important}}
+</style>
+<style id="v57-wide-layout">
+/* v57 横版/宽屏适配：桌面与横屏不再是一条 760px 窄竖栏 */
+#wideNav{display:none}
+@media(min-width:701px){
+  #wideNav{display:flex;align-items:center;gap:6px;flex:0 1 auto;min-width:0}
+  #wideNav button{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px;border:0;border-radius:13px;background:rgba(255,255,255,.22);color:#fff;font:800 14px inherit;white-space:nowrap}
+  #wideNav button:hover{background:rgba(255,255,255,.36)}
+  #wideNav button.on{background:#fff;color:#7658D8}
+  #wideNav button span{font-size:16px}
+  .header{gap:10px}
+  .header .logo{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .main{padding:18px 24px 40px}
+}
+@media(min-width:701px) and (max-width:880px){
+  #wideNav{gap:4px}#wideNav button{padding:0 9px;font-size:0}#wideNav button span{font-size:18px}
+}
+/* 首页两栏：左欢迎 / 右伙伴，今日推荐双列 */
+@media(min-width:901px){
+  .v54-home{grid-template-columns:1.15fr 1fr;align-items:start;gap:16px}
+  .v54-hello{grid-column:1/-1}
+  .v54-home.has-pet .v54-hello{grid-column:1}
+  .v54-home.has-pet .v54-pet{grid-column:2;grid-row:1}
+  .v54-home>.card:not(.v54-pet){grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+  .v54-home>.card:not(.v54-pet)>.card-hd{grid-column:1/-1}
+  .v54-quick{grid-column:1/-1;gap:14px}
+  .v54-quick button{min-height:104px}
+  .v54-parent{grid-column:1/-1}
+}
+/* 宽屏栅格加密，吃掉两侧空白 */
+@media(min-width:901px){
+  .v42-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .v42-char-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+  .v42-pinyin-grid{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .cg{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+  .subject-art{height:170px}
+  .dog-display{width:270px!important;height:270px!important}
+}
+@media(min-width:1200px){
+  .v42-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .v42-char-grid{grid-template-columns:repeat(9,minmax(0,1fr))}
+  .main{padding:20px 32px 44px}
+}
+/* 矮视口（横屏手机 / 横版笔记本窗口）：压缩纵向占位 */
+@media(orientation:landscape) and (max-height:560px){
+  .header{padding:8px 16px;padding-top:max(8px,env(safe-area-inset-top))}
+  .header .logo{font-size:17px}
+  #wideNav button{min-height:34px;padding:0 11px;font-size:13px}
+  .main{padding:12px 22px 28px}
+  .card{padding:15px;border-radius:24px}
+  .subject-art{height:112px}
+  .v54-hello{padding:15px 20px}.v54-hello h1{font-size:clamp(20px,4.2vw,27px)}.v54-hello p{font-size:14px}
+  .v54-stats{margin-top:9px;font-size:14px}
+  .v54-quick button{min-height:78px}
+  .v54-quick span{font-size:26px}
+  .v54-pet img{width:76px!important;height:76px!important}
+  .dog-display{width:200px!important;height:200px!important}
+  .v54-home>.card>div[onclick]{min-height:56px!important;padding:10px!important}
+}
 </style>
 <script>
 (function(){
@@ -1102,7 +1163,7 @@ init();
     document.querySelectorAll('#ct .v42-py').forEach(b=>b.addEventListener('pointerdown',()=>{const label=b.dataset.label,id=b.dataset.id;primeAudio(V46_PINYIN_AUDIO[label]||('assets/pinyin/'+id+'.'+pinyinExtV42(id)))},{once:true,passive:true}));
   }};
 
-  PGS.home.render=function(){const d=S.dog?(DOGS[S.dog.type]||DOGS.labrador):null,lv=dlv(),st=DST[lv],name=S._setup.name||'小朋友';document.getElementById('ct').innerHTML=`<div class="v54-home"><section class="v54-hello"><h1>你好，${name}！</h1><p>今天完成一个小目标，就去陪伙伴玩。</p><div class="v54-stats"><span>🔥 ${S.strk||0} 天</span><span>💎 ${S.pts||0}</span></div></section>${d?`<section class="card v54-pet"><div>${dogSVG(S.dog.type,96)}</div><div><strong>${d.n}在等你</strong><small>${st.n} · 成长值 ${S.dog.xp||0}</small><button onclick="showPage('dog')">去看看伙伴</button></div></section>`:''}${todayPickCard()}<nav class="v54-quick" aria-label="学习分类"><button onclick="hubGo('yuwen')"><span>📚</span>语文</button><button onclick="hubGo('shuxue')"><span>🔢</span>数学</button><button onclick="hubGo('yingyu')"><span>🔠</span>英语</button><button onclick="hubGo('xingqu')"><span>🎨</span>兴趣</button></nav><button class="v54-parent" onclick="showPage('parent')">👨‍👩‍👧 家长设置与学习报告</button></div>`};
+  PGS.home.render=function(){const d=S.dog?(DOGS[S.dog.type]||DOGS.labrador):null,lv=dlv(),st=DST[lv],name=S._setup.name||'小朋友';document.getElementById('ct').innerHTML=`<div class="v54-home${d?' has-pet':''}"><section class="v54-hello"><h1>你好，${name}！</h1><p>今天完成一个小目标，就去陪伙伴玩。</p><div class="v54-stats"><span>🔥 ${S.strk||0} 天</span><span>💎 ${S.pts||0}</span></div></section>${d?`<section class="card v54-pet"><div>${dogSVG(S.dog.type,96)}</div><div><strong>${d.n}在等你</strong><small>${st.n} · 成长值 ${S.dog.xp||0}</small><button onclick="showPage('dog')">去看看伙伴</button></div></section>`:''}${todayPickCard()}<nav class="v54-quick" aria-label="学习分类"><button onclick="hubGo('yuwen')"><span>📚</span>语文</button><button onclick="hubGo('shuxue')"><span>🔢</span>数学</button><button onclick="hubGo('yingyu')"><span>🔠</span>英语</button><button onclick="hubGo('xingqu')"><span>🎨</span>兴趣</button></nav><button class="v54-parent" onclick="showPage('parent')">👨‍👩‍👧 家长设置与学习报告</button></div>`};
 
   const SUBJ_CAT={
     yuwen:{ic:'📚',n:'语文',items:[['🔤','汉语拼音','声母、韵母与四声','pinyin'],['✏️','识字写字','生活常用字与笔顺','chars'],['📖','分级阅读','短文理解与表达','reading'],['📜','古诗积累','完整诗文与逐句朗读','poems'],['📘','教材同步','统编版目录路线','textbook']]},
@@ -1118,7 +1179,7 @@ init();
     document.getElementById('hLogo').textContent=`${c.ic} ${c.n}`;
   }};
   function learningRoute(id){return ['subj','curriculum','pinyin','chars','reading','poems','math','mathsync','mathlower','timeextra','english','englishsync','sudoku','thinking','science','piano'].includes(id)}
-  function mountDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;document.body.appendChild(dock)}dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)))}
+  function mountDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;document.body.appendChild(dock)}dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)));const wn=document.getElementById('wideNav');if(wn)wn.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)))}
   const oldShow=showPage;showPage=function(id){oldShow(id);mountDock()};
   mountDock();showPage(CP||'home');
 })();
