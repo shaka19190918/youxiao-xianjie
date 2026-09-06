@@ -49,7 +49,9 @@ with sync_playwright() as p:
     assert page.evaluate("S.audio.muted") is True
     page.evaluate("v41ToggleSound(); showPage('dog')")
     assert page.locator(".pet-growth").count() == 1
-    assert page.locator(".pet-listen").count() == 1
+    assert page.locator(".pet-listen").count() == 0
+    assert page.locator(".dog-btn").count() == 3
+    assert "听说话" not in page.locator("#ct").inner_text()
     page.evaluate("fDog()")
     assert page.evaluate("S.dog.hu") == 100
     page.wait_for_timeout(50)
@@ -67,10 +69,16 @@ with sync_playwright() as p:
     assert any("pinyin-v46/k-ke1.mp3" in x for x in played)
     assert any("pinyin-v46/ing-ying1.mp3" in x for x in played)
     assert any("pinyin-v46/ong-zhong1.mp3" in x for x in played)
+    page.evaluate("window.__played=[];playPinyinV42('a2','á');playPinyinV42('yin1','in');playPinyinV42('un1','un')")
+    played = page.evaluate("window.__played")
+    assert any("pinyin-v60/a2.mp3" in x for x in played)
+    assert any("pinyin-v60/yin1.mp3" in x for x in played)
+    assert any("pinyin-v60/wen1.mp3" in x for x in played)
 
     page.evaluate("S._parentAuth=true;showPage('parent')")
     parent_text = page.locator("#ct").inner_text()
     assert "成长岛闯关报告" in parent_text and "教学音频核对" in parent_text
+    assert "课程依据与边界" in parent_text
     assert "学习阶段" not in parent_text
     page.evaluate("v41AuditPlay(0)")
     page.wait_for_timeout(50)

@@ -5,6 +5,7 @@ syllables. Teaching pronunciation remains mapped to the separately verified
 local pinyin asset set in index.html.
 """
 import asyncio
+import argparse
 from pathlib import Path
 
 import edge_tts
@@ -40,15 +41,14 @@ UNITS = [
         ("汉语拼音第六课", "掌握拼写规则并练习拼读"),
         ("汉语拼音第七课", "认识平舌音和整体认读音节"),
         ("汉语拼音第八课", "辨清平舌音和翘舌音"),
-        ("汉语拼音第九课", "认识声母与整体认读音节"),
         ("语文园地三", "综合复习声母、韵母和音节"),
     ],
     [
-        ("汉语拼音第十课", "学习复韵母和声调位置"),
-        ("汉语拼音第十一课", "听辨复韵母并练习拼读"),
-        ("汉语拼音第十二课", "学习复韵母和特殊韵母"),
-        ("汉语拼音第十三课", "学习前鼻韵母"),
-        ("汉语拼音第十四课", "学习后鼻韵母"),
+        ("汉语拼音第九课", "学习复韵母和声调位置"),
+        ("汉语拼音第十课", "听辨复韵母并练习拼读"),
+        ("汉语拼音第十一课", "学习复韵母和特殊韵母"),
+        ("汉语拼音第十二课", "学习前鼻韵母"),
+        ("汉语拼音第十三课", "学习后鼻韵母"),
         ("语文园地四", "完成拼音阶段综合复习"),
     ],
     [
@@ -80,32 +80,47 @@ UNITS = [
 ]
 
 
-async def save(text: str, target: Path) -> None:
-    if target.exists() and target.stat().st_size > 1000:
+async def save(text: str, target: Path, force: bool = False) -> None:
+    if not force and target.exists() and target.stat().st_size > 1000:
         return
     target.parent.mkdir(parents=True, exist_ok=True)
+    temporary = target.with_suffix(target.suffix + ".part")
     for attempt in range(3):
         try:
-            await edge_tts.Communicate(text, VOICE, rate=RATE).save(str(target))
+            temporary.unlink(missing_ok=True)
+            await edge_tts.Communicate(
+                text, VOICE, rate=RATE, connect_timeout=10, receive_timeout=25
+            ).save(str(temporary))
+            temporary.replace(target)
             print(target)
             return
         except Exception:
-            target.unlink(missing_ok=True)
+            temporary.unlink(missing_ok=True)
             if attempt == 2:
                 raise
             await asyncio.sleep(2 + attempt * 2)
 
 
 async def main() -> None:
-    semaphore = asyncio.Semaphore(4)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--force", action="store_true", help="overwrite existing audio")
+    parser.add_argument("--unit", type=int, action="append", help="only regenerate this zero-based unit")
+    parser.add_argument("--lesson", type=int, action="append", help="only regenerate this one-based lesson")
+    args = parser.parse_args()
+    # The public endpoint is more reliable with one request at a time.
+    semaphore = asyncio.Semaphore(1)
 
     async def limited(text: str, target: Path) -> None:
         async with semaphore:
-            await save(text, target)
+            await save(text, target, args.force)
 
     jobs = []
     for unit_index, unit in enumerate(UNITS):
+        if args.unit and unit_index not in args.unit:
+            continue
         for lesson_index, (title, focus) in enumerate(unit, 1):
+            if args.lesson and lesson_index not in args.lesson:
+                continue
             target = Path("assets/textbook") / f"tb_{unit_index:02d}_{lesson_index:02d}.mp3"
             jobs.append(limited(f"{title}。学习重点：{focus}。", target))
     await asyncio.gather(*jobs)

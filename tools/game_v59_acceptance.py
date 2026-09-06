@@ -38,7 +38,7 @@ with sync_playwright() as p:
     """)
     page = migration.new_page()
     page.goto(BASE + "?test=1", wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("document.documentElement.dataset.appVersion === 'v59-grade1-game'", timeout=30000)
+    page.wait_for_function("document.documentElement.dataset.appVersion === 'v60-grade1-audio-audit'", timeout=30000)
     assert page.evaluate("localStorage.getItem('yxxj_s')") is None
     assert page.evaluate("localStorage.getItem('yxxj_dog')") is None
     assert page.evaluate("localStorage.getItem('grade1_island_reset_v1')") == "1"
@@ -54,7 +54,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.goto(BASE + "?test=1", wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v59-grade1-game'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v60-grade1-audio-audit'")
 
     assert page.title() == "一年级成长岛"
     assert page.locator(".g1-map").count() == 1
@@ -136,6 +136,6 @@ with sync_playwright() as p:
 
     errors = [e for e in errors if "pet_voice_map.json" not in e and "ERR_FAILED" not in e]
     assert not errors, errors
-    print("game v59 acceptance: PASS")
+    print("game v60 acceptance: PASS")
     context.close()
     browser.close()

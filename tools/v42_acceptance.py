@@ -82,9 +82,9 @@ with sync_playwright() as p:
 
     page.evaluate("showPage('textbook')")
     assert page.locator(".tb-unit").count() == 9
-    assert page.locator(".tb-lesson").count() == 45
+    assert page.locator(".tb-lesson").count() == 44
     textbook_text = page.locator("#ct").text_content()
-    for label in ["统编版语文", "2024新教材", "1 ɑ o e", "14 ɑng eng ing ong", "秋天", "乌鸦喝水"]:
+    for label in ["统编版语文", "2024新教材", "1 ɑ o e", "2 i u ü y w", "13 ɑng eng ing ong", "秋天", "乌鸦喝水"]:
         assert label in textbook_text, label
     assert "不复制教材课文" in textbook_text
     page.evaluate("playTextbookV43(0,0)")
@@ -118,15 +118,15 @@ with sync_playwright() as p:
     page.evaluate("showPage('pinyin');playPinyinV42('fo2','f');playPinyinV42('a2','á')")
     media = page.evaluate("window.__media")
     assert any("assets/pinyin/fo2.mp3" in x for x in media)
-    assert any("assets/pinyin/a2.wav" in x for x in media)
+    assert any("assets/pinyin-v60/a2.mp3" in x for x in media)
     page.evaluate("window.__media=[];playPinyinV42('ke1','k');playPinyinV42('ying1','ing');playPinyinV42('zhong1','ong')")
     special_media = page.evaluate("window.__media")
     assert special_media == ["assets/pinyin-v46/k-ke1.mp3", "assets/pinyin-v46/ing-ying1.mp3", "assets/pinyin-v46/ong-zhong1.mp3"], special_media
     assert not any("greeting_" in x or "textbook" in x for x in special_media)
 
     page.evaluate("showPage('dog');window.__media=[]")
-    assert page.locator(".pet-listen").count() == 1
-    assert page.locator(".dog-btn").count() == 4
+    assert page.locator(".pet-listen").count() == 0
+    assert page.locator(".dog-btn").count() == 3
     assert page.locator(".pet-stage").count() == 4
     assert page.evaluate("Object.keys(PET_VOICE).length >= 100")
     pet_line = page.evaluate("SPEECH_DATA[3][1][0]")
@@ -135,7 +135,6 @@ with sync_playwright() as p:
     page.wait_for_timeout(10)
     pet_media = page.evaluate("window.__media")
     assert expected_pet in pet_media, (expected_pet, pet_media)
-    assert page.locator(".pet-listen").evaluate("e=>e.getBoundingClientRect().height") >= 60
     assert page.locator(".dog-btn").first.evaluate("e=>e.getBoundingClientRect().height") >= 100
 
     page.evaluate("showPage('chars');playCharV42(0,false)")
@@ -239,9 +238,9 @@ with sync_playwright() as p:
         ...V42_CHARS.map(x=>'assets/chars/u'+x[0].codePointAt(0).toString(16)+'.mp3'),
         ...V42_READINGS.map((_,i)=>'assets/reading/reading_'+String(i+1).padStart(2,'0')+'.mp3'),
         ...V42_MATH.map(q=>'assets/math-v42/question_'+String(q.id).padStart(2,'0')+'.mp3'),
-        ...V42_INITIALS.map(x=>V46_PINYIN_AUDIO[x[0]]||('assets/pinyin/'+x[2]+'.mp3')),
-        ...V42_TONES.map(x=>'assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])),
-        ...V42_FINALS.map(x=>V46_PINYIN_AUDIO[x[0]]||('assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])))
+        ...V42_INITIALS.map(x=>pinyinPathV60(x[2],x[0])),
+        ...V42_TONES.map(x=>pinyinPathV60(x[1],x[0])),
+        ...V42_FINALS.map(x=>pinyinPathV60(x[1],x[0]))
         ,...POEM_COURSE_V6.flatMap(p=>['assets/voice/'+p.key+'_info.mp3',...p.lns.map((_,i)=>'assets/voice/'+p.key+'_l'+(i+1)+(p.key==='poem_yong_e'&&i===0?'.wav':'.mp3'))]),
         ...V43_TEXTBOOK.flatMap((u,ui)=>u.items.map((_,i)=>'assets/textbook/tb_'+String(ui).padStart(2,'0')+'_'+String(i+1).padStart(2,'0')+'.mp3')),
         ...V44_MATH.map(q=>'assets/math-v44/question_'+String(q.id).padStart(2,'0')+'.mp3'),
@@ -274,4 +273,4 @@ with sync_playwright() as p:
     assert page.locator(".g1-map").count() == 1
     context.set_offline(False)
     browser.close()
-    print(f"v59 curriculum acceptance: PASS ({len(routes)} routes, 4 viewports, textbook, pet/pinyin/eye audio, offline reload)")
+    print(f"v60 curriculum acceptance: PASS ({len(routes)} routes, 4 viewports, textbook, pet/pinyin/eye audio, offline reload)")
