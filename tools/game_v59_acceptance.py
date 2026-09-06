@@ -7,6 +7,7 @@ from playwright.sync_api import sync_playwright
 
 sys.stdout.reconfigure(encoding="utf-8")
 BASE = os.environ.get("SMOKE_URL", Path("index.html").resolve().as_uri())
+TEST_URL = BASE + ("&" if "?" in BASE else "?") + "test=1"
 CHROME = Path(os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright\chromium-1223\chrome-win64\chrome.exe"))
 
 
@@ -37,7 +38,7 @@ with sync_playwright() as p:
       localStorage.setItem('yxxj_dog','{"type":"husky","xp":999}');
     """)
     page = migration.new_page()
-    page.goto(BASE + "?test=1", wait_until="domcontentloaded", timeout=30000)
+    page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
     page.wait_for_function("document.documentElement.dataset.appVersion === 'v61-grade1-national-platform'", timeout=30000)
     assert page.evaluate("localStorage.getItem('yxxj_s')") is None
     assert page.evaluate("localStorage.getItem('yxxj_dog')") is None
@@ -53,7 +54,7 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
-    page.goto(BASE + "?test=1", wait_until="domcontentloaded", timeout=30000)
+    page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
     page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v61-grade1-national-platform'")
 
     assert page.title() == "一年级成长岛"
