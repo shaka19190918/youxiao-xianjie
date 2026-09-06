@@ -1,5 +1,13 @@
 # 拼音音频来源与许可
 
+## v61 四声参考音节
+
+`assets/pinyin-v61/` 使用同一套普通话真人录音，并用六组稳定、清晰的完整音节承载四声：`mā/má/mǎ/mà`、`bō/bó/bǒ/bò`、`gē/gé/gě/gè`、`yī/yí/yǐ/yì`、`wū/wú/wǔ/wù`、`yū/yú/yǔ/yù`。界面会明确显示“听完整音节、辨目标韵母与声调”，避免把容易被读成语气词的孤立 `o` 当作可靠教学示范。原始文件来自下述 Chen Wang 真人普通话音节库，路径为 `64k/syllabs/cmn-{音节编号}.mp3`，许可为 CC BY-SA。
+
+## v61 全科题目语音
+
+`assets/curriculum-v61/` 是为原创题目生成并固化在站点内的中文男声朗读。每段音频按界面实际顺序完整朗读题干及全部答案选项，不依赖设备 TTS，也不会朗读文件名、代码或网址。对应文本、文件路径和正确答案记录在 `data/curriculum-audio-checklist-v61.json`，便于发布前逐项核验。
+
 拼音卡片使用真人录制的普通话完整音节音频。v60 的六个单韵母四声统一位于 `assets/pinyin-v60/`，其余示范音节位于 `assets/pinyin/` 与 `assets/pinyin-v46/`，并按需加载。
 
 - 来源：[hugolpz/audio-cmn](https://github.com/hugolpz/audio-cmn)

@@ -10,7 +10,7 @@
 <script src="assets/vendor/hanzi-writer.min.js" defer></script>
 <title>一年级成长岛</title>
 <meta name="application-name" content="一年级成长岛">
-<meta name="app-version" content="v60-grade1-audio-audit">
+<meta name="app-version" content="v61-grade1-national-platform">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -266,6 +266,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 @media(min-width:700px){.v42-char-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-art{height:210px}.dog-display{width:320px!important;height:320px!important}}
 </style>
 <link rel="stylesheet" href="game-v59.css">
+<link rel="stylesheet" href="curriculum-v61.css">
 </head>
 <body>
 <div id="app">
@@ -889,11 +890,11 @@ const V43_TEXTBOOK=[
  {name:'第一单元 · 识字',icon:'✍️',items:[
   ['1 天地人','从生活情境认识常用字','chars'],['2 金木水火土','借助韵文认识数字和自然事物','chars'],['3 口耳目手足','看图识字，认识身体部位','chars'],['4 日月山川','感受象形字与事物形状的联系','chars'],['语文园地一','复习识字方法和书写姿势','chars'],['快乐读书吧：读书真快乐','亲子共读，学习爱护图书','reading']]},
  {name:'第二单元 · 汉语拼音',icon:'🔤',items:[
-  ['1 ɑ o e','听辨三个单韵母及四声','pinyin'],['2 i u ü y w','听辨单韵母，认识整体认读音节','pinyin'],['3 b p m f','辨清送气与不送气，练习拼读','pinyin'],['4 d t n l','听辨声母，练习两拼音节','pinyin'],['语文园地二','复习第一阶段拼音和生活识字','pinyin']]},
+  ['1 ɑ o e','听辨三个单韵母及四声','pinyin'],['2 i u ü','听辨三个单韵母及四声','pinyin'],['3 b p m f','辨清送气与不送气，练习拼读','pinyin'],['4 d t n l','听辨声母，练习两拼音节','pinyin'],['语文园地二','复习第一阶段拼音和生活识字','pinyin']]},
  {name:'第三单元 · 汉语拼音',icon:'🗣️',items:[
   ['5 g k h','练习声母与单韵母相拼','pinyin'],['6 j q x','掌握与 ü 相拼时省写两点','pinyin'],['7 z c s','认识平舌音和整体认读音节','pinyin'],['8 zh ch sh r','辨清平翘舌音','pinyin'],['语文园地三','综合复习声母、韵母和音节','pinyin']]},
  {name:'第四单元 · 汉语拼音',icon:'🎵',items:[
-  ['9 ɑi ei ui','学习前复韵母和声调位置','pinyin'],['10 ɑo ou iu','听辨复韵母，练习拼读','pinyin'],['11 ie üe er','学习特殊韵母 er','pinyin'],['12 ɑn en in un ün','学习前鼻韵母','pinyin'],['13 ɑng eng ing ong','学习后鼻韵母','pinyin'],['语文园地四','完成拼音阶段综合复习','pinyin']]},
+  ['9 y w','认识声母 y、w 和整体认读音节 yi、wu、yu','pinyin'],['10 ɑi ei ui','学习前复韵母和声调位置','pinyin'],['11 ɑo ou iu','听辨复韵母，练习拼读','pinyin'],['12 ie üe er','学习复韵母和特殊韵母 er','pinyin'],['13 ɑn en in un ün','学习前鼻韵母','pinyin'],['14 ɑng eng ing ong','学习后鼻韵母','pinyin'],['语文园地四','完成拼音阶段综合复习','pinyin']]},
  {name:'第五单元 · 阅读',icon:'📖',items:[
   ['1 秋天','借助插图和关键词了解自然变化','reading'],['2 江南','感受诗歌节奏和画面','poems'],['3 雪地里的小画家','提取不同动物脚印的信息','reading'],['4 四季','联系生活表达喜欢的季节','reading'],['语文园地五','积累词语，练习朗读和表达','reading']]},
  {name:'第六单元 · 识字',icon:'🧠',items:[
@@ -1172,11 +1173,11 @@ init();
   window.setPinyinPartV54=function(part){pinyinPart=part;showPage('pinyin')};
   PGS.pinyin={title:'🔤 汉语拼音',render:function(){
     const parts={
-      tones:['六个单韵母的四声',V42_TONES.map((x,i)=>`<button class="v42-py" data-id="${x[1]}" data-label="${x[0]}" onclick="playPinyinV42('${x[1]}','${x[0]}')">${x[0]}<small>真人完整音节 · 第 ${i%4+1} 声</small></button>`).join('')],
+      tones:['六个单韵母的四声',V42_TONES.map((x,i)=>`<button class="v42-py" data-id="${x[1]}" data-label="${x[0]}" onclick="playPinyinV42('${x[1]}','${x[0]}')">${x[0]}<small>听 ${pinyinDemoV60(x[1],x[0])} · 辨第 ${i%4+1} 声</small></button>`).join('')],
       initials:['声母听辨：从完整示范音节中找开头',V42_INITIALS.map(x=>`<button class="v42-py" data-id="${x[2]}" data-label="${x[0]}" onclick="playPinyinV42('${x[2]}','${x[0]}')">${x[0]}<small>听 ${pinyinDemoV60(x[2],x[0])} · 找开头声母</small></button>`).join('')],
       finals:['韵母听辨：从完整示范音节中找韵母',V42_FINALS.map(x=>`<button class="v42-py" data-id="${x[1]}" data-label="${x[0]}" onclick="playPinyinV42('${x[1]}','${x[0]}')">${x[0]}<small>听 ${pinyinDemoV60(x[1],x[0])} · 找韵母</small></button>`).join('')]
     };const part=parts[pinyinPart]||parts.tones;
-    document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('curriculum')">← <span>返回</span></button><div class="card"><div class="child-task-title">汉语拼音</div><div class="subject-art zh" role="img" aria-label="拼音学习插图"></div><div class="v54-pinyin-tip">👂 四声使用同一位普通话真人的完整音节。声母、韵母也放进完整示范音节里听辨，不再把 kē、yīng 等音节冒充孤立的 k、ing。</div><div class="v54-pinyin-tabs"><button class="${pinyinPart==='tones'?'on':''}" onclick="setPinyinPartV54('tones')">四声</button><button class="${pinyinPart==='initials'?'on':''}" onclick="setPinyinPartV54('initials')">声母</button><button class="${pinyinPart==='finals'?'on':''}" onclick="setPinyinPartV54('finals')">韵母</button></div><section class="v54-pinyin-section"><h3>${part[0]}</h3><div class="v42-pinyin-grid">${part[1]}</div></section><div class="v54-local-audio">🔒 本地真人完整音节 · 不使用设备文字转语音</div></div>`;
+    document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('curriculum')">← <span>返回</span></button><div class="card"><div class="child-task-title">汉语拼音</div><div class="subject-art zh" role="img" aria-label="拼音学习插图"></div><div class="v54-pinyin-tip">👂 每个韵母和声调都放在清晰的完整音节里听：例如 ā 听 mā 中的 ɑ，ō 听 bō 中的 o。声母、韵母同样只听辨目标音，不把完整音节冒充孤立音素。</div><div class="v54-pinyin-tabs"><button class="${pinyinPart==='tones'?'on':''}" onclick="setPinyinPartV54('tones')">四声</button><button class="${pinyinPart==='initials'?'on':''}" onclick="setPinyinPartV54('initials')">声母</button><button class="${pinyinPart==='finals'?'on':''}" onclick="setPinyinPartV54('finals')">韵母</button></div><section class="v54-pinyin-section"><h3>${part[0]}</h3><div class="v42-pinyin-grid">${part[1]}</div></section><div class="v54-local-audio">🔒 本地真人完整音节 · 不使用设备文字转语音</div></div>`;
     document.querySelectorAll('#ct .v42-py').forEach(b=>b.addEventListener('pointerdown',()=>{const label=b.dataset.label,id=b.dataset.id;primeAudio(pinyinPathV60(id,label))},{once:true,passive:true}));
   }};
 
@@ -1201,6 +1202,7 @@ init();
   mountDock();showPage(CP||'home');
 })();
 </script>
+<script src="curriculum-v61.js"></script>
 <script src="game-v59.js"></script>
 </body>
 </html>

@@ -1,8 +1,9 @@
-/* 一年级成长岛 v60：轻量、离线优先的应用外壳。 */
-const CACHE='grade1-island-v60';
-const TONE_AUDIO=['a','o','e','i','u','v'].flatMap(v=>[1,2,3,4].map(t=>`./assets/pinyin-v60/${v}${t}.mp3`));
+/* 一年级成长岛 v61：全科清单与已核验拼音的离线优先应用外壳。 */
+const CACHE='grade1-island-v61';
+const TONE_AUDIO=['ma','bo','ge','yi','wu','yu'].flatMap(v=>[1,2,3,4].map(t=>`./assets/pinyin-v61/${v}${t}.mp3`));
 const PRECACHE=[
   './','./index.html','./manifest.webmanifest','./game-v59.css','./game-v59.js',
+  './curriculum-v61.css','./curriculum-v61.js',
   './assets/vendor/hanzi-writer.min.js','./pet_voice_map.json',
   './assets/voice/correct.mp3','./assets/voice/retry.mp3','./assets/voice/greeting_morning.mp3',
   './assets/voice/pet_hello.mp3','./assets/voice/eye_rest.mp3','./assets/voice/eye_limit.mp3','./assets/voice/eye_done.mp3',

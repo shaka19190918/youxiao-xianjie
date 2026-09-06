@@ -1,4 +1,4 @@
-/* 一年级成长岛 v60：统一三星关卡、拼音音节审校、区域解锁与间隔复习。 */
+/* 一年级成长岛 v61：国家平台全科目录、统一三星关卡、拼音审校与间隔复习。 */
 (function(){
   'use strict';
 
@@ -8,11 +8,14 @@
     start:{name:'起点广场',icon:'🏝️',desc:'和伙伴一起出发',need:0,color:'#ffd45c'},
     chinese:{name:'语文森林',icon:'🌳',desc:'拼音、识字、阅读和古诗',need:3,color:'#52bf78'},
     math:{name:'数学城堡',icon:'🏰',desc:'一年级上册、下册和时间拓展',need:3,color:'#49b8e8'},
+    life:{name:'生活实践营',icon:'🌈',desc:'道德与法治、劳动和体育健康',need:12,color:'#f4a63d'},
     english:{name:'英语港湾',icon:'⛵',desc:'听标准英语，完成听辨',need:18,color:'#ff8b5d'},
-    thinking:{name:'思维山谷',icon:'🧩',desc:'规律、数独和专注挑战',need:36,color:'#9b75e8'},
+    science:{name:'科学探索站',icon:'🔬',desc:'观察、实验、材料和生命',need:24,color:'#32b7a4'},
+    arts:{name:'艺术剧场',icon:'🎨',desc:'音乐、美术和综合艺术',need:36,color:'#bd76e8'},
+    thinking:{name:'思维山谷',icon:'🧩',desc:'规律、数独和专注挑战',need:48,color:'#7975e8'},
     interest:{name:'兴趣乐园',icon:'🎡',desc:'钢琴、科普和运动任务',need:60,color:'#ff6fae'}
   };
-  const REGION_ORDER=['start','chinese','math','english','thinking','interest'];
+  const REGION_ORDER=['start','chinese','math','life','english','science','arts','thinking','interest'];
   let LEVELS=[],LEVEL_BY_ID={},g1CurrentRegion='start',g1ActiveLevelId='',g1Heard={},g1FocusExpected=1,g1PianoProgress=[],g1SportTimer=null,g1ReviewIds=[],g1RegionPages={};
 
   function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -47,7 +50,6 @@
       ]));
     });
     const tb=V43_TEXTBOOK.flatMap((u,ui)=>u.items.map((x,i)=>({x,ui,i,unit:u.name})));
-    tb.push({x:['拼音总复习','听辨声母、韵母和整体认读音节','pinyin'],ui:4,i:5,unit:'第四单元 · 汉语拼音',key:'pinyin-review'});
     chunks(tb,3).forEach((grp,gi)=>{
       const tasks=grp.map((e,i)=>{
         const key=e.key||(e.ui+'_'+e.i);
@@ -76,6 +78,27 @@
     const science=[['植物生长最需要哪一种自然条件？',['阳光','玩具','电视','糖果'],'阳光'],['下雨时，哪一种物品能帮我们挡雨？',['雨伞','铅笔','积木','皮球'],'雨伞'],['看到电源插座，正确做法是什么？',['不触碰并告诉大人','用手试一试','塞进小玩具','泼一点水'],'不触碰并告诉大人']];
     out.push(level('interest-science','interest','生活科普','🔬',science.map((x,i)=>choice('science_'+i,i?'实践星':'听懂星',x[0],x[1],x[2],'assets/voice/correct.mp3','science_'+i))));
     out.push(level('interest-sport','interest','运动任务','🤸',['开合跳','高抬腿','原地踏步'].map((name,i)=>({id:'sport_'+i,label:i?'实践星':'听懂星',prompt:'跟着计时完成：'+name,type:'sport',seconds:10,key:'sport_'+i}))));
+
+    // 新增学科采用同一套可验证的三星闭环。语文、数学、英语继续使用上面的专项题库。
+    if(typeof CURRICULUM_MANIFEST_V1!=='undefined'){
+      const existing=new Set(['chinese','math','english']);
+      CURRICULUM_MANIFEST_V1.subjects.filter(s=>!existing.has(s.id)).forEach((s,si)=>{
+        const subjectActivities=s.terms.flatMap(t=>t.units.map(u=>u.activity)).filter(Boolean);
+        s.terms.forEach((t,ti)=>{
+          const unitNames=t.units.map(u=>u.name);
+          t.units.forEach((u,ui)=>{
+            if(!u.check||!u.activity)return;
+            const prefix='curr-'+s.id+'-'+t.id+'-'+ui;
+            const audio=n=>'assets/curriculum-v61/'+s.id+'-'+t.id+'-'+String(ui+1).padStart(2,'0')+'-'+n+'.mp3';
+            out.push(level(prefix,s.region,u.name,s.icon,[
+              choice(prefix+'-listen','听懂星','听一听，本关学习的是哪个单元？',uniqueOptions(u.name,unitNames,si*101+ti*19+ui),u.name,audio(1),prefix+'-listen'),
+              choice(prefix+'-practice','实践星','哪一项活动属于本关的真实学习任务？',uniqueOptions(u.activity,subjectActivities,si*109+ti*23+ui),u.activity,audio(2),prefix+'-practice'),
+              choice(prefix+'-check','巩固星',u.check.q,u.check.o,u.check.a,audio(3),prefix+'-check')
+            ]));
+          });
+        });
+      });
+    }
     return out;
   }
 
@@ -110,24 +133,38 @@
     s.tasks[i]=true;s.stars=s.tasks.filter(Boolean).length;s.attempts=(s.attempts||0)+1;
     if(!g.rewardLedger[key]){g.rewardLedger[key]=Date.now();S.pts=(S.pts||0)+3}
     if(s.stars===3&&!s.completedAt){s.completedAt=Date.now();g.rewardLedger[l.id+':complete']=s.completedAt;if(S.dog){const old=dlv();S.dog.xp=(S.dog.xp||0)+12;S.dog.tasks=(S.dog.tasks||0)+1;S.dog.en=Math.min(100,(S.dog.en||0)+8);if(dlv()>old)setTimeout(()=>toast('伙伴升级啦！'),400)}const list=regionLevels(l.region),idx=list.findIndex(x=>x.id===l.id),next=list[idx+1];g.activeLevel=next?next.id:(nextLevel()?.id||l.id)}
-    R();saveDog();up();return true;
+    R();saveDog();up();starPetPulse(l,i);return true;
   }
-  function petReply(){
+  function starPetPulse(l,i){
+    if(!S.dog||document.querySelector('.g1-star-pet'))return;
+    const pet=PETS_V6[S.dog.type]||PETS_V6.labrador,el=document.createElement('div');el.className='g1-star-pet';
+    el.innerHTML=`${petImageV6(S.dog.type,64,false)}<span><b>得到第 ${i+1} 颗星！</b><small>${pet.n}也开心地跳起来</small></span>`;
+    document.body.appendChild(el);setTimeout(()=>el.remove(),1450);
+  }
+  function petReply(l){
     if(!S.dog||typeof SPEECH_DATA==='undefined')return;
-    const pool=SPEECH_DATA[3][1],g=game(),recent=g.petResponseHistory.slice(-3),available=pool.map((text,id)=>({text,id})).filter(x=>!recent.includes(x.id)),pick=available[Math.floor(Math.random()*available.length)]||{text:pool[0],id:0};
+    const pool=SPEECH_DATA[3][1],g=game(),recent=g.petResponseHistory.slice(-3),offset=Math.max(0,REGION_ORDER.indexOf(l?.region))*3,ordered=pool.map((_,n)=>(offset+n)%pool.length),available=ordered.filter(id=>!recent.includes(id)),id=available[0]??0,pick={text:pool[id],id};
     g.petResponseHistory.push(pick.id);g.petResponseHistory=g.petResponseHistory.slice(-3);R();
     setTimeout(()=>speakPet(pick.text),250);
+    return {text:pick.text,action:(l&&({chinese:'wag',math:'bounce',life:'heart',english:'sway',science:'look',arts:'dance',thinking:'spin',interest:'bounce'}[l.region]))||'wag'};
   }
 
   function warmRegion(id){const assets=regionLevels(id).slice(0,2).flatMap(l=>l.tasks.map(t=>t.audio).filter(Boolean));try{navigator.serviceWorker?.ready.then(reg=>(reg.active||navigator.serviceWorker.controller)?.postMessage({type:'prewarm-assets',assets}))}catch(_){}}
   window.g1OpenRegion=function(id){if(!regionUnlocked(id))return toast('再收集一些星星，就能来这里');g1CurrentRegion=id;warmRegion(id);showPage('region')};
   window.g1RegionPage=function(delta){const ls=regionLevels(g1CurrentRegion),max=Math.max(0,Math.ceil(ls.length/8)-1),current=Number(g1RegionPages[g1CurrentRegion]||0);g1RegionPages[g1CurrentRegion]=Math.max(0,Math.min(max,current+delta));PGS.region.render();window.scrollTo(0,0)};
   window.g1StartLevel=function(id){if(!levelUnlocked(id))return toast('先完成前一关');g1ActiveLevelId=id;game().activeLevel=id;g1Heard={};R();showPage('level')};
+  window.g1StartCurriculumLevel=function(subjectId,termId,unitIndex){
+    if(['chinese','math','english'].includes(subjectId))return false;
+    const id='curr-'+subjectId+'-'+termId+'-'+unitIndex,l=LEVEL_BY_ID[id];if(!l)return false;
+    if(!regionUnlocked(l.region)){toast('先在成长地图收集 '+REGION_META[l.region].need+' 颗星');g1CurrentRegion=l.region;showPage('home');return true}
+    if(!levelUnlocked(id)){toast('请先完成这个区域前面的关卡');g1CurrentRegion=l.region;showPage('region');return true}
+    g1StartLevel(id);return true;
+  };
   window.g1Continue=function(){if(dueReviews().length)return showPage('review');const n=nextLevel();if(n)g1StartLevel(n.id);else toast('所有关卡都完成啦！')};
   window.g1PlayTaskAudio=function(){
     const cur=taskAt();if(!cur||!cur.task.audio)return;
-    const btn=document.getElementById('g1Listen'),fb=document.getElementById('g1Feedback');if(btn){btn.disabled=true;btn.textContent='正在听…'}
-    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=()=>{g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 已听完，可以作答'}if(fb)fb.textContent='听完啦，现在选答案'};a.onerror=()=>{if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}if(fb)fb.textContent='没有听清前不能得星';};const p=a.play();if(p&&p.catch)p.catch(()=>a.onerror())}catch(_){if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}}
+    const btn=document.getElementById('g1Listen'),fb=document.getElementById('g1Feedback');if(btn){btn.disabled=true;btn.textContent='正在听题目和选项…'}
+    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=()=>{g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 题目和选项已听完'}if(fb)fb.textContent='听完啦，现在选答案'};a.onerror=()=>{if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}if(fb)fb.textContent='没有听清前不能得星';};const p=a.play();if(p&&p.catch)p.catch(()=>a.onerror())}catch(_){if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}}
   };
   window.g1AnswerTask=function(optionIndex){
     const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
@@ -149,7 +186,7 @@
 
   function renderTask(cur){
     const t=cur.task,starLabel=labelForTask(cur.index),heard=g1Heard[cur.level.id+'-'+cur.index];let body='';
-    if(t.type==='choice')body=`${t.audio?`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 已听完，可以作答':'🔊 先完整听一遍'}</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerTask(${i})">${esc(x)}</button>`).join('')}</div>`;
+    if(t.type==='choice')body=`${t.audio?`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 题目和选项已听完':'🔊 听题目和全部选项'}</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerTask(${i})">${esc(x)}</button>`).join('')}</div>`;
     else if(t.type==='trace')body=`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 已听完，可以描红':'🔊 先听这个字'}</button><button class="g1-next-task" style="width:100%" onclick="g1BeginTrace()">✏️ 打开田字格描红</button>`;
     else if(t.type==='focus')body=`<button class="g1-next-task" style="width:100%" onclick="g1FocusStart()">🎯 开始九宫格</button>`;
     else if(t.type==='piano'){g1PianoProgress=[];body=`<p class="g1-task-tip">目标：${esc(t.seq.map(n=>['Do','Re','Mi'][n]).join(' · '))}</p><div class="g1-piano-keys">${['Do','Re','Mi'].map((x,i)=>`<button onclick="g1PianoTap(${i})">${x}</button>`).join('')}</div>`}
@@ -167,7 +204,7 @@
   PGS.level={title:'⭐ 三星闯关',render:function(){
     const l=LEVEL_BY_ID[g1ActiveLevelId]||nextLevel();if(!l)return PGS.home.render();g1ActiveLevelId=l.id;const s=levelState(l.id),cur=taskAt();document.getElementById('ct').innerHTML=`<main class="g1-level-page"><header class="g1-page-head"><button class="g1-back" onclick="g1CurrentRegion='${l.region}';showPage('region')" aria-label="返回关卡列表">←</button><div><h1>${l.icon} ${esc(l.title)}</h1><p>${REGION_META[l.region].name}</p></div></header><section class="g1-level-hero"><div class="g1-level-hero-top"><h2>收集三星</h2><strong>${s.stars} / 3</strong></div><div class="g1-star-track">${renderStars(s)}</div></section><section class="g1-task">${cur?renderTask(cur):`<div class="g1-task-done"><div class="big">🎉</div><h3>三星通关！</h3><button class="g1-next-task" onclick="g1ShowCelebration(LEVEL_BY_ID['${l.id}'])">看看伙伴</button></div>`}</section></main>`;
   }};
-  window.g1ShowCelebration=function(l){if(!l)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div>${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}<h2>三星通关！</h2><p>${pet?pet.n+'为你欢呼！':'你完成了三个真实任务！'}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap);petReply()};
+  window.g1ShowCelebration=function(l){if(!l)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),reply=petReply(l),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div><div class="g1-pet-action ${reply?.action||'wag'}">${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}</div><h2>三星通关！</h2><p>${reply?esc(reply.text):(pet?pet.n+'为你欢呼！':'你完成了三个真实任务！')}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap)};
 
   function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div><h3>${esc(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${esc(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
   window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;v42Play(q.task.audio,'复习音频没有加载，请重试')};
@@ -187,7 +224,7 @@
   const oldParentRender=PGS.parent.render;
   PGS.parent.render=function(){oldParentRender();if(!S._parentAuth)return;const g=game(),done=Object.values(g.levels).filter(x=>x.stars===3).length,stars=totalStars(),due=dueReviews().length,weak=Object.values(g.reviewQueue).sort((a,b)=>(b.lapses||0)-(a.lapses||0)).slice(0,3);const first=document.querySelector('#ct>.card');if(first)first.insertAdjacentHTML('afterend',`<section class="card" id="g1ParentReport" style="margin-top:14px"><div class="card-hd"><span class="ic">🗺️</span><h2>成长岛闯关报告</h2></div><div class="parent-stats"><div class="pstat"><div class="ps-v">${stars}</div><div class="ps-l">真实星星</div></div><div class="pstat"><div class="ps-v">${done}</div><div class="ps-l">三星关卡</div></div><div class="pstat"><div class="ps-v" style="color:${due?'#d86632':'#3a9d55'}">${due}</div><div class="ps-l">到期复习</div></div><div class="pstat"><div class="ps-v">${Object.keys(g.reviewQueue).length}</div><div class="ps-l">复习队列</div></div></div><p style="font-size:15px;line-height:1.7">${weak.length?'近期需要多练：'+weak.map(x=>esc(x.title)).join('、'):'暂时没有薄弱知识点。'} 星星只来自听辨、答题、描红或验证过的任务，不能手动补发。</p><button class="btn b3" style="width:100%;min-height:54px" onclick="showPage('curriculum')">预览完整一年级课程</button></section>`)};
   const parentWithGameReport=PGS.parent.render;
-  PGS.parent.render=function(){parentWithGameReport();if(!S._parentAuth)return;const report=document.getElementById('g1ParentReport');if(report)report.insertAdjacentHTML('afterend',`<section class="card" id="g1SourceReport" style="margin-top:14px"><div class="card-hd"><span class="ic">📚</span><h2>课程依据与边界</h2></div><p style="font-size:15px;line-height:1.75">同步范围依据教育部2022年课程标准、2024年国家教学用书目录和国家中小学智慧教育平台的一年级目录。题目为原创练习，不复制教材正文；时间、数独、钢琴和运动明确作为课外拓展。</p><div style="display:grid;gap:8px"><a class="btn b3" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html">教育部课程标准</a><a class="btn b2" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202408/W020240805496325238752.pdf">2024国家教学用书目录</a></div></section>`)};
+  PGS.parent.render=function(){parentWithGameReport();if(!S._parentAuth)return;const report=document.getElementById('g1ParentReport');if(report)report.insertAdjacentHTML('afterend',`<section class="card" id="g1SourceReport" style="margin-top:14px"><div class="card-hd"><span class="ic">📚</span><h2>课程依据与边界</h2></div><p style="font-size:15px;line-height:1.75">同步范围按国家中小学智慧教育平台当前一年级的10个学科入口核对，并以教育部课程标准和教学用书目录限定能力范围。写字并入语文；体育使用水平一；艺术综合和劳动按平台当前仅列上册。题目、插图与活动均为原创，不复制教材正文或受保护音视频。时间、数独、钢琴和额外运动为课外拓展，不计入教材同步完成率。</p><div style="display:grid;gap:8px"><a class="btn b4" target="_blank" rel="noopener" href="https://basic.smartedu.cn/syncClassroom/auto">国家中小学智慧教育平台</a><a class="btn b3" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html">教育部课程标准</a><a class="btn b2" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202408/W020240805496325238752.pdf">2024国家教学用书目录</a></div></section>`)};
 
   function mountGameDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';document.body.appendChild(dock)}dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🗺️</span>地图</button><button data-route="adventure" onclick="showPage('adventure')"><span>⭐</span>闯关</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="review" onclick="showPage('review')"><span>📦</span>复习</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;const active=['level','region'].includes(CP)?'adventure':CP;dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===active));const wide=document.getElementById('wideNav');if(wide)wide.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===active))}
   const baseShow=showPage;showPage=function(id){if(g1SportTimer&&id!=='level'){clearInterval(g1SportTimer);g1SportTimer=null}baseShow(id);mountGameDock()};
@@ -202,6 +239,6 @@
     dueNow(){Object.values(game().reviewQueue).forEach(x=>x.dueAt=Date.now()-1);R()},
     game
   };
-  document.documentElement.dataset.appVersion='v60-grade1-audio-audit';
+  document.documentElement.dataset.appVersion='v61-grade1-national-platform';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

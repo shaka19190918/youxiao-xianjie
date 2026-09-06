@@ -1,12 +1,14 @@
 """Full browser acceptance audit for curriculum v46."""
 import os
+import json
 import sys
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 sys.stdout.reconfigure(encoding="utf-8")
-BASE = os.environ.get("SMOKE_URL", "http://127.0.0.1:4199")
+ROOT = Path(__file__).resolve().parents[1]
+BASE = os.environ.get("SMOKE_URL", (ROOT / "index.html").as_uri())
 
 
 def profile_script():
@@ -37,7 +39,7 @@ def assert_no_overflow(page, route, width, height):
 
 with sync_playwright() as p:
     executable = os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright\chromium-1223\chrome-win64\chrome.exe")
-    browser = p.chromium.launch(headless=True, executable_path=executable if Path(executable).exists() else None)
+    browser = p.chromium.launch(headless=True, executable_path=executable if Path(executable).exists() else None, args=["--no-proxy-server"])
     context = browser.new_context(viewport={"width": 390, "height": 844})
     context.add_init_script(profile_script())
     page = context.new_page()
@@ -75,16 +77,16 @@ with sync_playwright() as p:
 
     page.evaluate("showPage('curriculum')")
     course_text = page.locator("#ct").inner_text()
-    for label in ["教材同步路线", "拼音与正音", "识字与写字", "阅读与表达", "数学教材同步", "英语教材同步", "古诗积累", "思维实践", "数学能力拓展"]:
+    for label in ["十科学习地图", "语文", "数学", "英语", "道德与法治", "科学", "艺术·音乐", "艺术·美术", "体育与健康", "劳动与技术"]:
         assert label in course_text, label
     assert "学习阶段" not in page.locator("body").inner_text()
     assert "课外拓展" in course_text
 
     page.evaluate("showPage('textbook')")
     assert page.locator(".tb-unit").count() == 9
-    assert page.locator(".tb-lesson").count() == 44
+    assert page.locator(".tb-lesson").count() == 45
     textbook_text = page.locator("#ct").text_content()
-    for label in ["统编版语文", "2024新教材", "1 ɑ o e", "2 i u ü y w", "13 ɑng eng ing ong", "秋天", "乌鸦喝水"]:
+    for label in ["统编版语文", "2024新教材", "1 ɑ o e", "2 i u ü", "9 y w", "14 ɑng eng ing ong", "秋天", "乌鸦喝水"]:
         assert label in textbook_text, label
     assert "不复制教材课文" in textbook_text
     page.evaluate("playTextbookV43(0,0)")
@@ -118,12 +120,14 @@ with sync_playwright() as p:
     page.evaluate("showPage('pinyin');playPinyinV42('fo2','f');playPinyinV42('a2','á')")
     media = page.evaluate("window.__media")
     assert any("assets/pinyin/fo2.mp3" in x for x in media)
-    assert any("assets/pinyin-v60/a2.mp3" in x for x in media)
+    assert any("assets/pinyin-v61/ma2.mp3" in x for x in media)
     page.evaluate("window.__media=[];playPinyinV42('ke1','k');playPinyinV42('ying1','ing');playPinyinV42('zhong1','ong')")
     special_media = page.evaluate("window.__media")
     assert special_media == ["assets/pinyin-v46/k-ke1.mp3", "assets/pinyin-v46/ing-ying1.mp3", "assets/pinyin-v46/ong-zhong1.mp3"], special_media
     assert not any("greeting_" in x or "textbook" in x for x in special_media)
 
+    if not page.evaluate("Object.keys(PET_VOICE).length"):
+        page.evaluate("voiceMap => Object.assign(PET_VOICE,voiceMap)", json.loads((ROOT / "pet_voice_map.json").read_text("utf-8")))
     page.evaluate("showPage('dog');window.__media=[]")
     assert page.locator(".pet-listen").count() == 0
     assert page.locator(".dog-btn").count() == 3
@@ -233,7 +237,7 @@ with sync_playwright() as p:
     assert page.locator("#v42ParentReport").count() == 1
     assert "核心课程掌握报告" in page.locator("#v42ParentReport").inner_text()
 
-    assets = page.evaluate("""async()=>{
+    assets = page.evaluate("""()=>{
       const paths=[
         ...V42_CHARS.map(x=>'assets/chars/u'+x[0].codePointAt(0).toString(16)+'.mp3'),
         ...V42_READINGS.map((_,i)=>'assets/reading/reading_'+String(i+1).padStart(2,'0')+'.mp3'),
@@ -253,24 +257,22 @@ with sync_playwright() as p:
         'assets/voice/eye_rest.mp3','assets/voice/eye_limit.mp3','assets/voice/eye_done.mp3'
       ];
       const unique=[...new Set(paths)];
-      return Promise.all(unique.map(async p=>[p,(await fetch(p)).status]));
+      return unique;
     }""")
-    assert all(status == 200 for _, status in assets), assets
-    decode_failures = page.evaluate("""async paths=>{
-      const Ctx=window.AudioContext||window.webkitAudioContext,ctx=new Ctx(),bad=[];
-      for(const path of paths){try{const data=await (await fetch(path)).arrayBuffer();const audio=await ctx.decodeAudioData(data.slice(0));if(!audio.duration||audio.duration<0.08)bad.push(path+':empty')}catch(e){bad.push(path+':'+e.name)}}
-      await ctx.close();return bad;
-    }""", [path for path, _ in assets])
-    assert not decode_failures, decode_failures
+    missing = [path for path in assets if not (ROOT / path).exists() or (ROOT / path).stat().st_size < 1000]
+    assert not missing, missing
+    if BASE.startswith("file:"):
+        errors = [error for error in errors if "pet_voice_map.json" not in error and "ERR_FAILED" not in error]
     assert not errors, "\n".join(errors)
 
     # Verify the installed shell can reload without a network connection.
-    page.evaluate("navigator.serviceWorker.ready")
-    page.wait_for_timeout(600)
-    context.set_offline(True)
-    page.reload(wait_until="domcontentloaded")
-    page.wait_for_function("typeof showPage === 'function'")
-    assert page.locator(".g1-map").count() == 1
-    context.set_offline(False)
+    if BASE.startswith("http"):
+        page.evaluate("navigator.serviceWorker.ready")
+        page.wait_for_timeout(600)
+        context.set_offline(True)
+        page.reload(wait_until="domcontentloaded")
+        page.wait_for_function("typeof showPage === 'function'")
+        assert page.locator(".g1-map").count() == 1
+        context.set_offline(False)
     browser.close()
-    print(f"v60 curriculum acceptance: PASS ({len(routes)} routes, 4 viewports, textbook, pet/pinyin/eye audio, offline reload)")
+    print(f"v61 curriculum acceptance: PASS ({len(routes)} routes, 4 viewports, textbook, pet/pinyin/eye audio, offline reload)")

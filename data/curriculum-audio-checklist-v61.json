@@ -1,0 +1,1406 @@
+[
+  {
+    "levelId": "curr-morality-upper-0",
+    "region": "life",
+    "title": "第一单元·我是小学生啦",
+    "taskId": "curr-morality-upper-0-listen",
+    "audio": "assets/curriculum-v61/morality-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·过好校园生活。选项2，第一单元·我是小学生啦。选项3，第四单元·我们讲文明。选项4，第三单元·养成良好习惯。请选出正确答案。",
+    "answer": "第一单元·我是小学生啦"
+  },
+  {
+    "levelId": "curr-morality-upper-0",
+    "region": "life",
+    "title": "第一单元·我是小学生啦",
+    "taskId": "curr-morality-upper-0-practice",
+    "audio": "assets/curriculum-v61/morality-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，礼貌交往。选项2，认识校园并遵守安全规则。选项3，文明排队。选项4，整理书包并安排作息。请选出正确答案。",
+    "answer": "认识校园并遵守安全规则"
+  },
+  {
+    "levelId": "curr-morality-upper-0",
+    "region": "life",
+    "title": "第一单元·我是小学生啦",
+    "taskId": "curr-morality-upper-0-check",
+    "audio": "assets/curriculum-v61/morality-upper-01-3.mp3",
+    "text": "放学回家怎样更安全？选项1，按约定路线和家人同行。选项2，独自去陌生地方。选项3，追逐车辆。选项4，边走边看屏幕。请选出正确答案。",
+    "answer": "按约定路线和家人同行"
+  },
+  {
+    "levelId": "curr-morality-upper-1",
+    "region": "life",
+    "title": "第二单元·过好校园生活",
+    "taskId": "curr-morality-upper-1-listen",
+    "audio": "assets/curriculum-v61/morality-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·我们讲文明。选项2，第二单元·过好校园生活。选项3，第一单元·我是小学生啦。选项4，第三单元·养成良好习惯。请选出正确答案。",
+    "answer": "第二单元·过好校园生活"
+  },
+  {
+    "levelId": "curr-morality-upper-1",
+    "region": "life",
+    "title": "第二单元·过好校园生活",
+    "taskId": "curr-morality-upper-1-practice",
+    "audio": "assets/curriculum-v61/morality-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，文明排队。选项2，礼貌交往。选项3，认识校园并遵守安全规则。选项4，整理书包并安排作息。请选出正确答案。",
+    "answer": "礼貌交往"
+  },
+  {
+    "levelId": "curr-morality-upper-1",
+    "region": "life",
+    "title": "第二单元·过好校园生活",
+    "taskId": "curr-morality-upper-1-check",
+    "audio": "assets/curriculum-v61/morality-upper-02-3.mp3",
+    "text": "上课时应该怎么做？选项1，认真听讲并举手发言。选项2，随意离开座位。选项3，大声打断别人。选项4，一直玩玩具。请选出正确答案。",
+    "answer": "认真听讲并举手发言"
+  },
+  {
+    "levelId": "curr-morality-upper-2",
+    "region": "life",
+    "title": "第三单元·养成良好习惯",
+    "taskId": "curr-morality-upper-2-listen",
+    "audio": "assets/curriculum-v61/morality-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·养成良好习惯。选项2，第一单元·我是小学生啦。选项3，第二单元·过好校园生活。选项4，第四单元·我们讲文明。请选出正确答案。",
+    "answer": "第三单元·养成良好习惯"
+  },
+  {
+    "levelId": "curr-morality-upper-2",
+    "region": "life",
+    "title": "第三单元·养成良好习惯",
+    "taskId": "curr-morality-upper-2-practice",
+    "audio": "assets/curriculum-v61/morality-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，整理书包并安排作息。选项2，认识校园并遵守安全规则。选项3，礼貌交往。选项4，文明排队。请选出正确答案。",
+    "answer": "整理书包并安排作息"
+  },
+  {
+    "levelId": "curr-morality-upper-2",
+    "region": "life",
+    "title": "第三单元·养成良好习惯",
+    "taskId": "curr-morality-upper-2-check",
+    "audio": "assets/curriculum-v61/morality-upper-03-3.mp3",
+    "text": "哪种做法有助于养成好习惯？选项1，按时睡觉和起床。选项2，想玩多久就玩多久。选项3，不洗手就吃饭。选项4，书包从不整理。请选出正确答案。",
+    "answer": "按时睡觉和起床"
+  },
+  {
+    "levelId": "curr-morality-upper-3",
+    "region": "life",
+    "title": "第四单元·我们讲文明",
+    "taskId": "curr-morality-upper-3-listen",
+    "audio": "assets/curriculum-v61/morality-upper-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·我是小学生啦。选项2，第二单元·过好校园生活。选项3，第三单元·养成良好习惯。选项4，第四单元·我们讲文明。请选出正确答案。",
+    "answer": "第四单元·我们讲文明"
+  },
+  {
+    "levelId": "curr-morality-upper-3",
+    "region": "life",
+    "title": "第四单元·我们讲文明",
+    "taskId": "curr-morality-upper-3-practice",
+    "audio": "assets/curriculum-v61/morality-upper-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，认识校园并遵守安全规则。选项2，礼貌交往。选项3，整理书包并安排作息。选项4，文明排队。请选出正确答案。",
+    "answer": "文明排队"
+  },
+  {
+    "levelId": "curr-morality-upper-3",
+    "region": "life",
+    "title": "第四单元·我们讲文明",
+    "taskId": "curr-morality-upper-3-check",
+    "audio": "assets/curriculum-v61/morality-upper-04-3.mp3",
+    "text": "在图书馆应该怎么做？选项1，轻声说话。选项2，追逐打闹。选项3，大声唱歌。选项4，随意涂书。请选出正确答案。",
+    "answer": "轻声说话"
+  },
+  {
+    "levelId": "curr-morality-lower-0",
+    "region": "life",
+    "title": "第一单元·我有新面貌",
+    "taskId": "curr-morality-lower-0-listen",
+    "audio": "assets/curriculum-v61/morality-lower-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·幸福一家人。选项2，第四单元·争做中国好儿童。选项3，第二单元·我们一起长大。选项4，第一单元·我有新面貌。请选出正确答案。",
+    "answer": "第一单元·我有新面貌"
+  },
+  {
+    "levelId": "curr-morality-lower-0",
+    "region": "life",
+    "title": "第一单元·我有新面貌",
+    "taskId": "curr-morality-lower-0-practice",
+    "audio": "assets/curriculum-v61/morality-lower-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，认识校园并遵守安全规则。选项2，整理书包并安排作息。选项3，礼貌交往。选项4，完成一个小目标。请选出正确答案。",
+    "answer": "完成一个小目标"
+  },
+  {
+    "levelId": "curr-morality-lower-0",
+    "region": "life",
+    "title": "第一单元·我有新面貌",
+    "taskId": "curr-morality-lower-0-check",
+    "audio": "assets/curriculum-v61/morality-lower-01-3.mp3",
+    "text": "发现自己做错了，应该怎么办？选项1，承认并改正。选项2，藏起来不说。选项3，责怪别人。选项4，重复错误。请选出正确答案。",
+    "answer": "承认并改正"
+  },
+  {
+    "levelId": "curr-morality-lower-1",
+    "region": "life",
+    "title": "第二单元·我们一起长大",
+    "taskId": "curr-morality-lower-1-listen",
+    "audio": "assets/curriculum-v61/morality-lower-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·我们一起长大。选项2，第四单元·争做中国好儿童。选项3，第三单元·幸福一家人。选项4，第一单元·我有新面貌。请选出正确答案。",
+    "answer": "第二单元·我们一起长大"
+  },
+  {
+    "levelId": "curr-morality-lower-1",
+    "region": "life",
+    "title": "第二单元·我们一起长大",
+    "taskId": "curr-morality-lower-1-practice",
+    "audio": "assets/curriculum-v61/morality-lower-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，礼貌交往。选项2，整理书包并安排作息。选项3，与伙伴合作。选项4，认识校园并遵守安全规则。请选出正确答案。",
+    "answer": "与伙伴合作"
+  },
+  {
+    "levelId": "curr-morality-lower-1",
+    "region": "life",
+    "title": "第二单元·我们一起长大",
+    "taskId": "curr-morality-lower-1-check",
+    "audio": "assets/curriculum-v61/morality-lower-02-3.mp3",
+    "text": "合作时遇到不同意见怎么办？选项1，轮流表达并一起商量。选项2，抢走材料。选项3，不让别人说话。选项4，马上离开。请选出正确答案。",
+    "answer": "轮流表达并一起商量"
+  },
+  {
+    "levelId": "curr-morality-lower-2",
+    "region": "life",
+    "title": "第三单元·幸福一家人",
+    "taskId": "curr-morality-lower-2-listen",
+    "audio": "assets/curriculum-v61/morality-lower-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·我有新面貌。选项2，第四单元·争做中国好儿童。选项3，第三单元·幸福一家人。选项4，第二单元·我们一起长大。请选出正确答案。",
+    "answer": "第三单元·幸福一家人"
+  },
+  {
+    "levelId": "curr-morality-lower-2",
+    "region": "life",
+    "title": "第三单元·幸福一家人",
+    "taskId": "curr-morality-lower-2-practice",
+    "audio": "assets/curriculum-v61/morality-lower-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，整理书包并安排作息。选项2，整理自己的物品。选项3，认识校园并遵守安全规则。选项4，礼貌交往。请选出正确答案。",
+    "answer": "整理自己的物品"
+  },
+  {
+    "levelId": "curr-morality-lower-2",
+    "region": "life",
+    "title": "第三单元·幸福一家人",
+    "taskId": "curr-morality-lower-2-check",
+    "audio": "assets/curriculum-v61/morality-lower-03-3.mp3",
+    "text": "一年级小朋友可以做哪项家务？选项1，整理自己的书桌。选项2，独自修理电器。选项3，攀爬高处擦窗。选项4，使用锋利工具。请选出正确答案。",
+    "answer": "整理自己的书桌"
+  },
+  {
+    "levelId": "curr-morality-lower-3",
+    "region": "life",
+    "title": "第四单元·争做中国好儿童",
+    "taskId": "curr-morality-lower-3-listen",
+    "audio": "assets/curriculum-v61/morality-lower-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·争做中国好儿童。选项2，第二单元·我们一起长大。选项3，第一单元·我有新面貌。选项4，第三单元·幸福一家人。请选出正确答案。",
+    "answer": "第四单元·争做中国好儿童"
+  },
+  {
+    "levelId": "curr-morality-lower-3",
+    "region": "life",
+    "title": "第四单元·争做中国好儿童",
+    "taskId": "curr-morality-lower-3-practice",
+    "audio": "assets/curriculum-v61/morality-lower-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，为集体做一件小事。选项2，认识校园并遵守安全规则。选项3，礼貌交往。选项4，整理书包并安排作息。请选出正确答案。",
+    "answer": "为集体做一件小事"
+  },
+  {
+    "levelId": "curr-morality-lower-3",
+    "region": "life",
+    "title": "第四单元·争做中国好儿童",
+    "taskId": "curr-morality-lower-3-check",
+    "audio": "assets/curriculum-v61/morality-lower-04-3.mp3",
+    "text": "看到地上有纸屑，合适的做法是？选项1，捡起并放进垃圾桶。选项2，假装没看见。选项3，踢到别人脚边。选项4，撕更多纸。请选出正确答案。",
+    "answer": "捡起并放进垃圾桶"
+  },
+  {
+    "levelId": "curr-science-upper-0",
+    "region": "science",
+    "title": "第一单元·走近科学",
+    "taskId": "curr-science-upper-0-listen",
+    "audio": "assets/curriculum-v61/science-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·我们的感觉器官。选项2，第一单元·走近科学。选项3，第四单元·使用工具。选项4，第三单元·家养动物。请选出正确答案。",
+    "answer": "第一单元·走近科学"
+  },
+  {
+    "levelId": "curr-science-upper-0",
+    "region": "science",
+    "title": "第一单元·走近科学",
+    "taskId": "curr-science-upper-0-practice",
+    "audio": "assets/curriculum-v61/science-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，选择合适工具。选项2，观察并提出问题。选项3，观察水果。选项4，比较动物特点。请选出正确答案。",
+    "answer": "观察并提出问题"
+  },
+  {
+    "levelId": "curr-science-upper-0",
+    "region": "science",
+    "title": "第一单元·走近科学",
+    "taskId": "curr-science-upper-0-check",
+    "audio": "assets/curriculum-v61/science-upper-01-3.mp3",
+    "text": "做科学观察时，哪种做法更合适？选项1，认真看并如实记录。选项2，只猜不观察。选项3，随意改变结果。选项4，不听安全要求。请选出正确答案。",
+    "answer": "认真看并如实记录"
+  },
+  {
+    "levelId": "curr-science-upper-1",
+    "region": "science",
+    "title": "第二单元·我们的感觉器官",
+    "taskId": "curr-science-upper-1-listen",
+    "audio": "assets/curriculum-v61/science-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·家养动物。选项2，第一单元·走近科学。选项3，第二单元·我们的感觉器官。选项4，第四单元·使用工具。请选出正确答案。",
+    "answer": "第二单元·我们的感觉器官"
+  },
+  {
+    "levelId": "curr-science-upper-1",
+    "region": "science",
+    "title": "第二单元·我们的感觉器官",
+    "taskId": "curr-science-upper-1-practice",
+    "audio": "assets/curriculum-v61/science-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，观察水果。选项2，观察并提出问题。选项3，比较动物特点。选项4，选择合适工具。请选出正确答案。",
+    "answer": "观察水果"
+  },
+  {
+    "levelId": "curr-science-upper-1",
+    "region": "science",
+    "title": "第二单元·我们的感觉器官",
+    "taskId": "curr-science-upper-1-check",
+    "audio": "assets/curriculum-v61/science-upper-02-3.mp3",
+    "text": "不能用哪种方法观察不明物体？选项1，直接品尝。选项2，用眼睛看。选项3，在老师指导下闻。选项4，轻轻触摸安全物品。请选出正确答案。",
+    "answer": "直接品尝"
+  },
+  {
+    "levelId": "curr-science-upper-2",
+    "region": "science",
+    "title": "第三单元·家养动物",
+    "taskId": "curr-science-upper-2-listen",
+    "audio": "assets/curriculum-v61/science-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·我们的感觉器官。选项2，第四单元·使用工具。选项3，第一单元·走近科学。选项4，第三单元·家养动物。请选出正确答案。",
+    "answer": "第三单元·家养动物"
+  },
+  {
+    "levelId": "curr-science-upper-2",
+    "region": "science",
+    "title": "第三单元·家养动物",
+    "taskId": "curr-science-upper-2-practice",
+    "audio": "assets/curriculum-v61/science-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，观察并提出问题。选项2，观察水果。选项3，选择合适工具。选项4，比较动物特点。请选出正确答案。",
+    "answer": "比较动物特点"
+  },
+  {
+    "levelId": "curr-science-upper-2",
+    "region": "science",
+    "title": "第三单元·家养动物",
+    "taskId": "curr-science-upper-2-check",
+    "audio": "assets/curriculum-v61/science-upper-03-3.mp3",
+    "text": "观察小动物时应该怎么做？选项1，安静观察并爱护它。选项2，追赶惊吓它。选项3，用力抓它。选项4，随意投喂。请选出正确答案。",
+    "answer": "安静观察并爱护它"
+  },
+  {
+    "levelId": "curr-science-upper-3",
+    "region": "science",
+    "title": "第四单元·使用工具",
+    "taskId": "curr-science-upper-3-listen",
+    "audio": "assets/curriculum-v61/science-upper-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·使用工具。选项2，第三单元·家养动物。选项3，第二单元·我们的感觉器官。选项4，第一单元·走近科学。请选出正确答案。",
+    "answer": "第四单元·使用工具"
+  },
+  {
+    "levelId": "curr-science-upper-3",
+    "region": "science",
+    "title": "第四单元·使用工具",
+    "taskId": "curr-science-upper-3-practice",
+    "audio": "assets/curriculum-v61/science-upper-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，选择合适工具。选项2，观察水果。选项3，比较动物特点。选项4，观察并提出问题。请选出正确答案。",
+    "answer": "选择合适工具"
+  },
+  {
+    "levelId": "curr-science-upper-3",
+    "region": "science",
+    "title": "第四单元·使用工具",
+    "taskId": "curr-science-upper-3-check",
+    "audio": "assets/curriculum-v61/science-upper-04-3.mp3",
+    "text": "使用工具前首先要做什么？选项1，听清安全要求。选项2，立即挥舞工具。选项3，把工具扔给同伴。选项4，闭着眼操作。请选出正确答案。",
+    "answer": "听清安全要求"
+  },
+  {
+    "levelId": "curr-science-lower-0",
+    "region": "science",
+    "title": "第一单元·位置和方向",
+    "taskId": "curr-science-lower-0-listen",
+    "audio": "assets/curriculum-v61/science-lower-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·常见的材料。选项2，第四单元·制作收纳用具。选项3，第一单元·位置和方向。选项4，第二单元·校园里的植物。请选出正确答案。",
+    "answer": "第一单元·位置和方向"
+  },
+  {
+    "levelId": "curr-science-lower-0",
+    "region": "science",
+    "title": "第一单元·位置和方向",
+    "taskId": "curr-science-lower-0-practice",
+    "audio": "assets/curriculum-v61/science-lower-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，观察水果。选项2，比较动物特点。选项3，描述路线。选项4，观察并提出问题。请选出正确答案。",
+    "answer": "描述路线"
+  },
+  {
+    "levelId": "curr-science-lower-0",
+    "region": "science",
+    "title": "第一单元·位置和方向",
+    "taskId": "curr-science-lower-0-check",
+    "audio": "assets/curriculum-v61/science-lower-01-3.mp3",
+    "text": "早晨面向太阳时，太阳大致在哪个方向？选项1，东。选项2，西。选项3，南。选项4，北。请选出正确答案。",
+    "answer": "东"
+  },
+  {
+    "levelId": "curr-science-lower-1",
+    "region": "science",
+    "title": "第二单元·校园里的植物",
+    "taskId": "curr-science-lower-1-listen",
+    "audio": "assets/curriculum-v61/science-lower-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·制作收纳用具。选项2，第二单元·校园里的植物。选项3，第一单元·位置和方向。选项4，第三单元·常见的材料。请选出正确答案。",
+    "answer": "第二单元·校园里的植物"
+  },
+  {
+    "levelId": "curr-science-lower-1",
+    "region": "science",
+    "title": "第二单元·校园里的植物",
+    "taskId": "curr-science-lower-1-practice",
+    "audio": "assets/curriculum-v61/science-lower-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，比较动物特点。选项2，观察植物。选项3，观察并提出问题。选项4，观察水果。请选出正确答案。",
+    "answer": "观察植物"
+  },
+  {
+    "levelId": "curr-science-lower-1",
+    "region": "science",
+    "title": "第二单元·校园里的植物",
+    "taskId": "curr-science-lower-1-check",
+    "audio": "assets/curriculum-v61/science-lower-02-3.mp3",
+    "text": "观察校园植物时应该怎么做？选项1，不随意折花摘叶。选项2，把花全部摘下。选项3，踩进花坛。选项4，摇断树枝。请选出正确答案。",
+    "answer": "不随意折花摘叶"
+  },
+  {
+    "levelId": "curr-science-lower-2",
+    "region": "science",
+    "title": "第三单元·常见的材料",
+    "taskId": "curr-science-lower-2-listen",
+    "audio": "assets/curriculum-v61/science-lower-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·常见的材料。选项2，第一单元·位置和方向。选项3，第二单元·校园里的植物。选项4，第四单元·制作收纳用具。请选出正确答案。",
+    "answer": "第三单元·常见的材料"
+  },
+  {
+    "levelId": "curr-science-lower-2",
+    "region": "science",
+    "title": "第三单元·常见的材料",
+    "taskId": "curr-science-lower-2-practice",
+    "audio": "assets/curriculum-v61/science-lower-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，给材料分类。选项2，观察并提出问题。选项3，观察水果。选项4，比较动物特点。请选出正确答案。",
+    "answer": "给材料分类"
+  },
+  {
+    "levelId": "curr-science-lower-2",
+    "region": "science",
+    "title": "第三单元·常见的材料",
+    "taskId": "curr-science-lower-2-check",
+    "audio": "assets/curriculum-v61/science-lower-03-3.mp3",
+    "text": "易拉罐通常主要由哪类材料制成？选项1，金属。选项2，纸。选项3，木头。选项4，布。请选出正确答案。",
+    "answer": "金属"
+  },
+  {
+    "levelId": "curr-science-lower-3",
+    "region": "science",
+    "title": "第四单元·制作收纳用具",
+    "taskId": "curr-science-lower-3-listen",
+    "audio": "assets/curriculum-v61/science-lower-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·位置和方向。选项2，第二单元·校园里的植物。选项3，第三单元·常见的材料。选项4，第四单元·制作收纳用具。请选出正确答案。",
+    "answer": "第四单元·制作收纳用具"
+  },
+  {
+    "levelId": "curr-science-lower-3",
+    "region": "science",
+    "title": "第四单元·制作收纳用具",
+    "taskId": "curr-science-lower-3-practice",
+    "audio": "assets/curriculum-v61/science-lower-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，观察并提出问题。选项2，观察水果。选项3，比较动物特点。选项4，制作安全的收纳用具。请选出正确答案。",
+    "answer": "制作安全的收纳用具"
+  },
+  {
+    "levelId": "curr-science-lower-3",
+    "region": "science",
+    "title": "第四单元·制作收纳用具",
+    "taskId": "curr-science-lower-3-check",
+    "audio": "assets/curriculum-v61/science-lower-04-3.mp3",
+    "text": "制作完成后为什么还要试用和改进？选项1，发现问题让作品更好用。选项2，为了弄坏作品。选项3，不用听建议。选项4，只看颜色。请选出正确答案。",
+    "answer": "发现问题让作品更好用"
+  },
+  {
+    "levelId": "curr-music-upper-0",
+    "region": "arts",
+    "title": "第一单元·奇妙的声音世界",
+    "taskId": "curr-music-upper-0-listen",
+    "audio": "assets/curriculum-v61/music-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·奇妙的声音世界。选项2，第三单元·小九的旋律密码。选项3，第二单元·麒麒的节奏密码。选项4，第四单元·打击乐大赛。请选出正确答案。",
+    "answer": "第一单元·奇妙的声音世界"
+  },
+  {
+    "levelId": "curr-music-upper-0",
+    "region": "arts",
+    "title": "第一单元·奇妙的声音世界",
+    "taskId": "curr-music-upper-0-practice",
+    "audio": "assets/curriculum-v61/music-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，感受稳定节拍。选项3，听辨旋律高低和走向。选项4，认识打击乐器和节奏。请选出正确答案。",
+    "answer": "听辨强弱与音色"
+  },
+  {
+    "levelId": "curr-music-upper-0",
+    "region": "arts",
+    "title": "第一单元·奇妙的声音世界",
+    "taskId": "curr-music-upper-0-check",
+    "audio": "assets/curriculum-v61/music-upper-01-3.mp3",
+    "text": "保护嗓子应该怎么做？选项1，自然轻松地发声。选项2，长时间大喊。选项3，口渴也不喝水。选项4，模仿刺耳噪声。请选出正确答案。",
+    "answer": "自然轻松地发声"
+  },
+  {
+    "levelId": "curr-music-upper-1",
+    "region": "arts",
+    "title": "第二单元·麒麒的节奏密码",
+    "taskId": "curr-music-upper-1-listen",
+    "audio": "assets/curriculum-v61/music-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·奇妙的声音世界。选项2，第四单元·打击乐大赛。选项3，第三单元·小九的旋律密码。选项4，第二单元·麒麒的节奏密码。请选出正确答案。",
+    "answer": "第二单元·麒麒的节奏密码"
+  },
+  {
+    "levelId": "curr-music-upper-1",
+    "region": "arts",
+    "title": "第二单元·麒麒的节奏密码",
+    "taskId": "curr-music-upper-1-practice",
+    "audio": "assets/curriculum-v61/music-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，听辨旋律高低和走向。选项3，认识打击乐器和节奏。选项4，感受稳定节拍。请选出正确答案。",
+    "answer": "感受稳定节拍"
+  },
+  {
+    "levelId": "curr-music-upper-1",
+    "region": "arts",
+    "title": "第二单元·麒麒的节奏密码",
+    "taskId": "curr-music-upper-1-check",
+    "audio": "assets/curriculum-v61/music-upper-02-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-2",
+    "region": "arts",
+    "title": "第三单元·小九的旋律密码",
+    "taskId": "curr-music-upper-2-listen",
+    "audio": "assets/curriculum-v61/music-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·麒麒的节奏密码。选项2，第四单元·打击乐大赛。选项3，第三单元·小九的旋律密码。选项4，第一单元·奇妙的声音世界。请选出正确答案。",
+    "answer": "第三单元·小九的旋律密码"
+  },
+  {
+    "levelId": "curr-music-upper-2",
+    "region": "arts",
+    "title": "第三单元·小九的旋律密码",
+    "taskId": "curr-music-upper-2-practice",
+    "audio": "assets/curriculum-v61/music-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨旋律高低和走向。选项2，感受稳定节拍。选项3，认识打击乐器和节奏。选项4，听辨强弱与音色。请选出正确答案。",
+    "answer": "听辨旋律高低和走向"
+  },
+  {
+    "levelId": "curr-music-upper-2",
+    "region": "arts",
+    "title": "第三单元·小九的旋律密码",
+    "taskId": "curr-music-upper-2-check",
+    "audio": "assets/curriculum-v61/music-upper-03-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-3",
+    "region": "arts",
+    "title": "第四单元·打击乐大赛",
+    "taskId": "curr-music-upper-3-listen",
+    "audio": "assets/curriculum-v61/music-upper-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·小九的旋律密码。选项2，第四单元·打击乐大赛。选项3，第一单元·奇妙的声音世界。选项4，第二单元·麒麒的节奏密码。请选出正确答案。",
+    "answer": "第四单元·打击乐大赛"
+  },
+  {
+    "levelId": "curr-music-upper-3",
+    "region": "arts",
+    "title": "第四单元·打击乐大赛",
+    "taskId": "curr-music-upper-3-practice",
+    "audio": "assets/curriculum-v61/music-upper-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，认识打击乐器和节奏。选项3，听辨旋律高低和走向。选项4，感受稳定节拍。请选出正确答案。",
+    "answer": "认识打击乐器和节奏"
+  },
+  {
+    "levelId": "curr-music-upper-3",
+    "region": "arts",
+    "title": "第四单元·打击乐大赛",
+    "taskId": "curr-music-upper-3-check",
+    "audio": "assets/curriculum-v61/music-upper-04-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-4",
+    "region": "arts",
+    "title": "第五单元·弹拨乐彩排",
+    "taskId": "curr-music-upper-4-listen",
+    "audio": "assets/curriculum-v61/music-upper-05-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第五单元·弹拨乐彩排。选项2，第一单元·奇妙的声音世界。选项3，第二单元·麒麒的节奏密码。选项4，第三单元·小九的旋律密码。请选出正确答案。",
+    "answer": "第五单元·弹拨乐彩排"
+  },
+  {
+    "levelId": "curr-music-upper-4",
+    "region": "arts",
+    "title": "第五单元·弹拨乐彩排",
+    "taskId": "curr-music-upper-4-practice",
+    "audio": "assets/curriculum-v61/music-upper-05-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，感受稳定节拍。选项2，听辨强弱与音色。选项3，感受弹拨乐器音色。选项4，听辨旋律高低和走向。请选出正确答案。",
+    "answer": "感受弹拨乐器音色"
+  },
+  {
+    "levelId": "curr-music-upper-4",
+    "region": "arts",
+    "title": "第五单元·弹拨乐彩排",
+    "taskId": "curr-music-upper-4-check",
+    "audio": "assets/curriculum-v61/music-upper-05-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-5",
+    "region": "arts",
+    "title": "第六单元·管乐音乐会",
+    "taskId": "curr-music-upper-5-listen",
+    "audio": "assets/curriculum-v61/music-upper-06-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·奇妙的声音世界。选项2，第二单元·麒麒的节奏密码。选项3，第三单元·小九的旋律密码。选项4，第六单元·管乐音乐会。请选出正确答案。",
+    "answer": "第六单元·管乐音乐会"
+  },
+  {
+    "levelId": "curr-music-upper-5",
+    "region": "arts",
+    "title": "第六单元·管乐音乐会",
+    "taskId": "curr-music-upper-5-practice",
+    "audio": "assets/curriculum-v61/music-upper-06-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，感受稳定节拍。选项2，听辨旋律高低和走向。选项3，听辨强弱与音色。选项4，认识管乐器音色。请选出正确答案。",
+    "answer": "认识管乐器音色"
+  },
+  {
+    "levelId": "curr-music-upper-5",
+    "region": "arts",
+    "title": "第六单元·管乐音乐会",
+    "taskId": "curr-music-upper-5-check",
+    "audio": "assets/curriculum-v61/music-upper-06-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-6",
+    "region": "arts",
+    "title": "第七单元·弓弦乐试听会",
+    "taskId": "curr-music-upper-6-listen",
+    "audio": "assets/curriculum-v61/music-upper-07-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第七单元·弓弦乐试听会。选项2，第二单元·麒麒的节奏密码。选项3，第三单元·小九的旋律密码。选项4，第一单元·奇妙的声音世界。请选出正确答案。",
+    "answer": "第七单元·弓弦乐试听会"
+  },
+  {
+    "levelId": "curr-music-upper-6",
+    "region": "arts",
+    "title": "第七单元·弓弦乐试听会",
+    "taskId": "curr-music-upper-6-practice",
+    "audio": "assets/curriculum-v61/music-upper-07-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，认识弓弦乐器音色。选项2，听辨旋律高低和走向。选项3，感受稳定节拍。选项4，听辨强弱与音色。请选出正确答案。",
+    "answer": "认识弓弦乐器音色"
+  },
+  {
+    "levelId": "curr-music-upper-6",
+    "region": "arts",
+    "title": "第七单元·弓弦乐试听会",
+    "taskId": "curr-music-upper-6-check",
+    "audio": "assets/curriculum-v61/music-upper-07-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-upper-7",
+    "region": "arts",
+    "title": "第八单元·唤醒春天",
+    "taskId": "curr-music-upper-7-listen",
+    "audio": "assets/curriculum-v61/music-upper-08-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·奇妙的声音世界。选项2，第八单元·唤醒春天。选项3，第三单元·小九的旋律密码。选项4，第二单元·麒麒的节奏密码。请选出正确答案。",
+    "answer": "第八单元·唤醒春天"
+  },
+  {
+    "levelId": "curr-music-upper-7",
+    "region": "arts",
+    "title": "第八单元·唤醒春天",
+    "taskId": "curr-music-upper-7-practice",
+    "audio": "assets/curriculum-v61/music-upper-08-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，听辨旋律高低和走向。选项3，用音乐感受春天。选项4，感受稳定节拍。请选出正确答案。",
+    "answer": "用音乐感受春天"
+  },
+  {
+    "levelId": "curr-music-upper-7",
+    "region": "arts",
+    "title": "第八单元·唤醒春天",
+    "taskId": "curr-music-upper-7-check",
+    "audio": "assets/curriculum-v61/music-upper-08-3.mp3",
+    "text": "参加音乐活动时，哪种做法更合适？选项1，先听清节拍再表现。选项2，随意敲打乐器。选项3，用很大声音盖住别人。选项4，不听指挥。请选出正确答案。",
+    "answer": "先听清节拍再表现"
+  },
+  {
+    "levelId": "curr-music-lower-0",
+    "region": "arts",
+    "title": "第一单元·爱的摇篮",
+    "taskId": "curr-music-lower-0-listen",
+    "audio": "assets/curriculum-v61/music-lower-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·你是我的好朋友。选项2，第一单元·爱的摇篮。选项3，第四单元·一二三，转转转。选项4，第三单元·绿色家园。请选出正确答案。",
+    "answer": "第一单元·爱的摇篮"
+  },
+  {
+    "levelId": "curr-music-lower-0",
+    "region": "arts",
+    "title": "第一单元·爱的摇篮",
+    "taskId": "curr-music-lower-0-practice",
+    "audio": "assets/curriculum-v61/music-lower-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨旋律高低和走向。选项2，感受温柔舒展的音乐。选项3，听辨强弱与音色。选项4，感受稳定节拍。请选出正确答案。",
+    "answer": "感受温柔舒展的音乐"
+  },
+  {
+    "levelId": "curr-music-lower-0",
+    "region": "arts",
+    "title": "第一单元·爱的摇篮",
+    "taskId": "curr-music-lower-0-check",
+    "audio": "assets/curriculum-v61/music-lower-01-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-1",
+    "region": "arts",
+    "title": "第二单元·你是我的好朋友",
+    "taskId": "curr-music-lower-1-listen",
+    "audio": "assets/curriculum-v61/music-lower-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·绿色家园。选项2，第一单元·爱的摇篮。选项3，第二单元·你是我的好朋友。选项4，第四单元·一二三，转转转。请选出正确答案。",
+    "answer": "第二单元·你是我的好朋友"
+  },
+  {
+    "levelId": "curr-music-lower-1",
+    "region": "arts",
+    "title": "第二单元·你是我的好朋友",
+    "taskId": "curr-music-lower-1-practice",
+    "audio": "assets/curriculum-v61/music-lower-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，用歌声表达友爱。选项2，听辨强弱与音色。选项3，感受稳定节拍。选项4，听辨旋律高低和走向。请选出正确答案。",
+    "answer": "用歌声表达友爱"
+  },
+  {
+    "levelId": "curr-music-lower-1",
+    "region": "arts",
+    "title": "第二单元·你是我的好朋友",
+    "taskId": "curr-music-lower-1-check",
+    "audio": "assets/curriculum-v61/music-lower-02-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-2",
+    "region": "arts",
+    "title": "第三单元·绿色家园",
+    "taskId": "curr-music-lower-2-listen",
+    "audio": "assets/curriculum-v61/music-lower-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·你是我的好朋友。选项2，第四单元·一二三，转转转。选项3，第一单元·爱的摇篮。选项4，第三单元·绿色家园。请选出正确答案。",
+    "answer": "第三单元·绿色家园"
+  },
+  {
+    "levelId": "curr-music-lower-2",
+    "region": "arts",
+    "title": "第三单元·绿色家园",
+    "taskId": "curr-music-lower-2-practice",
+    "audio": "assets/curriculum-v61/music-lower-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，感受稳定节拍。选项3，听辨旋律高低和走向。选项4，感受自然与绿色主题。请选出正确答案。",
+    "answer": "感受自然与绿色主题"
+  },
+  {
+    "levelId": "curr-music-lower-2",
+    "region": "arts",
+    "title": "第三单元·绿色家园",
+    "taskId": "curr-music-lower-2-check",
+    "audio": "assets/curriculum-v61/music-lower-03-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-3",
+    "region": "arts",
+    "title": "第四单元·一二三，转转转",
+    "taskId": "curr-music-lower-3-listen",
+    "audio": "assets/curriculum-v61/music-lower-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·一二三，转转转。选项2，第三单元·绿色家园。选项3，第二单元·你是我的好朋友。选项4，第一单元·爱的摇篮。请选出正确答案。",
+    "answer": "第四单元·一二三，转转转"
+  },
+  {
+    "levelId": "curr-music-lower-3",
+    "region": "arts",
+    "title": "第四单元·一二三，转转转",
+    "taskId": "curr-music-lower-3-practice",
+    "audio": "assets/curriculum-v61/music-lower-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，跟随稳定节拍律动。选项2，感受稳定节拍。选项3，听辨旋律高低和走向。选项4，听辨强弱与音色。请选出正确答案。",
+    "answer": "跟随稳定节拍律动"
+  },
+  {
+    "levelId": "curr-music-lower-3",
+    "region": "arts",
+    "title": "第四单元·一二三，转转转",
+    "taskId": "curr-music-lower-3-check",
+    "audio": "assets/curriculum-v61/music-lower-04-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-4",
+    "region": "arts",
+    "title": "第五单元·劳动最光荣",
+    "taskId": "curr-music-lower-4-listen",
+    "audio": "assets/curriculum-v61/music-lower-05-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·爱的摇篮。选项2，第三单元·绿色家园。选项3，第五单元·劳动最光荣。选项4，第二单元·你是我的好朋友。请选出正确答案。",
+    "answer": "第五单元·劳动最光荣"
+  },
+  {
+    "levelId": "curr-music-lower-4",
+    "region": "arts",
+    "title": "第五单元·劳动最光荣",
+    "taskId": "curr-music-lower-4-practice",
+    "audio": "assets/curriculum-v61/music-lower-05-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听辨强弱与音色。选项2，用音乐表现劳动。选项3，听辨旋律高低和走向。选项4，感受稳定节拍。请选出正确答案。",
+    "answer": "用音乐表现劳动"
+  },
+  {
+    "levelId": "curr-music-lower-4",
+    "region": "arts",
+    "title": "第五单元·劳动最光荣",
+    "taskId": "curr-music-lower-4-check",
+    "audio": "assets/curriculum-v61/music-lower-05-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-5",
+    "region": "arts",
+    "title": "第六单元·生活中的音乐",
+    "taskId": "curr-music-lower-5-listen",
+    "audio": "assets/curriculum-v61/music-lower-06-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第六单元·生活中的音乐。选项2，第二单元·你是我的好朋友。选项3，第一单元·爱的摇篮。选项4，第三单元·绿色家园。请选出正确答案。",
+    "answer": "第六单元·生活中的音乐"
+  },
+  {
+    "levelId": "curr-music-lower-5",
+    "region": "arts",
+    "title": "第六单元·生活中的音乐",
+    "taskId": "curr-music-lower-5-practice",
+    "audio": "assets/curriculum-v61/music-lower-06-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，感受稳定节拍。选项2，听辨强弱与音色。选项3，发现生活中的音乐。选项4，听辨旋律高低和走向。请选出正确答案。",
+    "answer": "发现生活中的音乐"
+  },
+  {
+    "levelId": "curr-music-lower-5",
+    "region": "arts",
+    "title": "第六单元·生活中的音乐",
+    "taskId": "curr-music-lower-5-check",
+    "audio": "assets/curriculum-v61/music-lower-06-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-6",
+    "region": "arts",
+    "title": "第七单元·动画城",
+    "taskId": "curr-music-lower-6-listen",
+    "audio": "assets/curriculum-v61/music-lower-07-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·爱的摇篮。选项2，第三单元·绿色家园。选项3，第二单元·你是我的好朋友。选项4，第七单元·动画城。请选出正确答案。",
+    "answer": "第七单元·动画城"
+  },
+  {
+    "levelId": "curr-music-lower-6",
+    "region": "arts",
+    "title": "第七单元·动画城",
+    "taskId": "curr-music-lower-6-practice",
+    "audio": "assets/curriculum-v61/music-lower-07-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，感受稳定节拍。选项2，听辨旋律高低和走向。选项3，听辨强弱与音色。选项4，感受动画音乐形象。请选出正确答案。",
+    "answer": "感受动画音乐形象"
+  },
+  {
+    "levelId": "curr-music-lower-6",
+    "region": "arts",
+    "title": "第七单元·动画城",
+    "taskId": "curr-music-lower-6-check",
+    "audio": "assets/curriculum-v61/music-lower-07-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-music-lower-7",
+    "region": "arts",
+    "title": "第八单元·两只老虎与小兔乖乖",
+    "taskId": "curr-music-lower-7-listen",
+    "audio": "assets/curriculum-v61/music-lower-08-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·你是我的好朋友。选项2，第三单元·绿色家园。选项3，第八单元·两只老虎与小兔乖乖。选项4，第一单元·爱的摇篮。请选出正确答案。",
+    "answer": "第八单元·两只老虎与小兔乖乖"
+  },
+  {
+    "levelId": "curr-music-lower-7",
+    "region": "arts",
+    "title": "第八单元·两只老虎与小兔乖乖",
+    "taskId": "curr-music-lower-7-practice",
+    "audio": "assets/curriculum-v61/music-lower-08-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，在熟悉旋律中合作表现。选项2，听辨旋律高低和走向。选项3，感受稳定节拍。选项4，听辨强弱与音色。请选出正确答案。",
+    "answer": "在熟悉旋律中合作表现"
+  },
+  {
+    "levelId": "curr-music-lower-7",
+    "region": "arts",
+    "title": "第八单元·两只老虎与小兔乖乖",
+    "taskId": "curr-music-lower-7-check",
+    "audio": "assets/curriculum-v61/music-lower-08-3.mp3",
+    "text": "跟随音乐活动时应该怎么做？选项1，听清节拍再开始。选项2，越快越好。选项3，随意大喊。选项4，推挤同伴。请选出正确答案。",
+    "answer": "听清节拍再开始"
+  },
+  {
+    "levelId": "curr-art-upper-0",
+    "region": "arts",
+    "title": "第一单元·龙的传人",
+    "taskId": "curr-art-upper-0-listen",
+    "audio": "assets/curriculum-v61/art-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·奉献最美。选项2，第三单元·成长足迹。选项3，第四单元·我的祖国。选项4，第一单元·龙的传人。请选出正确答案。",
+    "answer": "第一单元·龙的传人"
+  },
+  {
+    "levelId": "curr-art-upper-0",
+    "region": "arts",
+    "title": "第一单元·龙的传人",
+    "taskId": "curr-art-upper-0-practice",
+    "audio": "assets/curriculum-v61/art-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，用安全材料创作。选项2，画连续小故事。选项3，观察家乡并创作。选项4，画出有特点的名字。请选出正确答案。",
+    "answer": "画出有特点的名字"
+  },
+  {
+    "levelId": "curr-art-upper-0",
+    "region": "arts",
+    "title": "第一单元·龙的传人",
+    "taskId": "curr-art-upper-0-check",
+    "audio": "assets/curriculum-v61/art-upper-01-3.mp3",
+    "text": "美术创作前可以先做什么？选项1，认真观察形状和颜色。选项2，直接照抄别人。选项3，把工具乱扔。选项4，在桌面随意涂画。请选出正确答案。",
+    "answer": "认真观察形状和颜色"
+  },
+  {
+    "levelId": "curr-art-upper-1",
+    "region": "arts",
+    "title": "第二单元·奉献最美",
+    "taskId": "curr-art-upper-1-listen",
+    "audio": "assets/curriculum-v61/art-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·奉献最美。选项2，第三单元·成长足迹。选项3，第四单元·我的祖国。选项4，第一单元·龙的传人。请选出正确答案。",
+    "answer": "第二单元·奉献最美"
+  },
+  {
+    "levelId": "curr-art-upper-1",
+    "region": "arts",
+    "title": "第二单元·奉献最美",
+    "taskId": "curr-art-upper-1-practice",
+    "audio": "assets/curriculum-v61/art-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，用安全材料创作。选项2，画连续小故事。选项3，观察家乡并创作。选项4，画出有特点的名字。请选出正确答案。",
+    "answer": "用安全材料创作"
+  },
+  {
+    "levelId": "curr-art-upper-1",
+    "region": "arts",
+    "title": "第二单元·奉献最美",
+    "taskId": "curr-art-upper-1-check",
+    "audio": "assets/curriculum-v61/art-upper-02-3.mp3",
+    "text": "收集落叶创作时应该怎么做？选项1，捡落叶，不折活枝。选项2，折断树枝。选项3，踩坏花草。选项4，采摘所有花朵。请选出正确答案。",
+    "answer": "捡落叶，不折活枝"
+  },
+  {
+    "levelId": "curr-art-upper-2",
+    "region": "arts",
+    "title": "第三单元·成长足迹",
+    "taskId": "curr-art-upper-2-listen",
+    "audio": "assets/curriculum-v61/art-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·龙的传人。选项2，第三单元·成长足迹。选项3，第四单元·我的祖国。选项4，第二单元·奉献最美。请选出正确答案。",
+    "answer": "第三单元·成长足迹"
+  },
+  {
+    "levelId": "curr-art-upper-2",
+    "region": "arts",
+    "title": "第三单元·成长足迹",
+    "taskId": "curr-art-upper-2-practice",
+    "audio": "assets/curriculum-v61/art-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，画出有特点的名字。选项2，画连续小故事。选项3，观察家乡并创作。选项4，用安全材料创作。请选出正确答案。",
+    "answer": "画连续小故事"
+  },
+  {
+    "levelId": "curr-art-upper-2",
+    "region": "arts",
+    "title": "第三单元·成长足迹",
+    "taskId": "curr-art-upper-2-check",
+    "audio": "assets/curriculum-v61/art-upper-03-3.mp3",
+    "text": "怎样让画面更容易讲清故事？选项1，安排人物和事情的先后。选项2，只涂一种颜色。选项3，把纸揉皱。选项4，不画主要人物。请选出正确答案。",
+    "answer": "安排人物和事情的先后"
+  },
+  {
+    "levelId": "curr-art-upper-3",
+    "region": "arts",
+    "title": "第四单元·我的祖国",
+    "taskId": "curr-art-upper-3-listen",
+    "audio": "assets/curriculum-v61/art-upper-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·奉献最美。选项2，第一单元·龙的传人。选项3，第四单元·我的祖国。选项4，第三单元·成长足迹。请选出正确答案。",
+    "answer": "第四单元·我的祖国"
+  },
+  {
+    "levelId": "curr-art-upper-3",
+    "region": "arts",
+    "title": "第四单元·我的祖国",
+    "taskId": "curr-art-upper-3-practice",
+    "audio": "assets/curriculum-v61/art-upper-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，用安全材料创作。选项2，画出有特点的名字。选项3，观察家乡并创作。选项4，画连续小故事。请选出正确答案。",
+    "answer": "观察家乡并创作"
+  },
+  {
+    "levelId": "curr-art-upper-3",
+    "region": "arts",
+    "title": "第四单元·我的祖国",
+    "taskId": "curr-art-upper-3-check",
+    "audio": "assets/curriculum-v61/art-upper-04-3.mp3",
+    "text": "表现家乡时，可以先观察什么？选项1，有特点的建筑和风景。选项2，别人的答案。选项3，无关广告。选项4，屏幕亮度。请选出正确答案。",
+    "answer": "有特点的建筑和风景"
+  },
+  {
+    "levelId": "curr-art-lower-0",
+    "region": "arts",
+    "title": "第一单元·大地母亲",
+    "taskId": "curr-art-lower-0-listen",
+    "audio": "assets/curriculum-v61/art-lower-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·大地母亲。选项2，第三单元·身边的人。选项3，第二单元·时空印迹。选项4，第四单元·家的故事。请选出正确答案。",
+    "answer": "第一单元·大地母亲"
+  },
+  {
+    "levelId": "curr-art-lower-0",
+    "region": "arts",
+    "title": "第一单元·大地母亲",
+    "taskId": "curr-art-lower-0-practice",
+    "audio": "assets/curriculum-v61/art-lower-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，拓印安全纹理。选项2，画出有特点的名字。选项3，用安全材料创作。选项4，画连续小故事。请选出正确答案。",
+    "answer": "拓印安全纹理"
+  },
+  {
+    "levelId": "curr-art-lower-0",
+    "region": "arts",
+    "title": "第一单元·大地母亲",
+    "taskId": "curr-art-lower-0-check",
+    "audio": "assets/curriculum-v61/art-lower-01-3.mp3",
+    "text": "拓印纹理时选择什么更安全？选项1，平整无尖刺的叶片。选项2，碎玻璃。选项3，生锈铁片。选项4，锋利刀片。请选出正确答案。",
+    "answer": "平整无尖刺的叶片"
+  },
+  {
+    "levelId": "curr-art-lower-1",
+    "region": "arts",
+    "title": "第二单元·时空印迹",
+    "taskId": "curr-art-lower-1-listen",
+    "audio": "assets/curriculum-v61/art-lower-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·大地母亲。选项2，第四单元·家的故事。选项3，第三单元·身边的人。选项4，第二单元·时空印迹。请选出正确答案。",
+    "answer": "第二单元·时空印迹"
+  },
+  {
+    "levelId": "curr-art-lower-1",
+    "region": "arts",
+    "title": "第二单元·时空印迹",
+    "taskId": "curr-art-lower-1-practice",
+    "audio": "assets/curriculum-v61/art-lower-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，画出有特点的名字。选项2，用安全材料创作。选项3，画连续小故事。选项4，观察文物图案。请选出正确答案。",
+    "answer": "观察文物图案"
+  },
+  {
+    "levelId": "curr-art-lower-1",
+    "region": "arts",
+    "title": "第二单元·时空印迹",
+    "taskId": "curr-art-lower-1-check",
+    "audio": "assets/curriculum-v61/art-lower-02-3.mp3",
+    "text": "参观文物时应该怎么做？选项1，遵守规定并认真观察。选项2，随意触摸。选项3，在展品上刻字。选项4，追逐打闹。请选出正确答案。",
+    "answer": "遵守规定并认真观察"
+  },
+  {
+    "levelId": "curr-art-lower-2",
+    "region": "arts",
+    "title": "第三单元·身边的人",
+    "taskId": "curr-art-lower-2-listen",
+    "audio": "assets/curriculum-v61/art-lower-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·时空印迹。选项2，第四单元·家的故事。选项3，第三单元·身边的人。选项4，第一单元·大地母亲。请选出正确答案。",
+    "answer": "第三单元·身边的人"
+  },
+  {
+    "levelId": "curr-art-lower-2",
+    "region": "arts",
+    "title": "第三单元·身边的人",
+    "taskId": "curr-art-lower-2-practice",
+    "audio": "assets/curriculum-v61/art-lower-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，画身边劳动者。选项2，用安全材料创作。选项3，画连续小故事。选项4，画出有特点的名字。请选出正确答案。",
+    "answer": "画身边劳动者"
+  },
+  {
+    "levelId": "curr-art-lower-2",
+    "region": "arts",
+    "title": "第三单元·身边的人",
+    "taskId": "curr-art-lower-2-check",
+    "audio": "assets/curriculum-v61/art-lower-03-3.mp3",
+    "text": "画人物动作时重点观察什么？选项1，身体姿态和正在做的事。选项2，只看背景。选项3，只画一个圆点。选项4，不看人物。请选出正确答案。",
+    "answer": "身体姿态和正在做的事"
+  },
+  {
+    "levelId": "curr-art-lower-3",
+    "region": "arts",
+    "title": "第四单元·家的故事",
+    "taskId": "curr-art-lower-3-listen",
+    "audio": "assets/curriculum-v61/art-lower-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第三单元·身边的人。选项2，第四单元·家的故事。选项3，第一单元·大地母亲。选项4，第二单元·时空印迹。请选出正确答案。",
+    "answer": "第四单元·家的故事"
+  },
+  {
+    "levelId": "curr-art-lower-3",
+    "region": "arts",
+    "title": "第四单元·家的故事",
+    "taskId": "curr-art-lower-3-practice",
+    "audio": "assets/curriculum-v61/art-lower-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，画出有特点的名字。选项2，画一件家庭小事。选项3，画连续小故事。选项4，用安全材料创作。请选出正确答案。",
+    "answer": "画一件家庭小事"
+  },
+  {
+    "levelId": "curr-art-lower-3",
+    "region": "arts",
+    "title": "第四单元·家的故事",
+    "taskId": "curr-art-lower-3-check",
+    "audio": "assets/curriculum-v61/art-lower-04-3.mp3",
+    "text": "表现家庭故事，哪种内容最合适？选项1，一起做饭或阅读的真实场景。选项2，随便复制广告。选项3，只写一串数字。选项4，不相关的标志。请选出正确答案。",
+    "answer": "一起做饭或阅读的真实场景"
+  },
+  {
+    "levelId": "curr-pe-level1-0",
+    "region": "life",
+    "title": "体育与健康基础知识",
+    "taskId": "curr-pe-level1-0-listen",
+    "audio": "assets/curriculum-v61/pe-level1-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，体操、球类与游戏。选项2，基本身体活动。选项3，体育与健康基础知识。请选出正确答案。",
+    "answer": "体育与健康基础知识"
+  },
+  {
+    "levelId": "curr-pe-level1-0",
+    "region": "life",
+    "title": "体育与健康基础知识",
+    "taskId": "curr-pe-level1-0-practice",
+    "audio": "assets/curriculum-v61/pe-level1-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，整理运动前的安全准备。选项2，完成短时规范动作。选项3，听口令并遵守规则。请选出正确答案。",
+    "answer": "整理运动前的安全准备"
+  },
+  {
+    "levelId": "curr-pe-level1-0",
+    "region": "life",
+    "title": "体育与健康基础知识",
+    "taskId": "curr-pe-level1-0-check",
+    "audio": "assets/curriculum-v61/pe-level1-01-3.mp3",
+    "text": "运动前应该怎么做？选项1，检查场地并做好热身。选项2，马上快速冲刺。选项3，推挤同伴。选项4，穿拖鞋跑步。请选出正确答案。",
+    "answer": "检查场地并做好热身"
+  },
+  {
+    "levelId": "curr-pe-level1-1",
+    "region": "life",
+    "title": "基本身体活动",
+    "taskId": "curr-pe-level1-1-listen",
+    "audio": "assets/curriculum-v61/pe-level1-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，体操、球类与游戏。选项2，基本身体活动。选项3，体育与健康基础知识。请选出正确答案。",
+    "answer": "基本身体活动"
+  },
+  {
+    "levelId": "curr-pe-level1-1",
+    "region": "life",
+    "title": "基本身体活动",
+    "taskId": "curr-pe-level1-1-practice",
+    "audio": "assets/curriculum-v61/pe-level1-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，整理运动前的安全准备。选项2，听口令并遵守规则。选项3，完成短时规范动作。请选出正确答案。",
+    "answer": "完成短时规范动作"
+  },
+  {
+    "levelId": "curr-pe-level1-1",
+    "region": "life",
+    "title": "基本身体活动",
+    "taskId": "curr-pe-level1-1-check",
+    "audio": "assets/curriculum-v61/pe-level1-02-3.mp3",
+    "text": "运动中身体不舒服应该怎么办？选项1，马上停止并告诉老师或家长。选项2，继续硬撑。选项3，躲起来不说。选项4，加快速度。请选出正确答案。",
+    "answer": "马上停止并告诉老师或家长"
+  },
+  {
+    "levelId": "curr-pe-level1-2",
+    "region": "life",
+    "title": "体操、球类与游戏",
+    "taskId": "curr-pe-level1-2-listen",
+    "audio": "assets/curriculum-v61/pe-level1-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，体操、球类与游戏。选项2，体育与健康基础知识。选项3，基本身体活动。请选出正确答案。",
+    "answer": "体操、球类与游戏"
+  },
+  {
+    "levelId": "curr-pe-level1-2",
+    "region": "life",
+    "title": "体操、球类与游戏",
+    "taskId": "curr-pe-level1-2-practice",
+    "audio": "assets/curriculum-v61/pe-level1-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听口令并遵守规则。选项2，完成短时规范动作。选项3，整理运动前的安全准备。请选出正确答案。",
+    "answer": "听口令并遵守规则"
+  },
+  {
+    "levelId": "curr-pe-level1-2",
+    "region": "life",
+    "title": "体操、球类与游戏",
+    "taskId": "curr-pe-level1-2-check",
+    "audio": "assets/curriculum-v61/pe-level1-03-3.mp3",
+    "text": "集体体育游戏中最重要的是？选项1，遵守规则并注意安全。选项2，只顾自己获胜。选项3，随意冲撞。选项4，抢夺器材。请选出正确答案。",
+    "answer": "遵守规则并注意安全"
+  },
+  {
+    "levelId": "curr-integrated-upper-0",
+    "region": "arts",
+    "title": "第一单元·分不开的你我他",
+    "taskId": "curr-integrated-upper-0-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·神奇的天空。选项2，第一单元·分不开的你我他。选项3，第二单元·奇妙的声音。选项4，第三单元·我们的动物朋友。请选出正确答案。",
+    "answer": "第一单元·分不开的你我他"
+  },
+  {
+    "levelId": "curr-integrated-upper-0",
+    "region": "arts",
+    "title": "第一单元·分不开的你我他",
+    "taskId": "curr-integrated-upper-0-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听声音猜情境。选项2，模仿友好动作。选项3，表现云朵变化。选项4，表演一种动物。请选出正确答案。",
+    "answer": "模仿友好动作"
+  },
+  {
+    "levelId": "curr-integrated-upper-0",
+    "region": "arts",
+    "title": "第一单元·分不开的你我他",
+    "taskId": "curr-integrated-upper-0-check",
+    "audio": "assets/curriculum-v61/integrated-upper-01-3.mp3",
+    "text": "合作表演时应该怎么做？选项1，轮流表现并互相配合。选项2，抢占所有角色。选项3，嘲笑同伴。选项4，故意推人。请选出正确答案。",
+    "answer": "轮流表现并互相配合"
+  },
+  {
+    "levelId": "curr-integrated-upper-1",
+    "region": "arts",
+    "title": "第二单元·奇妙的声音",
+    "taskId": "curr-integrated-upper-1-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·奇妙的声音。选项2，第一单元·分不开的你我他。选项3，第三单元·我们的动物朋友。选项4，第四单元·神奇的天空。请选出正确答案。",
+    "answer": "第二单元·奇妙的声音"
+  },
+  {
+    "levelId": "curr-integrated-upper-1",
+    "region": "arts",
+    "title": "第二单元·奇妙的声音",
+    "taskId": "curr-integrated-upper-1-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，表演一种动物。选项2，模仿友好动作。选项3，听声音猜情境。选项4，表现云朵变化。请选出正确答案。",
+    "answer": "听声音猜情境"
+  },
+  {
+    "levelId": "curr-integrated-upper-1",
+    "region": "arts",
+    "title": "第二单元·奇妙的声音",
+    "taskId": "curr-integrated-upper-1-check",
+    "audio": "assets/curriculum-v61/integrated-upper-02-3.mp3",
+    "text": "模仿声音时怎样保护嗓子？选项1，控制音量并自然发声。选项2，一直尖叫。选项3，贴近别人耳朵喊。选项4，比赛谁声音最大。请选出正确答案。",
+    "answer": "控制音量并自然发声"
+  },
+  {
+    "levelId": "curr-integrated-upper-2",
+    "region": "arts",
+    "title": "第三单元·我们的动物朋友",
+    "taskId": "curr-integrated-upper-2-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·分不开的你我他。选项2，第二单元·奇妙的声音。选项3，第四单元·神奇的天空。选项4，第三单元·我们的动物朋友。请选出正确答案。",
+    "answer": "第三单元·我们的动物朋友"
+  },
+  {
+    "levelId": "curr-integrated-upper-2",
+    "region": "arts",
+    "title": "第三单元·我们的动物朋友",
+    "taskId": "curr-integrated-upper-2-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，听声音猜情境。选项2，表现云朵变化。选项3，模仿友好动作。选项4，表演一种动物。请选出正确答案。",
+    "answer": "表演一种动物"
+  },
+  {
+    "levelId": "curr-integrated-upper-2",
+    "region": "arts",
+    "title": "第三单元·我们的动物朋友",
+    "taskId": "curr-integrated-upper-2-check",
+    "audio": "assets/curriculum-v61/integrated-upper-03-3.mp3",
+    "text": "表演动物前先做什么？选项1，观察它怎样走和停。选项2，随意追赶动物。选项3，只看颜色。选项4，闭眼猜。请选出正确答案。",
+    "answer": "观察它怎样走和停"
+  },
+  {
+    "levelId": "curr-integrated-upper-3",
+    "region": "arts",
+    "title": "第四单元·神奇的天空",
+    "taskId": "curr-integrated-upper-3-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-04-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第四单元·神奇的天空。选项2，第二单元·奇妙的声音。选项3，第三单元·我们的动物朋友。选项4，第一单元·分不开的你我他。请选出正确答案。",
+    "answer": "第四单元·神奇的天空"
+  },
+  {
+    "levelId": "curr-integrated-upper-3",
+    "region": "arts",
+    "title": "第四单元·神奇的天空",
+    "taskId": "curr-integrated-upper-3-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-04-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，表现云朵变化。选项2，表演一种动物。选项3，听声音猜情境。选项4，模仿友好动作。请选出正确答案。",
+    "answer": "表现云朵变化"
+  },
+  {
+    "levelId": "curr-integrated-upper-3",
+    "region": "arts",
+    "title": "第四单元·神奇的天空",
+    "taskId": "curr-integrated-upper-3-check",
+    "audio": "assets/curriculum-v61/integrated-upper-04-3.mp3",
+    "text": "哪一种最适合表现云朵变化？选项1，缓慢改变身体造型。选项2，一直站着不动。选项3，推倒同伴。选项4，大声敲桌子。请选出正确答案。",
+    "answer": "缓慢改变身体造型"
+  },
+  {
+    "levelId": "curr-integrated-upper-4",
+    "region": "arts",
+    "title": "第五单元·一起玩玩具",
+    "taskId": "curr-integrated-upper-4-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-05-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第一单元·分不开的你我他。选项2，第五单元·一起玩玩具。选项3，第三单元·我们的动物朋友。选项4，第二单元·奇妙的声音。请选出正确答案。",
+    "answer": "第五单元·一起玩玩具"
+  },
+  {
+    "levelId": "curr-integrated-upper-4",
+    "region": "arts",
+    "title": "第五单元·一起玩玩具",
+    "taskId": "curr-integrated-upper-4-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-05-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，模仿友好动作。选项2，表演一种动物。选项3，跟节拍做动作。选项4，听声音猜情境。请选出正确答案。",
+    "answer": "跟节拍做动作"
+  },
+  {
+    "levelId": "curr-integrated-upper-4",
+    "region": "arts",
+    "title": "第五单元·一起玩玩具",
+    "taskId": "curr-integrated-upper-4-check",
+    "audio": "assets/curriculum-v61/integrated-upper-05-3.mp3",
+    "text": "跟着进行曲做动作要注意什么？选项1，保持稳定节拍。选项2，越乱越好。选项3，只看别人。选项4，突然冲出场地。请选出正确答案。",
+    "answer": "保持稳定节拍"
+  },
+  {
+    "levelId": "curr-integrated-upper-5",
+    "region": "arts",
+    "title": "第六单元·过新年",
+    "taskId": "curr-integrated-upper-5-listen",
+    "audio": "assets/curriculum-v61/integrated-upper-06-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，第二单元·奇妙的声音。选项2，第一单元·分不开的你我他。选项3，第六单元·过新年。选项4，第三单元·我们的动物朋友。请选出正确答案。",
+    "answer": "第六单元·过新年"
+  },
+  {
+    "levelId": "curr-integrated-upper-5",
+    "region": "arts",
+    "title": "第六单元·过新年",
+    "taskId": "curr-integrated-upper-5-practice",
+    "audio": "assets/curriculum-v61/integrated-upper-06-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，合作完成小舞台。选项2，听声音猜情境。选项3，模仿友好动作。选项4，表演一种动物。请选出正确答案。",
+    "answer": "合作完成小舞台"
+  },
+  {
+    "levelId": "curr-integrated-upper-5",
+    "region": "arts",
+    "title": "第六单元·过新年",
+    "taskId": "curr-integrated-upper-5-check",
+    "audio": "assets/curriculum-v61/integrated-upper-06-3.mp3",
+    "text": "上台展示前应该怎么做？选项1，分好角色并排练。选项2，临时争抢角色。选项3，不听提示。选项4，把道具乱放。请选出正确答案。",
+    "answer": "分好角色并排练"
+  },
+  {
+    "levelId": "curr-labor-upper-0",
+    "region": "life",
+    "title": "劳动与职业",
+    "taskId": "curr-labor-upper-0-listen",
+    "audio": "assets/curriculum-v61/labor-upper-01-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，劳动与职业。选项2，简单制作。选项3，生活整理。请选出正确答案。",
+    "answer": "劳动与职业"
+  },
+  {
+    "levelId": "curr-labor-upper-0",
+    "region": "life",
+    "title": "劳动与职业",
+    "taskId": "curr-labor-upper-0-practice",
+    "audio": "assets/curriculum-v61/labor-upper-01-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，选择一项今天能完成的家务。选项2，制作并试用作品。选项3，按步骤整理衣物和床铺。请选出正确答案。",
+    "answer": "选择一项今天能完成的家务"
+  },
+  {
+    "levelId": "curr-labor-upper-0",
+    "region": "life",
+    "title": "劳动与职业",
+    "taskId": "curr-labor-upper-0-check",
+    "audio": "assets/curriculum-v61/labor-upper-01-3.mp3",
+    "text": "哪项家务适合一年级孩子独立完成？选项1，整理自己的书包。选项2，修理插座。选项3，使用燃气灶。选项4，站高凳擦窗。请选出正确答案。",
+    "answer": "整理自己的书包"
+  },
+  {
+    "levelId": "curr-labor-upper-1",
+    "region": "life",
+    "title": "生活整理",
+    "taskId": "curr-labor-upper-1-listen",
+    "audio": "assets/curriculum-v61/labor-upper-02-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，劳动与职业。选项2，生活整理。选项3，简单制作。请选出正确答案。",
+    "answer": "生活整理"
+  },
+  {
+    "levelId": "curr-labor-upper-1",
+    "region": "life",
+    "title": "生活整理",
+    "taskId": "curr-labor-upper-1-practice",
+    "audio": "assets/curriculum-v61/labor-upper-02-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，选择一项今天能完成的家务。选项2，按步骤整理衣物和床铺。选项3，制作并试用作品。请选出正确答案。",
+    "answer": "按步骤整理衣物和床铺"
+  },
+  {
+    "levelId": "curr-labor-upper-1",
+    "region": "life",
+    "title": "生活整理",
+    "taskId": "curr-labor-upper-1-check",
+    "audio": "assets/curriculum-v61/labor-upper-02-3.mp3",
+    "text": "整理完成后还应该做什么？选项1，检查是否整齐和安全。选项2，把用品扔在地上。选项3，立即弄乱。选项4，让别人全部重做。请选出正确答案。",
+    "answer": "检查是否整齐和安全"
+  },
+  {
+    "levelId": "curr-labor-upper-2",
+    "region": "life",
+    "title": "简单制作",
+    "taskId": "curr-labor-upper-2-listen",
+    "audio": "assets/curriculum-v61/labor-upper-03-1.mp3",
+    "text": "听一听，本关学习的是哪个单元？选项1，生活整理。选项2，劳动与职业。选项3，简单制作。请选出正确答案。",
+    "answer": "简单制作"
+  },
+  {
+    "levelId": "curr-labor-upper-2",
+    "region": "life",
+    "title": "简单制作",
+    "taskId": "curr-labor-upper-2-practice",
+    "audio": "assets/curriculum-v61/labor-upper-03-2.mp3",
+    "text": "哪一项活动属于本关的真实学习任务？选项1，按步骤整理衣物和床铺。选项2，选择一项今天能完成的家务。选项3，制作并试用作品。请选出正确答案。",
+    "answer": "制作并试用作品"
+  },
+  {
+    "levelId": "curr-labor-upper-2",
+    "region": "life",
+    "title": "简单制作",
+    "taskId": "curr-labor-upper-2-check",
+    "audio": "assets/curriculum-v61/labor-upper-03-3.mp3",
+    "text": "制作风车时使用剪刀应该怎么做？选项1，在成人指导下刀尖朝下传递。选项2，拿着剪刀奔跑。选项3，用剪刀对着同伴。选项4，剪电线。请选出正确答案。",
+    "answer": "在成人指导下刀尖朝下传递"
+  }
+]

@@ -43,7 +43,7 @@ with sync_playwright() as p:
     assert page.locator(".g1-shell").count() == 1, "child-first map is missing"
     assert page.locator("#kidDock button").count() == 5, "mobile child dock is incomplete"
     page.set_viewport_size({"width": 390, "height": 844})
-    assert page.locator(".g1-region").count() == 6
+    assert page.locator(".g1-region").count() == 9
 
     page.evaluate("showPage('home'); v41ToggleSound()")
     assert page.evaluate("S.audio.muted") is True
@@ -71,7 +71,7 @@ with sync_playwright() as p:
     assert any("pinyin-v46/ong-zhong1.mp3" in x for x in played)
     page.evaluate("window.__played=[];playPinyinV42('a2','á');playPinyinV42('yin1','in');playPinyinV42('un1','un')")
     played = page.evaluate("window.__played")
-    assert any("pinyin-v60/a2.mp3" in x for x in played)
+    assert any("pinyin-v61/ma2.mp3" in x for x in played)
     assert any("pinyin-v60/yin1.mp3" in x for x in played)
     assert any("pinyin-v60/wen1.mp3" in x for x in played)
 
