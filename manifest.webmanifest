@@ -1,9 +1,9 @@
 {
-  "name": "幼小衔接快乐营",
-  "short_name": "快乐营",
+  "name": "一年级成长岛",
+  "short_name": "成长岛",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#FFF8F0",
-  "theme_color": "#FF6B6B",
+  "background_color": "#EAF8FF",
+  "theme_color": "#6F4BD8",
   "lang": "zh-CN"
 }

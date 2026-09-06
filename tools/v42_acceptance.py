@@ -11,11 +11,13 @@ BASE = os.environ.get("SMOKE_URL", "http://127.0.0.1:4199")
 
 def profile_script():
     return """
-      localStorage.setItem('yxxj_s', JSON.stringify({
-        pts:100,strk:1,dog:{type:'labrador',xp:0,hu:80,hy:80,en:80,tasks:0},
+      localStorage.setItem('grade1_island_reset_v1','1');
+      localStorage.setItem('grade1_island_state_v1', JSON.stringify({
+        schema:'grade1-game-v1',pts:100,strk:1,dog:{type:'labrador',xp:0,hu:80,hy:80,en:80,tasks:0},
         _setup:{done:true,name:'测试小朋友',grade:'一年级'},parentPin:'1234',
         vR:{},poems:{},chars:{},dailyGoal:{tasks:5,chars:3},mathC:0,mathT:0,
-        scr:{on:false,contMin:20,restMin:5,dayMin:30,extMin:0,used:0,cont:0,day:''}
+        scr:{on:false,contMin:20,restMin:5,dayMin:30,extMin:0,used:0,cont:0,day:''},
+        game:{levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activeLevel:'start-1'}
       }));
       window.__media=[];
       HTMLMediaElement.prototype.play=function(){window.__media.push(this.getAttribute('src')||this.src);queueMicrotask(()=>this.oncanplay&&this.oncanplay());return Promise.resolve();};
@@ -47,10 +49,8 @@ with sync_playwright() as p:
     page.wait_for_function("typeof v42State === 'function' && typeof V45_MATH_LOWER !== 'undefined' && typeof V45_TIME !== 'undefined' && typeof V46_PINYIN_AUDIO !== 'undefined' && typeof showPage === 'function'")
     page.evaluate("PET_VOICE_READY")
 
-    assert page.locator("#v42CourseCard").count() == 1
-    assert "一年级核心课程" in page.locator("#v42CourseCard").inner_text()
-    home_labels = page.evaluate("[...document.querySelectorAll('#ct .ql,#ct .qs')].map(x=>x.textContent)")
-    assert "节拍启蒙" in home_labels and "家长课程表" in home_labels
+    assert page.locator(".g1-map").count() == 1
+    assert "成长地图" in page.locator(".g1-map").inner_text()
     assert page.evaluate("V42_CHARS.length") == 69
     assert page.evaluate("V42_READINGS.length") == 12
     assert page.evaluate("V42_MATH.length") == 40
@@ -77,8 +77,8 @@ with sync_playwright() as p:
     course_text = page.locator("#ct").inner_text()
     for label in ["教材同步路线", "拼音与正音", "识字与写字", "阅读与表达", "数学教材同步", "英语教材同步", "古诗积累", "思维实践", "数学能力拓展"]:
         assert label in course_text, label
-    assert "二年级核心课程" not in page.locator("body").inner_text()
-    assert "二年级下册预备选学" in course_text
+    assert "学习阶段" not in page.locator("body").inner_text()
+    assert "课外拓展" in course_text
 
     page.evaluate("showPage('textbook')")
     assert page.locator(".tb-unit").count() == 9
@@ -130,10 +130,11 @@ with sync_playwright() as p:
     assert page.locator(".pet-stage").count() == 4
     assert page.evaluate("Object.keys(PET_VOICE).length >= 100")
     pet_line = page.evaluate("SPEECH_DATA[3][1][0]")
-    expected_pet = page.evaluate("(line)=>'assets/voice/'+PET_VOICE[line]+'.mp3'", pet_line)
+    expected_pet = page.evaluate("(line)=>'assets/voice/'+PET_VOICE[petFix(line)]+'.mp3'", pet_line)
     page.evaluate("line=>speakPet(line)", pet_line)
     page.wait_for_timeout(10)
-    assert expected_pet in page.evaluate("window.__media")
+    pet_media = page.evaluate("window.__media")
+    assert expected_pet in pet_media, (expected_pet, pet_media)
     assert page.locator(".pet-listen").evaluate("e=>e.getBoundingClientRect().height") >= 60
     assert page.locator(".dog-btn").first.evaluate("e=>e.getBoundingClientRect().height") >= 100
 
@@ -200,7 +201,7 @@ with sync_playwright() as p:
     page.wait_for_timeout(20)
     assert page.locator("#time45Task .v47-choice").count() == 4
     time_text = page.locator("#ct").inner_text()
-    assert "二年级下册预备知识" in time_text and "不计入一年级教材同步完成率" in time_text
+    assert "课外拓展" in time_text and "不计入一年级教材同步完成率" in time_text
     page.evaluate("answerTime45('分针',document.querySelectorAll('#time45Task .v42-answer')[1])")
     assert "time45_1" in page.evaluate("v42State().wrong")
     page.evaluate("v45TimeQ=V45_TIME[0];renderTime45();answerTime45('时针',document.querySelector('#time45Task .v42-answer'))")
@@ -270,7 +271,7 @@ with sync_playwright() as p:
     context.set_offline(True)
     page.reload(wait_until="domcontentloaded")
     page.wait_for_function("typeof showPage === 'function'")
-    assert page.locator("#v42CourseCard").count() == 1
+    assert page.locator(".g1-map").count() == 1
     context.set_offline(False)
     browser.close()
-    print(f"v46 acceptance: PASS ({len(routes)} routes, 4 viewports, 164 textbook nodes, pet/pinyin/eye audio, offline reload)")
+    print(f"v59 curriculum acceptance: PASS ({len(routes)} routes, 4 viewports, textbook, pet/pinyin/eye audio, offline reload)")
