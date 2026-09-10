@@ -1,5 +1,5 @@
 /* 一年级成长岛 v61：全科清单与已核验拼音的离线优先应用外壳。 */
-const CACHE='grade1-island-v61';
+const CACHE='grade1-island-v62';
 const TONE_AUDIO=['ma','bo','ge','yi','wu','yu'].flatMap(v=>[1,2,3,4].map(t=>`./assets/pinyin-v61/${v}${t}.mp3`));
 const PRECACHE=[
   './','./index.html','./manifest.webmanifest','./game-v59.css','./game-v59.js',
