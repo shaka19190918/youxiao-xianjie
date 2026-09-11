@@ -24,7 +24,7 @@
   function chunks(a,n){const r=[];for(let i=0;i<a.length;i+=n)r.push(a.slice(i,i+n));return r}
   function level(id,region,title,icon,tasks){return{id,region,title,icon,tasks:tasks.slice(0,3)}}
   function choice(id,label,prompt,options,answer,audio,key){return{id,label,prompt,options,answer,audio,key,type:'choice'}}
-  function g1PinyinPath(x){return typeof pinyinPathV60==='function'?pinyinPathV60(x[1],x[0]):((typeof V46_PINYIN_AUDIO!=='undefined'&&V46_PINYIN_AUDIO[x[0]])||('assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1])))}
+  function g1PinyinPath(x){return typeof pinyinV63TaskToken==='function'?pinyinV63TaskToken(x):(typeof pinyinPathV60==='function'?pinyinPathV60(x[1],x[0]):((typeof V46_PINYIN_AUDIO!=='undefined'&&V46_PINYIN_AUDIO[x[0]])||('assets/pinyin/'+x[1]+'.'+pinyinExtV42(x[1]))))}
   function g1PinyinDemo(x){return typeof pinyinDemoV60==='function'?pinyinDemoV60(x[1],x[0]):x[0]}
 
   function buildLevels(){
@@ -35,10 +35,10 @@
       choice('review','巩固星','答错以后，最好的做法是什么？',['再想一想并复习','把题目关掉','随便点一个'],'再想一想并复习','assets/voice/retry.mp3','start_review')
     ]));
 
-    chunks(V42_TONES,3).forEach((grp,gi)=>out.push(level('zh-tone-'+(gi+1),'chinese','四声 '+(gi+1),'🎵',grp.map((x,i)=>choice('tone_'+x[1],i?'实践星':'听懂星','听完整真人音节，选出相同的带调拼音',uniqueOptions(x[0],V42_TONES.slice(Math.floor((gi*3+i)/4)*4,Math.floor((gi*3+i)/4)*4+4).map(v=>v[0]),gi*7+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
+    chunks(V42_TONES,3).forEach((grp,gi)=>out.push(level('zh-tone-'+(gi+1),'chinese','四声 '+(gi+1),'🎵',grp.map((x,i)=>choice('tone_'+x[1],i?'实践星':'听懂星','听真人发音，选出相同的带调拼音',uniqueOptions(x[0],V42_TONES.slice(Math.floor((gi*3+i)/4)*4,Math.floor((gi*3+i)/4)*4+4).map(v=>v[0]),gi*7+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
     const initials=V42_INITIALS.concat([['b','声母复习','bo1']]);
-    chunks(initials,3).forEach((grp,gi)=>out.push(level('zh-initial-'+(gi+1),'chinese','声母 '+(gi+1),'🔤',grp.map((x,i)=>{const px=[x[0],x[2]];return choice('initial_'+gi+'_'+i,i?'实践星':'听懂星','听完整示范音节 '+g1PinyinDemo(px)+'，选出开头声母',uniqueOptions(x[0],V42_INITIALS.map(v=>v[0]),gi*11+i),x[0],g1PinyinPath(px),'pinyin_'+x[2])}))));
-    chunks(V42_FINALS,3).forEach((grp,gi)=>out.push(level('zh-final-'+(gi+1),'chinese','韵母 '+(gi+1),'🗣️',grp.map((x,i)=>choice('final_'+x[1],i?'实践星':'听懂星','听完整示范音节 '+g1PinyinDemo(x)+'，选出其中的韵母或整体认读音节',uniqueOptions(x[0],V42_FINALS.map(v=>v[0]),gi*13+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
+    chunks(initials,3).forEach((grp,gi)=>out.push(level('zh-initial-'+(gi+1),'chinese','声母 '+(gi+1),'🔤',grp.map((x,i)=>{const px=[x[0],x[2]];return choice('initial_'+gi+'_'+i,i?'实践星':'听懂星','听声母的标准短呼读音，选出声母',uniqueOptions(x[0],V42_INITIALS.map(v=>v[0]),gi*11+i),x[0],g1PinyinPath(px),'pinyin_'+x[2])}))));
+    chunks(V42_FINALS,3).forEach((grp,gi)=>out.push(level('zh-final-'+(gi+1),'chinese','韵母 '+(gi+1),'🗣️',grp.map((x,i)=>choice('final_'+x[1],i?'实践星':'听懂星','听韵母或整体认读音节，选出正确拼音',uniqueOptions(x[0],V42_FINALS.map(v=>v[0]),gi*13+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
     chunks(V42_CHARS,3).forEach((grp,gi)=>out.push(level('zh-char-'+(gi+1),'chinese','识字描红 '+(gi+1),'✏️',grp.map((x,i)=>({id:'char_'+x[0],label:i?'实践星':'听懂星',prompt:'听一听，再按正确笔顺写“'+x[0]+'”',type:'trace',char:x[0],pinyin:x[1],audio:v42CharPath(x[0]),key:'char_'+x[0]})))));
     chunks(V42_READINGS,3).forEach((grp,gi)=>out.push(level('zh-read-'+(gi+1),'chinese','阅读理解 '+(gi+1),'📖',grp.map((q,i)=>choice('read_'+(gi*3+i),i?'实践星':'听懂星',q.q,q.o,q.a,'assets/reading/reading_'+String(gi*3+i+1).padStart(2,'0')+'.mp3','read_'+(gi*3+i))))));
     POEM_COURSE_V6.forEach((p,pi)=>{
@@ -149,7 +149,7 @@
     return {text:pick.text,action:(l&&({chinese:'wag',math:'bounce',life:'heart',english:'sway',science:'look',arts:'dance',thinking:'spin',interest:'bounce'}[l.region]))||'wag'};
   }
 
-  function warmRegion(id){const assets=regionLevels(id).slice(0,2).flatMap(l=>l.tasks.map(t=>t.audio).filter(Boolean));try{navigator.serviceWorker?.ready.then(reg=>(reg.active||navigator.serviceWorker.controller)?.postMessage({type:'prewarm-assets',assets}))}catch(_){}}
+  function warmRegion(id){const assets=regionLevels(id).slice(0,2).flatMap(l=>l.tasks.map(t=>t.audio).filter(a=>a&&!String(a).startsWith('p63|')));try{navigator.serviceWorker?.ready.then(reg=>(reg.active||navigator.serviceWorker.controller)?.postMessage({type:'prewarm-assets',assets}))}catch(_){}}
   window.g1OpenRegion=function(id){if(!regionUnlocked(id))return toast('再收集一些星星，就能来这里');g1CurrentRegion=id;warmRegion(id);showPage('region')};
   window.g1RegionPage=function(delta){const ls=regionLevels(g1CurrentRegion),max=Math.max(0,Math.ceil(ls.length/8)-1),current=Number(g1RegionPages[g1CurrentRegion]||0);g1RegionPages[g1CurrentRegion]=Math.max(0,Math.min(max,current+delta));PGS.region.render();window.scrollTo(0,0)};
   window.g1StartLevel=function(id){if(!levelUnlocked(id))return toast('先完成前一关');g1ActiveLevelId=id;game().activeLevel=id;g1Heard={};R();showPage('level')};
@@ -164,7 +164,10 @@
   window.g1PlayTaskAudio=function(){
     const cur=taskAt();if(!cur||!cur.task.audio)return;
     const btn=document.getElementById('g1Listen'),fb=document.getElementById('g1Feedback');if(btn){btn.disabled=true;btn.textContent='正在听题目和选项…'}
-    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=()=>{g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 题目和选项已听完'}if(fb)fb.textContent='听完啦，现在选答案'};a.onerror=()=>{if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}if(fb)fb.textContent='没有听清前不能得星';};const p=a.play();if(p&&p.catch)p.catch(()=>a.onerror())}catch(_){if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}}
+    const complete=()=>{g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 已听完真人发音'}if(fb)fb.textContent='听完啦，现在选答案'};
+    const fail=()=>{if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}if(fb)fb.textContent='没有听清前不能得星'};
+    if(String(cur.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(cur.task.audio,complete).catch(fail);return}
+    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=complete;a.onerror=fail;const p=a.play();if(p&&p.catch)p.catch(fail)}catch(_){fail()}
   };
   window.g1AnswerTask=function(optionIndex){
     const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
@@ -207,7 +210,7 @@
   window.g1ShowCelebration=function(l){if(!l)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),reply=petReply(l),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div><div class="g1-pet-action ${reply?.action||'wag'}">${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}</div><h2>三星通关！</h2><p>${reply?esc(reply.text):(pet?pet.n+'为你欢呼！':'你完成了三个真实任务！')}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap)};
 
   function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div><h3>${esc(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${esc(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
-  window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;v42Play(q.task.audio,'复习音频没有加载，请重试')};
+  window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;if(String(q.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(q.task.audio).catch(()=>toast('复习音频没有加载，请重试'));return}v42Play(q.task.audio,'复习音频没有加载，请重试')};
   window.g1AnswerReview=function(id,i,el){const g=game(),q=g.reviewQueue[id];if(!q)return;const t=q.task,fb=document.getElementById('g1Feedback');if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';sourceMark(t.key,false);R();if(fb)fb.textContent='没关系，10分钟后再来一次';playCue('retry','');return}sourceMark(t.key,true);q.lastResult='correct';q.lastReviewedAt=Date.now();if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}R();playCue('correct','');setTimeout(()=>showPage('review'),650)};
   PGS.review={title:'📦 错题复习站',render:function(){const all=Object.entries(game().reviewQueue).sort((a,b)=>a[1].dueAt-b[1].dueAt),due=all.filter(([,x])=>x.dueAt<=Date.now()).slice(0,3);g1ReviewIds=due.map(x=>x[0]);let body;if(due.length)body=`<section class="g1-review-card">${renderReviewQuestion(due[0])}</section><p class="g1-task-tip" style="text-align:center">本次最多复习3道 · 还有 ${due.length-1} 道已到期</p>`;else{const next=all[0];body=`<section class="g1-empty"><div class="em">${next?'⏳':'🌟'}</div><h2>${next?'现在先去闯关吧':'今天没有错题'}</h2><p>${next?'下一次复习：'+new Date(next[1].dueAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'认真思考，继续保持！'}</p><button class="g1-next-task" onclick="g1Continue()">继续闯关</button></section>`}document.getElementById('ct').innerHTML=`<main class="g1-review-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>📦 错题复习站</h1><p>10分钟、1天、3天、7天、14天再见</p></div></header>${body}</main>`}};
 
@@ -239,6 +242,6 @@
     dueNow(){Object.values(game().reviewQueue).forEach(x=>x.dueAt=Date.now()-1);R()},
     game
   };
-  document.documentElement.dataset.appVersion='v61-grade1-national-platform';
+  document.documentElement.dataset.appVersion='v63-pinyin-point-read';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

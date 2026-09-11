@@ -1,0 +1,2042 @@
+{
+  "schema": "grade1-pinyin-audio-v1",
+  "source": "https://github.com/hotoo/pinyin",
+  "sourceCommit": "6580657e327edd4a94bd87325ce4d47dc2409126",
+  "sourcePath": "apps/website/docs/public/audio",
+  "license": "MIT",
+  "licenseUrl": "https://github.com/hotoo/pinyin/blob/master/LICENSE",
+  "usage": "native-speaker four-tone pinyin chart; decoded and segmented locally",
+  "count": 406,
+  "files": [
+    {
+      "file": "a.mp3",
+      "bytes": 76311,
+      "sha256": "8edc258a3563793bc35ff12fcc8eb347f92e9b178199d5d3d94b09eb48bf810f"
+    },
+    {
+      "file": "ai.mp3",
+      "bytes": 71511,
+      "sha256": "0fc955d61805f134a8158d5ba6ff9cb8a305a158a66ca08d2ab57d5639c10b8e"
+    },
+    {
+      "file": "an.mp3",
+      "bytes": 70359,
+      "sha256": "deda4463fa1d6d87260e0624bb3ddfe965b9c8c2363adbeea0811a36194d3478"
+    },
+    {
+      "file": "ang.mp3",
+      "bytes": 70551,
+      "sha256": "49209ff0c01fa625c5282532f329950dd2ac8d335f7a6ad6cad2e05a73d05089"
+    },
+    {
+      "file": "ao.mp3",
+      "bytes": 73239,
+      "sha256": "7f4d4a026d955a01dffac3cca0bf46e0d837b9e770386fde1c84b137807e2caa"
+    },
+    {
+      "file": "ba.mp3",
+      "bytes": 69783,
+      "sha256": "43800b88187ed384d67a8a9498e0c70d0e76f6d302a7f16e3204ac9b56bc06ac"
+    },
+    {
+      "file": "bai.mp3",
+      "bytes": 77574,
+      "sha256": "72fb5032b12ef7201ae1951aee4d453a4179de8965c6a413cfab77bbcb8ad7f9"
+    },
+    {
+      "file": "ban.mp3",
+      "bytes": 75275,
+      "sha256": "c17346e764c54789e0a1b2ab7b64b97514dc5082b725c3e71480b4b5a8c9b0b1"
+    },
+    {
+      "file": "bang.mp3",
+      "bytes": 70887,
+      "sha256": "72a12adee3eef594f89fd67c852a473ebb6aa6e18229abb93907c7ad5e5a848a"
+    },
+    {
+      "file": "bao.mp3",
+      "bytes": 72976,
+      "sha256": "82c3a6b55315a0fcf97a648a1a32ec5ab9d5ac3347b85e231b6d5a2d346a4483"
+    },
+    {
+      "file": "bei.mp3",
+      "bytes": 66498,
+      "sha256": "14a425eb8697a34a172d6ea0a1672ab8c0686a474a813c43d20e3c598416584d"
+    },
+    {
+      "file": "ben.mp3",
+      "bytes": 62109,
+      "sha256": "5ef34c121a1a3b03ca11ed867896adcdc304d53eb9d67d20234adfdbf7733d64"
+    },
+    {
+      "file": "beng.mp3",
+      "bytes": 74230,
+      "sha256": "8b946810fbf955856c5374eb4e5a356fc0906640a0fcaa91be6bcb28402cff50"
+    },
+    {
+      "file": "bi.mp3",
+      "bytes": 71096,
+      "sha256": "5982791be3b3177e3723eaeed1ab418d29d4aca8f57e0c58302380e6901cece7"
+    },
+    {
+      "file": "bian.mp3",
+      "bytes": 75484,
+      "sha256": "b598ee8df3a94298724b1a793665d097508de64f973b8d0c2ebd1eb3368f4e97"
+    },
+    {
+      "file": "biao.mp3",
+      "bytes": 70887,
+      "sha256": "99dae4a8a8556865537405704f3eb6d1b222536fc4996e126a3d246a824b20cc"
+    },
+    {
+      "file": "bie.mp3",
+      "bytes": 83216,
+      "sha256": "8f54aa90356e0c076fdee31fa9eed7987ba5cf4a7bc4db8a77ae347656360201"
+    },
+    {
+      "file": "bin.mp3",
+      "bytes": 73603,
+      "sha256": "8549a423cb24ac055c0492228419e2623a5d73504e6f40b2814825f38cd7af08"
+    },
+    {
+      "file": "bing.mp3",
+      "bytes": 69215,
+      "sha256": "747ad2d1ab41da2065822d566e3974a0bdf82a10e9a933740c70c4b1e0b6e397"
+    },
+    {
+      "file": "bo.mp3",
+      "bytes": 69783,
+      "sha256": "4baaa766e9356ca6d30179ab693afb9efeab958faba2065a91ccf84407cafe91"
+    },
+    {
+      "file": "bu.mp3",
+      "bytes": 73185,
+      "sha256": "5d745df2602b4c51e8bd3f3e3c0b1552266337a4f74cedad7f0d84f144cc67cb"
+    },
+    {
+      "file": "ca.mp3",
+      "bytes": 63063,
+      "sha256": "f2d259189d7c22d0102cc740d495ecf382adc62067462535fcc41c934bf91536"
+    },
+    {
+      "file": "cai.mp3",
+      "bytes": 65367,
+      "sha256": "25981a48d58368971ecac8c60b4c9cd3860728c8349db9f6f1c40ab775f8e728"
+    },
+    {
+      "file": "can.mp3",
+      "bytes": 77992,
+      "sha256": "ca9acf25633dfcfefdd351d4fc5df425da17975229c7561d9a765606a23e647f"
+    },
+    {
+      "file": "cang.mp3",
+      "bytes": 66135,
+      "sha256": "4fceea807d37ef354207e37662db4a33b9d0682c34c5561971452c3e3948de5d"
+    },
+    {
+      "file": "cao.mp3",
+      "bytes": 75927,
+      "sha256": "720426143ad12ac916152f3c8336df08b8cbc0c3fe6aa6d29af42ac90c336b82"
+    },
+    {
+      "file": "ce.mp3",
+      "bytes": 78039,
+      "sha256": "93ed2bd044601acf5d8eba529be94e581bac79615249c9ef37b14781d6e978de"
+    },
+    {
+      "file": "cen.mp3",
+      "bytes": 67479,
+      "sha256": "b49563f96c56868b6615e3903c7cc8ad8cad66b16d8d81083e3134f24b08b623"
+    },
+    {
+      "file": "ceng.mp3",
+      "bytes": 66135,
+      "sha256": "ada19637e3b3618e9b85eccb9445e94c73f49d9be5ed1890322b92fd12c3c98e"
+    },
+    {
+      "file": "cha.mp3",
+      "bytes": 70359,
+      "sha256": "847a52e704e58cb2c8cecb8e27280cf05aa7b1106c0048b7e036170a8ab3cc68"
+    },
+    {
+      "file": "chai.mp3",
+      "bytes": 63572,
+      "sha256": "3a78c208be9d5cb3da5cf4ef1c1401b3c9a1d0aacb55a26549fc4236dac8e2a4"
+    },
+    {
+      "file": "chan.mp3",
+      "bytes": 75693,
+      "sha256": "9d069fc332db78221ce050d337b606b19fe298d0e478e84752ec158d90eb4b35"
+    },
+    {
+      "file": "chang.mp3",
+      "bytes": 74230,
+      "sha256": "a9663a2695a5a76698b561e418ac1866ead6759f62b8067cec6630f2422e316c"
+    },
+    {
+      "file": "chao.mp3",
+      "bytes": 70551,
+      "sha256": "2e2ab76af3f676fd9353934d1585c09229a5843c1bc580cb7351c3cc6494fd59"
+    },
+    {
+      "file": "che.mp3",
+      "bytes": 74007,
+      "sha256": "7fd90e7243f263bb9f32222ad715a176f0d329e8d048fed24d7901dce2bb4944"
+    },
+    {
+      "file": "chen.mp3",
+      "bytes": 69783,
+      "sha256": "e91a4b201c450729ff3722efb8dcd9b4d66542246e1505c26ff3cf996b4aa93b"
+    },
+    {
+      "file": "cheng.mp3",
+      "bytes": 73185,
+      "sha256": "0594dbb15196d748bf13cb62cbc5aa93850f4c8510e7ba6fcc219070f669a056"
+    },
+    {
+      "file": "chi.mp3",
+      "bytes": 63639,
+      "sha256": "b2c96317354f0f1f135334de63999232d6495b1a9bcd2fdabb5c9706c8714bb1"
+    },
+    {
+      "file": "chong.mp3",
+      "bytes": 71514,
+      "sha256": "07d49f38188e0547237a148072bbe74d39f9482e3ab56ab05ca96837c8571361"
+    },
+    {
+      "file": "chou.mp3",
+      "bytes": 77574,
+      "sha256": "99266fbc1c648b81eb426d7bdb02c63e31f00a3cd10da352869355bcc275204f"
+    },
+    {
+      "file": "chu.mp3",
+      "bytes": 75066,
+      "sha256": "bbcd7932fa0b6dd7d4b02131c5130f7e70e897fc2b4cf85a3860e68480e8affa"
+    },
+    {
+      "file": "chua.mp3",
+      "bytes": 76111,
+      "sha256": "5169c18bd6a67493ada151cf171881e602641a5139053ef8003a5d31b05dab04"
+    },
+    {
+      "file": "chuai.mp3",
+      "bytes": 73394,
+      "sha256": "a38f6bf7b87b816866a52dada04cbe205f4733ecaeadc2dd27415498320e0c4d"
+    },
+    {
+      "file": "chuan.mp3",
+      "bytes": 72767,
+      "sha256": "93ea10ef1ecc9054d331a17e0f4ad2b3ff5ea0e68d04067f21f62b895b6925b2"
+    },
+    {
+      "file": "chuang.mp3",
+      "bytes": 72976,
+      "sha256": "6dc8a8081ea82e706470a0c8ba95da1e4b9c238da2abddec976856810c87e521"
+    },
+    {
+      "file": "chui.mp3",
+      "bytes": 67334,
+      "sha256": "f0922df7257fb2ad31412c2e917ea3a23eceed0986a160ecbdd5d6dc6b2b8b65"
+    },
+    {
+      "file": "chun.mp3",
+      "bytes": 68170,
+      "sha256": "5cf61710be999647afca10d5a2268f798c5a00d3502f2d3715838579f67f6f18"
+    },
+    {
+      "file": "chuo.mp3",
+      "bytes": 77783,
+      "sha256": "ee2e80b25e923121107a2e3e4807d0c3b20e68b643fe108dd8bf900dd70d9c52"
+    },
+    {
+      "file": "ci.mp3",
+      "bytes": 65662,
+      "sha256": "eac5aa30fc4077f5a2c0091b11abeee06f79ed1ddebe27bf59f5d328cdb8ef65"
+    },
+    {
+      "file": "cong.mp3",
+      "bytes": 71096,
+      "sha256": "9b2474014326c81c008bb94a0245a97bdd0344a261e4ba39c0945044f1cca3aa"
+    },
+    {
+      "file": "cou.mp3",
+      "bytes": 80709,
+      "sha256": "e9479a8025c505e8f4c5402837d5b70b885f4530bb3e46474a38da9efc98c99d"
+    },
+    {
+      "file": "cu.mp3",
+      "bytes": 69842,
+      "sha256": "59ef8c8923af42dc12bc29c3f40a4612fd74ebf7889bd6360615b0b0fc39840f"
+    },
+    {
+      "file": "cuan.mp3",
+      "bytes": 70469,
+      "sha256": "f7662017d3b94465d5472dfcfd4605b962fb7405be049b506cb178d71a84eeb3"
+    },
+    {
+      "file": "cui.mp3",
+      "bytes": 69215,
+      "sha256": "ac41c22c50e13fb71c1b6e2be3e4a116cd7914070d56b75b4ec081c8552d58f2"
+    },
+    {
+      "file": "cun.mp3",
+      "bytes": 66498,
+      "sha256": "e9c8cda670237a87c8a9f448cfa3654175bd17b683dc3685eba1957e784b1ebf"
+    },
+    {
+      "file": "cuo.mp3",
+      "bytes": 74230,
+      "sha256": "61c5a7182c6235e698af2e738212867c4dd895dc824e73758cbd810534e6c22e"
+    },
+    {
+      "file": "da.mp3",
+      "bytes": 65871,
+      "sha256": "be26bc57977d8cd9ade6ba9fab26377b0c20b8937334626d3e5b80ec0644f106"
+    },
+    {
+      "file": "dai.mp3",
+      "bytes": 74230,
+      "sha256": "5da62b0438b8952ec2d7c566c3ff0e5d03ffa2493ea74ea33e1f153cd1e12e0e"
+    },
+    {
+      "file": "dan.mp3",
+      "bytes": 72141,
+      "sha256": "9c4d6d8be430cc4365420c5f51f794a948cac40c27606e0a8f6acf6b02504e48"
+    },
+    {
+      "file": "dang.mp3",
+      "bytes": 71932,
+      "sha256": "02c2363ccc13d014e304e9f74b13e36d942574499b2a76de547a0f99f8a13975"
+    },
+    {
+      "file": "dao.mp3",
+      "bytes": 71723,
+      "sha256": "e4a14dec41e971597254b3f35ff8dc6499272d8594be3e97d2acbc163f6ec7c8"
+    },
+    {
+      "file": "de.mp3",
+      "bytes": 74230,
+      "sha256": "5fd9f05055ccde7294a714254e15cd5929ad571d21e1c11586c4e0795412cf75"
+    },
+    {
+      "file": "dei.mp3",
+      "bytes": 64826,
+      "sha256": "620a5600d238a43d7cd67bc9d89468396936b3598c48e98bbc3391d18fd48746"
+    },
+    {
+      "file": "den.mp3",
+      "bytes": 63639,
+      "sha256": "63a8f506e0a1cc584165ca011f63b38f0e763055f1d4263162d1ef4b4a0ad065"
+    },
+    {
+      "file": "deng.mp3",
+      "bytes": 71514,
+      "sha256": "d1e9027d27cbe33d9725ee3ca4a3f97cd0c905fe85e7c9e062af1ab5db679007"
+    },
+    {
+      "file": "di.mp3",
+      "bytes": 68379,
+      "sha256": "c26e15ca0b4532a7fa30b435d85a15833952269c9e9081424c97d72942332526"
+    },
+    {
+      "file": "dian.mp3",
+      "bytes": 77992,
+      "sha256": "72803d39c96fc22a7b0e1b2237602fc388fad417509933028ebdc9d7feda8459"
+    },
+    {
+      "file": "diao.mp3",
+      "bytes": 72558,
+      "sha256": "ea54188bfacf27d7f3ddb617a98f7f30f98238e80992eb0586b2add72f034c65"
+    },
+    {
+      "file": "die.mp3",
+      "bytes": 70678,
+      "sha256": "d931cbdfaa5577affedd32723cbe5bc5d337cfe184bdae508199f1039ee6dea6"
+    },
+    {
+      "file": "ding.mp3",
+      "bytes": 69842,
+      "sha256": "ecf56485f1f5b1740a74bd376d525001caec5744d0b1389a6243f4b2ad21908d"
+    },
+    {
+      "file": "diu.mp3",
+      "bytes": 73603,
+      "sha256": "b080b9d96735b0272c970318aecfcfcf7a3f971d0373408f3ec2e54e9f2a65bb"
+    },
+    {
+      "file": "dong.mp3",
+      "bytes": 65662,
+      "sha256": "9617b6c957a481baacdd4df28de70267f660e3bb24d33aeb2c1a2d36e176c1b6"
+    },
+    {
+      "file": "dou.mp3",
+      "bytes": 72141,
+      "sha256": "a5c389ea9713d906cb9ee676f957ad7917139958321a923e2fcb7cb92a31063e"
+    },
+    {
+      "file": "du.mp3",
+      "bytes": 67752,
+      "sha256": "acb85f6989f809d368cd2a194323d86b8947369cfbdd8f6b0ad147401a71e3b1"
+    },
+    {
+      "file": "duan.mp3",
+      "bytes": 70887,
+      "sha256": "0f24bc1d641c7ce0a7839870392185e4fd8cb770432a7e9e42b64cf6861ca840"
+    },
+    {
+      "file": "dui.mp3",
+      "bytes": 74230,
+      "sha256": "02083da65ee33363a74da1ce3da49ef324b1c5fe1f12f46982e6ce69e85d28ea"
+    },
+    {
+      "file": "dun.mp3",
+      "bytes": 69842,
+      "sha256": "acbeb6790254727c0bd42c0717bf1e10f01ebe4d24032327a656ed74f9997905"
+    },
+    {
+      "file": "duo.mp3",
+      "bytes": 79664,
+      "sha256": "ce543f3d1000f459409be78496b3170029a61c07e4aadd0ddae3cbda6fdbabed"
+    },
+    {
+      "file": "e.mp3",
+      "bytes": 69975,
+      "sha256": "6deb9e39547db16d421e139f1fd48ee93a9ae0f9ea5f834b20a53372e1e35b12"
+    },
+    {
+      "file": "ei.mp3",
+      "bytes": 63063,
+      "sha256": "2ec11e395aa41f90c61db7d3ce340b3cb97d28122f20be4e2feffac0eedffb69"
+    },
+    {
+      "file": "en.mp3",
+      "bytes": 63831,
+      "sha256": "f80778ab001c3ebe5808fdbfb908ee65ad8f76f7f6ad4ab3a4eb29d5b5f0e2f8"
+    },
+    {
+      "file": "eng.mp3",
+      "bytes": 64791,
+      "sha256": "5b5108ff250a12010da93d5a83b820d2501e53bdf54da78e2c717b8d73e696f0"
+    },
+    {
+      "file": "er.mp3",
+      "bytes": 69783,
+      "sha256": "9578b4b4fa4f8440975ae44a753b5cea789b552a12a1eb59e366c167d811cd77"
+    },
+    {
+      "file": "fa.mp3",
+      "bytes": 62679,
+      "sha256": "4d3d4e263193cfa81a9ddfe4d6ae8914628ca9e680c9fc4b90c085bbdbae7c17"
+    },
+    {
+      "file": "fan.mp3",
+      "bytes": 71723,
+      "sha256": "06e9fe009d19de4c9d3c0ef430b2b015ca9131bcbf1f5836e115db13516ae4f0"
+    },
+    {
+      "file": "fang.mp3",
+      "bytes": 74439,
+      "sha256": "3081eaf8094214ba53801074fdf16141c45916e1fcfa258a540bf4afe7800baf"
+    },
+    {
+      "file": "fei.mp3",
+      "bytes": 62527,
+      "sha256": "5789c50befc507ee048a4bb9ce74b8c73e4cd9acc7b8a93f2f4664a77fcd6089"
+    },
+    {
+      "file": "fen.mp3",
+      "bytes": 71096,
+      "sha256": "4a0651447a4e30e3f0a443fd2e38348fa3396542493a8dfa33f5ec204db5a65f"
+    },
+    {
+      "file": "feng.mp3",
+      "bytes": 77365,
+      "sha256": "75329fc815f5929699a3d62d47945f5ef6222e5a25f1b387cd7a2d8077bbf54b"
+    },
+    {
+      "file": "fo.mp3",
+      "bytes": 72141,
+      "sha256": "ae622c58d436f646fad97d9ad3da81dfa365cdf6d70686069884743a756e7652"
+    },
+    {
+      "file": "fou.mp3",
+      "bytes": 67334,
+      "sha256": "a94a72de3cec3d904646fe421ca35a4487286f90fdfb725e388c7561a38983f9"
+    },
+    {
+      "file": "fu.mp3",
+      "bytes": 69006,
+      "sha256": "91a66a00d2ce1d63d69e455725a897d9d738ed1ee6ce21bb1da12543081c895a"
+    },
+    {
+      "file": "ga.mp3",
+      "bytes": 65244,
+      "sha256": "597fd33f11814e06de7c5fbebe69cf1b24e941498b04f9b0c1d84cd7355cd808"
+    },
+    {
+      "file": "gai.mp3",
+      "bytes": 64617,
+      "sha256": "34ab5f7cfa5ec97b393fd5ec25571b6c1d08ed69f990f481a486fb6ada4c41a9"
+    },
+    {
+      "file": "gan.mp3",
+      "bytes": 69215,
+      "sha256": "587ed1da8bdaf81adbda6b91ef0d75f36c89435259a07a322da3ffb09f7bc3fb"
+    },
+    {
+      "file": "gang.mp3",
+      "bytes": 69215,
+      "sha256": "fffcc7ad478970bc032df7b308eb1a44aa9de21ed981f27b2f8123c4ae355b57"
+    },
+    {
+      "file": "gao.mp3",
+      "bytes": 75066,
+      "sha256": "b159ba81861a63914260d0ecfa52aecb8699c9ca76ee5038ddb53b9a1d3e9b2b"
+    },
+    {
+      "file": "ge.mp3",
+      "bytes": 73394,
+      "sha256": "ac84d4c486a9eb7e93f537c0dc0bf76f204287e77e6b84f4162afdcf25cf17f6"
+    },
+    {
+      "file": "gei.mp3",
+      "bytes": 62109,
+      "sha256": "76e139b976d6073da6ea4c3b6c2594be5a589f3bfbd40d2496f630152cec9d53"
+    },
+    {
+      "file": "gen.mp3",
+      "bytes": 69207,
+      "sha256": "f4132bc114e3aab3eb87e34b4eaa33c50490de2175833469bf1f1b36ede00f7f"
+    },
+    {
+      "file": "geng.mp3",
+      "bytes": 73185,
+      "sha256": "17a9e1522909bf545810e16eaf55a0034b6139c2ae3561d08bb5310fa6f3155f"
+    },
+    {
+      "file": "gong.mp3",
+      "bytes": 65871,
+      "sha256": "79709f27b554c400dcce6427de3e9a8c23492cfeedf662ba93610e8e7fe38e98"
+    },
+    {
+      "file": "gou.mp3",
+      "bytes": 75902,
+      "sha256": "92327f530f8ec68ec79f1f6631e9311d48a6786ee8d121d1d14ba1303f276b89"
+    },
+    {
+      "file": "gu.mp3",
+      "bytes": 73603,
+      "sha256": "6a05e59b499e3aebd96fcabf62b0c8ad5e0c09a5159b8ec9731065269f1e31b0"
+    },
+    {
+      "file": "gua.mp3",
+      "bytes": 72976,
+      "sha256": "93faee3e8a5c3a59710dfecde5ec66182bba5b9d79adc20fd286a0a3e0ff6236"
+    },
+    {
+      "file": "guai.mp3",
+      "bytes": 76320,
+      "sha256": "2ebb216408276fc236769fd8b881328021fb62466b2f3530bdb89b01b496688d"
+    },
+    {
+      "file": "guan.mp3",
+      "bytes": 76320,
+      "sha256": "5675c811a7f1f57121882fbb2011af949b9df8f4077be96a4b38fe1abc1ebc4b"
+    },
+    {
+      "file": "guang.mp3",
+      "bytes": 70678,
+      "sha256": "4472504df0167f5a5f4d04ba0c84cc16dbf129e5ac790a60d6041b8c8a1ad601"
+    },
+    {
+      "file": "gui.mp3",
+      "bytes": 75902,
+      "sha256": "1f1d1e342d6b0ab8bfc547efcf07bf93dfa1d911eb3ad0dba3eb7c077afd1496"
+    },
+    {
+      "file": "gun.mp3",
+      "bytes": 72767,
+      "sha256": "f80e262dd4daa024962fe278d5d9c68ceca68d84ae322f31d06700e4ff28b824"
+    },
+    {
+      "file": "guo.mp3",
+      "bytes": 77365,
+      "sha256": "c1bf340d60741bc250a7f2b7076d16c15a449788494223d21193bb45b221ca64"
+    },
+    {
+      "file": "ha.mp3",
+      "bytes": 64599,
+      "sha256": "331f9c5055ffaef41e0b13221d17454b4337293b5a2e473bac89482f09294894"
+    },
+    {
+      "file": "hai.mp3",
+      "bytes": 62295,
+      "sha256": "db569cc749e483a19ed99ab91fffad69872bba50e01cc11a472651e7091c383a"
+    },
+    {
+      "file": "han.mp3",
+      "bytes": 71096,
+      "sha256": "7dd7809a904e9370c6c251712e6fc8363dd08311f98e6a7826a4db6210846fb1"
+    },
+    {
+      "file": "hang.mp3",
+      "bytes": 75275,
+      "sha256": "e7b5c182b947f9fbb45e9d3adde6b24b2c47edfb73e5f4f312a7a3a796d5d987"
+    },
+    {
+      "file": "hao.mp3",
+      "bytes": 69591,
+      "sha256": "349d668feb3af4952b3bf7fb5362a42bddc48251b9a7c28e043d25a4a56e9c2c"
+    },
+    {
+      "file": "he.mp3",
+      "bytes": 67479,
+      "sha256": "7a59fc70d00b4bee3b19c172afc24abb78388f0b75ab6d867da06ecc30db8dac"
+    },
+    {
+      "file": "hei.mp3",
+      "bytes": 68055,
+      "sha256": "e291ab518c0a6167027ae5645e664bd91e694c27f813dd1592fede92ad85f925"
+    },
+    {
+      "file": "hen.mp3",
+      "bytes": 66711,
+      "sha256": "c83106811950824d26c13292a75a0c557e751e0794c5572328b635f5f264d8be"
+    },
+    {
+      "file": "heng.mp3",
+      "bytes": 67334,
+      "sha256": "df75f81d00e916edcc4c5633a0057030bb5d279b8ffcb1cbe94e35cadc796d1e"
+    },
+    {
+      "file": "hong.mp3",
+      "bytes": 72976,
+      "sha256": "71633e1f47930163c099d6683b0827d6293f51bc98806381c9b2f09ce7a8fef7"
+    },
+    {
+      "file": "hou.mp3",
+      "bytes": 75484,
+      "sha256": "c124fd2d72770e438fafa3a8b145f40bf7353abff479079bec00d03a2d902919"
+    },
+    {
+      "file": "hu.mp3",
+      "bytes": 71514,
+      "sha256": "dd489c078b640158b39947cf9eca667ea8b8d0eddc99e638b95890f2f5fedc5c"
+    },
+    {
+      "file": "hua.mp3",
+      "bytes": 73394,
+      "sha256": "bf3e5c7562ea9aa10589a050d9394354e6d4ed80dd683998eac1886fd1e5ed31"
+    },
+    {
+      "file": "huai.mp3",
+      "bytes": 73603,
+      "sha256": "b834eb3cbae7ea2185e07900f5aa30404e1fbe9f53dc905b8e1f7c53ad1ce2e2"
+    },
+    {
+      "file": "huan.mp3",
+      "bytes": 71723,
+      "sha256": "bf11b4b8949a3364f8d369f9ff1f5370c64abf3f362934041c4aa12416cf2479"
+    },
+    {
+      "file": "huang.mp3",
+      "bytes": 72976,
+      "sha256": "1d69f071206972bd52cf737397d8e2154fe9bea47e36f9e9fef38284db63774d"
+    },
+    {
+      "file": "hui.mp3",
+      "bytes": 77365,
+      "sha256": "126895939751292ce787d1ad5d9b7abc8567d64fe639428be6e835cad0646dff"
+    },
+    {
+      "file": "hun.mp3",
+      "bytes": 71096,
+      "sha256": "b0ff8c75f096754643dd9e0d92aca586fc51363a57fac62d0c35f139211e52cd"
+    },
+    {
+      "file": "huo.mp3",
+      "bytes": 76111,
+      "sha256": "71675ecc3304f47e64eb5beb27d6b215c0c22d625cfbe2d6140cdf9fb1f6c87c"
+    },
+    {
+      "file": "ji.mp3",
+      "bytes": 71932,
+      "sha256": "9be1ddcfad4a703a8a8e2ed4bdee8792dd2060bade82c9bf954762769baaa716"
+    },
+    {
+      "file": "jia.mp3",
+      "bytes": 71096,
+      "sha256": "e2a25a267b2a8028782384cab496e978b8f5bd9e2752b4253e082e896333ce61"
+    },
+    {
+      "file": "jian.mp3",
+      "bytes": 65871,
+      "sha256": "b9346577449e7fd8f8ad06030ab8eb8c7be4d31db12d49a938daf9be7e4550c1"
+    },
+    {
+      "file": "jiang.mp3",
+      "bytes": 70678,
+      "sha256": "83472c55c27895a4a7fa9b9433023fc27d110c3adbee89623140fced033d091f"
+    },
+    {
+      "file": "jiao.mp3",
+      "bytes": 79455,
+      "sha256": "f56b8975ca31e0a7dfaee316b161b4eb9f516e867d6fef7901599075f4079702"
+    },
+    {
+      "file": "jie.mp3",
+      "bytes": 71932,
+      "sha256": "be4ba28d2e22ba0222d60a04cc101b0b5db218661e3ff50afaaf9ea6683a7b04"
+    },
+    {
+      "file": "jin.mp3",
+      "bytes": 65662,
+      "sha256": "c253ab8c305a9c92f6a370e3a753d1d00d9f5e8b406389b191ac6049f670fbbf"
+    },
+    {
+      "file": "jing.mp3",
+      "bytes": 74230,
+      "sha256": "6b879ce2f37edf6befd3f0ba104f8d873c47c361d923a4f73ea5512f3b0d05f7"
+    },
+    {
+      "file": "jiong.mp3",
+      "bytes": 78828,
+      "sha256": "417a259e805a194975c619a9a61ec1344f8068554b4ab05615348f1a4460540d"
+    },
+    {
+      "file": "jiu.mp3",
+      "bytes": 75066,
+      "sha256": "843f812919bf64a3923bdb0672fa7f81b99a04bee648d0ebfbaaa06ac6e0702e"
+    },
+    {
+      "file": "ju.mp3",
+      "bytes": 71305,
+      "sha256": "2e2389f622cbc22dc81dff33907e207fd580c46e7594246b0cce1873b3d88090"
+    },
+    {
+      "file": "juan.mp3",
+      "bytes": 75484,
+      "sha256": "7a647391138f89e82050481124141317c7bbb0ccf880449a58147706e534fc15"
+    },
+    {
+      "file": "jue.mp3",
+      "bytes": 72558,
+      "sha256": "140d5f14ec0b87b4ea1f81a0979c2d04339a0cb4314971cb3bb9ffdc9203f6a6"
+    },
+    {
+      "file": "jun.mp3",
+      "bytes": 69215,
+      "sha256": "d3ba004b9faf90717e1efe43499ca48684e3c3cdbb15019125c7ad732356aafa"
+    },
+    {
+      "file": "ka.mp3",
+      "bytes": 65175,
+      "sha256": "3670a7103663dc6c4715d924086b14bac4a8e7e495d4f9cd92134806b6778fc2"
+    },
+    {
+      "file": "kai.mp3",
+      "bytes": 61901,
+      "sha256": "2e61c1285cf95db3d57b93f0f1180d59684b26b4c5dcff722146638f22668d05"
+    },
+    {
+      "file": "kan.mp3",
+      "bytes": 73603,
+      "sha256": "521af628e98222ee47c880bfb13cf11579136cdbe3515b2b7cd9f5c2079f4582"
+    },
+    {
+      "file": "kang.mp3",
+      "bytes": 76111,
+      "sha256": "a1ad9e468fbd45ecd5af45fd446d959cf38ac851053e6035eb8f9b8cb423b51c"
+    },
+    {
+      "file": "kao.mp3",
+      "bytes": 74007,
+      "sha256": "165054886d655c212fc5f2e74d6b8a77c682d21945fceb84b822d7d2f9fd7b17"
+    },
+    {
+      "file": "ke.mp3",
+      "bytes": 64023,
+      "sha256": "fbe9e5aafafefe35c516ef75bab45270953bbad2fef0a6993881b98a84db8eee"
+    },
+    {
+      "file": "kei.mp3",
+      "bytes": 66711,
+      "sha256": "aebe0ba700c2964e7b2c0e751b520660aea876331d6492c9e95ddba771ed7f66"
+    },
+    {
+      "file": "ken.mp3",
+      "bytes": 69015,
+      "sha256": "68a70f1522a17bd31b8d6e35e5f9273c5ea3ff3e090a7983089090bf452f81c0"
+    },
+    {
+      "file": "keng.mp3",
+      "bytes": 68797,
+      "sha256": "8964dba057d0982d2dc6a5bbf158ecdd39107cb4997db7b8c617e3f6e7d9a604"
+    },
+    {
+      "file": "kong.mp3",
+      "bytes": 73603,
+      "sha256": "4095fdd28879dc3e1caa5101ee1545ebf218d2d790023579b480fff6b9ca0eeb"
+    },
+    {
+      "file": "kou.mp3",
+      "bytes": 76529,
+      "sha256": "150e420bccb025c3ce7356e205b16e8c7ab787543a321e5c3053d10d092a31c0"
+    },
+    {
+      "file": "ku.mp3",
+      "bytes": 75275,
+      "sha256": "a686b114994129a907d0c0b99d623efae3ff239a0d17fe9a7eb66ac4b13dce06"
+    },
+    {
+      "file": "kua.mp3",
+      "bytes": 72558,
+      "sha256": "3560674266063167389924800c9a96ef97bfe8a1bbd1d07304bda78e3da8476b"
+    },
+    {
+      "file": "kuai.mp3",
+      "bytes": 78201,
+      "sha256": "9219bd01a4bdd6c151a6a1c5fc48d92570b70ab06a5fb53b5812f1bb3a062450"
+    },
+    {
+      "file": "kuan.mp3",
+      "bytes": 75693,
+      "sha256": "e951ae141bb3dbfebc009d35902a17fdb5a99691603b1124e2f84e3667539ce4"
+    },
+    {
+      "file": "kuang.mp3",
+      "bytes": 73394,
+      "sha256": "5e1e41dce20ebd396d95e7058cf19c01458cfa771935a7d27d7674164807a34f"
+    },
+    {
+      "file": "kui.mp3",
+      "bytes": 71723,
+      "sha256": "f5d336f2b2e3360e77462fcba60765e8d45711069e6f2b149e80abd8a0986331"
+    },
+    {
+      "file": "kun.mp3",
+      "bytes": 73812,
+      "sha256": "5a6a9ebebdeccfca1c0c229fe1b6b58830abd6bdfc77c881cab3c3c95423b3e9"
+    },
+    {
+      "file": "kuo.mp3",
+      "bytes": 80709,
+      "sha256": "a508b03b4944a9895e8429c99c97d63e4e935546c938996c81a44b5efea7f838"
+    },
+    {
+      "file": "la.mp3",
+      "bytes": 65871,
+      "sha256": "8372f6299e92b7c84a85b2f6680d9334edb141e24cca48a26228062549044b22"
+    },
+    {
+      "file": "lai.mp3",
+      "bytes": 69842,
+      "sha256": "61b34d98a44984dcbb7fd2374d3afd2d0eca7314f866efc8ac4e5d2d55a777db"
+    },
+    {
+      "file": "lan.mp3",
+      "bytes": 68797,
+      "sha256": "e4b34798194d383ac5eb45fd3d1a3670e7145ea5eed3132098c6e6c45965f5ff"
+    },
+    {
+      "file": "lang.mp3",
+      "bytes": 74230,
+      "sha256": "512d4fd9fa35e46b8c0d741e5c9db05f183fc6150305891eea6b3e785b68a434"
+    },
+    {
+      "file": "lao.mp3",
+      "bytes": 70887,
+      "sha256": "279640c2dfa3fba92bfbbca60c92cb39d630b1028d7166b9aa6d346777460922"
+    },
+    {
+      "file": "le.mp3",
+      "bytes": 69633,
+      "sha256": "29cee6d1c63e85d1d0a153997ca0b6267d2d8b6c15122ceae7763ed8e8ccc4d8"
+    },
+    {
+      "file": "lei.mp3",
+      "bytes": 60438,
+      "sha256": "f338e8ca54228d30604b732241d5216c26a6a0a3bbcd7238716eaa93e39e0774"
+    },
+    {
+      "file": "leng.mp3",
+      "bytes": 71305,
+      "sha256": "4cc0531eed4cc2b9c29433174a654fdc78efa180aeb23dc501749edc7c2c5281"
+    },
+    {
+      "file": "li.mp3",
+      "bytes": 67543,
+      "sha256": "9d793122630a6f12ceecfc69d01aca7b2cda5a4b2f3fd75904f6e5c82f0b2882"
+    },
+    {
+      "file": "lia.mp3",
+      "bytes": 69842,
+      "sha256": "585af0662c84c8360645b8936f441085fd08b9f7ceb19e945eeda6a29907c9b7"
+    },
+    {
+      "file": "lian.mp3",
+      "bytes": 70469,
+      "sha256": "329a78b5f9251a95a6297e88d557dd92f8d87361fd85bb80e46320a715523010"
+    },
+    {
+      "file": "liang.mp3",
+      "bytes": 67752,
+      "sha256": "96c30bfe91da5d4f6f294d751aa58ed8a5c89609c004764a3b7ea937517bcc11"
+    },
+    {
+      "file": "liao.mp3",
+      "bytes": 76738,
+      "sha256": "ffdcdd1f5b3ee17a3f59874d28bbf4a91f7d9672ea0a55f564f546bd9da67473"
+    },
+    {
+      "file": "lie.mp3",
+      "bytes": 76529,
+      "sha256": "8c5448bc1dcf6654e683766db604ad5f8ab58bb6abd1616b6b076aebd0167bb4"
+    },
+    {
+      "file": "lin.mp3",
+      "bytes": 67125,
+      "sha256": "8792a75f1d2efdc4afe2eb8a877864b5fa480cb9fe07b5785752be55287f5899"
+    },
+    {
+      "file": "ling.mp3",
+      "bytes": 68797,
+      "sha256": "505f5b517a560c20c357894e500912f8c1fd87a000ae4ac710d8ae1da10c5c0b"
+    },
+    {
+      "file": "liu.mp3",
+      "bytes": 70051,
+      "sha256": "6fbb71ceb1466c73686e615b893b876893c82cd619754138f8f37a55c08237b2"
+    },
+    {
+      "file": "long.mp3",
+      "bytes": 69006,
+      "sha256": "ea5abed510b93a62a484bfe5183d317e8596c65997542b03699805490a869acc"
+    },
+    {
+      "file": "lou.mp3",
+      "bytes": 64826,
+      "sha256": "68b30d8fb645a9fb6a4f56666bcae849a94526277e015a82df3e209b6f78aaa5"
+    },
+    {
+      "file": "lu.mp3",
+      "bytes": 74439,
+      "sha256": "c8554e69ee60e18633288a2cc96097c0474a564014dd17394dd9a162951f735b"
+    },
+    {
+      "file": "luan.mp3",
+      "bytes": 71723,
+      "sha256": "b5d90edb3fa275036e2abafcc8798e8a364ae505d223ac0bbbb7d7b8131ae97f"
+    },
+    {
+      "file": "lun.mp3",
+      "bytes": 68379,
+      "sha256": "e313673ea1685bd9e119d06a0f2d64ccd98357b2a6994181ed9a7c0678ddf0d9"
+    },
+    {
+      "file": "luo.mp3",
+      "bytes": 71305,
+      "sha256": "d0c7703148494bfb05b5b00565e32663ec740f9fc425614cfe9d6a573e45e557"
+    },
+    {
+      "file": "lv.mp3",
+      "bytes": 74021,
+      "sha256": "c82fa9ba3bb73aebd7dd7c96daf595eef6615e04dbd9633642bc54c9fce4ee8e"
+    },
+    {
+      "file": "lve.mp3",
+      "bytes": 74648,
+      "sha256": "0b4e45922bd2023f99998e14b4705cb41c70ab94b35acd43cad03b4c202c4c4a"
+    },
+    {
+      "file": "ma.mp3",
+      "bytes": 65367,
+      "sha256": "5712c1ed1bf17c8e90230539b78c908aafa846998f24162e0e7c14aa3c40b91b"
+    },
+    {
+      "file": "mai.mp3",
+      "bytes": 71514,
+      "sha256": "3db2a6e07d69bd8f01ff1808b7e55dde7723209da7a9d43d91f673f9c837de40"
+    },
+    {
+      "file": "man.mp3",
+      "bytes": 68631,
+      "sha256": "b3f0ff54e265c7f3b8a68bec7d29769826a92f1a8d3a2c07727209ff14c9164e"
+    },
+    {
+      "file": "mang.mp3",
+      "bytes": 80918,
+      "sha256": "25c649546e6d08c0e92f5a7e3cfd7dfde2ba48d1c036f7fdcb60c972956486c6"
+    },
+    {
+      "file": "mao.mp3",
+      "bytes": 70051,
+      "sha256": "af3a955b41d5fd70676ba67e3600d3321b1f7198f0364fa431324a4707f078a0"
+    },
+    {
+      "file": "me.mp3",
+      "bytes": 71096,
+      "sha256": "c1a661a70b69f15e6979577c96ce2cda4d776f9f2bb3c3c543a9400426a01833"
+    },
+    {
+      "file": "mei.mp3",
+      "bytes": 71305,
+      "sha256": "f8c706219ad971673b4a8153eb252c26958c33b492a8ebaae82e76f75c87579f"
+    },
+    {
+      "file": "men.mp3",
+      "bytes": 64199,
+      "sha256": "d2b14b97615bdf696c2f16bbff0c1b9a7911d2bcaea9286714630c8f78de1d0e"
+    },
+    {
+      "file": "meng.mp3",
+      "bytes": 75484,
+      "sha256": "77666d4307ed89d69dd8b9a653398a0dc9372077cc73d250992e8c177701953d"
+    },
+    {
+      "file": "mi.mp3",
+      "bytes": 71096,
+      "sha256": "41276e2f3fad2c22c45d8ec3068ac4f08e79d614b7c51ca7cc10b56c5fdaae1a"
+    },
+    {
+      "file": "mian.mp3",
+      "bytes": 70887,
+      "sha256": "d331a5fca4af15556e05d6c9734d9b94b3df2f3db49084116aea981ecffedf6f"
+    },
+    {
+      "file": "miao.mp3",
+      "bytes": 70887,
+      "sha256": "b24b6a18db20e9abbdf8657fdf4d13141de9ae6ba49c02163f8cb4f42a78123c"
+    },
+    {
+      "file": "mie.mp3",
+      "bytes": 78201,
+      "sha256": "04d91923bb3362565b5618dfd1f47bf09c16e8bab0490583ef30ed8b2c3b64be"
+    },
+    {
+      "file": "min.mp3",
+      "bytes": 72141,
+      "sha256": "0c56fa4e17fb60d092be42c1bcb6cdb70c84ff79f94dea15b2e03e3c6dd502d2"
+    },
+    {
+      "file": "ming.mp3",
+      "bytes": 71932,
+      "sha256": "21c37fdaae043eead923156a00f722e14e15faf2cdd7f84d9475dd87d334c061"
+    },
+    {
+      "file": "miu.mp3",
+      "bytes": 72558,
+      "sha256": "55aafa275506445030dc680152afa5e7625fa1230b428e6c03973e3887f5e50e"
+    },
+    {
+      "file": "mo.mp3",
+      "bytes": 76111,
+      "sha256": "f848ef653c45f8a4e59203cb1b0810c738af97a30e54fc8f23a1e050a122fbac"
+    },
+    {
+      "file": "mou.mp3",
+      "bytes": 84261,
+      "sha256": "d1e65066b67d6eea310dad15734b2fd76d41b8e90d4bd3ac4b0f97fececac383"
+    },
+    {
+      "file": "mu.mp3",
+      "bytes": 72767,
+      "sha256": "ba8d273089423205f39f0f3e69d71d92a28f06b6ef8fdb0834faae22220c1644"
+    },
+    {
+      "file": "na.mp3",
+      "bytes": 62318,
+      "sha256": "ad1fdaac87069c0e2053f4a2cdce2f8853378c2fbbd88a00fb937259cac714fb"
+    },
+    {
+      "file": "nai.mp3",
+      "bytes": 64617,
+      "sha256": "c5999772b21e440e66a12c684327449bc1c3fffa78027c919be3b5cd8406c5fa"
+    },
+    {
+      "file": "nan.mp3",
+      "bytes": 67961,
+      "sha256": "6d7795238bcdbd74cb2784d1d2f5441df04c06051aa284b0df7aec990527c999"
+    },
+    {
+      "file": "nang.mp3",
+      "bytes": 71305,
+      "sha256": "d6185fbfb95291f6d46d650697ad63f23d7b49b8ef87d856c39b70da4ec93496"
+    },
+    {
+      "file": "nao.mp3",
+      "bytes": 72767,
+      "sha256": "937f2d833862aa87263056a21de184fb0ac262351251e484f5229bf045dc43a8"
+    },
+    {
+      "file": "ne.mp3",
+      "bytes": 68797,
+      "sha256": "82fb824785061f0778bdb9f3d80e45fb9d75cf9157cf12bf29f8caa9f8e6c618"
+    },
+    {
+      "file": "nei.mp3",
+      "bytes": 61901,
+      "sha256": "f88e502a02bf2ae8ae5e6a3a7a176434b00324128f0d445f1a9ab5dfaf604b38"
+    },
+    {
+      "file": "nen.mp3",
+      "bytes": 68170,
+      "sha256": "b766d714d4cda8e684d58f49f41a8ba163a3872def4d9a3c4700731b5372d5a0"
+    },
+    {
+      "file": "neng.mp3",
+      "bytes": 67543,
+      "sha256": "139907cb618d977a37d0bce62a0e373e2bd768b265b8ffe936e2c63675d866b8"
+    },
+    {
+      "file": "ni.mp3",
+      "bytes": 75902,
+      "sha256": "b4d039f704e4f1ae638185735708aacb4a030322e845cc5d9746adc42cedc510"
+    },
+    {
+      "file": "nian.mp3",
+      "bytes": 74021,
+      "sha256": "6ebb6ea687aa5af6a433e725a85696c947d8f6b656fccb52258cbfa3e044dfef"
+    },
+    {
+      "file": "niang.mp3",
+      "bytes": 69006,
+      "sha256": "7b721cc8548b3b282e7be8b3694be2d06bde24846f8eb7b23e9567e80bd43e07"
+    },
+    {
+      "file": "niao.mp3",
+      "bytes": 72558,
+      "sha256": "9d08887100e26a7b09cda33fc3fdbffd983645f290dafb3f5e859a99b1d776ab"
+    },
+    {
+      "file": "nie.mp3",
+      "bytes": 74230,
+      "sha256": "3920b1742bc13f4ff50229292e04b4102633dcc808b75874b2b43dd85f7965bd"
+    },
+    {
+      "file": "nin.mp3",
+      "bytes": 69215,
+      "sha256": "0979a8e0358c075a9e9460f97d61ae9850df9b7e1a0f11e1dfde3c3acdb2076c"
+    },
+    {
+      "file": "ning.mp3",
+      "bytes": 72767,
+      "sha256": "c6a1c1591d68aab400d923a72aa6ca989ef5d2cbdc7b45e86730ad98c174c1a1"
+    },
+    {
+      "file": "niu.mp3",
+      "bytes": 62103,
+      "sha256": "d63a961da3a581da3c2465a6e516bd9eb433194b9a1e0b1fc493c135b7192016"
+    },
+    {
+      "file": "nong.mp3",
+      "bytes": 67543,
+      "sha256": "992bd493776fd92de05daf914e2b931e8f6fa117713b07f5ac082503c85adc47"
+    },
+    {
+      "file": "nou.mp3",
+      "bytes": 67334,
+      "sha256": "90284975c55cce08b8f86ae1bea2d369239b7750a2173e061f2f4308911687c5"
+    },
+    {
+      "file": "nu.mp3",
+      "bytes": 79037,
+      "sha256": "0cef83d1c71ebbb6fc94f54168aaa74dd318e51671b06ad22a0ce447123da2d2"
+    },
+    {
+      "file": "nuan.mp3",
+      "bytes": 68797,
+      "sha256": "cf55fe97ff2957145852232bf740d04bdf90fbbe55169a7b906d39373b010faf"
+    },
+    {
+      "file": "nuo.mp3",
+      "bytes": 74439,
+      "sha256": "8d9b7ca0ceac6f6c249bc69ac1d0598e0872f612eb16b29741b403a446f03da7"
+    },
+    {
+      "file": "nv.mp3",
+      "bytes": 76320,
+      "sha256": "4ed69c573f57cde368ee0e20e07c2f2bbe45ba2e2f52f4c409a1a6ac6b84adf6"
+    },
+    {
+      "file": "nve.mp3",
+      "bytes": 71723,
+      "sha256": "9e135781a335855e2f73cbc30157c4c5f630db49adacaf806a914b8163192633"
+    },
+    {
+      "file": "o.mp3",
+      "bytes": 70935,
+      "sha256": "93a39cacaa02f62cddb5ef646d84c8280ed26b0bfde940de5ded66fd395c4aad"
+    },
+    {
+      "file": "ou.mp3",
+      "bytes": 72471,
+      "sha256": "220aa8d85dd7b98bed7d055f5c3d88f0896d8b02723d72cb56b85293cfe35619"
+    },
+    {
+      "file": "pa.mp3",
+      "bytes": 69207,
+      "sha256": "0564d3e716082f8c100afe2c10fba75c2ffbbfd70869450b7c88480bc330fb60"
+    },
+    {
+      "file": "pai.mp3",
+      "bytes": 65367,
+      "sha256": "ce56425b40410dcedeab24b9f5ea2cb53b0852b7083e5f458d0ea07e4caf9d9c"
+    },
+    {
+      "file": "pan.mp3",
+      "bytes": 73239,
+      "sha256": "198de166f28f4a228c3c8915de1d0f9c57bae86500ae85cf0646d8a59f1bc769"
+    },
+    {
+      "file": "pang.mp3",
+      "bytes": 76111,
+      "sha256": "55e0ae46c40cc64652115671467f636885857008072f0f0cfd2e200fda9416ce"
+    },
+    {
+      "file": "pao.mp3",
+      "bytes": 73431,
+      "sha256": "7ba7b1bbb8a772eed8462f7f598ca33f6dbddac85c12197570f508f5e1dcca97"
+    },
+    {
+      "file": "pei.mp3",
+      "bytes": 66135,
+      "sha256": "71431e39c75b6582ca9f265443e617a43eb0a40daa44eb3216e6f3ac29210a74"
+    },
+    {
+      "file": "pen.mp3",
+      "bytes": 65871,
+      "sha256": "6ff048f8ebd3878cb1135ed4b6ad4099fcb50d9291b6b625fd51d9e399b2ce12"
+    },
+    {
+      "file": "peng.mp3",
+      "bytes": 71514,
+      "sha256": "b5da36e9fb214b638f385e0c23f4f597ff1a2bb60b666f4fb9220235cfe5e56a"
+    },
+    {
+      "file": "pi.mp3",
+      "bytes": 70469,
+      "sha256": "8dd01212b49dedbc9ba56ce73ca57331cf749d86b4e79c0064baa514bd735b01"
+    },
+    {
+      "file": "pian.mp3",
+      "bytes": 74230,
+      "sha256": "5258c5dd50764af3be3650233c60b6e5698e580476901ecb94e2ff33a586ac47"
+    },
+    {
+      "file": "piao.mp3",
+      "bytes": 67961,
+      "sha256": "0b9d786f89a1c6366a6c9b7571746ce4721f3e41c971a218598afc2f869e0755"
+    },
+    {
+      "file": "pie.mp3",
+      "bytes": 76111,
+      "sha256": "0c11cf19d4e344a836d7a1e9ff748916928222c719dc9687318144d7be2b5c1a"
+    },
+    {
+      "file": "pin.mp3",
+      "bytes": 67752,
+      "sha256": "0b046013fbe29689ff24ffb0169556767a76bd13248b362d5f761a0942a6f056"
+    },
+    {
+      "file": "ping.mp3",
+      "bytes": 65871,
+      "sha256": "3af9949117795f63264db9f2143b18b174a3bda887a07f654212f8319655d64b"
+    },
+    {
+      "file": "po.mp3",
+      "bytes": 60567,
+      "sha256": "f2951b02caa703ae84f269ef3c0422a903ae80b7c771be242d9f1de9ad15ac66"
+    },
+    {
+      "file": "pou.mp3",
+      "bytes": 75066,
+      "sha256": "23c27e1843a0f392dd397806450e519792c2b59ec8017efd1ed22c93e355a9e7"
+    },
+    {
+      "file": "pu.mp3",
+      "bytes": 71096,
+      "sha256": "e0f431fdfba93ba1f5f6ef4f9249dea839e49f4cb295c344d2b221692cf97703"
+    },
+    {
+      "file": "qi.mp3",
+      "bytes": 70051,
+      "sha256": "2adbc55d30d25d7c0df0541a0d0be72414f0526b5d61696d7d240abe09e8f8db"
+    },
+    {
+      "file": "qia.mp3",
+      "bytes": 73812,
+      "sha256": "1ca82eb7db0ed3542da53afb9d502253ba419d811042e85e645873ed8bcbb20f"
+    },
+    {
+      "file": "qian.mp3",
+      "bytes": 70260,
+      "sha256": "78af0875a4bd520c6b0f9f7b576cdd2b913b20d74336f124056d52e2bd580255"
+    },
+    {
+      "file": "qiang.mp3",
+      "bytes": 68170,
+      "sha256": "876fde4feee600d847aa8d9c8bdb78022264f03ffe1c6b22c5bf07669d9f264b"
+    },
+    {
+      "file": "qiao.mp3",
+      "bytes": 76320,
+      "sha256": "cf57dd6c50a40a1e0de2896d35b249c54fd5549e09fc1a6f8d4eba4770f12e88"
+    },
+    {
+      "file": "qie.mp3",
+      "bytes": 65871,
+      "sha256": "af65b48e2ad380f47a32a70dad1a61adce9db63da6268c2db723692cbd292655"
+    },
+    {
+      "file": "qin.mp3",
+      "bytes": 63572,
+      "sha256": "8609b86bbca9d1f43e3fccf898cb88ef363e125a694cb55c2e8cacb390fd9540"
+    },
+    {
+      "file": "qing.mp3",
+      "bytes": 71723,
+      "sha256": "1c5f52532e5f4ede9b726299c64947fe9ce33a93cac040fa0a2f7fa965312084"
+    },
+    {
+      "file": "qiong.mp3",
+      "bytes": 74021,
+      "sha256": "451c13cc4fd33afccb9d969c8743d01f44499ea385e27e7ec958198dc33cca17"
+    },
+    {
+      "file": "qiu.mp3",
+      "bytes": 71514,
+      "sha256": "280bba6590f8379c7802008e1033c3ed7c4ff56f58b8a8b653065a8ee1600144"
+    },
+    {
+      "file": "qu.mp3",
+      "bytes": 68797,
+      "sha256": "5e2fc9b4d7e4cf5537fb1534b0024d875ed2d719dc03cf09b222952aa2fd6c9e"
+    },
+    {
+      "file": "quan.mp3",
+      "bytes": 71514,
+      "sha256": "ca5be3f7003e266d6b114ce10b28ce512b93702e049b82cd96c65fd16c03a36c"
+    },
+    {
+      "file": "que.mp3",
+      "bytes": 71305,
+      "sha256": "e3a5a9516d8f781037a5cb9e5fa5e34a756efa2a683506c87b290a5709f6bbff"
+    },
+    {
+      "file": "qun.mp3",
+      "bytes": 69633,
+      "sha256": "ebecd2e5208220cd47fcef6bcc6448536b1446bfbf4a61c5974409da448429b0"
+    },
+    {
+      "file": "ran.mp3",
+      "bytes": 76738,
+      "sha256": "afadbf2d59391656e0804a8af0a14efbad143ab01bbdfee9da307ecf3e89c24b"
+    },
+    {
+      "file": "rang.mp3",
+      "bytes": 71096,
+      "sha256": "b89ffd4e8b38dc50de63dc75d5b5cec2ff487e502d8dfd8f113ee8d8729b138c"
+    },
+    {
+      "file": "rao.mp3",
+      "bytes": 72976,
+      "sha256": "f07fcc9cada980f3668c36f7a8df517f900a0deb7093f4909f1556c80090eca8"
+    },
+    {
+      "file": "re.mp3",
+      "bytes": 66289,
+      "sha256": "47cc512fdc5f761c53522a663a6da4c189c2cbe69a22760034487befda3bb090"
+    },
+    {
+      "file": "ren.mp3",
+      "bytes": 69215,
+      "sha256": "3385a6a2e58c4b5871a72d0706ca3d3676bb23bb4a7631484bb14fedcab71bef"
+    },
+    {
+      "file": "reng.mp3",
+      "bytes": 73185,
+      "sha256": "d07d057a9ce7c67728aa26656e8e5436b2c80ed95f2d28c84e56d3a8b85a1fde"
+    },
+    {
+      "file": "ri.mp3",
+      "bytes": 70469,
+      "sha256": "43ccc36e5ff3429331772cc37484a343d332c71759e43658d411f73461793d26"
+    },
+    {
+      "file": "rong.mp3",
+      "bytes": 72141,
+      "sha256": "1141c5bb942e95b057a89656fe344fc15b5495c4d3ac7df4cf34c816ddf4b250"
+    },
+    {
+      "file": "rou.mp3",
+      "bytes": 83634,
+      "sha256": "eb32da32922e9b799ad5856aa5afa97b1537f494c5f3d9aad13ea801e7a4ebed"
+    },
+    {
+      "file": "ru.mp3",
+      "bytes": 74021,
+      "sha256": "66438b34fe1a98164fa030c6a742b92d0297576561c08abb8287e23a71899075"
+    },
+    {
+      "file": "rua.mp3",
+      "bytes": 79664,
+      "sha256": "a7ae59029f14b3ebbe18dafb57c14b9b2dbffd5ce73ff520ef32b5a017d19bf4"
+    },
+    {
+      "file": "ruan.mp3",
+      "bytes": 74648,
+      "sha256": "5129dfc28cccd94c24e86ea28b144fae2ef17e0a797d3cdef7a4502c14b95154"
+    },
+    {
+      "file": "rui.mp3",
+      "bytes": 78828,
+      "sha256": "86165a6ec7218d1e45d596d7845adf6ef94818d0fca17dcbe3648831d847ba44"
+    },
+    {
+      "file": "run.mp3",
+      "bytes": 71514,
+      "sha256": "2bccf7525556cbfb61fcc819e0d74f9a7fe004371a8277370a315b931c2b7ddb"
+    },
+    {
+      "file": "ruo.mp3",
+      "bytes": 75484,
+      "sha256": "3fa71c4cca94816945859be98b24f5165c4b570006e7a4c035a0c8cd5942535d"
+    },
+    {
+      "file": "sa.mp3",
+      "bytes": 74021,
+      "sha256": "fc2d33f7cff42fc343aaf71b73270830bc66e2d18d4b492a5d8901100f2a8de0"
+    },
+    {
+      "file": "sai.mp3",
+      "bytes": 67961,
+      "sha256": "c1118469d12934e47f41b99bbddfe233f4e4dcd33671e97926c781626616afee"
+    },
+    {
+      "file": "san.mp3",
+      "bytes": 64599,
+      "sha256": "afd86ae55e8191bf0b2ef2d9d5f7be77bdea2ab66edf9e9a443c1a3f14b8d107"
+    },
+    {
+      "file": "sang.mp3",
+      "bytes": 68247,
+      "sha256": "e7707f01acb12ec722ec7d7296407be95c67bc70373cc2aa9e3168c7d73d4c04"
+    },
+    {
+      "file": "sao.mp3",
+      "bytes": 72558,
+      "sha256": "5c2c08871e41fe2a221b19046b946b5fcf8abe97d06f0bc8a8265b5948ba8009"
+    },
+    {
+      "file": "se.mp3",
+      "bytes": 67543,
+      "sha256": "f33c6b63e92c8cff9d0224bc5dd3544b80bcd51fba23884a3796d4628bbe8424"
+    },
+    {
+      "file": "sen.mp3",
+      "bytes": 71096,
+      "sha256": "daf3e039c0bb3e6b51c906732afad77cae32728dc6d7f51f2fd08feaa60caf42"
+    },
+    {
+      "file": "seng.mp3",
+      "bytes": 71723,
+      "sha256": "776e6cfb56b999c7aedb0c383c3bb066d552b067e542abd8fd0537a33bfd2fbe"
+    },
+    {
+      "file": "sha.mp3",
+      "bytes": 63572,
+      "sha256": "81990562b97486e6bbbfa7c9967e6cf449f5f2b0a36e213cefe3bb1e28e8ecd9"
+    },
+    {
+      "file": "shai.mp3",
+      "bytes": 64199,
+      "sha256": "e0f7da97873362a27f01f6e1e0ed2407d397567f9c7774fe3444913ca4668c58"
+    },
+    {
+      "file": "shan.mp3",
+      "bytes": 71305,
+      "sha256": "192b3b8d49a7692c069583a55459b8e47f69fc39933758a305f556ca85e3d0bd"
+    },
+    {
+      "file": "shang.mp3",
+      "bytes": 73394,
+      "sha256": "9c28d68790c85e10a870f1f86f81824eeb5be2b347d933082b2290abb57e480e"
+    },
+    {
+      "file": "shao.mp3",
+      "bytes": 69215,
+      "sha256": "c364c0d64854dc273b18b0540a4586b9ecf27593ca2e69543f15003043074bd9"
+    },
+    {
+      "file": "she.mp3",
+      "bytes": 69215,
+      "sha256": "48ca4e6ed2a904dfac4a8983651132225c36269d663290b0443ef7e6787c9d39"
+    },
+    {
+      "file": "shei.mp3",
+      "bytes": 68797,
+      "sha256": "f241cd297dbd4d66b43a182ad104d9f8bd5b5afe0cd1f57d05176679a715de05"
+    },
+    {
+      "file": "shen.mp3",
+      "bytes": 75902,
+      "sha256": "305d289fc2b47885d2f3060a732ffdbf087761a886d0cfeac2d419d81c81d569"
+    },
+    {
+      "file": "sheng.mp3",
+      "bytes": 69215,
+      "sha256": "8ad6e2bb70d98efcf857a47529477559bd7d8504b8818176b10aa31d49d36f45"
+    },
+    {
+      "file": "shi.mp3",
+      "bytes": 72767,
+      "sha256": "032462e037c522cd91c98f8dda74dfbb305fa1fd53821e28a6392b6e31a175fe"
+    },
+    {
+      "file": "shou.mp3",
+      "bytes": 76320,
+      "sha256": "9ed1da1abf2f5b62a45a7ec25e5698d4268bb979a8c7f270dee2b154557eaafe"
+    },
+    {
+      "file": "shu.mp3",
+      "bytes": 71932,
+      "sha256": "bd7fa8eb771459f1148b82d2cb3c91c9204b98eab3de1c86c07e848c7b9bfd3a"
+    },
+    {
+      "file": "shua.mp3",
+      "bytes": 75275,
+      "sha256": "fbfcdfd10456cc006728b43c1aceced5da587b06d7845063e310494aabf4dfb4"
+    },
+    {
+      "file": "shuai.mp3",
+      "bytes": 80918,
+      "sha256": "ab030404f3813e8e89ed8b80dc6dbc5020be2fc11fda163f81d05a8ad5c101b8"
+    },
+    {
+      "file": "shuan.mp3",
+      "bytes": 71932,
+      "sha256": "2238c7eb62734ea47a16092da668f68872949115a14bc730dcacc5171da41752"
+    },
+    {
+      "file": "shuang.mp3",
+      "bytes": 76738,
+      "sha256": "b00ff3bc268595fecd28ea7fde09d364310257e9b92e91dc99cd2ff048245237"
+    },
+    {
+      "file": "shui.mp3",
+      "bytes": 67125,
+      "sha256": "45e3e1d6c322e28535300c8a4c0284daae64d48bcbb757087740bfe18ddc9799"
+    },
+    {
+      "file": "shun.mp3",
+      "bytes": 73185,
+      "sha256": "bfaad96fc2b5a397d0683121ac89fc2fe345fcf1af9584af5f96a1c0539b7c7f"
+    },
+    {
+      "file": "shuo.mp3",
+      "bytes": 75693,
+      "sha256": "592e50c76e4feb1bce56d558c55aa0ba172674ad5ef1b9b5c0e4093e7f1c9972"
+    },
+    {
+      "file": "si.mp3",
+      "bytes": 69633,
+      "sha256": "9eb1058b730c04932284b15a3210eafaaad636f25b7f2a1700089996094456e7"
+    },
+    {
+      "file": "song.mp3",
+      "bytes": 70260,
+      "sha256": "a6927b5c0331f3c492c490956bde2b9863f2175ebdcf912b5d4ed6edaa7b6954"
+    },
+    {
+      "file": "sou.mp3",
+      "bytes": 74439,
+      "sha256": "af0058edcf0ff0e66245c21ec52817be4ba69607c8792e49d608beea6a06b977"
+    },
+    {
+      "file": "su.mp3",
+      "bytes": 64408,
+      "sha256": "27bd07648fb6b5a1d597c6edf64624068780eccfc885bc5d9916e48831ac7f3b"
+    },
+    {
+      "file": "suan.mp3",
+      "bytes": 70887,
+      "sha256": "24dd021675dea73956b0dad5fe471575fe71494f8fba63c939fab38a1fc99d5d"
+    },
+    {
+      "file": "sui.mp3",
+      "bytes": 71723,
+      "sha256": "c9a18fe395bb49923a5bc39c36a1c2c04cf4af814e419292f00398bd7b8dd937"
+    },
+    {
+      "file": "sun.mp3",
+      "bytes": 66289,
+      "sha256": "ce8433d4088b61c2f0e9cfe6d00e11815381eda6715ff6d16a16fc3621fbd0a0"
+    },
+    {
+      "file": "suo.mp3",
+      "bytes": 73812,
+      "sha256": "b6fd7dd880cd85b66f69ff2ecb2258beb7ad6f6250d2a1efeeadf7628f58df59"
+    },
+    {
+      "file": "ta.mp3",
+      "bytes": 64599,
+      "sha256": "39a03b3fecb1b61df7567ff4f666f5b5ad83ec87e30291d2275a53609cb59acc"
+    },
+    {
+      "file": "tai.mp3",
+      "bytes": 63255,
+      "sha256": "7e30dc12b9c94104bc9f32e873910d9e176d24eeed40835377d850b67a1a51e1"
+    },
+    {
+      "file": "tan.mp3",
+      "bytes": 66498,
+      "sha256": "30ae6fc6c269025b1b1231d1652eda1a99856d595d896449dc9a218ec077c458"
+    },
+    {
+      "file": "tang.mp3",
+      "bytes": 71723,
+      "sha256": "f1e3ed2b14de1a6f3670299de4665996ea44a64ea6c92519e19f77e32e8dcf22"
+    },
+    {
+      "file": "tao.mp3",
+      "bytes": 69015,
+      "sha256": "0129e1f6d8bccc0461e875981275980740bd4ea9c832d3cefde22f2283b8129a"
+    },
+    {
+      "file": "te.mp3",
+      "bytes": 63639,
+      "sha256": "ff793d1bc28691755ca158e2a3149953708270b22b502a129fc02b6ca3724d67"
+    },
+    {
+      "file": "teng.mp3",
+      "bytes": 71932,
+      "sha256": "51adffe0a9bb7fe230cda11949464e051afa8f88bde25dc62e9ab9eca434f41d"
+    },
+    {
+      "file": "ti.mp3",
+      "bytes": 77365,
+      "sha256": "8fd470e37b752d408b50026d93319107c7b8db9ee3af86125588d02129598728"
+    },
+    {
+      "file": "tian.mp3",
+      "bytes": 67543,
+      "sha256": "055c510dbcde7b95d4fc502ad52a0403eb0f48527504c346a9bb51a15c26bcf4"
+    },
+    {
+      "file": "tiao.mp3",
+      "bytes": 73812,
+      "sha256": "9ba7832f757b89076cb665b8f7f8c0dc26e93c8167d93a430fe7e9ac7f6fd820"
+    },
+    {
+      "file": "tie.mp3",
+      "bytes": 74439,
+      "sha256": "87c09bdaad4f50f35e51782bfb40b3b5ab5efb7dc394bf4339a5e7186d0719a3"
+    },
+    {
+      "file": "ting.mp3",
+      "bytes": 71514,
+      "sha256": "3969e84388aa5be8df42bc43bcbf7dee0d57f990a812ec0648455fb00aebc4fc"
+    },
+    {
+      "file": "tong.mp3",
+      "bytes": 66916,
+      "sha256": "ca3db69b0524b6055e28c9ced4ef267bfd7a25a2b8d9f3ac5170989d8da04de7"
+    },
+    {
+      "file": "tou.mp3",
+      "bytes": 73185,
+      "sha256": "83145d71f872751c4a63531ae886e487f45b95cfd5ae8ef02ce9aed5fb711313"
+    },
+    {
+      "file": "tu.mp3",
+      "bytes": 71932,
+      "sha256": "1c52bdbdf3195bbe945e3894cb0e256bf4b19fe0d2e0078f025a8e09015ac917"
+    },
+    {
+      "file": "tuan.mp3",
+      "bytes": 67752,
+      "sha256": "5c0584ba6fd7967478066a87856b352b08b5e63e2a85d9081d4f39ac3139ff84"
+    },
+    {
+      "file": "tui.mp3",
+      "bytes": 69842,
+      "sha256": "8a04f1acd9665b276e90286764b971ee2097af35d1aaafbef9dd8d9f351038ce"
+    },
+    {
+      "file": "tun.mp3",
+      "bytes": 69215,
+      "sha256": "5b51c9304693c69d47822632583a69c742374a5e5935ee72af439aacf9dab824"
+    },
+    {
+      "file": "tuo.mp3",
+      "bytes": 70678,
+      "sha256": "e28c3a54a54090dc58aa130d852ad634e6e026064c198de6762b360ac745aee9"
+    },
+    {
+      "file": "wa.mp3",
+      "bytes": 73812,
+      "sha256": "6beaf0e470973b7e28e1c3dc2bf4621d10c1d26bcd9adf990503ac4af79ecca5"
+    },
+    {
+      "file": "wai.mp3",
+      "bytes": 75902,
+      "sha256": "a7b57771acd3a8e485cfdc603e823533d5d74c5b6a7eb7df99631e83572bbbd0"
+    },
+    {
+      "file": "wan.mp3",
+      "bytes": 71514,
+      "sha256": "7a3ed5a2e7e13ca80371b28ab4ddf3a918856b82ae058d3e72a93efffd41d8bf"
+    },
+    {
+      "file": "wang.mp3",
+      "bytes": 75902,
+      "sha256": "ec4e80c72aabd9304e241ed7b59395fe350b4f29aa796215efff0184a8d27e47"
+    },
+    {
+      "file": "wei.mp3",
+      "bytes": 77574,
+      "sha256": "4eb144cc4c3fddd55778824238e7845a9a861ecc052f17d98a9ab695597d7e3e"
+    },
+    {
+      "file": "wen.mp3",
+      "bytes": 67961,
+      "sha256": "33e7fbaf2c0059739595a80b54dec81cb230afddbd13fd3b9ccb9dbc899eacf4"
+    },
+    {
+      "file": "weng.mp3",
+      "bytes": 78999,
+      "sha256": "a3dc8141c1e2971f5e9c16159a7f44696ff1c44f06df702c114bfa7458f08049"
+    },
+    {
+      "file": "wo.mp3",
+      "bytes": 73185,
+      "sha256": "18363d22782b6f4b4bc78d638b75b3619fa5975a22f0669fed5b282c3f51db6f"
+    },
+    {
+      "file": "wu.mp3",
+      "bytes": 80918,
+      "sha256": "b8ba5b91897185d81f8bfe8618754ffd8716506fc1d8ea178621a14b4c06d861"
+    },
+    {
+      "file": "xi.mp3",
+      "bytes": 73394,
+      "sha256": "dfbab9b6cca8faf4769719d01d522bd8e7f5742c5c1d672cf066a72fa262d3da"
+    },
+    {
+      "file": "xia.mp3",
+      "bytes": 70887,
+      "sha256": "ceee1e9f8f41caa6d6cf1bff01da7573ba3abcf2df7d5cfe8afb7ffc69871248"
+    },
+    {
+      "file": "xian.mp3",
+      "bytes": 72558,
+      "sha256": "d7473275aae954fc3f897296676cfe1e31b3b570fc30a00384446f22747d5283"
+    },
+    {
+      "file": "xiang.mp3",
+      "bytes": 69633,
+      "sha256": "e6b0ef2253c1f03948a6c81f73aa640a39812d0b87fe7b41c4f527c3c7dce504"
+    },
+    {
+      "file": "xiao.mp3",
+      "bytes": 78619,
+      "sha256": "df5c720daa100fc3d45ec74e7eaf23052f678e17a949ce25b118d9c020c2045c"
+    },
+    {
+      "file": "xie.mp3",
+      "bytes": 76947,
+      "sha256": "71f814548eb999dacbbc5b0d4f41ea1aa4e962b62704c21f8368db51b79115c4"
+    },
+    {
+      "file": "xin.mp3",
+      "bytes": 65453,
+      "sha256": "a55456eaef585744bde8ef15974095bcca6ef35c305a60f35f2474f85ff067e4"
+    },
+    {
+      "file": "xing.mp3",
+      "bytes": 70678,
+      "sha256": "014f4022c7b1f194c55d921c57b3888301718a8cd91040ce3186b88706c3af09"
+    },
+    {
+      "file": "xiong.mp3",
+      "bytes": 71932,
+      "sha256": "62dcea11e1089a3d7d29f793d288919a78ba92204dd4697eac075a21ef2b02a7"
+    },
+    {
+      "file": "xiu.mp3",
+      "bytes": 71096,
+      "sha256": "671d6f9fffcbef9e1d48a40d20e1334689ebdfbeb840cad460acffd70e37cc9c"
+    },
+    {
+      "file": "xu.mp3",
+      "bytes": 68588,
+      "sha256": "7a24bc58a047d6e0d2534b7bff39ec2083e3bd947bc04799c72386ce478f85b7"
+    },
+    {
+      "file": "xuan.mp3",
+      "bytes": 69215,
+      "sha256": "265df7baff82799cd321bbb1a464480e042ec5b967c2e626a14a1dc0083de44c"
+    },
+    {
+      "file": "xue.mp3",
+      "bytes": 67961,
+      "sha256": "5c73b6e92b7804205dc2921b34bd9fdd871a8df6a729549c4b42e7a0324f91f2"
+    },
+    {
+      "file": "xun.mp3",
+      "bytes": 72141,
+      "sha256": "523e78d846d5ac7f7413674c3679e3bc70e4fb7e8f8444f833023a855cb0fc01"
+    },
+    {
+      "file": "ya.mp3",
+      "bytes": 71514,
+      "sha256": "4475fd76ef6893a325fa3de74db1cb15aaf69cc65d0c4900b3d9ae2e7dd52e5b"
+    },
+    {
+      "file": "yan.mp3",
+      "bytes": 72558,
+      "sha256": "a37f0ec95f2cebb374293a62d8b0323978ee7a09c13da4a402441faa526c5225"
+    },
+    {
+      "file": "yang.mp3",
+      "bytes": 74230,
+      "sha256": "0c298aca1272ca514207de42748c1bce487d288c188d73a48bd095649b22bc42"
+    },
+    {
+      "file": "yao.mp3",
+      "bytes": 73603,
+      "sha256": "36dcaea9c9c6027ab422fe110af1793e00527aa31fcaa1a680755d3214cb34be"
+    },
+    {
+      "file": "ye.mp3",
+      "bytes": 73185,
+      "sha256": "c8f4183e61aacbe6f44b74b80b5c51b37b0a7bd9db23b795f0e41dcaab955369"
+    },
+    {
+      "file": "yi.mp3",
+      "bytes": 69783,
+      "sha256": "ff287079a7d3f274f934ad65a469fb34d466433af1e206c2c3d71741bbd13ff8"
+    },
+    {
+      "file": "yin.mp3",
+      "bytes": 71932,
+      "sha256": "ed4d3e7e0fe733f4542b40b66692db35e82ab6aef09b5d6a2511240fec28e558"
+    },
+    {
+      "file": "ying.mp3",
+      "bytes": 66916,
+      "sha256": "1c65dc1de8800f6ecc009872a2b314ae1950e5e61d64d55622b90c69e141fd72"
+    },
+    {
+      "file": "yong.mp3",
+      "bytes": 71723,
+      "sha256": "011bfc8e4eefef6bdefc062f996be8fc46147ba0b55badd364ce4c91787e3b71"
+    },
+    {
+      "file": "you.mp3",
+      "bytes": 71723,
+      "sha256": "806b9c2707f193326e9758e8872bf136c54c6b55e3d6fae1a674a2863f006d89"
+    },
+    {
+      "file": "yu.mp3",
+      "bytes": 74021,
+      "sha256": "ad9d743869112ae14e67c7e0d9cebcb41cc4890f53f9d7494b8525624972cac7"
+    },
+    {
+      "file": "yuan.mp3",
+      "bytes": 75066,
+      "sha256": "e38279179c2cb65bec61b874035637579a9fdcc0caadf8f79065a9d9140dd874"
+    },
+    {
+      "file": "yue.mp3",
+      "bytes": 72976,
+      "sha256": "c5a6e6956f1afcc60a856bf9625341f032cf6cfe750d8449998fd51c1d37970a"
+    },
+    {
+      "file": "yun.mp3",
+      "bytes": 71514,
+      "sha256": "bf515ac1b9c803875a0404bfcaad32b65cde5004110b966838e4c2986f4dded2"
+    },
+    {
+      "file": "za.mp3",
+      "bytes": 70678,
+      "sha256": "811655895a7d05c80f958f7b208cd193cd5d1a6110191abe5151378bec02bea1"
+    },
+    {
+      "file": "zai.mp3",
+      "bytes": 63363,
+      "sha256": "78755b4124fdc78cd17103f78e1e4b0dd5dfbe790f03a2fe47c1711ad9834ad7"
+    },
+    {
+      "file": "zan.mp3",
+      "bytes": 67287,
+      "sha256": "e27ba88e65c3f3b3257595c858dc388d458818748618fbae21aa3b9054bba1b4"
+    },
+    {
+      "file": "zang.mp3",
+      "bytes": 77783,
+      "sha256": "b9956127c638e0cd925e6cdb6dfa0171337eee489a84593ff7bef09868e0506c"
+    },
+    {
+      "file": "zao.mp3",
+      "bytes": 67961,
+      "sha256": "b5896febc3f25e43b37bf434c43b0a9ab48e497d4ded8fe04c82a29540dfa997"
+    },
+    {
+      "file": "ze.mp3",
+      "bytes": 67334,
+      "sha256": "1ddcd3f03a0bdbd839990ce8ff146f910766999a5886b1d8db07f4fc5ae7da62"
+    },
+    {
+      "file": "zei.mp3",
+      "bytes": 63572,
+      "sha256": "a5b603198a14c1c5cc1a363c80224f0096575103b0a6efa2ae804dd543c07adb"
+    },
+    {
+      "file": "zen.mp3",
+      "bytes": 70887,
+      "sha256": "5a8a3afe96494c1aef110705194038694fbd519b186b9514e20e8d72da4f0cfb"
+    },
+    {
+      "file": "zeng.mp3",
+      "bytes": 70887,
+      "sha256": "18e405a908dab48ede6e0305125146e048641ba0be8af44cf65209f590358114"
+    },
+    {
+      "file": "zha.mp3",
+      "bytes": 72141,
+      "sha256": "bb57b5bffba71d2905371f70222c255bd1fb0fecea24a78e8751cc360e1944e3"
+    },
+    {
+      "file": "zhai.mp3",
+      "bytes": 63781,
+      "sha256": "6e88bcc3b06094c06a152cd2549712f4ddefc4b3a89bab6c981178cd40be3617"
+    },
+    {
+      "file": "zhan.mp3",
+      "bytes": 74648,
+      "sha256": "3e65dd642cfbd16e767abb49ec72b3419cc9b341c47ed4fb5f894a83d8d674ec"
+    },
+    {
+      "file": "zhang.mp3",
+      "bytes": 73394,
+      "sha256": "00b3c562267d79f271a4535684c24d1c4d0a93e93a96741bb72e9821fd76600c"
+    },
+    {
+      "file": "zhao.mp3",
+      "bytes": 75902,
+      "sha256": "d32771d0e1bda44ad800a8def91eb8eaf86c43618e9c39afde5c1672ecbdfa50"
+    },
+    {
+      "file": "zhe.mp3",
+      "bytes": 76111,
+      "sha256": "a8c4be7846feff039d9b8887c8a143c9f432d7786711fa74762a7f5e7fe65961"
+    },
+    {
+      "file": "zhei.mp3",
+      "bytes": 67543,
+      "sha256": "018dacd66169410970f11ea2bd70cddc545511d473ca8ec6eb527e6113463ed9"
+    },
+    {
+      "file": "zhen.mp3",
+      "bytes": 69215,
+      "sha256": "df2991f15b90b7ffafcb1112a1044e695fe68a9a5e72a0d8602625a1a1766727"
+    },
+    {
+      "file": "zheng.mp3",
+      "bytes": 68379,
+      "sha256": "19c6e5c8be042e6faba61aee7489dd2f5dfd0b976df89ff997e2286c17bf0dc3"
+    },
+    {
+      "file": "zhi.mp3",
+      "bytes": 75484,
+      "sha256": "66e9344b93e026fdc3eed0e550c88aa87652838faccea1f605cf7e89fb58fae1"
+    },
+    {
+      "file": "zhong.mp3",
+      "bytes": 70260,
+      "sha256": "50d7e0d8078e565159f4434b6cce6dee2b9729616e0f9d2a109b5022f66da483"
+    },
+    {
+      "file": "zhou.mp3",
+      "bytes": 81545,
+      "sha256": "0f208ae46e8e530818e0e9e2bd72d1320177076fcbb58476ceba0724fb1b63a4"
+    },
+    {
+      "file": "zhu.mp3",
+      "bytes": 67479,
+      "sha256": "5b5fe83825508a93e75ecbb6d971651609d607c34e865fe2d206698056763874"
+    },
+    {
+      "file": "zhua.mp3",
+      "bytes": 75902,
+      "sha256": "2687a8726ba45573c96c94e575620a5feda7e32dba23dec7f99b22e0f580266e"
+    },
+    {
+      "file": "zhuai.mp3",
+      "bytes": 75275,
+      "sha256": "b5850e7efb1492bb5b75d624f38b690e570b50bbf5b639e57c2aef4b11db0d57"
+    },
+    {
+      "file": "zhuan.mp3",
+      "bytes": 69633,
+      "sha256": "982e3108530c722489f84562a9d4c5ebc9f06e2a7859afc5a3f16d3603592c97"
+    },
+    {
+      "file": "zhuang.mp3",
+      "bytes": 71723,
+      "sha256": "117854589975297eaf92735813cac040cd113d10c02da9d236c1e07ddeeeb3fe"
+    },
+    {
+      "file": "zhui.mp3",
+      "bytes": 74230,
+      "sha256": "c49babc6a50c5bd731d231c2b372fdec20dff7c85bb38734723a7cee9e47f185"
+    },
+    {
+      "file": "zhun.mp3",
+      "bytes": 69215,
+      "sha256": "67aaf483a7c0fdc75518d406ef07d5c69427a92f96f78a859ab131cad9578782"
+    },
+    {
+      "file": "zhuo.mp3",
+      "bytes": 76529,
+      "sha256": "8cf997dbabde272bfb5627e802a4df1b1682a06b1252c3c8cff37bfef50c7411"
+    },
+    {
+      "file": "zi.mp3",
+      "bytes": 65453,
+      "sha256": "a440c5d891dfca59c51d73fc491d903779dac023d13a4c0d7e6df931039e5fa7"
+    },
+    {
+      "file": "zong.mp3",
+      "bytes": 72558,
+      "sha256": "196e805f3be10d188ccdb45e990f7efba58e2b1fca8997f293381f8faa1a4000"
+    },
+    {
+      "file": "zou.mp3",
+      "bytes": 77365,
+      "sha256": "6117b06d9f3c115bb86b8b32d3b498658c32afa57adeb372a102325a0d7af2c7"
+    },
+    {
+      "file": "zu.mp3",
+      "bytes": 68379,
+      "sha256": "00b867e1c26c5ec223aff64676f8c8808e4b8953efc99bd89cb63ccb9af10e6e"
+    },
+    {
+      "file": "zuan.mp3",
+      "bytes": 67752,
+      "sha256": "301b954ad3c059b0d8b25edf4eee8c2f5564a8f74e20fa42de5121b6e44c3a02"
+    },
+    {
+      "file": "zui.mp3",
+      "bytes": 69842,
+      "sha256": "be78e0c00258c2bbae3607bd352c98bfe36c63fc83b01abcd0c0840af0f658c8"
+    },
+    {
+      "file": "zuo.mp3",
+      "bytes": 77783,
+      "sha256": "7038e52a10d2234a329b743a06d404a9aa18937cb2113c2484456dfe69a58f25"
+    }
+  ]
+}

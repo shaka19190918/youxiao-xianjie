@@ -58,22 +58,15 @@ with sync_playwright() as p:
     assert any("assets/voice/" in x for x in page.evaluate("window.__played")), "pet did not request local audio"
 
     page.evaluate("showPage('pinyin')")
-    assert page.locator(".v54-pinyin-tabs button").count() == 3
-    assert page.locator(".v42-py").count() == 24
-    page.evaluate("setPinyinPartV54('initials')")
-    assert page.locator(".v42-py").count() == 23
-    page.evaluate("setPinyinPartV54('finals')")
-    assert page.locator(".v42-py").count() == 36
-    page.evaluate("window.__played=[];playPinyinV42('ke1','k');playPinyinV42('ying1','ing');playPinyinV42('zhong1','ong')")
-    played = page.evaluate("window.__played")
-    assert any("pinyin-v46/k-ke1.mp3" in x for x in played)
-    assert any("pinyin-v46/ing-ying1.mp3" in x for x in played)
-    assert any("pinyin-v46/ong-zhong1.mp3" in x for x in played)
-    page.evaluate("window.__played=[];playPinyinV42('a2','á');playPinyinV42('yin1','in');playPinyinV42('un1','un')")
-    played = page.evaluate("window.__played")
-    assert any("pinyin-v61/ma2.mp3" in x for x in played)
-    assert any("pinyin-v60/yin1.mp3" in x for x in played)
-    assert any("pinyin-v60/wen1.mp3" in x for x in played)
+    assert page.locator(".p63-tabs button").count() == 7
+    assert page.locator(".p63-card").count() == 23
+    page.evaluate("pinyinV63Part('tones')")
+    assert page.locator(".p63-card").count() == 24
+    page.evaluate("pinyinV63Part('finals')")
+    assert page.locator(".p63-card").count() == 24
+    assert page.evaluate("pinyinV63TaskToken(['k','ke1'])") == "p63|ke|1"
+    assert page.evaluate("pinyinV63TaskToken(['ing','ing1'])") == "p63|ying|1"
+    assert page.evaluate("pinyinV63TaskToken(['ong','ong1'])") == "p63|zhong|1"
 
     page.evaluate("S._parentAuth=true;showPage('parent')")
     parent_text = page.locator("#ct").inner_text()
