@@ -1,5 +1,5 @@
-/* 一年级成长岛 v63：全科清单与真人拼音点读的离线优先应用外壳。 */
-const CACHE='grade1-island-v63';
+/* 一年级成长岛 v64：伙伴小屋与无碰撞屏幕控制的离线优先应用外壳。 */
+const CACHE='grade1-island-v64';
 const PINYIN_CORE=['a','o','e','yi','wu','yu','bo','po','mo','fo','de','te','ne','le','ge','ke','he','ying','zhong'].map(v=>`./assets/pinyin-v63/${v}.mp3`);
 const PRECACHE=[
   './','./index.html','./manifest.webmanifest','./game-v59.css','./game-v59.js',

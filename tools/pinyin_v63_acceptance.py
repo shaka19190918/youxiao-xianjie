@@ -62,7 +62,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30_000)
     page.wait_for_function("window.__PINYIN_V63_TEST && window.__G1_TEST")
-    assert page.evaluate("document.documentElement.dataset.appVersion") == "v63-pinyin-point-read"
+    assert page.evaluate("document.documentElement.dataset.appVersion") == "v64-companion-controls"
     assert page.evaluate("__PINYIN_V63_TEST.INITIALS.length") == 23
     assert page.evaluate("__PINYIN_V63_TEST.FINALS.length") == 24
     assert page.evaluate("__PINYIN_V63_TEST.WHOLE.length") == 16

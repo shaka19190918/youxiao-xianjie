@@ -39,7 +39,7 @@ with sync_playwright() as p:
     """)
     page = migration.new_page()
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("document.documentElement.dataset.appVersion === 'v63-pinyin-point-read'", timeout=30000)
+    page.wait_for_function("document.documentElement.dataset.appVersion === 'v64-companion-controls'", timeout=30000)
     assert page.evaluate("localStorage.getItem('yxxj_s')") is None
     assert page.evaluate("localStorage.getItem('yxxj_dog')") is None
     assert page.evaluate("localStorage.getItem('grade1_island_reset_v1')") == "1"
@@ -55,7 +55,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v63-pinyin-point-read'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v64-companion-controls'")
 
     assert page.title() == "一年级成长岛"
     assert page.locator(".g1-map").count() == 1
