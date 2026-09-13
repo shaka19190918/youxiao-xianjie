@@ -103,10 +103,12 @@
   }
 
   function game(){
-    S.game=Object.assign({levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activeLevel:'start-1'},S.game||{});
-    S.game.levels=S.game.levels||{};S.game.reviewQueue=S.game.reviewQueue||{};S.game.rewardLedger=S.game.rewardLedger||{};S.game.petResponseHistory=S.game.petResponseHistory||[];
+    S.game=Object.assign({levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activityLog:[],activeLevel:'start-1'},S.game||{});
+    S.game.levels=S.game.levels||{};S.game.reviewQueue=S.game.reviewQueue||{};S.game.rewardLedger=S.game.rewardLedger||{};S.game.petResponseHistory=S.game.petResponseHistory||[];S.game.activityLog=Array.isArray(S.game.activityLog)?S.game.activityLog:[];
     return S.game;
   }
+  function localDay(at=Date.now()){const d=new Date(at),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+  function recordActivity(kind,l,extra={}){const g=game();g.activityLog.push({at:Date.now(),day:localDay(),kind,levelId:l?.id||'',region:l?.region||'',title:l?.title||'',...extra});if(g.activityLog.length>500)g.activityLog=g.activityLog.slice(-500)}
   function levelState(id){const g=game();return g.levels[id]||(g.levels[id]={stars:0,tasks:[false,false,false],wrong:0,attempts:0})}
   function totalStars(){return Object.values(game().levels).reduce((n,x)=>n+(x.stars||0),0)}
   function regionLevels(id){return LEVELS.filter(x=>x.region===id)}
@@ -131,8 +133,8 @@
   function awardTask(l,i){
     const s=levelState(l.id),g=game(),key=l.id+':star:'+i;if(s.tasks[i])return false;
     s.tasks[i]=true;s.stars=s.tasks.filter(Boolean).length;s.attempts=(s.attempts||0)+1;
-    if(!g.rewardLedger[key]){g.rewardLedger[key]=Date.now();S.pts=(S.pts||0)+3}
-    if(s.stars===3&&!s.completedAt){s.completedAt=Date.now();g.rewardLedger[l.id+':complete']=s.completedAt;if(S.dog){const old=dlv();S.dog.xp=(S.dog.xp||0)+12;S.dog.tasks=(S.dog.tasks||0)+1;S.dog.en=Math.min(100,(S.dog.en||0)+8);if(dlv()>old)setTimeout(()=>toast('伙伴升级啦！'),400)}const list=regionLevels(l.region),idx=list.findIndex(x=>x.id===l.id),next=list[idx+1];g.activeLevel=next?next.id:(nextLevel()?.id||l.id)}
+    if(!g.rewardLedger[key]){g.rewardLedger[key]=Date.now();S.pts=(S.pts||0)+3;recordActivity('star',l,{taskIndex:i})}
+    if(s.stars===3&&!s.completedAt){s.completedAt=Date.now();g.rewardLedger[l.id+':complete']=s.completedAt;recordActivity('complete',l);S.strk=studyStreak();if(S.dog){const old=dlv();S.dog.xp=(S.dog.xp||0)+12;S.dog.tasks=(S.dog.tasks||0)+1;S.dog.en=Math.min(100,(S.dog.en||0)+8);if(dlv()>old)setTimeout(()=>toast('伙伴升级啦！'),400)}const list=regionLevels(l.region),idx=list.findIndex(x=>x.id===l.id),next=list[idx+1];g.activeLevel=next?next.id:(nextLevel()?.id||l.id)}
     R();saveDog();up();starPetPulse(l,i);return true;
   }
   function starPetPulse(l,i){
@@ -172,7 +174,7 @@
   window.g1AnswerTask=function(optionIndex){
     const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
     const val=cur.task.options[optionIndex],buttons=[...document.querySelectorAll('.g1-answer')],fb=document.getElementById('g1Feedback');
-    if(val!==cur.task.answer){buttons[optionIndex]?.classList.add('wrong');buttons[optionIndex]&&(buttons[optionIndex].disabled=true);cur.state.wrong=(cur.state.wrong||0)+1;sourceMark(cur.task.key,false);scheduleReview(cur.level,cur.task);if(fb)fb.textContent='再想一想，这道题已经放进复习站';playCue('retry','');R();return}
+    if(val!==cur.task.answer){buttons[optionIndex]?.classList.add('wrong');buttons[optionIndex]&&(buttons[optionIndex].disabled=true);cur.state.wrong=(cur.state.wrong||0)+1;recordActivity('wrong',cur.level,{taskIndex:cur.index});sourceMark(cur.task.key,false);scheduleReview(cur.level,cur.task);if(fb)fb.textContent='再想一想，这道题已经放进复习站';playCue('retry','');R();return}
     buttons.forEach(b=>b.disabled=true);sourceMark(cur.task.key,true);if(fb)fb.textContent='答对啦，得到一颗星！';awardTask(cur.level,cur.index);playCue('correct','');setTimeout(()=>{if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()},650);
   };
   window.g1BeginTrace=function(){const cur=taskAt();if(!cur||cur.task.type!=='trace')return;if(cur.task.audio&&!g1Heard[cur.level.id+'-'+cur.index])return toast('先听完这个字，再去描红');window.G1_TRACE_CONTEXT={levelId:cur.level.id,index:cur.index,task:cur.task};openTraceV42(cur.task.char,cur.task.pinyin)};
@@ -198,6 +200,41 @@
   }
   function renderStars(s){return [0,1,2].map(i=>`<span class="g1-star ${s.tasks[i]?'on':''}">${s.tasks[i]?'★':'☆'}</span>`).join('')}
 
+  function completedOn(day){return Object.values(game().levels).filter(x=>x.completedAt&&localDay(x.completedAt)===day).length}
+  function studyStreak(){const days=new Set(Object.values(game().levels).filter(x=>x.completedAt).map(x=>localDay(x.completedAt))),cursor=new Date();cursor.setHours(12,0,0,0);if(!days.has(localDay(cursor)))cursor.setDate(cursor.getDate()-1);let n=0;while(days.has(localDay(cursor))){n++;cursor.setDate(cursor.getDate()-1)}return n}
+  function achievementData(){
+    const g=game(),stars=totalStars(),done=Object.values(g.levels).filter(x=>x.stars===3).length,reviewWins=g.activityLog.filter(x=>x.kind==='review-correct').length,streak=studyStreak();
+    const subjectStars=id=>regionLevels(id).reduce((n,l)=>n+(levelState(l.id).stars||0),0);
+    return [
+      {id:'launch',icon:'🚀',name:'勇敢启程',desc:'收集第一组三星',open:stars>=3},
+      {id:'five',icon:'🧭',name:'小小探险家',desc:'完成5个关卡',open:done>=5},
+      {id:'review',icon:'🛡️',name:'错题勇士',desc:'完成3次错题复习',open:reviewWins>=3},
+      {id:'chinese',icon:'📚',name:'语文之光',desc:'语文森林收集12星',open:subjectStars('chinese')>=12},
+      {id:'math',icon:'🏰',name:'数学勇士',desc:'数学城堡收集12星',open:subjectStars('math')>=12},
+      {id:'streak',icon:'🔥',name:'坚持一周',desc:'连续真实通关7天',open:streak>=7},
+      {id:'pet',icon:'🐾',name:'最佳伙伴',desc:'伙伴成长值达到60',open:(S.dog?.xp||0)>=60},
+      {id:'island',icon:'🏆',name:'成长岛之星',desc:'累计收集60星',open:stars>=60}
+    ];
+  }
+  function dailyPlanCard(){
+    const day=localDay(),done=completedOn(day),goal=Math.max(1,Math.min(3,Number(S.dailyGoal?.tasks)||1)),due=dueReviews().length,next=nextLevel(),pct=Math.min(100,Math.round(done/goal*100)),badges=achievementData(),open=badges.filter(x=>x.open),streak=studyStreak();
+    return `<section class="g1-daily" aria-label="今日成长计划"><header><div><small>今天的专属路线</small><h2>🎯 今日成长计划</h2></div><button onclick="g1ShowAchievements()">${open.length}/${badges.length} 枚徽章</button></header><div class="g1-daily-body"><div class="g1-daily-ring" style="--daily:${pct*3.6}deg"><b>${done}</b><small>/ ${goal} 关</small></div><div class="g1-daily-steps"><button class="${due?'current':'done'}" onclick="showPage('review')"><span>${due?'1':'✓'}</span><b>及时复习</b><small>${due?due+' 道已到期':'今天已清空'}</small></button><button class="${done<goal?'current':'done'}" onclick="g1Continue()"><span>${done<goal?'2':'✓'}</span><b>三星闯关</b><small>${next?esc(next.title):'全部完成'}</small></button><button class="${done>0?'done':''}" onclick="showPage('dog')"><span>${done>0?'✓':'3'}</span><b>伙伴陪伴</b><small>真实连续 ${streak} 天</small></button></div></div></section>`;
+  }
+  function weekStats(){
+    const g=game(),days=[];for(let i=6;i>=0;i--){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-i);const day=localDay(d),logs=g.activityLog.filter(x=>x.day===day),complete=completedOn(day),success=logs.filter(x=>x.kind==='star'||x.kind==='review-correct').length,wrong=logs.filter(x=>x.kind==='wrong'||x.kind==='review-wrong').length;days.push({day,label:['日','一','二','三','四','五','六'][d.getDay()],complete,success,wrong,review:logs.filter(x=>x.kind==='review-correct').length})}return days;
+  }
+  function reportModel(){
+    const g=game(),days=weekStats(),completed=days.reduce((n,x)=>n+x.complete,0),success=days.reduce((n,x)=>n+x.success,0),wrong=days.reduce((n,x)=>n+x.wrong,0),reviewed=days.reduce((n,x)=>n+x.review,0),active=days.filter(x=>x.complete||x.success||x.wrong).length,rate=success+wrong?Math.round(success/(success+wrong)*100):null,weak=Object.values(g.reviewQueue).sort((a,b)=>(b.lapses||0)-(a.lapses||0)).slice(0,3),due=dueReviews().length;
+    const advice=due?`先完成 ${due} 道到期复习，再进入新关卡。`:weak.length?`优先巩固“${weak[0].title}”，每次控制在10分钟内。`:completed?`本周节奏稳定，明天继续当前关卡即可。`:'先完成一个三星体验关，建立轻松的学习节奏。';
+    return {days,completed,success,wrong,reviewed,active,rate,weak,due,advice};
+  }
+  function weekReportHtml(print=false){
+    const m=reportModel(),max=Math.max(1,...m.days.map(x=>x.complete));
+    return `<section class="g1-week-report ${print?'print':''}" id="g1WeekReport"><header><div><small>最近7天 · 自动生成</small><h2>📈 一周成长报告</h2></div>${print?'':`<button onclick="g1PrintReport()">打印 / 存PDF</button>`}</header><div class="g1-week-kpis"><div><b>${m.active}</b><small>活跃天数</small></div><div><b>${m.completed}</b><small>三星关卡</small></div><div><b>${m.reviewed}</b><small>正确复习</small></div><div><b>${m.rate===null?'—':m.rate+'%'}</b><small>任务成功率</small></div></div><div class="g1-week-chart" aria-label="最近七天完成关卡柱状图">${m.days.map(x=>`<div><i><b style="height:${Math.max(x.complete?18:4,Math.round(x.complete/max*100))}%"></b></i><strong>${x.complete}</strong><small>${x.label}</small></div>`).join('')}</div><div class="g1-parent-insight"><b>下一步建议</b><p>${esc(m.advice)}</p></div><div class="g1-weak"><b>需要关注</b><span>${m.weak.length?m.weak.map(x=>esc(x.title)).join(' · '):'目前没有待巩固知识点'}</span></div><p class="g1-report-note">数据来自真实闯关、错题复习与描红结果；重复点击不会增加统计。</p></section>`;
+  }
+  window.g1ShowAchievements=function(){document.getElementById('g1BadgeModal')?.remove();const all=achievementData(),open=all.filter(x=>x.open).length,el=document.createElement('div');el.id='g1BadgeModal';el.className='g1-modal';el.innerHTML=`<section class="g1-badge-card"><header><div><small>真实学习成果</small><h2>🏅 我的成长徽章</h2></div><button onclick="document.getElementById('g1BadgeModal').remove()" aria-label="关闭">×</button></header><p>已经点亮 ${open} / ${all.length} 枚</p><div class="g1-badge-grid">${all.map(x=>`<div class="${x.open?'open':'locked'}"><span>${x.open?x.icon:'🔒'}</span><b>${x.name}</b><small>${x.desc}</small></div>`).join('')}</div></section>`;document.body.appendChild(el)};
+  window.g1PrintReport=function(){document.getElementById('g1PrintSheet')?.remove();const el=document.createElement('div');el.id='g1PrintSheet';el.className='g1-modal g1-print-modal';el.innerHTML=`<div class="g1-print-sheet"><div class="g1-print-actions"><button onclick="document.getElementById('g1PrintSheet').remove()">返回</button><button onclick="window.print()">打印 / 存为PDF</button></div><h1>${esc(S._setup.name||'小朋友')}的一年级成长报告</h1>${weekReportHtml(true)}<footer>一年级成长岛 · 报告生成于 ${new Date().toLocaleString('zh-CN')}</footer></div>`;document.body.appendChild(el)};
+
   function homePetPanel(pet,due,next){
     const dog=S.dog,lv=dlv(),stage=DST[lv],nextStage=DST[lv+1],progress=typeof dpg==='function'?dpg():100;
     const today=T(),todayDone=Object.values(game().levels).filter(x=>x.completedAt&&new Date(x.completedAt).toISOString().slice(0,10)===today).length;
@@ -211,7 +248,7 @@
 
   PGS.home={title:'一年级成长岛',render:function(){
     const stars=totalStars(),due=dueReviews().length,next=nextLevel(),pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null;
-    document.getElementById('ct').innerHTML=`<main class="g1-shell"><section class="g1-top"><div><h1>${esc(S._setup.name||'小朋友')}，出发闯关吧！</h1><p>做真实任务，和伙伴一起长大</p></div><div class="g1-score"><span>⭐ ${stars}</span><span>💎 ${S.pts||0}</span></div></section><button class="g1-continue" onclick="g1Continue()"><span class="ico">${due?'📦':(next?.icon||'🏆')}</span><span><strong>${due?'先复习 '+due+' 道错题':(next?'继续：'+next.title:'全部通关')}</strong><small>${due?'复习完成再去探索':'每关三个真实任务'}</small></span><span class="arrow">›</span></button>${due?`<button class="g1-review-alert" onclick="showPage('review')">📦 到期复习<b>${due}</b></button>`:''}<section class="g1-map"><div class="g1-map-title"><h2>🗺️ 成长地图</h2><span>已收集 ${stars} 星</span></div><div class="g1-region-list">${REGION_ORDER.map(id=>{const r=REGION_META[id],open=regionUnlocked(id),done=regionDone(id),count=regionLevels(id).filter(x=>levelState(x.id).stars===3).length,total=regionLevels(id).length;return `<button class="g1-region ${open?'':'locked'} ${done?'complete':''}" style="--region-color:${r.color}" onclick="g1OpenRegion('${id}')"><span class="ri">${open?r.icon:'🔒'}</span><span><strong>${r.name}</strong><small>${open?`${count} / ${total} 关完成`:r.desc}</small>${open?'':`<span class="lock">需要 ${r.need} 星</span>`}</span></button>`}).join('')}</div></section>${pet?homePetPanel(pet,due,next):''}</main>`;
+    document.getElementById('ct').innerHTML=`<main class="g1-shell"><section class="g1-top"><div><h1>${esc(S._setup.name||'小朋友')}，出发闯关吧！</h1><p>做真实任务，和伙伴一起长大</p></div><div class="g1-score"><span>⭐ ${stars}</span><span>💎 ${S.pts||0}</span></div></section><button class="g1-continue" onclick="g1Continue()"><span class="ico">${due?'📦':(next?.icon||'🏆')}</span><span><strong>${due?'先复习 '+due+' 道错题':(next?'继续：'+next.title:'全部通关')}</strong><small>${due?'复习完成再去探索':'每关三个真实任务'}</small></span><span class="arrow">›</span></button>${due?`<button class="g1-review-alert" onclick="showPage('review')">📦 到期复习<b>${due}</b></button>`:''}${dailyPlanCard()}<section class="g1-map"><div class="g1-map-title"><h2>🗺️ 成长地图</h2><span>已收集 ${stars} 星</span></div><div class="g1-region-list">${REGION_ORDER.map(id=>{const r=REGION_META[id],open=regionUnlocked(id),done=regionDone(id),count=regionLevels(id).filter(x=>levelState(x.id).stars===3).length,total=regionLevels(id).length;return `<button class="g1-region ${open?'':'locked'} ${done?'complete':''}" style="--region-color:${r.color}" onclick="g1OpenRegion('${id}')"><span class="ri">${open?r.icon:'🔒'}</span><span><strong>${r.name}</strong><small>${open?`${count} / ${total} 关完成`:r.desc}</small>${open?'':`<span class="lock">需要 ${r.need} 星</span>`}</span></button>`}).join('')}</div></section>${pet?homePetPanel(pet,due,next):''}</main>`;
   }};
   PGS.region={title:'🗺️ 区域关卡',render:function(){const r=REGION_META[g1CurrentRegion]||REGION_META.start,ls=regionLevels(g1CurrentRegion),done=ls.filter(x=>levelState(x.id).stars===3).length,first=Math.max(0,ls.findIndex(x=>levelState(x.id).stars<3)),suggested=Math.floor(first/8),page=Number.isInteger(g1RegionPages[g1CurrentRegion])?g1RegionPages[g1CurrentRegion]:suggested,max=Math.max(0,Math.ceil(ls.length/8)-1),start=page*8,shown=ls.slice(start,start+8);g1RegionPages[g1CurrentRegion]=Math.min(page,max);document.getElementById('ct').innerHTML=`<main class="g1-region-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>${r.icon} ${r.name}</h1><p>${r.desc}</p></div></header><section class="g1-region-progress"><div><strong>${done} / ${ls.length} 关</strong><span>当前小节 ${page+1} / ${max+1}</span></div><i><b style="width:${ls.length?Math.round(done/ls.length*100):0}%"></b></i></section><section class="g1-level-list">${shown.map((l,j)=>{const i=start+j,s=levelState(l.id),open=levelUnlocked(l.id);return `<button class="g1-level-card ${open?'':'locked'} ${s.stars&&s.stars<3?'current':''}" onclick="g1StartLevel('${l.id}')"><span class="num">${open?i+1:'🔒'}</span><span class="stars">${'★'.repeat(s.stars)}${'☆'.repeat(3-s.stars)}</span><strong>${esc(l.title)}</strong><small>${open?(s.stars===3?'已通关':'完成三个任务'):'先完成前一关'}</small></button>`}).join('')}</section>${max?`<nav class="g1-pager" aria-label="关卡分段"><button onclick="g1RegionPage(-1)" ${page===0?'disabled':''}>← 上一小节</button><span>${start+1}—${Math.min(start+8,ls.length)}</span><button onclick="g1RegionPage(1)" ${page===max?'disabled':''}>下一小节 →</button></nav>`:''}</main>`}};
   PGS.adventure={title:'⭐ 继续闯关',render:function(){const n=nextLevel();if(n){g1ActiveLevelId=n.id;PGS.level.render()}else PGS.home.render()}};
@@ -222,7 +259,7 @@
 
   function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div><h3>${esc(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${esc(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
   window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;if(String(q.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(q.task.audio).catch(()=>toast('复习音频没有加载，请重试'));return}v42Play(q.task.audio,'复习音频没有加载，请重试')};
-  window.g1AnswerReview=function(id,i,el){const g=game(),q=g.reviewQueue[id];if(!q)return;const t=q.task,fb=document.getElementById('g1Feedback');if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';sourceMark(t.key,false);R();if(fb)fb.textContent='没关系，10分钟后再来一次';playCue('retry','');return}sourceMark(t.key,true);q.lastResult='correct';q.lastReviewedAt=Date.now();if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}R();playCue('correct','');setTimeout(()=>showPage('review'),650)};
+  window.g1AnswerReview=function(id,i,el){const g=game(),q=g.reviewQueue[id];if(!q)return;const t=q.task,l=LEVEL_BY_ID[q.levelId],fb=document.getElementById('g1Feedback');if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';recordActivity('review-wrong',l,{reviewId:id});sourceMark(t.key,false);R();if(fb)fb.textContent='没关系，10分钟后再来一次';playCue('retry','');return}recordActivity('review-correct',l,{reviewId:id});sourceMark(t.key,true);q.lastResult='correct';q.lastReviewedAt=Date.now();if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}R();playCue('correct','');setTimeout(()=>showPage('review'),650)};
   PGS.review={title:'📦 错题复习站',render:function(){const all=Object.entries(game().reviewQueue).sort((a,b)=>a[1].dueAt-b[1].dueAt),due=all.filter(([,x])=>x.dueAt<=Date.now()).slice(0,3);g1ReviewIds=due.map(x=>x[0]);let body;if(due.length)body=`<section class="g1-review-card">${renderReviewQuestion(due[0])}</section><p class="g1-task-tip" style="text-align:center">本次最多复习3道 · 还有 ${due.length-1} 道已到期</p>`;else{const next=all[0];body=`<section class="g1-empty"><div class="em">${next?'⏳':'🌟'}</div><h2>${next?'现在先去闯关吧':'今天没有错题'}</h2><p>${next?'下一次复习：'+new Date(next[1].dueAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'认真思考，继续保持！'}</p><button class="g1-next-task" onclick="g1Continue()">继续闯关</button></section>`}document.getElementById('ct').innerHTML=`<main class="g1-review-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>📦 错题复习站</h1><p>10分钟、1天、3天、7天、14天再见</p></div></header>${body}</main>`}};
 
   const oldStartHQ=startHQ;
@@ -236,7 +273,7 @@
   advDog=function(){};
 
   const oldParentRender=PGS.parent.render;
-  PGS.parent.render=function(){oldParentRender();if(!S._parentAuth)return;const g=game(),done=Object.values(g.levels).filter(x=>x.stars===3).length,stars=totalStars(),due=dueReviews().length,weak=Object.values(g.reviewQueue).sort((a,b)=>(b.lapses||0)-(a.lapses||0)).slice(0,3);const first=document.querySelector('#ct>.card');if(first)first.insertAdjacentHTML('afterend',`<section class="card" id="g1ParentReport" style="margin-top:14px"><div class="card-hd"><span class="ic">🗺️</span><h2>成长岛闯关报告</h2></div><div class="parent-stats"><div class="pstat"><div class="ps-v">${stars}</div><div class="ps-l">真实星星</div></div><div class="pstat"><div class="ps-v">${done}</div><div class="ps-l">三星关卡</div></div><div class="pstat"><div class="ps-v" style="color:${due?'#d86632':'#3a9d55'}">${due}</div><div class="ps-l">到期复习</div></div><div class="pstat"><div class="ps-v">${Object.keys(g.reviewQueue).length}</div><div class="ps-l">复习队列</div></div></div><p style="font-size:15px;line-height:1.7">${weak.length?'近期需要多练：'+weak.map(x=>esc(x.title)).join('、'):'暂时没有薄弱知识点。'} 星星只来自听辨、答题、描红或验证过的任务，不能手动补发。</p><button class="btn b3" style="width:100%;min-height:54px" onclick="showPage('curriculum')">预览完整一年级课程</button></section>`)};
+  PGS.parent.render=function(){oldParentRender();if(!S._parentAuth)return;const g=game(),done=Object.values(g.levels).filter(x=>x.stars===3).length,stars=totalStars(),due=dueReviews().length,badges=achievementData().filter(x=>x.open).length,first=document.querySelector('#ct>.card'),head=first?.querySelector('.card-hd');if(head)head.insertAdjacentHTML('afterend',weekReportHtml());if(first)first.insertAdjacentHTML('afterend',`<section class="card g1-parent-overview" id="g1ParentReport" style="margin-top:14px"><div class="card-hd"><span class="ic">🗺️</span><h2>成长岛总览</h2></div><div class="parent-stats"><div class="pstat"><div class="ps-v">${stars}</div><div class="ps-l">真实星星</div></div><div class="pstat"><div class="ps-v">${done}</div><div class="ps-l">三星关卡</div></div><div class="pstat"><div class="ps-v" style="color:${due?'#d86632':'#3a9d55'}">${due}</div><div class="ps-l">到期复习</div></div><div class="pstat"><div class="ps-v">${badges}</div><div class="ps-l">成长徽章</div></div></div><p>星星和报告只来自听辨、答题、描红或验证过的真实任务，不能手动补发。</p><div class="g1-parent-actions"><button onclick="showPage('curriculum')">📚 完整课程</button><button onclick="g1ShowAchievements()">🏅 查看徽章</button></div></section>`)};
   const parentWithGameReport=PGS.parent.render;
   PGS.parent.render=function(){parentWithGameReport();if(!S._parentAuth)return;const report=document.getElementById('g1ParentReport');if(report)report.insertAdjacentHTML('afterend',`<section class="card" id="g1SourceReport" style="margin-top:14px"><div class="card-hd"><span class="ic">📚</span><h2>课程依据与边界</h2></div><p style="font-size:15px;line-height:1.75">同步范围按国家中小学智慧教育平台当前一年级的10个学科入口核对，并以教育部课程标准和教学用书目录限定能力范围。写字并入语文；体育使用水平一；艺术综合和劳动按平台当前仅列上册。题目、插图与活动均为原创，不复制教材正文或受保护音视频。时间、数独、钢琴和额外运动为课外拓展，不计入教材同步完成率。</p><div style="display:grid;gap:8px"><a class="btn b4" target="_blank" rel="noopener" href="https://basic.smartedu.cn/syncClassroom/auto">国家中小学智慧教育平台</a><a class="btn b3" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html">教育部课程标准</a><a class="btn b2" target="_blank" rel="noopener" href="https://www.moe.gov.cn/srcsite/A26/s8001/202408/W020240805496325238752.pdf">2024国家教学用书目录</a></div></section>`)};
 
@@ -251,7 +288,7 @@
   const baseSoundMount=v41MountSound;v41MountSound=function(){baseSoundMount();mountFloatControls()};
   const baseShow=showPage;showPage=function(id){if(g1SportTimer&&id!=='level'){clearInterval(g1SportTimer);g1SportTimer=null}baseShow(id);mountGameDock();mountFloatControls()};
 
-  LEVELS=buildLevels();LEVEL_BY_ID=Object.fromEntries(LEVELS.map(x=>[x.id,x]));game();S._setup.grade='一年级';R();
+  LEVELS=buildLevels();LEVEL_BY_ID=Object.fromEntries(LEVELS.map(x=>[x.id,x]));game();S._setup.grade='一年级';S.strk=studyStreak();R();
   if(new URLSearchParams(location.search).has('test'))window.__G1_TEST={
     levels:LEVELS,regions:REGION_META,totalStars,levelState,regionUnlocked,dueReviews,petReply,
     current(){return taskAt()},
@@ -261,6 +298,6 @@
     dueNow(){Object.values(game().reviewQueue).forEach(x=>x.dueAt=Date.now()-1);R()},
     game
   };
-  document.documentElement.dataset.appVersion='v64-companion-controls';
+  document.documentElement.dataset.appVersion='v65-family-value';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

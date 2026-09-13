@@ -46,7 +46,7 @@ with sync_playwright() as p:
     errors: list[str] = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(TEST_URL, wait_until="networkidle", timeout=30_000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v64-companion-controls'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v65-family-value'")
 
     # Anti-addiction is enabled by default for this real child profile and actively counts.
     assert page.evaluate("S.scr.on && S.scr.contMin===20 && S.scr.restMin===5 && S.scr.dayMin===30")

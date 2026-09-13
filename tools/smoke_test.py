@@ -70,7 +70,7 @@ with sync_playwright() as p:
 
     page.evaluate("S._parentAuth=true;showPage('parent')")
     parent_text = page.locator("#ct").inner_text()
-    assert "成长岛闯关报告" in parent_text and "教学音频核对" in parent_text
+    assert "一周成长报告" in parent_text and "成长岛总览" in parent_text and "教学音频核对" in parent_text
     assert "课程依据与边界" in parent_text
     assert "学习阶段" not in parent_text
     page.evaluate("v41AuditPlay(0)")

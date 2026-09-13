@@ -29,8 +29,11 @@ with sync_playwright() as p:
         context.add_init_script(STATE)
         page = context.new_page()
         page.goto(BASE + "?test=1", wait_until="networkidle")
-        page.wait_for_function("document.documentElement.dataset.appVersion === 'v64-companion-controls'")
+        page.wait_for_function("document.documentElement.dataset.appVersion === 'v65-family-value'")
         page.screenshot(path=str(OUT / name), full_page=True)
+        if width == 1920:
+            page.evaluate("S._parentAuth=true;showPage('parent')")
+            page.screenshot(path=str(OUT / "parent-report-wide.png"), full_page=True)
         context.close()
     browser.close()
 print(OUT)
