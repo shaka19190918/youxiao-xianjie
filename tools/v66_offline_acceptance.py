@@ -18,11 +18,13 @@ with sync_playwright() as p:
     assert 'error' not in registration,registration
     page.evaluate("Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Service-worker install timed out after 30s')),30000))])")
     page.wait_for_function("navigator.serviceWorker.controller!==null")
-    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v68-1'))")
-    assert page.evaluate("caches.open('grade1-island-v68-1').then(c=>c.match('./learning-v66.js?v=68')).then(Boolean)")
+    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v69'))")
+    assert page.evaluate("caches.open('grade1-island-v69').then(c=>c.match('./learning-v66.js?v=69')).then(Boolean)")
     # Old, unversioned cached scripts cannot mix with the new HTML release.
-    page.evaluate("caches.open('grade1-island-v68-1').then(c=>Promise.all(['game-v59.js','learning-v66.js'].map(p=>c.put(p,new Response('throw new Error(\"stale cache loaded\")',{headers:{'Content-Type':'application/javascript'}})))))")
+    page.evaluate("caches.open('grade1-island-v69').then(c=>Promise.all(['game-v59.js','learning-v66.js'].map(p=>c.put(p,new Response('throw new Error(\"stale cache loaded\")',{headers:{'Content-Type':'application/javascript'}})))))")
     page.reload(wait_until='networkidle')
+    page.evaluate("Fast69.warmCurrent({force:true})")
+    assert page.evaluate("caches.open('grade1-island-media-v69').then(c=>c.match('assets/pinyin-v63/a.mp3')).then(Boolean)")
     ctx.set_offline(True)
     page.reload(wait_until='networkidle')
     assert page.evaluate("S._setup.name")=='离线测试'
@@ -41,5 +43,5 @@ with sync_playwright() as p:
     assert page.evaluate('S.piano68.ms')>0
     page.evaluate('Piano68.pause()')
     assert not errors,errors
-    print('PASS: v68 service-worker cache, offline reload, profile, cached pinyin playback, writing, piano timer and local pitch module')
+    print('PASS: v69 shell and current-task cache, offline reload, profile, cached pinyin playback, writing, piano timer and local pitch module')
     b.close()

@@ -33,7 +33,7 @@
   function stopAudio(){v46StopAudio();if(typeof pinyinV63Stop==='function')pinyinV63Stop();if(typeof stopPianoV6==='function')stopPianoV6()}
   function start(){if(!allowed())return;running=true;runDay=day();lastTick=performance.now();status='正在计时 · 看琴键，不必一直看屏幕';update()}
   function releaseMic(){epoch++;pending=false;clearInterval(sampling);sampling=null;stream?.getTracks().forEach(t=>t.stop());stream=null;source?.disconnect();source=null;analyser=null;buffer=null;const old=context;context=null;old?.close().catch(()=>{});stable=0;lastMidi=null}
-  function pause(){running=false;releaseMic();status='已暂停 · 时间已保存，麦克风已关闭';R();update()}
+  function pause(){const changed=running||!!stream||pending;running=false;releaseMic();status='已暂停 · 时间已保存，麦克风已关闭';if(changed)R();update()}
   function stopMic(){releaseMic();heard='麦克风已关闭';advice='可以继续计时，请家长陪伴练习。';update()}
   function dialog(kind){if(!mounted()||_eyeMode)return;if(kind==='finish'&&(state().ms<LIMIT||state().done))return;
     pause();$('p68Consent')?.remove();const el=document.createElement('div');el.id='p68Consent';el.className='l66-modal';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','p68ConsentTitle');
@@ -106,6 +106,5 @@
     const options=Array.from(group.querySelectorAll('button,.moi')).filter(b=>!b.classList.contains('v47-choice-hear')&&b.closest(groupSelector)===group);
     options.forEach((b,i)=>{if(b.dataset.optionNumber!==String(i+1))b.dataset.optionNumber=String(i+1);const label='选项'+(i+1)+'：'+b.textContent.trim();if(b.getAttribute('aria-label')!==label)b.setAttribute('aria-label',label)})
   })}
-  new MutationObserver(numberOptions).observe(document.body,{childList:true,subtree:true});numberOptions();
-  if(S._setup.done&&S.dog&&CP==='home')PGS.home.render();
+  new MutationObserver(records=>{if(records.some(r=>r.target.closest?.(groupSelector)||[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches(groupSelector)||n.querySelector(groupSelector)||n.closest(groupSelector)))))numberOptions()}).observe(document.body,{childList:true,subtree:true});numberOptions();
 })();

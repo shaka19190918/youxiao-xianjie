@@ -103,7 +103,7 @@
   }
 
   function game(){
-    S.game=Object.assign({levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activityLog:[],activeLevel:'start-1'},S.game||{});
+    S.game=S.game||{levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activityLog:[],activeLevel:'start-1'};
     S.game.levels=S.game.levels||{};S.game.reviewQueue=S.game.reviewQueue||{};S.game.rewardLedger=S.game.rewardLedger||{};S.game.petResponseHistory=S.game.petResponseHistory||[];S.game.activityLog=Array.isArray(S.game.activityLog)?S.game.activityLog:[];
     return S.game;
   }
@@ -111,7 +111,8 @@
   function recordActivity(kind,l,extra={}){const g=game();g.activityLog.push({at:Date.now(),day:localDay(),kind,levelId:l?.id||'',region:l?.region||'',title:l?.title||'',...extra});if(g.activityLog.length>500)g.activityLog=g.activityLog.slice(-500)}
   function levelState(id){const g=game();return g.levels[id]||(g.levels[id]={stars:0,tasks:[false,false,false],wrong:0,attempts:0})}
   function totalStars(){return Object.values(game().levels).reduce((n,x)=>n+(x.stars||0),0)}
-  function regionLevels(id){return LEVELS.filter(x=>x.region===id)}
+  const regionCache=new Map();
+  function regionLevels(id){if(!regionCache.has(id))regionCache.set(id,LEVELS.filter(x=>x.region===id));return regionCache.get(id)}
   function regionUnlocked(id){return totalStars()>=(REGION_META[id]?.need||0)}
   function levelUnlocked(id){const l=LEVEL_BY_ID[id];if(!l||!regionUnlocked(l.region))return false;const list=regionLevels(l.region),i=list.findIndex(x=>x.id===id);return i<=0||levelState(list[i-1].id).stars===3}
   function regionDone(id){const ls=regionLevels(id);return ls.length&&ls.every(x=>levelState(x.id).stars===3)}
@@ -151,7 +152,7 @@
     return {text:pick.text,action:(l&&({chinese:'wag',math:'bounce',life:'heart',english:'sway',science:'look',arts:'dance',thinking:'spin',interest:'bounce'}[l.region]))||'wag'};
   }
 
-  function warmRegion(id){const assets=regionLevels(id).slice(0,2).flatMap(l=>l.tasks.map(t=>t.audio).filter(a=>a&&!String(a).startsWith('p63|')));try{navigator.serviceWorker?.ready.then(reg=>(reg.active||navigator.serviceWorker.controller)?.postMessage({type:'prewarm-assets',assets}))}catch(_){}}
+  function warmRegion(id){const l=regionLevels(id).find(x=>levelState(x.id).stars<3)||regionLevels(id)[0];if(l)window.Fast69?.warmTasks(l.tasks.slice(0,2))}
   window.g1OpenRegion=function(id){if(!regionUnlocked(id))return toast('再收集一些星星，就能来这里');g1CurrentRegion=id;warmRegion(id);showPage('region')};
   window.g1RegionPage=function(delta){const ls=regionLevels(g1CurrentRegion),max=Math.max(0,Math.ceil(ls.length/8)-1),current=Number(g1RegionPages[g1CurrentRegion]||0);g1RegionPages[g1CurrentRegion]=Math.max(0,Math.min(max,current+delta));PGS.region.render();window.scrollTo(0,0)};
   window.g1StartLevel=function(id){if(!levelUnlocked(id))return toast('先完成前一关');g1ActiveLevelId=id;game().activeLevel=id;g1Heard={};R();showPage('level')};
@@ -301,6 +302,5 @@
     game
   };
   window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay};
-  document.documentElement.dataset.appVersion='v68-focus-piano';
-  if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
+  document.documentElement.dataset.appVersion='v69-fast-loading';
 })();

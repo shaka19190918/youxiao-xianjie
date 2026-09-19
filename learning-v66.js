@@ -195,5 +195,4 @@
     if(CP==='daily66'&&remaining()>0&&!document.hidden&&!_eyeMode){const p=plan(),c=itemTask();if(p.breakUntil<=Date.now()&&c&&delta<=1500){p.coreMs=Math.min(600000,(p.coreMs||0)+delta);p.screenSeconds++;if(remaining()<=0){save();stopAudio();clHW();renderDaily()}}if(p.screenSeconds%10===0)save()}
   },1000);
   window.addEventListener('pagehide',()=>save());
-  if(S._setup.done&&S.dog&&CP==='home')PGS.home.render();
 })();

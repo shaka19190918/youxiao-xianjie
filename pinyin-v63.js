@@ -15,7 +15,7 @@
     ['ie','ye'],['üe','yue'],['er','er'],['ɑn','an'],['en','en'],['in','yin'],['un','wen'],['ün','yun'],['ɑng','ang'],['eng','eng'],['ing','ying'],['ong','zhong']
   ];
   const WHOLE=['zhi','chi','shi','ri','zi','ci','si','yi','wu','yu','ye','yue','yuan','yin','yun','ying'];
-  const buffers=new Map(),segments=new Map();
+  const buffers=new Map(),segments=new WeakMap();
   let ctx=null,active=null,part='initials',tone=1,manifest=null,current={name:'a',tone:1},challenge=null;
   const AudioContextCtor=window.AudioContext||window.webkitAudioContext;
   const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -28,14 +28,16 @@
     if(at<0){const iu=Math.max(s.lastIndexOf('i'),s.lastIndexOf('u'),s.lastIndexOf('ü'));at=iu}
     return at<0?s:s.slice(0,at)+marks[s[at]][n-1]+s.slice(at+1)
   }
-  function ensureContext(){if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');if(!ctx)ctx=new AudioContextCtor();return ctx.resume().then(()=>ctx)}
+  function ensureContext(){if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');if(!ctx)ctx=new AudioContextCtor();return ctx.state==='running'?Promise.resolve(ctx):ctx.resume().then(()=>ctx)}
   async function getBuffer(name){
-    name=normalize(name);if(buffers.has(name))return buffers.get(name);
-    const promise=fetch(ROOT+encodeURIComponent(name)+'.mp3',{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('音频未找到');return r.arrayBuffer()}).then(b=>ensureContext().then(c=>c.decodeAudioData(b)));
-    buffers.set(name,promise);try{return await promise}catch(e){buffers.delete(name);throw e}
+    name=normalize(name);if(buffers.has(name)){const value=buffers.get(name);buffers.delete(name);buffers.set(name,value);return value}
+    const path=ROOT+encodeURIComponent(name)+'.mp3';
+    const request=window.Fast69?Fast69.fetchAsset(path):fetch(path,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('音频未找到');return r.arrayBuffer()});
+    const promise=request.then(b=>ensureContext().then(c=>c.decodeAudioData(b.slice(0))));
+    buffers.set(name,promise);if(buffers.size>12)buffers.delete(buffers.keys().next().value);try{return await promise}catch(e){buffers.delete(name);throw e}
   }
   function findSegments(buffer){
-    const key=buffer.duration+'-'+buffer.length;if(segments.has(key))return segments.get(key);
+    if(segments.has(buffer))return segments.get(buffer);
     const data=buffer.getChannelData(0),rate=buffer.sampleRate,step=Math.max(128,Math.floor(rate*.012));let levels=[],max=0;
     for(let i=0;i<data.length;i+=step){let sum=0,end=Math.min(data.length,i+step);for(let j=i;j<end;j++)sum+=Math.abs(data[j]);const v=sum/(end-i);levels.push(v);if(v>max)max=v}
     const sorted=levels.slice().sort((a,b)=>a-b),noise=sorted[Math.floor(sorted.length*.2)]||0,threshold=Math.max(.003,noise*4,max*.055);let raw=[],start=-1;
@@ -44,10 +46,11 @@
     let spans=merged.filter(x=>x[1]-x[0]>.16).map(x=>[Math.max(0,x[0]-.055),Math.min(buffer.duration,x[1]+.075)]);
     if(spans.length>4){while(spans.length>4){let best=0,gap=Infinity;for(let i=0;i<spans.length-1;i++){const g=spans[i+1][0]-spans[i][1];if(g<gap){gap=g;best=i}}spans.splice(best,2,[spans[best][0],spans[best+1][1]])}}
     if(spans.length!==4){const q=buffer.duration/4;spans=[0,1,2,3].map(i=>[i*q+.12,Math.max(i*q+.3,(i+1)*q-.12)])}
-    segments.set(key,spans);return spans
+    segments.set(buffer,spans);return spans
   }
   let playGeneration=0;
   window.pinyinV63Stop=function(){playGeneration++;if(active){try{active.stop()}catch(_){}active=null}};
+  window.pinyinV69Prepare=name=>{ensureContext().then(()=>getBuffer(name)).catch(()=>{})};
   async function play(name,n=1,options={}){
     const generation=++playGeneration;
     const status=document.getElementById('p63Status');if(status){status.className='p63-status';status.textContent='正在准备真人发音…'}

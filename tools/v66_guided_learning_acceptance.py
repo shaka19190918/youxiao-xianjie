@@ -31,7 +31,7 @@ with sync_playwright() as p:
     page.clock.install()
     def load():
         page.goto(URL,wait_until='networkidle')
-        page.wait_for_function("window.L66 && document.documentElement.dataset.appVersion==='v68-focus-piano'")
+        page.wait_for_function("window.L66 && document.documentElement.dataset.appVersion==='v69-fast-loading'")
         page.evaluate("pinyinV63PlayToken=async (token,cb)=>{cb?.()}")
     load()
     assert page.locator('.l66-subjects>span').count()==5

@@ -17,7 +17,7 @@ with sync_playwright() as p:
     page.goto(URL,wait_until='networkidle')
     page.evaluate("S._setup={done:true,name:'图画测试',grade:'一年级'};S.dog={type:'trex',xp:0,hu:80,hy:80,en:80};R()")
     page.reload(wait_until='networkidle')
-    page.wait_for_function("window.QuestionArt && document.documentElement.dataset.appVersion==='v68-focus-piano'")
+    page.wait_for_function("window.QuestionArt && document.documentElement.dataset.appVersion==='v69-fast-loading'")
     page.evaluate("""
       window.qTest=G1Learning.levels.flatMap(l=>l.tasks.map((t,i)=>({l,t,i})));
       window.qDraw=qTest.filter(x=>QuestionArt.get(x.t));

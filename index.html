@@ -6,12 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FF6B6B">
 <link rel="manifest" href="manifest.webmanifest">
-<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').then(reg=>{if(reg.waiting){reg.waiting.postMessage('skip-waiting');return}reg.onupdatefound=()=>{const s=reg.installing;s.onstatechange=()=>{if(s.state==='installed'&&navigator.serviceWorker.controller)toast('成长岛已更新，下次打开生效')}}}).catch(()=>{})})}</script>
-<script src="assets/vendor/hanzi-writer.min.js" defer></script>
 <title>一年级成长岛</title>
 <meta name="application-name" content="一年级成长岛">
-<meta name="app-version" content="v68-focus-piano">
-<link rel="stylesheet" href="practice-v68.css?v=68.1">
+<meta name="app-version" content="v69-fast-loading">
+<link rel="stylesheet" href="practice-v68.css?v=69">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -280,7 +278,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
     <span class="pill">💎<span id="pts">0</span></span>
     <span class="pill">🔥<span id="strk">0</span></span>
   </header>
-  <div class="main"><div id="ct"></div></div>
+  <div class="main"><div id="ct"><section id="boot69" class="card" role="status" style="text-align:center;padding:40px 20px"><div style="font-size:52px">🏝️</div><h1 style="font-size:26px">正在准备成长岛…</h1><p>学习记录仍保存在这台设备上。</p><button id="bootRetry69" class="btn b1" onclick="location.reload()" hidden>重新加载</button><noscript>请开启浏览器JavaScript后再试。</noscript></section></div></div>
 </div>
 <div class="mo" id="hwM" style="display:none" onclick="clHW()"><div class="md" onclick="event.stopPropagation()"><div class="md-hd"><span id="hwTi"></span><button onclick="clHW()">✕</button></div><div id="hwTarget"></div><p id="hwFb" style="font-size:12px;color:var(--tx2);text-align:center;margin:6px 0"></p><div style="display:flex;gap:8px;justify-content:center"><button class="btn b1 bs" onclick="startHQ()">🎯 描红</button><button class="btn b3 bs" onclick="resetHW()">🔄 重播</button></div></div></div>
 <div class="mo" id="rwM" style="display:none" onclick="hideRw()"><div class="md rw" onclick="event.stopPropagation()"><div style="font-size:56px">💎</div><div id="rwMsg" style="font-size:17px;font-weight:700"></div></div></div>
@@ -757,7 +755,7 @@ const PIANO_FREQ={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392};
 function playPianoV6(){const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return toast('此设备不支持钢琴播放');const ctx=new Ctx(),beat=60/PIANO_V6.tempo,start=ctx.currentTime+.06;let at=start;PIANO_V6.notes.forEach(([note,len])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=PIANO_FREQ[note];g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.22,at+.015);g.gain.exponentialRampToValueAtTime(.0001,at+len*beat-.02);o.connect(g).connect(ctx.destination);o.start(at);o.stop(at+len*beat);at+=len*beat});setTimeout(()=>awd('pianov6_'+T(),6,'完成钢琴聆听，获得 6 💎'),Math.ceil((at-start)*1000)+120)}
 PGS.piano={title:'🎹 钢琴',render:function(){const notes=PIANO_V6.notes.map(([n,l])=>`<span class="staff-note" title="${l}拍">${n.replace('4','')}</span>`).join('');document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">钢琴小练习</div><p class="desc">${PIANO_V6.composer}。4/4 拍，速度 ${PIANO_V6.tempo}；每个音按固定时值播放。</p><div class="staff-v6" aria-label="五线谱音名练习">${notes}</div><div class="piano-legend">右手 · C 大调 · 请跟着节拍听与弹</div><button class="btn b1" onclick="playPianoV6()">▶️ 准确节拍播放</button></div>`}}
 function init(){migratePetsV6();uS();up();preloadAudio();primeS();initScreenGuard();document.addEventListener('click',function(){playQueuedCue()},{once:!0,passive:!0});document.addEventListener('touchstart',function(){playQueuedCue()},{once:!0,passive:!0});if(!S._setup.done){showWizard()}else if(!S.dog){showDogSelect()}else{showPage('home');setTimeout(function(){_queuedCue=greetingCue();playQueuedCue()},500)}}function playGreeting(){var g=greetingCue();playCue(g,'')}
-function preloadAudio(){try{['assets/voice/pet_hello.mp3','assets/voice/correct.mp3','assets/voice/retry.mp3'].forEach(function(p){var a=new Audio();a.preload='metadata';a.src=p;var k='local:'+p;if(!_pc.has(k))_pc.set(k,a)})}catch(e){}}
+function preloadAudio(){/* Current task audio is warmed after the first render by Fast69. */}
 // ===== 屏幕时间管理（依据3-6岁儿童指南 + 近视防控方案） =====
 let _eyeTimer=null,_eyeMode=null,_restLeft=0,_restInt=null,_eyeDirty=0;
 const SCR_DEF={on:!0,contMin:20,restMin:5,dayMin:30,extMin:0,used:0,cont:0,day:''};
@@ -1082,7 +1080,7 @@ const v47AnswerObserver=new MutationObserver(records=>records.forEach(r=>r.added
 v47AnswerObserver.observe(document.getElementById('ct'),{childList:true,subtree:true});
 v42State();
 // INIT
-init();
+// init runs once, after all route extensions have loaded.
 </script>
 <div id="eyeBar" onclick="eyeInfo()" style="display:none"></div>
 <div id="eyeLock" style="display:none"></div>
@@ -1169,9 +1167,9 @@ init();
 <script>
 (function(){
   const audioCache=new Map();
-  function primeAudio(path){if(!path||audioCache.has(path))return audioCache.get(path);const a=new Audio(path);a.preload='auto';audioCache.set(path,a);return a}
+  function primeAudio(path){if(!path)return;let a=audioCache.get(path);if(a){audioCache.delete(path);audioCache.set(path,a);return a}a=new Audio(path);a.preload='auto';audioCache.set(path,a);if(audioCache.size>12){const [key,old]=audioCache.entries().next().value;if(old!==v46ActiveAudio){old.pause();old.removeAttribute('src');old.load();audioCache.delete(key)}}return a}
+  window.primeAudio=primeAudio;
   v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=primeAudio(path);a.pause();a.currentTime=0;a.onerror=()=>fallback&&toast(fallback);a.onended=()=>{if(v46ActiveAudio===a)v46ActiveAudio=null};v46ActiveAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>fallback&&toast(fallback));return a}catch(e){fallback&&toast(fallback);return null}};
-  ['assets/voice/correct.mp3','assets/voice/retry.mp3','assets/voice/pet_hello.mp3'].forEach(primeAudio);
 
   let pinyinPart='tones';
   window.setPinyinPartV54=function(part){pinyinPart=part;showPage('pinyin')};
@@ -1203,15 +1201,17 @@ init();
   function learningRoute(id){return ['subj','curriculum','pinyin','chars','reading','poems','math','mathsync','mathlower','timeextra','english','englishsync','sudoku','thinking','science','piano'].includes(id)}
   function mountDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;document.body.appendChild(dock)}dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)));const wn=document.getElementById('wideNav');if(wn)wn.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)))}
   const oldShow=showPage;showPage=function(id){oldShow(id);mountDock()};
-  mountDock();showPage(CP||'home');
+  // The final game dock is mounted by the single bootstrap render.
 })();
 </script>
-<script src="curriculum-v61.js"></script>
-<script src="pinyin-v63.js"></script>
-<script src="game-v59.js?v=68"></script>
-<script src="learning-v66.js?v=68"></script>
-<script src="question-art-v67.js"></script>
-<script src="pitch-v68.js"></script>
-<script src="practice-v68.js"></script>
+<script src="curriculum-v61.js" defer></script>
+<script src="pinyin-v63.js?v=69" defer></script>
+<script src="game-v59.js?v=69" defer></script>
+<script src="learning-v66.js?v=69" defer></script>
+<script src="question-art-v67.js" defer></script>
+<script src="pitch-v68.js" defer></script>
+<script src="practice-v68.js?v=69" defer></script>
+<script src="fast-v69.js" defer></script>
+<script>setTimeout(()=>{const box=document.getElementById('boot69');if(box){box.querySelector('h1').textContent='加载较慢，请检查网络';document.getElementById('bootRetry69').hidden=false}},12000)</script>
 </body>
 </html>

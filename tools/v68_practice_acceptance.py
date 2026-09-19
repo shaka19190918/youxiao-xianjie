@@ -1,5 +1,6 @@
 """Browser behavior tests; microphone paths use mocks, not acoustic certification."""
 import os
+from datetime import datetime,timezone
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -22,7 +23,8 @@ with sync_playwright() as p:
     ctx.add_init_script(INIT)
     page=ctx.new_page();errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.clock.install()
+    # Run the 20-minute case at noon, not across the real host's midnight reset.
+    page.clock.install(time=datetime(2026,9,19,4,0,tzinfo=timezone.utc))
     def load():
         page.goto(BASE+'?test=1',wait_until='networkidle')
         page.wait_for_function('window.Piano68 && window.L66')
@@ -119,7 +121,7 @@ with sync_playwright() as p:
     # Full 1,200 seconds of delivered ticks; this is distinct from jumping wall time.
     page.evaluate("S.piano68.ms=0;S.piano68.done=false;S.scr.contMin=30;S.scr.dayMin=30;S.scr.cont=0;S.scr.used=0;Piano68.render();Piano68.start()")
     page.clock.run_for(1199000)
-    assert 1198000<=page.evaluate('S.piano68.ms')<1200000
+    assert 1198000<=page.evaluate('S.piano68.ms')<1200000,page.evaluate('({piano:S.piano68,screen:S.scr,eye:_eyeMode,hidden:document.hidden,now:new Date().toString()})')
     assert page.locator('#p68Confirm').is_disabled()
     page.clock.run_for(1500)
     assert page.evaluate('S.piano68.ms')==1200000

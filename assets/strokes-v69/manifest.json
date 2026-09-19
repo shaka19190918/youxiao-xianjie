@@ -1,0 +1,423 @@
+{
+  "source": "https://github.com/chanind/hanzi-writer-data",
+  "version": "2.0.1",
+  "license": "Arphic Public License",
+  "downloadedAt": "2026-09-19",
+  "modifications": "None; filenames use Unicode code points.",
+  "files": [
+    {
+      "char": "一",
+      "file": "u4e00.json",
+      "bytes": 373,
+      "sha256": "ed728673d86fb9aa559c5b150e59ffbee666b085d4a55597c524079a91ebc8ce"
+    },
+    {
+      "char": "七",
+      "file": "u4e03.json",
+      "bytes": 854,
+      "sha256": "03b69a950dffb72be4dafb6226641d9182858d439af9c945f2b0d52b5bc55510"
+    },
+    {
+      "char": "三",
+      "file": "u4e09.json",
+      "bytes": 732,
+      "sha256": "917763e15ac14a5ece5067913da4156f3060f33ae0e172d3533275a494cec99c"
+    },
+    {
+      "char": "上",
+      "file": "u4e0a.json",
+      "bytes": 862,
+      "sha256": "9eed5643ff92171f9bf1ae5d4b70d717f2a3fd6961f72e81c0245ce13523d865"
+    },
+    {
+      "char": "下",
+      "file": "u4e0b.json",
+      "bytes": 879,
+      "sha256": "34984a2541baae9132f32e3dfe758ca29df64829558dc5a1c553c3d3011da880"
+    },
+    {
+      "char": "中",
+      "file": "u4e2d.json",
+      "bytes": 1387,
+      "sha256": "6982c8c16e7e7f769011edef0608289443711dbb34046dd9ca763e79ec29192f"
+    },
+    {
+      "char": "九",
+      "file": "u4e5d.json",
+      "bytes": 1188,
+      "sha256": "ec8fa16237207544c76a014c552c5f7c227813e300875a287f07a0b8b86dbe54"
+    },
+    {
+      "char": "书",
+      "file": "u4e66.json",
+      "bytes": 1621,
+      "sha256": "d913959d55b2bc53bec49bf50e44d6cf6df84d664cad9940c3983f061e4a6704"
+    },
+    {
+      "char": "了",
+      "file": "u4e86.json",
+      "bytes": 929,
+      "sha256": "63e33d9aece5d5a55d890793025d4964342f80ae92dee94232687deee76538be"
+    },
+    {
+      "char": "二",
+      "file": "u4e8c.json",
+      "bytes": 582,
+      "sha256": "24d4225b8514e5b169f44230ba38169f63e9d9875f31b478457841114dbe1faa"
+    },
+    {
+      "char": "云",
+      "file": "u4e91.json",
+      "bytes": 1159,
+      "sha256": "0282daa7428445909b110092a75d4e2fe44c5268403f67eac8080d0e8a8f6918"
+    },
+    {
+      "char": "五",
+      "file": "u4e94.json",
+      "bytes": 1370,
+      "sha256": "c2d064e88c2acde1faecc4ff45f0d4ec7cd5889a3e4b7e8145019150ad6db7bd"
+    },
+    {
+      "char": "人",
+      "file": "u4eba.json",
+      "bytes": 659,
+      "sha256": "18ffb9fb727576b0c3e7dc44914be7ffd43164de9ba121710824b83f27bd3bb1"
+    },
+    {
+      "char": "他",
+      "file": "u4ed6.json",
+      "bytes": 2087,
+      "sha256": "93c72a3fb00f00e9d7c3da8e2bf25e913bd3eba3c71eaafacc69f55891dc5625"
+    },
+    {
+      "char": "你",
+      "file": "u4f60.json",
+      "bytes": 2106,
+      "sha256": "21057a26cb5c1753ea710d503b759cc17948263501ffd76ef1737cb2b5d5f966"
+    },
+    {
+      "char": "儿",
+      "file": "u513f.json",
+      "bytes": 848,
+      "sha256": "9f1e8515ba0fbf39f3b03e0fdd2342771f0c7197fff7c2ceee64674b95bf2c68"
+    },
+    {
+      "char": "八",
+      "file": "u516b.json",
+      "bytes": 584,
+      "sha256": "650e961eefa88d95cc119146ff6606275ecad54c3f8ad1442c08889f928ec5af"
+    },
+    {
+      "char": "六",
+      "file": "u516d.json",
+      "bytes": 941,
+      "sha256": "54216db5e4bcd45583584fbff169a25d10c3a34e0fa64f3c7a2267bc94398f86"
+    },
+    {
+      "char": "关",
+      "file": "u5173.json",
+      "bytes": 1673,
+      "sha256": "28d1c30ed1cda1ac8e0618bfe53010b6dc5bb5537670905a760a51d4d5a81399"
+    },
+    {
+      "char": "前",
+      "file": "u524d.json",
+      "bytes": 2454,
+      "sha256": "8126272afc54ca3a5bd512086901f4b3b40fcc43bcdf391fb60de3cb0dcd5c62"
+    },
+    {
+      "char": "十",
+      "file": "u5341.json",
+      "bytes": 677,
+      "sha256": "257a0939af5742ca31a980adfa1421d0302d5e90491ab3215c1934bea9a59bef"
+    },
+    {
+      "char": "去",
+      "file": "u53bb.json",
+      "bytes": 1516,
+      "sha256": "96e01168e8c76add5a05de734f18ef282451ca9107757977e5d83d8eea2bc281"
+    },
+    {
+      "char": "口",
+      "file": "u53e3.json",
+      "bytes": 889,
+      "sha256": "ac208865e3166fc35214cec326f00a4b6788a8cac9b4c5a6a37745077e32ddab"
+    },
+    {
+      "char": "右",
+      "file": "u53f3.json",
+      "bytes": 1463,
+      "sha256": "d2483a266cd756c8deb1e4523e54fee29270ad4eb87a3b2bf1d40f9eb68de0cf"
+    },
+    {
+      "char": "同",
+      "file": "u540c.json",
+      "bytes": 1914,
+      "sha256": "ebac44738a64a0f7cb202363be8abfafe4aed2fc20965dd66f9b1f7555766967"
+    },
+    {
+      "char": "后",
+      "file": "u540e.json",
+      "bytes": 1748,
+      "sha256": "1db954c5aa12b7c8efab666a716899c98e27c2b20312ae75df405bcf68cc5c91"
+    },
+    {
+      "char": "四",
+      "file": "u56db.json",
+      "bytes": 1800,
+      "sha256": "8aa7b3e16a0c3f67fc4ed3b08c7f24e80b2e90d8f6ade512d20109a625bea3b9"
+    },
+    {
+      "char": "地",
+      "file": "u5730.json",
+      "bytes": 2325,
+      "sha256": "ec1d89cb0ee0f4c93d546d561ea28b00f0378769c061ec5bf5f67381074765a3"
+    },
+    {
+      "char": "多",
+      "file": "u591a.json",
+      "bytes": 1858,
+      "sha256": "d7bc212fe60eaa766209b36e5e9642940892cf43b472accedaf55f517d8313dc"
+    },
+    {
+      "char": "大",
+      "file": "u5927.json",
+      "bytes": 1034,
+      "sha256": "83c82950e903c915aa50d0d62b084a2d31c85fe68dce21e0acf39e2f9607e611"
+    },
+    {
+      "char": "天",
+      "file": "u5929.json",
+      "bytes": 1228,
+      "sha256": "8cacde3b91b815c7c667e80e6d4838e3b7dc30ab457763e32d29c1586b0d2446"
+    },
+    {
+      "char": "头",
+      "file": "u5934.json",
+      "bytes": 1365,
+      "sha256": "3be11ae6a2e035f7a949c948279ad3f4d456a87e2ee0469d583e22648759901d"
+    },
+    {
+      "char": "女",
+      "file": "u5973.json",
+      "bytes": 1345,
+      "sha256": "8a17d3644493617f0090476873c0e01c25d83271e586c097e40ef0256ced5ac8"
+    },
+    {
+      "char": "好",
+      "file": "u597d.json",
+      "bytes": 2374,
+      "sha256": "c9f085fe6519e2b2c9653c7edf51bdbc78339fcc0b10f94c1f33c7f4f4d4a3a5"
+    },
+    {
+      "char": "妈",
+      "file": "u5988.json",
+      "bytes": 2577,
+      "sha256": "0b288b695765e1294ca2cbc2b463227b637047932ebdab2ff9cddba6c1d576b2"
+    },
+    {
+      "char": "子",
+      "file": "u5b50.json",
+      "bytes": 1366,
+      "sha256": "f5b7ff9aa3de64ec676e3f06e7c22795aa834eb11eec43b9423f355db5f46474"
+    },
+    {
+      "char": "学",
+      "file": "u5b66.json",
+      "bytes": 2396,
+      "sha256": "9f2bdcab70ecf93632b6cf1ce9b5339cc8018d742eed7839037d146f8c294193"
+    },
+    {
+      "char": "小",
+      "file": "u5c0f.json",
+      "bytes": 830,
+      "sha256": "72bf769c8c3426bffa578502eb8b1532fb1e622ddb6f40ded04e484290c0fe8c"
+    },
+    {
+      "char": "少",
+      "file": "u5c11.json",
+      "bytes": 1050,
+      "sha256": "de5cd9d5b1bbd468411f82f7d57881b11b3a9b9c7bb812ff891ac66c06b31ef7"
+    },
+    {
+      "char": "山",
+      "file": "u5c71.json",
+      "bytes": 977,
+      "sha256": "c1e58c4b20cba28ae9778dfb280a93dc18fdccd3ecbec00bece20ce739c9f459"
+    },
+    {
+      "char": "左",
+      "file": "u5de6.json",
+      "bytes": 1360,
+      "sha256": "a5741d50aea9247117aee3a150b7707ddaf9193b94032e3616cff9415f9dc1ed"
+    },
+    {
+      "char": "师",
+      "file": "u5e08.json",
+      "bytes": 2006,
+      "sha256": "80d528921fbb75b21ed1737f622adbb8e9da7b71b143a64382568f22ff812093"
+    },
+    {
+      "char": "开",
+      "file": "u5f00.json",
+      "bytes": 1446,
+      "sha256": "0b4efab7fc994927f4244f1c6d79a7012668a9c7cbdbc40a45d0bcf9b4cbbd49"
+    },
+    {
+      "char": "心",
+      "file": "u5fc3.json",
+      "bytes": 1107,
+      "sha256": "24b00ca173bbf7403181af1a4f9414f3b9175ed04b17108055c7d9e3fe6d6215"
+    },
+    {
+      "char": "我",
+      "file": "u6211.json",
+      "bytes": 2476,
+      "sha256": "08616462fc64b4c18c76a3f68a992305e98946f468bf42ec76ca9be1cd6c5ac8"
+    },
+    {
+      "char": "手",
+      "file": "u624b.json",
+      "bytes": 1358,
+      "sha256": "7964eac3bced473343f5741f98fea3eb2dd842eecd57ec20b4369912570964a7"
+    },
+    {
+      "char": "日",
+      "file": "u65e5.json",
+      "bytes": 1300,
+      "sha256": "5c6bad210149abac8bd645cb12b1394edea5681f224154c27f422134299520fb"
+    },
+    {
+      "char": "早",
+      "file": "u65e9.json",
+      "bytes": 1858,
+      "sha256": "4d6b2979bd1167355372cf73800a2ce13032febb989b8bf5901e6a7dbe773454"
+    },
+    {
+      "char": "晚",
+      "file": "u665a.json",
+      "bytes": 3494,
+      "sha256": "b545c3866d2705e569fe1784f74f505ae6f10eaa7a7fdb4068bc539569485085"
+    },
+    {
+      "char": "月",
+      "file": "u6708.json",
+      "bytes": 1389,
+      "sha256": "441949321eb706def6e8d0c1eeca6b461141703dcc07619939a32d681e08fc46"
+    },
+    {
+      "char": "本",
+      "file": "u672c.json",
+      "bytes": 1526,
+      "sha256": "1507bfab8ff404936abc31790252d16b5eddf769b85791d89bc9c61c668fa838"
+    },
+    {
+      "char": "来",
+      "file": "u6765.json",
+      "bytes": 1870,
+      "sha256": "ebf3a9165522693077a8f14d25e003565409d8751ff0a4724423315d57d9a57d"
+    },
+    {
+      "char": "校",
+      "file": "u6821.json",
+      "bytes": 2541,
+      "sha256": "bd810a1cf7fa8216207502a388f4593cce34b71018e8419ecff0b5364147e0bb"
+    },
+    {
+      "char": "水",
+      "file": "u6c34.json",
+      "bytes": 1389,
+      "sha256": "46e262a80f2b7da72ea04788d1c19c40339e18beaba16987cc84d55fc257c9e3"
+    },
+    {
+      "char": "火",
+      "file": "u706b.json",
+      "bytes": 1137,
+      "sha256": "09fc0a54adb11753319f5750dcdc127698dfb8a453f1a57b5f11b6a1ee3c64e0"
+    },
+    {
+      "char": "爸",
+      "file": "u7238.json",
+      "bytes": 2529,
+      "sha256": "fa40233458f9a517bcfedea1595d348831af8f73be08fe45a9554b28c59de25c"
+    },
+    {
+      "char": "田",
+      "file": "u7530.json",
+      "bytes": 1582,
+      "sha256": "d2441470ac4a6c9ea680389bc770cb60f9c29b6819863ebcc39df2b89cea7f04"
+    },
+    {
+      "char": "男",
+      "file": "u7537.json",
+      "bytes": 2435,
+      "sha256": "e380887b51e1d07f5ab62b3b366bf9a2bb28968bd2e8217f20c34ef3e2b087b2"
+    },
+    {
+      "char": "目",
+      "file": "u76ee.json",
+      "bytes": 1554,
+      "sha256": "f5392f6be0cba05d57c6b9cdb111ad402415e57e886e491a18fbeda6d0206a6b"
+    },
+    {
+      "char": "禾",
+      "file": "u79be.json",
+      "bytes": 1433,
+      "sha256": "74d7e9274a9b3d02fbb353f424a40988a3f8760bb9f465d834d048eceb7451ae"
+    },
+    {
+      "char": "老",
+      "file": "u8001.json",
+      "bytes": 2140,
+      "sha256": "f3130d50e757c65792633c581be89788d963819ed0df23380b6c94d5e31bf9d1"
+    },
+    {
+      "char": "耳",
+      "file": "u8033.json",
+      "bytes": 1527,
+      "sha256": "87d23fce6860c1b5600982e241b3ed486e7bededf8d78a674c55ccd8479e4c10"
+    },
+    {
+      "char": "花",
+      "file": "u82b1.json",
+      "bytes": 2245,
+      "sha256": "62f0b92426131b634b393c90e1de91d8f5b321fcd6fc1d7e77a0bf8be5b90e18"
+    },
+    {
+      "char": "虫",
+      "file": "u866b.json",
+      "bytes": 1745,
+      "sha256": "7fe903f045c6a90e401b81b859f6aa78a833a62e862110331bfc6d8c0f9a7e2e"
+    },
+    {
+      "char": "雨",
+      "file": "u96e8.json",
+      "bytes": 2342,
+      "sha256": "0e249bab348c40874b194b2ba75aa185961bd190ca2e09c9a4c303aa34f62e2c"
+    },
+    {
+      "char": "风",
+      "file": "u98ce.json",
+      "bytes": 1588,
+      "sha256": "64177681c0214a2908853526000dc3bb8fd8d9489da7fe373a0330c38d0aee0d"
+    },
+    {
+      "char": "马",
+      "file": "u9a6c.json",
+      "bytes": 1602,
+      "sha256": "451304b0187c080bcf62115dbd75f19f6306f44e955df59236484e13e031bfc5"
+    },
+    {
+      "char": "鱼",
+      "file": "u9c7c.json",
+      "bytes": 2463,
+      "sha256": "1f1d05821b3338075b2bb7e29687b51a70945786556799e8700a200073ba18eb"
+    },
+    {
+      "char": "鸟",
+      "file": "u9e1f.json",
+      "bytes": 2056,
+      "sha256": "2d62bee9f3dce68cead54e04298b7ca9be109f8ebe9c59d356d2f89c38184a33"
+    }
+  ]
+}
