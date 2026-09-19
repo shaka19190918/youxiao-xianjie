@@ -39,7 +39,7 @@ with sync_playwright() as p:
     """)
     page = migration.new_page()
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("document.documentElement.dataset.appVersion === 'v65-family-value'", timeout=30000)
+    page.wait_for_function("document.documentElement.dataset.appVersion === 'v66-guided-learning'", timeout=30000)
     assert page.evaluate("localStorage.getItem('yxxj_s')") is None
     assert page.evaluate("localStorage.getItem('yxxj_dog')") is None
     assert page.evaluate("localStorage.getItem('grade1_island_reset_v1')") == "1"
@@ -55,7 +55,7 @@ with sync_playwright() as p:
     page.on("pageerror", lambda exc: errors.append(f"pageerror: {exc}"))
     page.on("console", lambda msg: errors.append(f"console {msg.type}: {msg.text}") if msg.type == "error" else None)
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v65-family-value'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v66-guided-learning'")
 
     assert page.title() == "一年级成长岛"
     assert page.locator(".g1-map").count() == 1
@@ -105,6 +105,7 @@ with sync_playwright() as p:
     assert page.evaluate("Object.keys(__G1_TEST.game().reviewQueue).length") == 1
     delay = page.evaluate("Object.values(__G1_TEST.game().reviewQueue)[0].dueAt-Date.now()")
     assert 590000 <= delay <= 610000, delay
+    page.wait_for_timeout(750)  # v66 ignores rapid repeated submissions.
     assert page.evaluate("__G1_TEST.correct()")
     page.wait_for_timeout(750)
     assert page.evaluate("__G1_TEST.levelState('zh-tone-1').stars") == 1

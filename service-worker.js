@@ -1,8 +1,9 @@
 /* 一年级成长岛 v65：每日成长计划、成就与家庭报告的离线优先应用外壳。 */
-const CACHE='grade1-island-v65';
+const CACHE='grade1-island-v66';
 const PINYIN_CORE=['a','o','e','yi','wu','yu','bo','po','mo','fo','de','te','ne','le','ge','ke','he','ying','zhong'].map(v=>`./assets/pinyin-v63/${v}.mp3`);
 const PRECACHE=[
   './','./index.html','./manifest.webmanifest','./game-v59.css','./game-v59.js',
+  './learning-v66.js','./learning-v66.css',
   './curriculum-v61.css','./curriculum-v61.js','./pinyin-v63.css','./pinyin-v63.js','./assets/pinyin-v63/manifest.json',
   './assets/vendor/hanzi-writer.min.js','./pet_voice_map.json',
   './assets/voice/correct.mp3','./assets/voice/retry.mp3','./assets/voice/greeting_morning.mp3',

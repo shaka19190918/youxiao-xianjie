@@ -45,15 +45,15 @@ with sync_playwright() as p:
     errors: list[str] = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(TEST_URL, wait_until="networkidle", timeout=30_000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v65-family-value'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v66-guided-learning'")
 
-    daily = page.locator(".g1-daily")
+    daily = page.locator(".l66-plan")
     assert daily.count() == 1
-    assert "今日成长计划" in daily.inner_text()
-    assert daily.locator(".g1-daily-steps button").count() == 3
-    assert "1" in daily.locator(".g1-daily-ring").inner_text()
+    assert "今日全科成长计划" in daily.inner_text()
+    assert daily.locator(".l66-subjects > span").count() == 11
+    assert "0 / 11" in daily.locator("header").inner_text()
 
-    daily.locator("header button").click()
+    page.evaluate("g1ShowAchievements()")
     assert page.locator("#g1BadgeModal .g1-badge-grid > div").count() == 8
     assert page.locator("#g1BadgeModal .g1-badge-grid > div.open").count() >= 2
     page.locator("#g1BadgeModal header button").click()
@@ -76,7 +76,7 @@ with sync_playwright() as p:
         page.set_viewport_size({"width": width, "height": height})
         page.evaluate("S._parentAuth=false;showPage('home')")
         assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 1"), width
-        assert page.locator(".g1-daily-steps button").first.evaluate("e=>e.getBoundingClientRect().height") >= 48
+        assert page.locator(".l66-plan .l66-primary").evaluate("e=>e.getBoundingClientRect().height") >= 48
 
     assert not errors, errors
     print("v65 family value acceptance: PASS (daily plan, achievements, weekly report, print, responsive)")

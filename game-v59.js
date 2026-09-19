@@ -173,7 +173,9 @@
   };
   window.g1AnswerTask=function(optionIndex){
     const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
-    const val=cur.task.options[optionIndex],buttons=[...document.querySelectorAll('.g1-answer')],fb=document.getElementById('g1Feedback');
+    const val=cur.task.options[optionIndex];if(val===undefined)return;
+    if(window.L66&&!L66.attempt(cur.level.id+'::'+cur.task.id,cur.task,val,true))return;
+    const buttons=[...document.querySelectorAll('.g1-answer')],fb=document.getElementById('g1Feedback');
     if(val!==cur.task.answer){buttons[optionIndex]?.classList.add('wrong');buttons[optionIndex]&&(buttons[optionIndex].disabled=true);cur.state.wrong=(cur.state.wrong||0)+1;recordActivity('wrong',cur.level,{taskIndex:cur.index});sourceMark(cur.task.key,false);scheduleReview(cur.level,cur.task);if(fb)fb.textContent='再想一想，这道题已经放进复习站';playCue('retry','');R();return}
     buttons.forEach(b=>b.disabled=true);sourceMark(cur.task.key,true);if(fb)fb.textContent='答对啦，得到一颗星！';awardTask(cur.level,cur.index);playCue('correct','');setTimeout(()=>{if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()},650);
   };
@@ -298,6 +300,7 @@
     dueNow(){Object.values(game().reviewQueue).forEach(x=>x.dueAt=Date.now()-1);R()},
     game
   };
-  document.documentElement.dataset.appVersion='v65-family-value';
+  window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay};
+  document.documentElement.dataset.appVersion='v66-guided-learning';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

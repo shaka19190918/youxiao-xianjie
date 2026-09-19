@@ -46,14 +46,17 @@
     if(spans.length!==4){const q=buffer.duration/4;spans=[0,1,2,3].map(i=>[i*q+.12,Math.max(i*q+.3,(i+1)*q-.12)])}
     segments.set(key,spans);return spans
   }
+  let playGeneration=0;
+  window.pinyinV63Stop=function(){playGeneration++;if(active){try{active.stop()}catch(_){}active=null}};
   async function play(name,n=1,options={}){
+    const generation=++playGeneration;
     const status=document.getElementById('p63Status');if(status){status.className='p63-status';status.textContent='正在准备真人发音…'}
     try{
-      const c=await ensureContext(),buffer=await getBuffer(name),span=findSegments(buffer)[Math.max(0,Math.min(3,n-1))];if(active)try{active.stop()}catch(_){}
+      const c=await ensureContext(),buffer=await getBuffer(name),span=findSegments(buffer)[Math.max(0,Math.min(3,n-1))];if(generation!==playGeneration)return;if(active)try{active.stop()}catch(_){}
       const source=c.createBufferSource(),gain=c.createGain();source.buffer=buffer;source.connect(gain).connect(c.destination);gain.gain.value=.95;active=source;
       const start=span[0]+(options.trimStart||0),duration=Math.max(.18,span[1]-start);source.start(0,start,duration);
       document.querySelectorAll('.p63-card.playing').forEach(x=>x.classList.remove('playing'));if(options.button)options.button.classList.add('playing');
-      return await new Promise(resolve=>{source.onended=()=>{if(active===source)active=null;if(options.button)options.button.classList.remove('playing');if(status)status.textContent='点一下可以再听一遍';options.onEnd&&options.onEnd();resolve()}})
+      return await new Promise(resolve=>{source.onended=()=>{if(active===source)active=null;if(options.button)options.button.classList.remove('playing');if(generation===playGeneration){if(status)status.textContent='点一下可以再听一遍';options.onEnd&&options.onEnd()}resolve()}})
     }catch(e){if(status){status.className='p63-status p63-error';status.textContent='音频没有加载成功，请点一下重试；不会使用设备合成音代读。'}throw e}
   }
   function token(name,n=1){return 'p63|'+normalize(name)+'|'+Math.max(1,Math.min(4,Number(n)||1))}
@@ -89,6 +92,7 @@
   window.pinyinV63ChooseBlend=function(name,button){setCurrent(name,tone);document.querySelectorAll('.p63-card.playing').forEach(x=>x.classList.remove('playing'));button.classList.add('playing');setTimeout(()=>button.classList.remove('playing'),300)};
   async function newChallenge(){const m=await getManifest(),pool=m.files.map(x=>x.file.replace('.mp3','')).filter(x=>x.length<7),answer=pool[Math.floor(Math.random()*pool.length)],n=1+Math.floor(Math.random()*4),opts=[answer];while(opts.length<4){const x=pool[Math.floor(Math.random()*pool.length)];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);challenge={answer,tone:n,options:opts.map(x=>toneMark(x,n))};document.getElementById('p63Question').textContent='听一听，选出正确的拼音';document.getElementById('p63Answers').innerHTML=opts.map(x=>`<button onclick="pinyinV63Answer('${x}',this)">${toneMark(x,n)}</button>`).join('');document.getElementById('p63Status').textContent='';play(answer,n).catch(()=>{})}
   window.pinyinV63NewChallenge=()=>newChallenge();
+  window.pinyinV66Question=()=>challenge?{key:'p63-'+challenge.answer+'-'+challenge.tone,rawAnswer:challenge.answer,format:value=>toneMark(value,challenge.tone),task:{type:'choice',prompt:'听音选拼音',options:challenge.options,answer:toneMark(challenge.answer,challenge.tone),audio:token(challenge.answer,challenge.tone)}}:null;
   window.pinyinV63Answer=function(value,button){if(!challenge)return;if(value===challenge.answer){button.style.background='#dff7e8';document.getElementById('p63Status').textContent='答对啦！再来一道。';setTimeout(newChallenge,750)}else{button.disabled=true;button.style.background='#ffe3e3';document.getElementById('p63Status').textContent='再听一次，慢慢找。';play(challenge.answer,challenge.tone).catch(()=>{});try{const g=S.game||{},id='p63-'+challenge.answer+'-'+challenge.tone;g.reviewQueue=g.reviewQueue||{};g.reviewQueue[id]={source:'pinyin-v63',title:'拼音听辨 '+toneMark(challenge.answer,challenge.tone),step:0,dueAt:Date.now()+600000,lapses:(g.reviewQueue[id]?.lapses||0)+1,task:{type:'choice',prompt:'听音选拼音',options:challenge.options,answer:toneMark(challenge.answer,challenge.tone),audio:token(challenge.answer,challenge.tone),key:id}};S.game=g;typeof R==='function'&&R()}catch(_){}}
   };
   window.pinyinV63ReplayChallenge=function(button){if(challenge)return play(challenge.answer,challenge.tone,{button})};
