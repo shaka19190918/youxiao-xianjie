@@ -31,11 +31,11 @@ with sync_playwright() as p:
     page.clock.install()
     def load():
         page.goto(URL,wait_until='networkidle')
-        page.wait_for_function("window.L66 && document.documentElement.dataset.appVersion==='v67-picture-support'")
+        page.wait_for_function("window.L66 && document.documentElement.dataset.appVersion==='v68-focus-piano'")
         page.evaluate("pinyinV63PlayToken=async (token,cb)=>{cb?.()}")
     load()
-    assert page.locator('.l66-subjects>span').count()==11
-    assert page.evaluate('S.learning66.daily.items.every(x=>!!x.levelId)')
+    assert page.locator('.l66-subjects>span').count()==5
+    assert page.evaluate('S.learning66.daily.items.every(x=>x.id==="piano"||!!x.levelId)')
     page.locator('.l66-plan .l66-primary').click()
     c=page.evaluate(TASK)
     wrong=next(i for i,v in enumerate(c['t']['options']) if v!=c['t']['answer'])
@@ -70,8 +70,8 @@ with sync_playwright() as p:
     page.clock.fast_forward(800)
     assert page.evaluate('S.pts')==3
     assert page.evaluate('S.learning66.daily.items[0].done')
-    # Every remaining subject: real gate, stroke scoring callbacks, offline time + PIN.
-    for _ in range(10):
+    # Remaining core subjects; the 20-minute piano/PIN path is tested in v68.
+    for _ in range(3):
         c=page.evaluate(TASK)
         page.locator('#l66Listen').click()
         page.wait_for_timeout(50)
@@ -102,12 +102,13 @@ with sync_playwright() as p:
             i=c['t']['options'].index(c['t']['answer'])
             page.evaluate(f'L66.dailyAnswer({i})')
         page.clock.fast_forward(1000)
-    assert page.evaluate('S.learning66.daily.items.every(x=>x.done)')
-    assert page.evaluate('S.pts')==33, 'one first-time task star per daily item'
+    assert page.evaluate('S.learning66.daily.items.filter(x=>x.id!=="piano").every(x=>x.done)')
+    assert page.locator('#p68Clock').count()==1
+    assert page.evaluate('S.pts')==12, 'one first-time task star per core item'
     assert page.evaluate('S.dog.xp')==0, 'no XP until a real full level is complete'
     page.evaluate('showPage("home")')
     page.locator('.l66-plan .l66-primary').click()
-    assert page.evaluate('S.pts')==33
+    assert page.evaluate('S.pts')==12
     # Writing, local persistence and responsive layout.
     for width,height in [(320,740),(375,812),(390,844),(768,1024),(1024,768),(1440,900)]:
         page.set_viewport_size({'width':width,'height':height})
@@ -129,8 +130,8 @@ with sync_playwright() as p:
     page.locator('#l66Writing header button').click()
     load()
     assert page.evaluate('Object.values(S.learning66.drafts).some(x=>x.length>0)')
-    # Thirty-minute cap stops unfinished plan; next local date carries it forward.
-    page.evaluate('S.learning66.daily.items[0].done=false;S.learning66.daily.startedAt=Date.now()-1801000;R();L66.startDaily()')
+    # Ten-minute core budget + twenty-minute piano; next date carries core work.
+    page.evaluate('S.learning66.daily.items[0].done=false;S.learning66.daily.items.find(x=>x.id==="piano").done=true;S.learning66.daily.coreMs=600000;R();L66.startDaily()')
     assert '今天先到这里' in page.locator('.l66-task').inner_text()
     old_id=page.evaluate('S.learning66.daily.items[0].levelId')
     page.clock.fast_forward(86400000)
@@ -150,16 +151,12 @@ with sync_playwright() as p:
     assert page.evaluate("S.learning66.guards['v66-rounds-test'].phase")=='defer'
     assert page.evaluate('S.pts')==before
     assert '请大人陪你试一试' in page.locator('#l66Guard').inner_text()
-    page.evaluate('L66.leaveGuard();L66.startDaily();S.learning66.daily.screenSeconds=599')
+    page.evaluate('L66.leaveGuard();L66.startDaily();S.learning66.daily.coreMs=599900')
     page.clock.fast_forward(1100)
-    assert page.locator('#l66BreakClock').count()==1
-    until=page.evaluate('S.learning66.daily.breakUntil')
+    assert page.locator('#p68Clock').count()==1
     load()
     page.locator('.l66-plan .l66-primary').click()
-    assert page.evaluate('S.learning66.daily.breakUntil')==until
-    assert page.locator('#l66BreakClock').count()==1
-    page.clock.fast_forward(181000)
-    assert page.locator('#l66Listen').count()==1
+    assert page.locator('#p68Clock').count()==1
     assert not errors, errors
-    print('PASS: third-error persistence, guided retry, 11 daily tasks, 65-point gate, offline PIN, duplicate rewards, 30-minute cap, carryover, writing, six viewports')
+    print('PASS: third-error persistence, guided retry, four core tasks, 65-point gate, duplicate rewards, core budget and piano handoff, carryover, writing, six viewports')
     browser.close()

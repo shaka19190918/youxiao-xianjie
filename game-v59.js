@@ -301,6 +301,6 @@
     game
   };
   window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay};
-  document.documentElement.dataset.appVersion='v67-picture-support';
+  document.documentElement.dataset.appVersion='v68-focus-piano';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

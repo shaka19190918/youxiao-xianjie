@@ -14,8 +14,10 @@ with sync_playwright() as p:
     page.evaluate("S._setup={done:true,name:'离线测试',grade:'一年级'};S.dog={type:'trex',xp:0,hu:80,hy:80,en:80,tasks:0};R()")
     page.evaluate('navigator.serviceWorker.ready')
     page.wait_for_function("navigator.serviceWorker.controller!==null")
-    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v67'))")
-    assert page.evaluate("caches.open('grade1-island-v67').then(c=>c.match('./learning-v66.js')).then(Boolean)")
+    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v68'))")
+    assert page.evaluate("caches.open('grade1-island-v68').then(c=>c.match('./learning-v66.js?v=68')).then(Boolean)")
+    # Old, unversioned cached scripts cannot mix with the new HTML release.
+    page.evaluate("caches.open('grade1-island-v68').then(c=>Promise.all(['game-v59.js','learning-v66.js'].map(p=>c.put(p,new Response('throw new Error(\"stale cache loaded\")',{headers:{'Content-Type':'application/javascript'}})))))")
     page.reload(wait_until='networkidle')
     ctx.set_offline(True)
     page.reload(wait_until='networkidle')
@@ -28,6 +30,12 @@ with sync_playwright() as p:
     assert page.locator('#l66Pen').count()==1
     page.evaluate("L66.closeWriting();showPage('mathsync');v44MathQ=V44_MATH[0];renderMath44()")
     assert page.locator('.question-art [data-one]').count()==4
+    page.evaluate("showPage('piano');Piano68.start()")
+    assert page.locator('#p68Clock').count()==1
+    assert page.evaluate('typeof PianoPitch68.detect')=='function'
+    page.wait_for_timeout(1100)
+    assert page.evaluate('S.piano68.ms')>0
+    page.evaluate('Piano68.pause()')
     assert not errors,errors
-    print('PASS: v66 service-worker cache, offline reload, preserved profile, actual cached pinyin playback and writing')
+    print('PASS: v68 service-worker cache, offline reload, profile, cached pinyin playback, writing, piano timer and local pitch module')
     b.close()

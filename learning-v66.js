@@ -59,14 +59,12 @@
   // Low-star children may sample every subject here without unlocking the whole region.
   const SUBJECTS=[
     ['pinyin','🔤 拼音',2,'zh-tone-'],['writing','✏️ 汉字',2,'zh-char-'],
-    ['math','🔢 数学',3,'math-up-'],['morality','🤝 道德与法治',1,'curr-morality-'],
-    ['pe','🤸 体育与健康',3,'curr-pe-',true],['english','🔠 英语',2,'english-'],
-    ['science','🔬 科学',2,'curr-science-'],['music','🎵 音乐',1,'curr-music-'],
-    ['art','🎨 美术',2,'curr-art-',true],['integrated','🎭 综合艺术',1,'curr-integrated-',true],
-    ['labor','🧺 劳动',2,'curr-labor-',true]
+    ['math','🔢 数学',3,'math-up-'],['english','🔠 英语',2,'english-'],
+    ['piano','🎹 钢琴',20,null,false]
   ];
   function chooseItem(spec,old){
     const [id,label,minutes,prefix,offline]=spec;
+    if(id==='piano')return{id,label,minutes,offline:false,done:false};
     const candidates=G.levels.filter(l=>l.id.startsWith(prefix));
     if(id==='pinyin')candidates.push(...G.levels.filter(l=>/^zh-(initial|final)-/.test(l.id)));
     if(id==='math')candidates.push(...G.levels.filter(l=>l.id.startsWith('math-low-')));
@@ -78,22 +76,23 @@
     if(!l){l=candidates[(Number(state().rotation)||0)%candidates.length];index=offline?1:l?.id.startsWith('curr-')?2:0}
     return{id,label,minutes,offline:!!offline,levelId:l?.id,index,done:false,startedAt:0};
   }
-  function plan(){const s=state();if(s.daily?.day!==day()){const prev=s.daily;s.rotation=(s.rotation||0)+1;s.daily={day:day(),startedAt:0,items:SUBJECTS.map(x=>chooseItem(x,prev)),breakUntil:0,screenSeconds:0,doneAt:0};save()}return s.daily}
-  function remaining(){const p=plan();return p.startedAt?Math.max(0,1800-Math.floor((Date.now()-p.startedAt)/1000)):1800}
-  function current(){const p=plan();return p.items.find(x=>!x.done)}
+  function plan(){const s=state();if(s.daily?.day!==day()){const prev=s.daily;s.rotation=(s.rotation||0)+1;s.daily={version:68,day:day(),startedAt:0,items:SUBJECTS.map(x=>chooseItem(x,prev)),breakUntil:0,screenSeconds:0,coreMs:0,doneAt:0};save()}else if(s.daily.version!==68){const p=s.daily;p.items=SUBJECTS.map(spec=>spec[0]==='piano'?chooseItem(spec):p.items.find(x=>x.id===spec[0])||chooseItem(spec));p.coreMs=Math.min(600000,(p.screenSeconds||0)*1000);p.version=68;p.doneAt=0;save()}return s.daily}
+  function remaining(){return Math.max(0,Math.ceil((600000-(plan().coreMs||0))/1000))}
+  function current(){const p=plan();return p.items.find(x=>!x.done&&(x.id==='piano'||remaining()>0))}
   function itemTask(item=current()){const l=G.levels.find(l=>l.id===item?.levelId);return l?{l,t:l.tasks[item.index],item}:null}
-  function dailyCard(){const p=plan(),done=p.items.filter(x=>x.done).length;return `<section class="l66-card l66-plan"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span></header><p class="l66-note">10个学科 · 语文分为拼音和汉字 · 每项1个真实短任务<br>活动约21分钟，留出休息和重试；最长30分钟，没做完明天接着来。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.offline?'离屏 '+x.minutes+'分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':remaining()<=0?'今天先到这里':p.startedAt?'继续今日计划':'开始今日计划'}</button><p class="l66-note">这是每日全科体验，不代表学完一本教材。完成本项才进入下一项；慢一点也没关系。</p></section>`}
+  function dailyCard(){const p=plan(),done=p.items.filter(x=>x.done).length;return `<section class="l66-card l66-plan"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span></header><p class="l66-note">每天专注五项：基础学习约9分钟 + 钢琴20分钟。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.id==='piano'?'练满20分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':p.startedAt?'继续今日计划':'开始今日计划'}</button><p class="l66-note">基础四项最多10分钟，未完成的明天继续；钢琴另计20分钟，休息不计时。其他学科仍可在地图探索。</p></section>`}
   const oldHome=PGS.home.render;
   PGS.home.render=function(){oldHome();const old=document.querySelector('.g1-daily');if(old)old.outerHTML=dailyCard();else document.querySelector('.g1-map')?.insertAdjacentHTML('beforebegin',dailyCard())};
   function startDaily(){const p=plan();if(!p.startedAt){p.startedAt=Date.now();save()}dailyHeard='';showPage('daily66')}
   function taskKey(c){return c.l.id+'::'+c.t.id}
   function mayDaily(){return CP==='daily66'&&remaining()>0&&!_eyeMode&&plan().breakUntil<=Date.now()}
   function renderDaily(){
+    if(current()?.id==='piano'){window.Piano68?.render();return}
     dailyHeard='';dailyBusy=false;const p=plan(),c=itemTask(),left=remaining();
     const head='<button class="g1-back" onclick="showPage(\'home\')">← 返回</button>';
     let body;
-    if(!c)body='<h2>🌟 今天每个学科都见面啦</h2><p>收好工具，和伙伴一起休息吧！</p>';
-    else if(left<=0)body='<h2>👀 今天先到这里</h2><p>30分钟到了。没有做完的任务会留到明天，不必赶时间。</p>';
+    if(!c)body=p.items.every(x=>x.done)?'<h2>🌟 今天的五项计划完成啦</h2><p>收好工具，和伙伴一起休息吧！</p>':'<h2>👀 今天先到这里</h2><p>基础学习时间用完了。未完成的任务留到明天，不必赶时间。</p>';
+    else if(left<=0)body='<h2>👀 基础学习先到这里</h2><p>没做完的任务留到明天。</p>';
     else if(p.breakUntil>Date.now())body='<h2>🌿 看看远处，离开屏幕</h2><p>站起来，看看窗外。休息结束后再继续。</p><div class="l66-clock" id="l66BreakClock"></div>';
     else{
       const {item,t}=c;
@@ -127,7 +126,7 @@
   startHQ=function(){if(!traceDaily)return previousQuiz();const c=traceDaily;if(!_hw||!mayDaily())return;let mistakes=0;_hw.quiz({onMistake:()=>{mistakes++;$('hwFb').textContent='看清起笔、方向和笔顺，再试试'},onComplete:result=>{const score=Math.max(0,100-Math.max(mistakes,result.totalMistakes||0)*12);if(traceDaily!==c)return;$('hwFb').textContent='得分 '+score+(score<65?'，再按笔顺写一次':'，书写通过');if(score>=65){S.chars[c.t.char]=true;finishDaily(c);traceDaily=null;setTimeout(()=>clHW(),600)}else playCue('trace_retry','')}})};
   clHW=function(){traceDaily=null;previousClose()};
   function updateDaily(){
-    if(CP!=='daily66')return;const p=plan(),left=remaining(),clock=$('l66DailyClock');if(clock)clock.textContent='今日计划剩余 '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+    if(CP!=='daily66'||$('p68Practice'))return;const p=plan(),left=remaining(),clock=$('l66DailyClock');if(clock)clock.textContent='基础学习可用 '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
     if(left<=0&&current()&&$('l66Listen')){stopAudio();clHW();renderDaily();return}
     if($('l66BreakClock')){const rest=Math.max(0,Math.ceil((p.breakUntil-Date.now())/1000));$('l66BreakClock').textContent=Math.floor(rest/60)+':'+String(rest%60).padStart(2,'0');if(rest===0){p.breakUntil=0;p.screenSeconds=0;save();renderDaily()}return}
     const c=itemTask();if(!c?.item.offline||!c.item.startedAt)return;
@@ -186,12 +185,14 @@
   const previousPage=showPage;
   showPage=function(id){stopAudio();dailyHeard='';return previousPage(id)};
   const parentRender=PGS.parent.render;
-  PGS.parent.render=function(){parentRender();if(!S._parentAuth)return;const p=plan();$('ct').insertAdjacentHTML('beforeend',`<section class="l66-card"><h2>今日全科计划</h2><p>已完成 ${p.items.filter(x=>x.done).length} / ${p.items.length} 项。每项仅代表一个验证过的短任务，不等同于整科或整关完成。</p><p>约21分钟活动，预留休息和纠错；单次每日计划最长30分钟。连续屏幕学习10分钟会安排3分钟离屏休息。原有每日屏幕限额仍然生效。</p><p>同题第三次答错：暂停20秒并看、听示范，再换位验证；连续两轮验证仍有困难，则安排10分钟后复习。刷新不清除干预。离屏活动须计时并由家长PIN确认，网页无法独立判断孩子的实际动作。</p></section>`)};
+  PGS.parent.render=function(){parentRender();if(!S._parentAuth)return;const p=plan();$('ct').insertAdjacentHTML('beforeend',`<section class="l66-card"><h2>今日全科计划</h2><p>已完成 ${p.items.filter(x=>x.done).length} / ${p.items.length} 项。拼音、汉字、数学、英语各一个真实短任务，另有20分钟钢琴练习。</p><p>基础学习参考9分钟、最多10分钟，钢琴另计20分钟。暂停、隐藏页面及护眼休息不计入练琴时间；休息可能使实际结束时间超过30分钟。原有屏幕限额不关闭，未完成内容不强迫赶完。</p><p>第三次答错仍触发示范和再验证。钢琴需满20分钟并由家长PIN确认；麦克风只辅助单音识别，不独立证明孩子完成了练习，也不自动发三星。</p></section>`)};
 
-  window.L66={attempt,openGuard,guardListen,verifyStart,verify,leaveGuard,startDaily,dailyListen,dailyAnswer,dailyTrace,offlineStart,offlineConfirm,write,writeDaily,selectLetter,closeWriting,clearWriting,toggleModel};
+  window.L66={attempt,openGuard,guardListen,verifyStart,verify,leaveGuard,startDaily,dailyListen,dailyAnswer,dailyTrace,offlineStart,offlineConfirm,write,writeDaily,selectLetter,closeWriting,clearWriting,toggleModel,plan};
+  let coreTick=performance.now();
   setInterval(()=>{
+    const now=performance.now(),delta=Math.max(0,now-coreTick);coreTick=now;
     updateGuard();updateDaily();
-    if(CP==='daily66'&&remaining()>0&&!document.hidden&&!_eyeMode){const p=plan(),c=itemTask();if(p.breakUntil<=Date.now()&&c&&!c.item.startedAt){p.screenSeconds++;if(p.screenSeconds>=600){p.breakUntil=Date.now()+180000;save();stopAudio();playCue('eye_rest','');renderDaily()}}if(p.screenSeconds%10===0)save()}
+    if(CP==='daily66'&&remaining()>0&&!document.hidden&&!_eyeMode){const p=plan(),c=itemTask();if(p.breakUntil<=Date.now()&&c&&delta<=1500){p.coreMs=Math.min(600000,(p.coreMs||0)+delta);p.screenSeconds++;if(remaining()<=0){save();stopAudio();clHW();renderDaily()}}if(p.screenSeconds%10===0)save()}
   },1000);
   window.addEventListener('pagehide',()=>save());
   if(S._setup.done&&S.dog&&CP==='home')PGS.home.render();

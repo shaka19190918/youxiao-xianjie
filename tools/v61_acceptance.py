@@ -106,7 +106,7 @@ with sync_playwright() as playwright:
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(BASE + ("&" if "?" in BASE else "?") + "test=1", wait_until="networkidle")
     page.wait_for_function(
-        "window.__G1_TEST && document.documentElement.dataset.appVersion === 'v67-picture-support'"
+        "window.__G1_TEST && document.documentElement.dataset.appVersion === 'v68-focus-piano'"
     )
 
     manifest = page.evaluate("() => window.CURRICULUM_MANIFEST_V1")

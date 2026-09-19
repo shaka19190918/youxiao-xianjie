@@ -45,13 +45,13 @@ with sync_playwright() as p:
     errors: list[str] = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(TEST_URL, wait_until="networkidle", timeout=30_000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v67-picture-support'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v68-focus-piano'")
 
     daily = page.locator(".l66-plan")
     assert daily.count() == 1
     assert "今日全科成长计划" in daily.inner_text()
-    assert daily.locator(".l66-subjects > span").count() == 11
-    assert "0 / 11" in daily.locator("header").inner_text()
+    assert daily.locator(".l66-subjects > span").count() == 5
+    assert "0 / 5" in daily.locator("header").inner_text()
 
     page.evaluate("g1ShowAchievements()")
     assert page.locator("#g1BadgeModal .g1-badge-grid > div").count() == 8
