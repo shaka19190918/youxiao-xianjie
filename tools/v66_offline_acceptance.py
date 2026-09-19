@@ -14,8 +14,8 @@ with sync_playwright() as p:
     page.evaluate("S._setup={done:true,name:'离线测试',grade:'一年级'};S.dog={type:'trex',xp:0,hu:80,hy:80,en:80,tasks:0};R()")
     page.evaluate('navigator.serviceWorker.ready')
     page.wait_for_function("navigator.serviceWorker.controller!==null")
-    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v66'))")
-    assert page.evaluate("caches.open('grade1-island-v66').then(c=>c.match('./learning-v66.js')).then(Boolean)")
+    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v67'))")
+    assert page.evaluate("caches.open('grade1-island-v67').then(c=>c.match('./learning-v66.js')).then(Boolean)")
     page.reload(wait_until='networkidle')
     ctx.set_offline(True)
     page.reload(wait_until='networkidle')
@@ -26,6 +26,8 @@ with sync_playwright() as p:
     page.wait_for_function("document.getElementById('l66Listen')?.textContent.includes('听完了')",timeout=15000)
     page.evaluate("L66.write('āgyp')")
     assert page.locator('#l66Pen').count()==1
+    page.evaluate("L66.closeWriting();showPage('mathsync');v44MathQ=V44_MATH[0];renderMath44()")
+    assert page.locator('.question-art [data-one]').count()==4
     assert not errors,errors
     print('PASS: v66 service-worker cache, offline reload, preserved profile, actual cached pinyin playback and writing')
     b.close()

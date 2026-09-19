@@ -198,7 +198,7 @@
     else if(t.type==='focus')body=`<button class="g1-next-task" style="width:100%" onclick="g1FocusStart()">🎯 开始九宫格</button>`;
     else if(t.type==='piano'){g1PianoProgress=[];body=`<p class="g1-task-tip">目标：${esc(t.seq.map(n=>['Do','Re','Mi'][n]).join(' · '))}</p><div class="g1-piano-keys">${['Do','Re','Mi'].map((x,i)=>`<button onclick="g1PianoTap(${i})">${x}</button>`).join('')}</div>`}
     else if(t.type==='sport')body=`<button class="g1-next-task" style="width:100%" onclick="g1SportStart()">⏱️ 开始计时</button>`;
-    return `<div class="g1-task-tag">${starLabel} · 第 ${cur.index+1} 个任务</div><h3>${esc(t.prompt)}</h3><div id="g1TaskBody">${body}</div><div class="g1-feedback" id="g1Feedback">${t.audio&&!heard?'听完再回答，不能跳过':'认真完成就能得到星星'}</div>`;
+    return `<div class="g1-task-tag">${starLabel} · 第 ${cur.index+1} 个任务</div><h3>${esc(t.prompt)}</h3>${window.QuestionArt?.html(t)||''}<div id="g1TaskBody">${body}</div><div class="g1-feedback" id="g1Feedback">${t.audio&&!heard?'听完再回答，不能跳过':'认真完成就能得到星星'}</div>`;
   }
   function renderStars(s){return [0,1,2].map(i=>`<span class="g1-star ${s.tasks[i]?'on':''}">${s.tasks[i]?'★':'☆'}</span>`).join('')}
 
@@ -301,6 +301,6 @@
     game
   };
   window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay};
-  document.documentElement.dataset.appVersion='v66-guided-learning';
+  document.documentElement.dataset.appVersion='v67-picture-support';
   if(S._setup.done&&S.dog)showPage('home');else if(!S._setup.done)showWizard();
 })();

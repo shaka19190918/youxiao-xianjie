@@ -38,6 +38,8 @@
       const opts=g.task.options.slice().reverse();
       body=`<h2>🌱 换个位置，再找一次</h2><p>${esc(g.task.prompt)}</p><button onclick="L66.guardListen()">🔊 再听示范</button><div class="l66-options">${opts.map((x,i)=>`<button onclick="L66.verify(${i})">${esc(x)}</button>`).join('')}</div>`;
     }else body=`<h2>🐾 慢一点，我们一起学</h2><p>${esc(g.task.prompt)}</p><p>先听、再看，留意这一项：</p><div class="l66-example">${esc(g.task.answer)}</div><div class="l66-actions"><button onclick="L66.guardListen()">🔊 听完整示范</button><button id="l66VerifyStart" onclick="L66.verifyStart()" disabled>看一看示范</button></div><p class="l66-note">看懂后，会换一换答案位置让你再试。重新答对原任务才得星。</p>`;
+    const art=window.QuestionArt?.html(g.task)||'';
+    if(art){const marker=g.phase==='verify'?'<div class="l66-options">':'<div class="l66-example">';body=body.replace(marker,art+marker)}
     modal('l66Guard',body+'<div class="l66-feedback" id="l66GuardFeedback" aria-live="polite"></div><div class="l66-actions"><button onclick="L66.leaveGuard()">先休息一下</button></div>');
     updateGuard();
   }
@@ -96,6 +98,7 @@
     else{
       const {item,t}=c;
       body=`<p>${p.items.filter(x=>x.done).length+1} / ${p.items.length} · ${item.label}</p><h2>${esc(item.offline?t.answer:t.prompt)}</h2><button id="l66Listen" onclick="L66.dailyListen()">🔊 听完整示范</button>`;
+      body+=window.QuestionArt?.html(t)||'';
       if(item.offline)body+=`<p>请家长先读清活动要求，在安全的地方陪伴完成。不必盯着屏幕。</p><button id="l66OfflineStart" onclick="L66.offlineStart()">开始离屏活动 · ${item.minutes}分钟</button><div class="l66-clock" id="l66OfflineClock"></div><div id="l66OfflineConfirm"></div>`;
       else if(t.type==='trace')body+=`<div class="v42-char"><div class="glyph">${esc(t.char)}</div><div class="pinyin">${esc(t.pinyin)}</div></div><button class="l66-write-btn" onclick="L66.dailyTrace()">✏️ 大田字格 · 按笔顺描红</button><p class="l66-note">65分及以上通过；低于65分重新练习。</p>`;
       else body+=`<div class="l66-options">${t.options.map((x,i)=>`<button onclick="L66.dailyAnswer(${i})">${esc(x)}</button>`).join('')}</div>${item.id==='pinyin'?'<button class="l66-write-btn" onclick="L66.writeDaily()">✏️ 四线三格练写</button>':''}${item.id==='english'?'<button class="l66-write-btn" onclick="L66.writeDaily()">✏️ 英文四线三格</button>':''}`;

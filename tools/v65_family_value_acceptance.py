@@ -45,7 +45,7 @@ with sync_playwright() as p:
     errors: list[str] = []
     page.on("pageerror", lambda exc: errors.append(str(exc)))
     page.goto(TEST_URL, wait_until="networkidle", timeout=30_000)
-    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v66-guided-learning'")
+    page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v67-picture-support'")
 
     daily = page.locator(".l66-plan")
     assert daily.count() == 1
