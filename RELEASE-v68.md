@@ -26,4 +26,4 @@
 
 ## 发布
 
-保留原GitHub Pages地址。HTML版本标记为`v68-focus-piano`，Service Worker为`grade1-island-v68`。新脚本和样式加入应用外壳离线缓存；修改过的旧脚本使用`?v=68`，避免更新时混入旧缓存。
+保留原GitHub Pages地址。HTML版本标记为`v68-focus-piano`，Service Worker为`grade1-island-v68-1`。新脚本和样式加入应用外壳离线缓存；修改过的旧脚本使用`?v=68`，避免更新时混入旧缓存。小屏拼音选项为序号单独留出上方空间，长音节不被挤压。

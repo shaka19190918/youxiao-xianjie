@@ -38,6 +38,14 @@ with sync_playwright() as p:
     load()
     assert page.evaluate('S.learning66.daily.items.length')==5
     assert page.evaluate('S.learning66.daily.items[0].done')
+    # Longest common syllables must not collide with the ordinal on a 320px phone.
+    page.set_viewport_size({'width':320,'height':740})
+    page.evaluate("showPage('pinyin');pinyinV63Part('challenge')")
+    page.wait_for_selector('#p63Answers button')
+    page.evaluate("document.querySelectorAll('#p63Answers button').forEach((b,i)=>b.textContent=['chuāng','shuāng','zhuāng','jiōng'][i])")
+    page.wait_for_timeout(30)
+    assert page.locator('#p63Answers button').evaluate_all("bs=>bs.every(b=>{const r=document.createRange();r.selectNodeContents(b);const t=r.getBoundingClientRect(),a=b.getBoundingClientRect();return t.left>=a.left&&t.right<=a.right&&b.scrollWidth<=b.clientWidth})")
+    page.set_viewport_size({'width':390,'height':844})
     for route in ['mathsync','mathlower','timeextra','englishsync']:
         page.evaluate('(r)=>showPage(r)',route);page.wait_for_timeout(50)
         for group in page.locator('.v42-answer-grid').all():

@@ -10,14 +10,18 @@ with sync_playwright() as p:
     page=ctx.new_page()
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
+    ctx.on('requestfailed',lambda r:print('REQUEST FAILED:',r.url,r.failure,flush=True))
+    ctx.on('response',lambda r:print('HTTP ERROR:',r.status,r.url,flush=True) if r.status>=400 else None)
     page.goto(BASE,wait_until='networkidle')
     page.evaluate("S._setup={done:true,name:'离线测试',grade:'一年级'};S.dog={type:'trex',xp:0,hu:80,hy:80,en:80,tasks:0};R()")
-    page.evaluate('navigator.serviceWorker.ready')
+    registration=page.evaluate("navigator.serviceWorker.register('service-worker.js').then(r=>({installing:r.installing?.state,active:r.active?.state})).catch(e=>({error:e.message}))")
+    assert 'error' not in registration,registration
+    page.evaluate("Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(new Error('Service-worker install timed out after 30s')),30000))])")
     page.wait_for_function("navigator.serviceWorker.controller!==null")
-    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v68'))")
-    assert page.evaluate("caches.open('grade1-island-v68').then(c=>c.match('./learning-v66.js?v=68')).then(Boolean)")
+    assert page.evaluate("caches.keys().then(x=>x.includes('grade1-island-v68-1'))")
+    assert page.evaluate("caches.open('grade1-island-v68-1').then(c=>c.match('./learning-v66.js?v=68')).then(Boolean)")
     # Old, unversioned cached scripts cannot mix with the new HTML release.
-    page.evaluate("caches.open('grade1-island-v68').then(c=>Promise.all(['game-v59.js','learning-v66.js'].map(p=>c.put(p,new Response('throw new Error(\"stale cache loaded\")',{headers:{'Content-Type':'application/javascript'}})))))")
+    page.evaluate("caches.open('grade1-island-v68-1').then(c=>Promise.all(['game-v59.js','learning-v66.js'].map(p=>c.put(p,new Response('throw new Error(\"stale cache loaded\")',{headers:{'Content-Type':'application/javascript'}})))))")
     page.reload(wait_until='networkidle')
     ctx.set_offline(True)
     page.reload(wait_until='networkidle')

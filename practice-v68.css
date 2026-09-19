@@ -1,6 +1,9 @@
 /* Ordinals are visual metadata, never part of the word being read aloud. */
 [data-option-number]{position:relative!important;padding-inline-start:48px!important;min-height:56px}
 [data-option-number]::before{content:attr(data-option-number);position:absolute;inset-inline-start:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#57309c;border:2px solid #c4b0ed;font:800 17px/1 system-ui;box-sizing:border-box}
+.p63-answers{grid-template-columns:repeat(2,minmax(0,1fr))}
+.p63-answers button[data-option-number]{min-width:0;padding:40px 6px 12px!important}
+.p63-answers button[data-option-number]::before{top:6px;transform:none}
 .p68-page{max-width:960px;margin:0 auto;display:grid;gap:20px;min-width:0;padding-bottom:40px}
 .p68-page>.g1-back{display:inline-flex;align-items:center;justify-content:center;justify-self:start;width:auto;min-width:112px;height:56px;padding:0 18px;white-space:nowrap}
 .p68-hero,.p68-card{border-radius:28px;padding:24px;background:#fff;box-shadow:0 10px 28px #6747a018;min-width:0}
