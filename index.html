@@ -1204,6 +1204,35 @@ v42State();
   // The final game dock is mounted by the single bootstrap render.
 })();
 </script>
+<style id="rounded-menu-v69-2">
+/* Shared soft-toy navigation: CSS only, no extra download or looping motion. */
+#wideNav,#kidDock{isolation:isolate}
+#wideNav button,#kidDock button{--nav-ink:#6446b0;--nav-tint:#ece4ff;box-sizing:border-box;border:2px solid rgba(255,255,255,.92);border-radius:999px;color:#54436f;background:linear-gradient(180deg,#fff 0%,var(--nav-tint) 100%);font-family:inherit;font-weight:800;box-shadow:0 4px 0 rgba(77,47,125,.16),inset 0 2px 0 #fff;transition:transform .16s ease,box-shadow .16s ease,background .16s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#wideNav button[data-route="adventure"],#kidDock button[data-route="adventure"]{--nav-tint:#fff0c9;--nav-ink:#865508}
+#wideNav button[data-route="dog"],#kidDock button[data-route="dog"]{--nav-tint:#ffe3ed;--nav-ink:#a63267}
+#wideNav button[data-route="review"],#kidDock button[data-route="review"]{--nav-tint:#dcefff;--nav-ink:#245b94}
+#wideNav button[data-route="parent"],#kidDock button[data-route="parent"]{--nav-tint:#def4e9;--nav-ink:#276449}
+#wideNav button.on,#kidDock button.on{color:var(--nav-ink);background:linear-gradient(180deg,#fff 0%,var(--nav-tint) 85%);border-color:var(--nav-ink);box-shadow:0 4px 0 var(--nav-ink),inset 0 2px 0 #fff;transform:translateY(-2px)}
+#wideNav button:active,#kidDock button:active{transform:translateY(3px) scale(.97);box-shadow:0 1px 0 var(--nav-ink)}
+#wideNav button:focus-visible,#kidDock button:focus-visible{outline:3px solid #3f2878;outline-offset:4px}
+@media(hover:hover){#wideNav button:hover,#kidDock button:hover{color:var(--nav-ink);transform:translateY(-2px);background:linear-gradient(180deg,#fff,var(--nav-tint))}}
+@media(min-width:701px){
+  #wideNav{gap:9px;padding:6px 8px 10px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);border-radius:999px}
+  #wideNav button{min-height:54px;min-width:80px;padding:0 14px;gap:7px;font-size:15px;line-height:1.2}
+  #wideNav button span{font-size:25px;line-height:1.2}
+}
+@media(min-width:701px) and (max-width:1000px){
+  .header{flex-wrap:wrap}
+  #wideNav{order:3;flex:1 0 100%;justify-content:center;box-sizing:border-box;gap:8px}
+  #wideNav button{flex:1;max-width:125px;min-width:0;font-size:14px;padding:0 9px}
+}
+@media(max-width:700px){
+  #kidDock{gap:4px;padding:7px 6px 10px;border-radius:30px;background:#fffafc;box-shadow:0 6px 24px rgba(76,47,119,.18);backdrop-filter:none}
+  #kidDock button{min-height:64px;min-width:0;border-radius:22px;padding:5px 1px;font-size:12px;line-height:1.25}
+  #kidDock button span{font-size:27px;line-height:1.15;margin-bottom:3px}
+}
+@media(prefers-reduced-motion:reduce){#wideNav button,#kidDock button{transition:none}}
+</style>
 <script src="curriculum-v61.js" defer></script>
 <script src="pinyin-v63.js?v=69" defer></script>
 <script src="game-v59.js?v=69" defer></script>

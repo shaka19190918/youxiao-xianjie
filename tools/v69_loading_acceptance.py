@@ -27,7 +27,7 @@ with sync_playwright() as p:
     assert not any('hanzi-writer.min.js' in url for url in requests)
     page.evaluate("navigator.serviceWorker.register('service-worker.js')")
     page.wait_for_function('!!navigator.serviceWorker.controller',timeout=45000)
-    keys=page.evaluate("caches.open('grade1-island-v69').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
+    keys=page.evaluate("caches.open('grade1-island-v69-2').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
     assert len(keys)==17,len(keys)
     assert not any('.mp3' in k or 'hanzi-writer.min.js' in k for k in keys)
     # Reuse unchanged media from the previous release without a network download.

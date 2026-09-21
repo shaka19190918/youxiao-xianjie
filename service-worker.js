@@ -1,5 +1,5 @@
 /* v69: coherent cached shell, two-wide warmup, reusable bounded teaching assets. */
-const CACHE='grade1-island-v69',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v68-1';
+const CACHE='grade1-island-v69-2',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v68-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest','game-v59.css','learning-v66.css','question-art-v67.css','curriculum-v61.css','pinyin-v63.css','practice-v68.css?v=69',
   'curriculum-v61.js','pinyin-v63.js?v=69','game-v59.js?v=69','learning-v66.js?v=69','question-art-v67.js','pitch-v68.js','practice-v68.js?v=69','fast-v69.js','pet_voice_map.json'];
