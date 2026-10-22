@@ -8,7 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>一年级成长岛</title>
 <meta name="application-name" content="一年级成长岛">
-<meta name="app-version" content="v70-eye-rest">
+<meta name="app-version" content="v71-reading">
 <link rel="stylesheet" href="practice-v68.css?v=69">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
@@ -269,6 +269,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 <link rel="stylesheet" href="question-art-v67.css">
 <link rel="stylesheet" href="curriculum-v61.css">
 <link rel="stylesheet" href="pinyin-v63.css">
+<link rel="stylesheet" href="reading-v71.css">
 </head>
 <body>
 <div id="app">
@@ -1186,7 +1187,7 @@ v42State();
   PGS.home.render=function(){const d=S.dog?(DOGS[S.dog.type]||DOGS.labrador):null,lv=dlv(),st=DST[lv],name=S._setup.name||'小朋友';document.getElementById('ct').innerHTML=`<div class="v54-home${d?' has-pet':''}"><section class="v54-hello"><h1>你好，${name}！</h1><p>今天完成一个小目标，就去陪伙伴玩。</p><div class="v54-stats"><span>🔥 ${S.strk||0} 天</span><span>💎 ${S.pts||0}</span></div></section>${d?`<section class="card v54-pet"><div>${dogSVG(S.dog.type,96)}</div><div><strong>${d.n}在等你</strong><small>${st.n} · 成长值 ${S.dog.xp||0}</small><button onclick="showPage('dog')">去看看伙伴</button></div></section>`:''}${todayPickCard()}<nav class="v54-quick" aria-label="学习分类"><button onclick="hubGo('yuwen')"><span>📚</span>语文</button><button onclick="hubGo('shuxue')"><span>🔢</span>数学</button><button onclick="hubGo('yingyu')"><span>🔠</span>英语</button><button onclick="hubGo('xingqu')"><span>🎨</span>兴趣</button></nav><button class="v54-parent" onclick="showPage('parent')">👨‍👩‍👧 家长设置与学习报告</button></div>`};
 
   const SUBJ_CAT={
-    yuwen:{ic:'📚',n:'语文',items:[['🔤','汉语拼音','声母、韵母与四声','pinyin'],['✏️','识字写字','生活常用字与笔顺','chars'],['📖','分级阅读','短文理解与表达','reading'],['📜','古诗积累','完整诗文与逐句朗读','poems'],['📘','教材同步','统编版目录路线','textbook']]},
+    yuwen:{ic:'📚',n:'语文',items:[['🔤','汉语拼音','声母、韵母与四声','pinyin'],['✏️','识字写字','生活常用字与笔顺','chars'],['📄','短文理解','短阅读与选择','reading'],['📖','分级绘本','听读·点读·复述','readhome'],['📜','古诗积累','完整诗文与逐句朗读','poems'],['📘','教材同步','统编版目录路线','textbook']]},
     shuxue:{ic:'🔢',n:'数学',items:[['➕','数学闯关','数感、比较与运算','math'],['📗','一年级同步','人教版上下册','mathsync'],['📙','能力拓展','100以内、人民币','mathlower'],['⏰','时间专题','秒与经过时间','timeextra'],['🧩','数独入门','逻辑填数','sudoku']]},
     yingyu:{ic:'🔠',n:'英语',items:[['🔠','英语单词','听音选词与跟读','english'],['📒','一年级同步','北京版上册','englishsync']]},
     xingqu:{ic:'🎨',n:'兴趣',items:[['🎹','小钢琴','儿歌弹奏','piano'],['🔬','科普百科','生活里的为什么','science'],['🧠','思维游戏','规律、分类与逻辑','thinking'],['🤸','运动游戏','感统与协调','sport'],['🎯','专注训练','短时专注与休息','focus']]}
@@ -1198,7 +1199,7 @@ v42State();
     document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">← <span>返回</span></button><section class="v42-hero"><span class="v42-tag">${c.ic} ${c.n} · 选一个开始</span><h2>${c.n}</h2><p style="font-size:13px;line-height:1.7;margin:5px 0">每次只做一小节，做完会有语音鼓励。</p></section><div class="v42-grid">${c.items.map(u=>`<button class="v42-unit" onclick="showPage('${u[3]}')"><span class="uicon">${u[0]}</span><strong>${u[1]}</strong><small>${u[2]}</small>${v42UnitProgress(u[3])?`<div class="v42-progress"><i style="width:${v42UnitProgress(u[3])}%"></i></div>`:''}</button>`).join('')}</div>`;
     document.getElementById('hLogo').textContent=`${c.ic} ${c.n}`;
   }};
-  function learningRoute(id){return ['subj','curriculum','pinyin','chars','reading','poems','math','mathsync','mathlower','timeextra','english','englishsync','sudoku','thinking','science','piano'].includes(id)}
+  function learningRoute(id){return ['subj','curriculum','pinyin','chars','reading','readhome','poems','math','mathsync','mathlower','timeextra','english','englishsync','sudoku','thinking','science','piano'].includes(id)}
   function mountDock(){let dock=document.getElementById('kidDock');if(!dock){dock=document.createElement('nav');dock.id='kidDock';dock.setAttribute('aria-label','主要导航');dock.innerHTML=`<button data-route="home" onclick="showPage('home')"><span>🏠</span>首页</button><button data-route="learn" onclick="showPage('curriculum')"><span>📚</span>学习</button><button data-route="dog" onclick="showPage('dog')"><span>🐶</span>伙伴</button><button data-route="focus" onclick="showPage('focus')"><span>🎯</span>专注</button><button data-route="parent" onclick="showPage('parent')"><span>👨‍👩‍👧</span>家长</button>`;document.body.appendChild(dock)}dock.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)));const wn=document.getElementById('wideNav');if(wn)wn.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.route===CP||b.dataset.route==='learn'&&learningRoute(CP)))}
   const oldShow=showPage;showPage=function(id){oldShow(id);mountDock()};
   // The final game dock is mounted by the single bootstrap render.
@@ -1243,6 +1244,8 @@ v42State();
 <link rel="stylesheet" href="eye-v70.css">
 <script src="eye-v70.js" defer></script>
 <script src="fast-v69.js" defer></script>
+<script src="reading-v71.js" defer></script>
+<script src="reading-ui-v71.js" defer></script>
 <script>setTimeout(()=>{const box=document.getElementById('boot69');if(box){box.querySelector('h1').textContent='加载较慢，请检查网络';document.getElementById('bootRetry69').hidden=false}},12000)</script>
 </body>
 </html>
