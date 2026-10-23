@@ -3,12 +3,15 @@
    避免 force-cache 命中浏览器 HTTP 缓存里的旧副本（曾导致"JS 新版 + CSS 旧版"
    → 拼音退化成和汉字并排）。
    v74-3: 另加一道根本保险 —— 关键版式 CSS 由 g1-ruby.js 自己注入 <style id="g1r-style">，
-   即使外部 CSS 是旧的，拼音也一定在汉字上方。CACHE 再进一位以强制旧客户端换壳。 */
-const CACHE='grade1-island-v74-3',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v74-2';
+   即使外部 CSS 是旧的，拼音也一定在汉字上方。CACHE 再进一位以强制旧客户端换壳。
+   v75-1: 拼音字号放大（题面 19→28px，选项 16→24px，逐档收窄），
+   并修掉 `.g1-answer` 的 flex-wrap:nowrap —— 它让拼音单元无法在按钮内换行，
+   既撑破按钮边框、又让窄屏整页横向溢出。 */
+const CACHE='grade1-island-v75-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v74-3';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=74','learning-v66.css?v=74','question-art-v67.css?v=74','curriculum-v61.css?v=74','pinyin-v63.css?v=74','practice-v68.css?v=74','eye-v70.css?v=74','reading-v71.css?v=74',
-  'curriculum-v61.js?v=74','pinyin-v63.js?v=74','g1-ruby.js?v=74','game-v59.js?v=74','learning-v66.js?v=74','question-art-v67.js?v=74','pitch-v68.js?v=74','practice-v68.js?v=74','eye-v70.js?v=74','fast-v69.js?v=74','reading-v71.js?v=74','reading-ui-v71.js?v=74',
+  'game-v59.css?v=75','learning-v66.css?v=75','question-art-v67.css?v=75','curriculum-v61.css?v=75','pinyin-v63.css?v=75','practice-v68.css?v=75','eye-v70.css?v=75','reading-v71.css?v=75',
+  'curriculum-v61.js?v=75','pinyin-v63.js?v=75','g1-ruby.js?v=75','game-v59.js?v=75','learning-v66.js?v=75','question-art-v67.js?v=75','pitch-v68.js?v=75','practice-v68.js?v=75','eye-v70.js?v=75','fast-v69.js?v=75','reading-v71.js?v=75','reading-ui-v71.js?v=75',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}

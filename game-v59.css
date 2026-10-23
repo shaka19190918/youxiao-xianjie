@@ -53,14 +53,20 @@ body{background:linear-gradient(180deg,#eaf8ff 0,#f8f0ff 42%,#fff8ec 100%);color
 @media(min-width:900px){.g1-map{grid-row:auto}.g1-daily,.g1-map{grid-column:1/-1}}
 @media print{body>*:not(#g1PrintSheet){display:none!important}#g1PrintSheet{position:static!important;display:block!important;background:#fff!important;padding:0!important}.g1-print-sheet{width:100%!important;max-height:none!important;overflow:visible!important;box-shadow:none!important;padding:0!important}.g1-print-actions{display:none!important}.g1-week-report{box-shadow:none!important;border:1px solid #ddd!important}.g1-modal{backdrop-filter:none!important}}
 
-/* ══ v74：闯关题面全文注音（拼音在字上方，字号比绘本明显大）══════════════
-   需求原话：「闯关现在是发音读题，能不能在这个基础上，加上拼音，拼音字号大一点，方便孩子读题」。
-   所以这里的关键不是"有拼音"，而是"拼音要够大" —— 孩子要拿它读题。
-   绘本模块的拼音是 11px（那是给已识字的孩子做辅助），这里题面给到 17-22px。
+/* ══ v75：闯关题面全文注音（拼音在字上方，字号明显加大）══════════════
+   需求演进：
+     v74「加上拼音，字号大一点」            → 题面 19px / 选项 16px
+     v75「拼音不够大，我担心孩子看不清」    → 题面最大 28px / 选项 24px
+   绘本模块的拼音是 11px（那是给已识字的孩子做辅助），
+   题面这里的拼音是**孩子拿来读题的**，所以必须明显更大。
+
+   ⚠️ 拼音比汉字宽约 1.6 倍（如 zhuāng vs 庄）：`.g1r-ch` 是 inline-flex 竖排，
+      宽度取 max(拼音宽, 汉字宽)。拼音一放大，整行就跟着变宽 ——
+      所以下面的字号不是拍脑袋定的，是 `v70_sync/_measure_py_ceiling.js`
+      用**全部 561 个真实题目**（含最长的选项文本）逐视口实测出来的上限，并留了余量。
 
    ⚠️ 必须用真实上下结构（inline-flex 竖排），不能用绝对定位 ::after ——
-      绝对定位会让相邻字的拼音互相重叠，而且撑不开行高（绘本模块已踩过这个坑）。
-   ⚠️ 字号用 clamp + 变量，保证窄屏也能放下且不横向滚动。 */
+      绝对定位会让相邻字的拼音互相重叠，而且撑不开行高（绘本模块已踩过这个坑）。 */
 .g1-prompt{font-size:clamp(22px,5vw,30px);line-height:1.45;margin:14px 0}
 .g1-prompt .g1r-ch,.g1-answer .g1r-ch{
   display:inline-flex;flex-direction:column;align-items:center;justify-content:flex-end;
@@ -68,20 +74,24 @@ body{background:linear-gradient(180deg,#eaf8ff 0,#f8f0ff 42%,#fff8ec 100%);color
 }
 /* 拼音行：字号大、颜色深、字重足，孩子一眼能看清 */
 .g1-prompt .g1r-py{
-  display:block;font-size:clamp(15px,2.6vw,19px);line-height:1.15;
+  display:block;font-size:28px;line-height:1.15;
   color:#6A4BC0;font-weight:800;letter-spacing:0;white-space:nowrap;
   font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);
 }
 .g1-prompt .g1r-hz{display:block}
-/* 选项里的拼音稍小一号，但仍比绘本大 */
+/* 选项里的拼音比题面小一号，但仍比绘本大得多 */
 .g1-answer .g1r-py{
-  display:block;font-size:clamp(13px,2.2vw,16px);line-height:1.15;
+  display:block;font-size:24px;line-height:1.15;
   color:#6A4BC0;font-weight:800;white-space:nowrap;
   font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);
 }
 .g1-answer .g1r-hz{display:block;line-height:1.15}
-/* 选项按钮要容得下两行（拼音 + 汉字），不然会挤 */
-.g1-answer{display:flex;align-items:center;justify-content:center;padding:8px 10px;line-height:1.2}
+/* ⚠️ 选项按钮必须允许换行（v75 修复）：
+   `.g1-answer` 是 flex 容器，而 flex 默认 `flex-wrap:nowrap` —— 里面的 .g1r-ch
+   单元（每个宽 = max(拼音宽, 汉字宽)）**无法换行**，内容直接撑出按钮边框，
+   在窄屏上还会把整个页面撑出横向滚动条（实测 390px 下最长选项溢出 103px）。
+   加上 wrap 之后：长选项自动折行、短选项完全不变，拼音也才放得大。 */
+.g1-answer{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:8px 10px;line-height:1.2}
 
 /* 拼音开关：小胶囊，不抢题面的视觉重心 */
 .g1-py-toggle{
@@ -92,16 +102,35 @@ body{background:linear-gradient(180deg,#eaf8ff 0,#f8f0ff 42%,#fff8ec 100%);color
 .g1-py-toggle.on{border-color:#b9a4ea;background:#f1ebff;color:#6242bc}
 .g1-py-toggle span{line-height:1}
 
-/* 窄屏：题面拼音再收一点，但保证不小于 14px（再小就失去"方便读题"的意义） */
+/* ── 逐档收窄（每档都在实测上限之下留了余量）──
+   实测上限：≥1200px→34 · 1024px→34 · 820px→30 · 701px→30 · 390px→24 · 360px→21 */
+@media(max-width:1199px){
+  .g1-prompt .g1r-py{font-size:26px}
+  .g1-answer .g1r-py{font-size:22px}
+}
+@media(max-width:900px){
+  .g1-prompt .g1r-py{font-size:24px}
+  .g1-answer .g1r-py{font-size:20px}
+}
+@media(max-width:700px){
+  .g1-prompt .g1r-py{font-size:22px}
+  .g1-answer .g1r-py{font-size:19px}
+}
 @media(max-width:560px){
-  .g1-prompt .g1r-py{font-size:14px}
-  .g1-answer .g1r-py{font-size:13px}
+  .g1-prompt .g1r-py{font-size:20px}
+  .g1-answer .g1r-py{font-size:17px}
   .g1-py-toggle{min-height:30px;padding:0 10px;font-size:12px}
 }
-/* 矮横屏（landscape 且高度紧张）：压缩拼音行，避免首屏看不到选项 */
+/* 超小屏（≤380px，如 360px 安卓机）：实测上限 21px，这里用 18px 留足余量 */
+@media(max-width:380px){
+  .g1-prompt .g1r-py{font-size:18px}
+  .g1-answer .g1r-py{font-size:15px}
+}
+/* 矮横屏（landscape 且高度紧张）：纵向空间才是瓶颈，拼音保持中等，
+   避免首屏连题面都看不到（此处必须写在最后，才能覆盖上面的宽度断点） */
 @media(orientation:landscape) and (max-height:560px){
   .g1-prompt{margin:8px 0;line-height:1.3}
-  .g1-prompt .g1r-py{font-size:14px}
-  .g1-answer .g1r-py{font-size:12px}
+  .g1-prompt .g1r-py{font-size:20px}
+  .g1-answer .g1r-py{font-size:17px}
   .g1-answer{min-height:58px}
 }
