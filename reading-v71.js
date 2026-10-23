@@ -97,7 +97,10 @@
     '台': 'tái', '偷': 'tōu', '油': 'yóu', '咕': 'gū', '噜': 'lū', '叽': 'jī',
     '诗': 'shī', '蝌': 'kē', '蚪': 'dǒu', '逗': 'dòu', '句': 'jù', '省': 'shěng',
     '略': 'lüè', '淅': 'xī', '沥': 'lì', '泡': 'pào', '珠': 'zhū', '串': 'chuàn',
-    '青': 'qīng', '蛙': 'wā', '荷': 'hé', '叶': 'yè', '塘': 'táng', '呱': 'guā'
+    '青': 'qīng', '蛙': 'wā', '荷': 'hé', '叶': 'yè', '塘': 'táng', '呱': 'guā',
+    /* 第二批：狗和猴 / 虹 / 燕子的话 / 三只白鹤 */
+    '底': 'dǐ', '橙': 'chéng', '紫': 'zǐ', '屋': 'wū', '檐': 'yán',
+    '鹤': 'hè', '埋': 'mái', '记': 'jì'
   };
 
   /* ------------------------------------------------------------------ *
@@ -273,6 +276,97 @@
       '</g>';
   }
 
+  /* 专用角色（第二批）：小狗 / 燕子 / 白鹤
+     同样遵循儿童向卡通铁律：轮廓描边 + 大头小身 + 大眼带高光 + 卡通腮红。 */
+  function R71_DOG() {
+    var body = '#E8C08A', line = '#A9773C';
+    return '<g>' +
+      '<ellipse cx="100" cy="122" rx="27" ry="6.5" fill="#00000010"/>' +
+      /* 尾巴（摇起来） */
+      '<path d="M126 106 q22 -6 24 -24" stroke="' + line + '" stroke-width="4" fill="none" stroke-linecap="round"/>' +
+      /* 身体 */
+      '<ellipse cx="100" cy="110" rx="27" ry="21" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      '<ellipse cx="100" cy="112" rx="15" ry="12" fill="#FFF" opacity=".45"/>' +
+      /* 前爪 */
+      '<ellipse cx="82" cy="126" rx="9" ry="6" fill="#FFF" stroke="' + line + '" stroke-width="2.2"/>' +
+      '<ellipse cx="118" cy="126" rx="9" ry="6" fill="#FFF" stroke="' + line + '" stroke-width="2.2"/>' +
+      /* 耳朵（垂耳） */
+      '<ellipse cx="66" cy="52" rx="12" ry="20" fill="' + line + '" stroke="' + line + '" stroke-width="2.4" transform="rotate(-14 66 52)"/>' +
+      '<ellipse cx="134" cy="52" rx="12" ry="20" fill="' + line + '" stroke="' + line + '" stroke-width="2.4" transform="rotate(14 134 52)"/>' +
+      /* 头 */
+      '<circle cx="100" cy="76" r="36" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      /* 眼睛 */
+      '<circle cx="87" cy="72" r="9" fill="#3A2B4D"/><circle cx="113" cy="72" r="9" fill="#3A2B4D"/>' +
+      '<circle cx="89.4" cy="68.6" r="3.2" fill="#FFF"/><circle cx="115.4" cy="68.6" r="3.2" fill="#FFF"/>' +
+      /* 腮红 */
+      '<ellipse cx="72" cy="88" rx="8.4" ry="5.6" fill="#FF9EC4" opacity=".5"/>' +
+      '<ellipse cx="128" cy="88" rx="8.4" ry="5.6" fill="#FF9EC4" opacity=".5"/>' +
+      /* 口鼻（狗的黑鼻头 + 舌头） */
+      '<ellipse cx="100" cy="88" rx="13" ry="10" fill="#FFF6E8" stroke="' + line + '" stroke-width="2.2"/>' +
+      '<ellipse cx="100" cy="84" rx="5.4" ry="4.2" fill="#4A3728"/>' +
+      '<path d="M100 88 v4 M100 92 q-5 5 -9 1 M100 92 q5 5 9 1" stroke="' + line + '" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
+      '<path d="M96 98 q4 8 8 0 z" fill="#FF8FB1" stroke="#E56A93" stroke-width="1.6" stroke-linejoin="round"/>' +
+      '</g>';
+  }
+
+  function R71_SWALLOW() {
+    var body = '#3E4A6B', line = '#232C46';
+    return '<g>' +
+      '<ellipse cx="100" cy="122" rx="24" ry="6" fill="#00000010"/>' +
+      /* 剪刀尾（燕子的标志） */
+      '<path d="M118 104 l30 -12 l-14 16 l14 12 z" fill="' + body + '" stroke="' + line + '" stroke-width="2.4" stroke-linejoin="round"/>' +
+      /* 身体 */
+      '<ellipse cx="100" cy="106" rx="26" ry="19" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      /* 白肚子 */
+      '<ellipse cx="100" cy="110" rx="15" ry="12" fill="#FFF8E8" stroke="' + line + '" stroke-width="1.8"/>' +
+      /* 翅膀 */
+      '<path d="M76 100 q-22 -6 -30 8 q18 6 30 -2 z" fill="#4A5880" stroke="' + line + '" stroke-width="2.4" stroke-linejoin="round"/>' +
+      /* 头 */
+      '<circle cx="100" cy="72" r="34" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      /* 橙红的额头斑 */
+      '<path d="M100 40 q10 8 0 16 q-10 -8 0 -16 z" fill="#E8734A" opacity=".9"/>' +
+      /* 眼睛 */
+      '<circle cx="87" cy="70" r="8.8" fill="#FFF"/><circle cx="113" cy="70" r="8.8" fill="#FFF"/>' +
+      '<circle cx="88" cy="71" r="6" fill="#232C46"/><circle cx="112" cy="71" r="6" fill="#232C46"/>' +
+      '<circle cx="89.8" cy="68.6" r="2.4" fill="#FFF"/><circle cx="113.8" cy="68.6" r="2.4" fill="#FFF"/>' +
+      /* 腮红 */
+      '<ellipse cx="70" cy="84" rx="7.6" ry="5" fill="#FF9EC4" opacity=".5"/>' +
+      '<ellipse cx="130" cy="84" rx="7.6" ry="5" fill="#FF9EC4" opacity=".5"/>' +
+      /* 黄色小尖嘴 */
+      '<path d="M100 78 l-11 7 l11 6 l11 -6 z" fill="#FFC24A" stroke="#D99A20" stroke-width="2" stroke-linejoin="round"/>' +
+      '</g>';
+  }
+
+  function R71_CRANE() {
+    var body = '#FFFFFF', line = '#B9B3C9';
+    return '<g>' +
+      '<ellipse cx="100" cy="122" rx="24" ry="6" fill="#00000010"/>' +
+      /* 长腿 */
+      '<path d="M88 118 v14 M112 118 v14" stroke="#E8734A" stroke-width="3.4" stroke-linecap="round"/>' +
+      '<path d="M80 132 h14 M104 132 h14" stroke="#E8734A" stroke-width="3.4" stroke-linecap="round"/>' +
+      /* 身体 */
+      '<ellipse cx="100" cy="104" rx="26" ry="20" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      /* 翅膀 */
+      '<path d="M78 100 q-8 16 8 22 q8 -12 -8 -22 z" fill="#F5F2FA" stroke="' + line + '" stroke-width="2.2" stroke-linejoin="round"/>' +
+      /* 尾羽 */
+      '<path d="M124 100 q16 6 22 -4 q-14 16 -24 8 z" fill="' + line + '" stroke="' + line + '" stroke-width="2" stroke-linejoin="round"/>' +
+      /* 头 */
+      '<circle cx="100" cy="70" r="33" fill="' + body + '" stroke="' + line + '" stroke-width="2.6"/>' +
+      /* 丹顶（白鹤标志） */
+      '<circle cx="100" cy="41" r="8" fill="#E85D5D" stroke="#B73A3A" stroke-width="2"/>' +
+      /* 眼睛 */
+      '<circle cx="88" cy="68" r="8.4" fill="#FFF" stroke="' + line + '" stroke-width="1.4"/>' +
+      '<circle cx="112" cy="68" r="8.4" fill="#FFF" stroke="' + line + '" stroke-width="1.4"/>' +
+      '<circle cx="89" cy="69" r="5.6" fill="#2D3748"/><circle cx="111" cy="69" r="5.6" fill="#2D3748"/>' +
+      '<circle cx="90.6" cy="66.8" r="2.2" fill="#FFF"/><circle cx="112.6" cy="66.8" r="2.2" fill="#FFF"/>' +
+      /* 腮红 */
+      '<ellipse cx="70" cy="82" rx="7.6" ry="5" fill="#FF9EC4" opacity=".5"/>' +
+      '<ellipse cx="130" cy="82" rx="7.6" ry="5" fill="#FF9EC4" opacity=".5"/>' +
+      /* 长尖嘴 */
+      '<path d="M100 76 l-8 8 l8 7 l8 -7 z" fill="#FFC24A" stroke="#D99A20" stroke-width="2" stroke-linejoin="round"/>' +
+      '</g>';
+  }
+
   var R71_ART = {
     rabbit: R71_ANIMAL('white', 'long', { belly: true }),
     rabbitGrey: R71_ANIMAL('grey', 'long', { belly: true }),
@@ -285,7 +379,10 @@
     mouse: R71_MOUSE(),
     tadpole: R71_TADPOLE(),
     bubble: R71_BUBBLE(),
-    frog: R71_FROG()
+    frog: R71_FROG(),
+    dog: R71_DOG(),
+    swallow: R71_SWALLOW(),
+    crane: R71_CRANE()
   };
 
   /* 场景背景（放在角色后面的简单装饰），统一 200×140 画布 */
@@ -345,7 +442,42 @@
       '<circle cx="176" cy="90" r="3" fill="#CFEFFF" stroke="#5EA8CC" stroke-width="1.6"/>' +
       '<circle cx="186" cy="76" r="2.2" fill="#CFEFFF" stroke="#5EA8CC" stroke-width="1.6"/>' +
       '<path d="M0 58 q46 -10 100 0 q50 10 100 -2" stroke="#8FCF7A" stroke-width="3" fill="none"/>' +
-      '<path d="M30 56 q-4 -22 -10 -30 M40 56 q2 -20 10 -28" stroke="#6BAF5A" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+      '<path d="M30 56 q-4 -22 -10 -30 M40 56 q2 -20 10 -28" stroke="#6BAF5A" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+    /* 小桥（狗和猴）：桥面 + 栏杆，角色站在桥上 */
+    bridge: '<rect x="0" y="0" width="200" height="140" fill="#EAF4FF"/>' +
+      '<path d="M0 96 q50 -12 100 0 q50 12 100 -2 v46 h-200 z" fill="#A8D8F0" stroke="#6FAFCF" stroke-width="2"/>' +
+      '<path d="M18 108 q18 -6 34 0 M96 114 q18 -6 34 0 M146 104 q16 -5 30 0" stroke="#FFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M0 96 q46 -10 100 0 q50 10 100 -2" stroke="#7FBF6A" stroke-width="3" fill="none"/>' +
+      /* 桥面（拱形） */
+      '<path d="M12 92 q88 -34 176 0 v10 q-88 -32 -176 0 z" fill="#D9A86C" stroke="#9A6B34" stroke-width="2.6" stroke-linejoin="round"/>' +
+      /* 栏杆立柱 */
+      '<path d="M30 84 v-18 M70 70 v-16 M130 70 v-16 M170 84 v-18" stroke="#B98B4F" stroke-width="3.4" stroke-linecap="round"/>' +
+      /* 扶手 */
+      '<path d="M30 66 q70 -26 140 0" stroke="#B98B4F" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+      '<circle cx="40" cy="24" r="12" fill="#FFF6C9" stroke="#F0C948" stroke-width="2"/>',
+    /* 屋檐（燕子的话）：老屋的檐下 */
+    eave: '<rect x="0" y="0" width="200" height="140" fill="#FFF7E6"/>' +
+      '<path d="M0 118 h200 v22 h-200 z" fill="#E8D7B8"/>' +
+      /* 屋瓦（斜面） */
+      '<path d="M-6 40 h212 l-14 -20 h-184 z" fill="#C97B5A" stroke="#9A4E32" stroke-width="2.6" stroke-linejoin="round"/>' +
+      '<path d="M14 40 v18 h172 v-18" fill="#FFE0B2" stroke="#9A4E32" stroke-width="2.6"/>' +
+      /* 瓦楞 */
+      '<path d="M40 20 v20 M72 20 v20 M104 20 v20 M136 20 v20 M168 20 v20" stroke="#B0603F" stroke-width="2" opacity=".7"/>' +
+      /* 檐下的燕子窝 */
+      '<path d="M138 58 q16 0 16 14 q-16 6 -32 0 q0 -14 16 -14 z" fill="#B98B4F" stroke="#8A6432" stroke-width="2.4" stroke-linejoin="round"/>' +
+      '<path d="M126 70 q12 6 24 0" stroke="#8A6432" stroke-width="2" fill="none"/>' +
+      '<path d="M20 122 q4 -18 0 -28 M30 122 q5 -16 1 -26" stroke="#7FBF6A" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
+    /* 河边浅滩（三只白鹤）：水边 + 大树 */
+    shore: '<rect x="0" y="0" width="200" height="140" fill="#EAF7E4"/>' +
+      '<path d="M0 100 q50 -12 100 0 q52 12 100 -4 v44 h-200 z" fill="#A8D8F0" stroke="#6FAFCF" stroke-width="2"/>' +
+      '<path d="M20 116 q18 -6 34 0 M108 118 q18 -6 34 0" stroke="#FFF" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M0 98 q46 -10 100 0 q50 10 100 -4" stroke="#8FCF7A" stroke-width="3" fill="none"/>' +
+      /* 大树 */
+      '<rect x="156" y="42" width="12" height="58" rx="4" fill="#A9773C" stroke="#7A5525" stroke-width="2.4"/>' +
+      '<circle cx="162" cy="36" r="26" fill="#8FCF7A" stroke="#4E8F3C" stroke-width="2.6"/>' +
+      '<circle cx="144" cy="46" r="17" fill="#7FBF6A" stroke="#4E8F3C" stroke-width="2.4"/>' +
+      '<circle cx="180" cy="46" r="16" fill="#7FBF6A" stroke="#4E8F3C" stroke-width="2.4"/>' +
+      '<circle cx="162" cy="30" r="5" fill="#4E8F3C" opacity=".35"/>'
   };
 
   /* 道具（叠加在场景之上） */
@@ -367,6 +499,14 @@
       '<path d="M4 12 h48 l-6 30 h-36 z" fill="#E0B07A" stroke="#9A6B34" stroke-width="2.6" stroke-linejoin="round"/>' +
       '<path d="M4 12 q24 -18 48 0" stroke="#9A6B34" stroke-width="2.6" fill="none"/>' +
       '<path d="M14 20 v20 M26 20 v22 M38 20 v20" stroke="#B98B4F" stroke-width="2" fill="none"/>' +
+      '</g>',
+    /* 鱼（三只白鹤）：埋在树下的那堆鱼 */
+    fish: '<g transform="translate(126,96) scale(.85)">' +
+      '<path d="M6 16 q16 -14 34 0 q-16 14 -34 0 z" fill="#9FD8E8" stroke="#4E8FAD" stroke-width="2.4" stroke-linejoin="round"/>' +
+      '<path d="M40 16 l12 -8 v16 z" fill="#7FC8DE" stroke="#4E8FAD" stroke-width="2.4" stroke-linejoin="round"/>' +
+      '<circle cx="14" cy="14" r="2.6" fill="#2D3748"/>' +
+      '<path d="M6 16 q-6 -6 -8 0 q2 6 8 0 z" fill="#7FC8DE" stroke="#4E8FAD" stroke-width="2" stroke-linejoin="round"/>' +
+      '<path d="M20 8 q6 8 0 16" stroke="#4E8FAD" stroke-width="1.8" fill="none"/>' +
       '</g>'
   };
 
@@ -653,7 +793,7 @@
       art: 'mouse', artBg: 'lamp',
       textbook: '一年级下册 · 读读童谣和儿歌（一）',
       minutes: 6,
-      chars: { newChars: ['叽', '噜'], preCovered: ['鼠', '灯', '台', '偷', '油', '滚'], rawRate: 0.167, rate: 0.056 },
+      chars: { newChars: ['叽', '噜'], preCovered: ['鼠', '灯', '台', '偷', '油', '滚'], rawRate: 0.250, rate: 0.056 },
       strategy: 'predict',
       goal: '能读出童谣的节奏（每句三拍），并说出「老鼠怕什么」。',
       bigIdea: '短小的童谣里藏着一个完整的小故事——会读节奏，就能记住它。',
@@ -738,6 +878,201 @@
         during: '读的时候用手指在书上「画」出逗号和句号。让孩子也用手指画一遍——身体动作能帮孩子记住抽象符号。',
         after: '玩一个游戏：随便说一句话，让孩子用手比出该用什么标点。比如「今天天气真好」——比一个圈（句号）。',
         watch: '孩子可能把省略号说成「六个点」或「很多点」。都对，不要纠正数量，重点在「表示还没说完」。'
+      }
+    },
+
+    /* ============ 8. 狗和猴（L1 · 童谣 · 观察） ============ */
+    {
+      id: 'l1_dogmonkey',
+      title: '狗和猴',
+      sub: '传统童谣',
+      band: 'L1',
+      type: 'rhyme',
+      theme: '观察 · 比较',
+      emoji: '🐕',
+      art: 'dog', artBg: 'bridge',
+      textbook: '一年级下册 · 读读童谣和儿歌（一）',
+      minutes: 5,
+      chars: { newChars: [], preCovered: ['底'], rawRate: 0.033, rate: 0.000 },
+      strategy: 'clarify',
+      goal: '能说清狗在桥上、猴在桥下，并说出「为什么谁也说不清」。',
+      bigIdea: '同一件事，站的地方不一样，看到的就不一样。',
+      vocab: [
+        { w: '桥上', py: 'qiáo shàng', emoji: '🌉', def: '桥的上面。', sent: '桥上一条狗。' },
+        { w: '桥下', py: 'qiáo xià', emoji: '⬇️', def: '桥的下面。', sent: '桥下一只猴。' },
+        { w: '也', py: 'yě', emoji: '➕', def: '表示「一样」。', sent: '狗走猴也走。' },
+        { w: '到底', py: 'dào dǐ', emoji: '🤔', def: '想弄清楚「究竟是哪一个」。', sent: '到底谁跟谁？' }
+      ],
+      pages: [
+        { n: 1, art: 'dog', bg: 'bridge', text: '桥上一条狗，桥下一只猴。', lines: ['桥上一条狗，', '桥下一只猴。'], ask: { t: 'predict', q: '一条狗在桥上，一只猴在桥下。猜猜看，接下来会发生什么？', hint: '它们能看见对方吗？' } },
+        { n: 2, art: 'dog', bg: 'bridge', text: '狗走猴也走，狗停猴也停。', lines: ['狗走猴也走，', '狗停猴也停。'], ask: { t: 'question', q: '「也」是什么意思？', hint: '狗做什么，猴就做什么。' } },
+        { n: 3, art: 'dog', bg: 'bridge', text: '到底谁跟谁，谁也说不清。', lines: ['到底谁跟谁，', '谁也说不清。'], ask: { t: 'summarize', q: '为什么它们说不清谁跟谁？', hint: '想想它们站的地方一样吗？' } }
+      ],
+      retell: {
+        frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
+        prompts: [
+          '儿歌里有哪两只小动物？',
+          '狗在什么地方？猴在什么地方？',
+          '狗走的时候，猴做什么？狗停的时候呢？',
+          '最后它们弄清楚谁跟着谁了吗？为什么？',
+          '你觉得是狗在跟猴，还是猴在跟狗？'
+        ],
+        sample: '桥上有一条狗，桥下有一只猴。狗走，猴也走；狗停，猴也停。它们谁也说不清是谁跟着谁，因为它们一个在桥上，一个在桥下，看不到对方在做什么。我觉得这首儿歌很好玩，因为两只小动物做的一样，可是谁都以为是对方跟着自己。'
+      },
+      parent: {
+        before: '读题目时先问：「狗和猴，一个在上一个在下，它们能看见对方吗？」让孩子先想一想。',
+        during: '读到「狗走猴也走」时，用手指在桌上做「一起走」的动作，让孩子跟着做。节奏感是这首童谣的重点。',
+        after: '玩一个「照镜子」游戏：大人做一个动作，孩子跟着做。然后问：「刚才是谁跟谁？」把儿歌连到身体经验上。',
+        watch: '孩子如果直接说「狗跟猴」，别急着否定，问一句：「那猴看得见狗吗？」让他自己发现「看不到就说不清」。'
+      }
+    },
+
+    /* ============ 9. 虹（L1 · 儿歌 · 自然） ============ */
+    {
+      id: 'l1_rainbow',
+      title: '虹',
+      sub: '儿歌',
+      band: 'L1',
+      type: 'rhyme',
+      theme: '自然 · 颜色',
+      emoji: '🌈',
+      art: 'child', artBg: 'garden',
+      textbook: '一年级下册 · 读读童谣和儿歌（一）',
+      minutes: 5,
+      chars: { newChars: [], preCovered: ['橙', '紫'], rawRate: 0.069, rate: 0.000 },
+      strategy: 'clarify',
+      goal: '能按顺序说出七种颜色，并说出虹出现的条件。',
+      bigIdea: '雨停了，太阳出来了，天上就出现了虹——有些美好要等雨过去才看得到。',
+      vocab: [
+        { w: '雨停', py: 'yǔ tíng', emoji: '🌤️', def: '雨不下了。', sent: '雨停了，太阳出来了。' },
+        { w: '虹', py: 'hóng', emoji: '🌈', def: '雨后天上出现的七彩弧线，也叫彩虹。', sent: '天上出现一道虹。' },
+        { w: '一道', py: 'yí dào', emoji: '📏', def: '量词，用来数虹、数河、数门。', sent: '天上出现一道虹。' },
+        { w: '空中', py: 'kōng zhōng', emoji: '☁️', def: '天上面、半空中。', sent: '像座小桥挂空中。' },
+        { w: '橙', py: 'chéng', emoji: '🟠', def: '橘子那样的颜色，在红和黄中间。', sent: '红橙黄绿青蓝紫。' },
+        { w: '紫', py: 'zǐ', emoji: '🟣', def: '茄子那样的颜色，在蓝和红中间。', sent: '红橙黄绿青蓝紫。' }
+      ],
+      pages: [
+        { n: 1, art: 'child', bg: 'garden', text: '雨停了，太阳出来了。', lines: ['雨停了，', '太阳出来了。'], ask: { t: 'predict', q: '雨停了，天上会出现什么呢？', hint: '想想出太阳的时候。' } },
+        { n: 2, art: 'child', bg: 'garden', text: '天上出现一道虹。', lines: ['天上出现', '一道虹。'], ask: { t: 'clarify', q: '「一道」是用来数什么的？', hint: '一道虹、一道河、一道门。' } },
+        { n: 3, art: 'child', bg: 'garden', text: '红橙黄绿青蓝紫，', lines: ['红橙黄绿', '青蓝紫，'], ask: { t: 'clarify', q: '数一数，一共有几种颜色？', hint: '慢慢数，从红开始。' } },
+        { n: 4, art: 'child', bg: 'garden', text: '像座小桥挂空中。', lines: ['像座小桥', '挂空中。'], ask: { t: 'summarize', q: '虹像什么？', hint: '想想它的形状。' } }
+      ],
+      retell: {
+        frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
+        prompts: [
+          '什么时候才出现了虹？',
+          '虹挂在哪里？',
+          '虹有哪几种颜色？按顺序说。',
+          '儿歌把虹比成了什么？',
+          '你见过虹吗？是什么样子的？'
+        ],
+        sample: '雨停了，太阳出来了，天上出现了一道虹。虹有七种颜色：红、橙、黄、绿、青、蓝、紫。它像一座小桥挂在空中。我觉得虹很好看，可是我只看过一次，是在下雨之后。'
+      },
+      parent: {
+        before: '问孩子：「你见过彩虹吗？」如果见过，让他说说是什么时候看到的，先调出经验再读。',
+        during: '读到七种颜色时，让孩子用手指一样一样点着数。颜色顺序是这首儿歌的核心。',
+        after: '找一支彩笔，让孩子按儿歌的顺序画出七色条纹。画出来比背下来更牢。',
+        watch: '孩子可能把「青」和「蓝」弄混。不要纠正，只要他能按顺序说下来就好。'
+      }
+    },
+
+    /* ============ 10. 燕子的话（L1 · 儿歌 · 迁徙） ============ */
+    {
+      id: 'l1_swallow',
+      title: '燕子的话',
+      sub: '儿歌',
+      band: 'L1',
+      type: 'rhyme',
+      theme: '自然 · 候鸟',
+      emoji: '🐦',
+      art: 'swallow', artBg: 'eave',
+      textbook: '一年级上册 · 和大人一起读（三）',
+      minutes: 5,
+      chars: { newChars: [], preCovered: ['屋', '檐'], rawRate: 0.051, rate: 0.000 },
+      strategy: 'question',
+      goal: '能说出燕子住在哪里、什么时候来、什么时候走。',
+      bigIdea: '有些朋友会离开，但他答应过的事，会做到。',
+      vocab: [
+        { w: '燕子', py: 'yàn zi', emoji: '🐦', def: '一种小鸟，尾巴像剪刀，喜欢在屋檐下做窝。', sent: '燕子说：我要回家了。' },
+        { w: '屋檐', py: 'wū yán', emoji: '🏠', def: '屋顶伸出来的那一边，能挡雨。', sent: '在屋檐下面。' },
+        { w: '明年', py: 'míng nián', emoji: '📅', def: '今年过完以后的那一年。', sent: '你明年还来吗？' },
+        { w: '回家', py: 'huí jiā', emoji: '🏡', def: '回到自己住的地方。', sent: '我要回家了。' }
+      ],
+      pages: [
+        { n: 1, art: 'swallow', bg: 'eave', text: '燕子说：我要回家了。', lines: ['燕子说：', '我要回家了。'], ask: { t: 'question', q: '燕子的家在哪里呢？', hint: '接着往下看。' } },
+        { n: 2, art: 'swallow', bg: 'eave', text: '我问：你家在哪里？', lines: ['我问：', '你家在哪里？'], ask: { t: 'predict', q: '你猜燕子会怎么回答？', hint: '想想平时在哪里看见过燕子窝。' } },
+        { n: 3, art: 'swallow', bg: 'eave', text: '燕子说：在屋檐下面。', lines: ['燕子说：', '在屋檐下面。'], ask: { t: 'clarify', q: '「屋檐」是房子的哪一部分？', hint: '屋顶伸出来的、能挡雨的那一块。' } },
+        { n: 4, art: 'swallow', bg: 'eave', text: '我又问：你明年还来吗？', lines: ['我又问：', '你明年还来吗？'], ask: { t: 'predict', q: '燕子会来吗？猜一猜。', hint: '燕子每年都会做同一件事。' } },
+        { n: 5, art: 'swallow', bg: 'eave', text: '燕子说：我会来的。', lines: ['燕子说：', '我会来的。'], ask: { t: 'summarize', q: '燕子答应了什么？', hint: '它说的是哪一句话？' } }
+      ],
+      retell: {
+        frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
+        prompts: [
+          '是谁在和「我」说话？',
+          '燕子的家在哪里？',
+          '「我」问了燕子几个问题？分别问的是什么？',
+          '燕子最后答应了吗？它说了什么？',
+          '你觉得燕子会回来吗？为什么？'
+        ],
+        sample: '燕子和我说，它要回家了。我问它家在哪里，它说在屋檐下面。我又问它明年还来吗，它说它会来的。我觉得燕子是很讲信用的朋友，因为它答应过就会做到。'
+      },
+      parent: {
+        before: '带孩子看看自家屋檐或楼下有没有燕子窝。有实物再看这首儿歌，孩子理解得快得多。',
+        during: '这首是对话体，可以分角色读：大人读「我问」，孩子读「燕子说」。读两遍孩子就能背下来。',
+        after: '问一句：「燕子为什么要走？」不用讲迁徙的科学道理，只要孩子知道「天冷了它要去暖的地方」就够了。',
+        watch: '孩子可能问「燕子走了还回来吗」。这是个好问题，可以一起记住这句话，明年春天再验证。'
+      }
+    },
+
+    /* ============ 11. 三只白鹤（L2 · 寓言 · 观察方法） ============ */
+    {
+      id: 'l2_threecrane',
+      title: '三只白鹤',
+      sub: '寓言故事',
+      band: 'L2',
+      type: 'story',
+      theme: '观察 · 方法',
+      emoji: '🕊️',
+      art: 'crane', artBg: 'shore',
+      textbook: '一年级上册 · 和大人一起读（一）',
+      minutes: 7,
+      chars: { newChars: [], preCovered: ['鹤', '埋', '记', '完'], rawRate: 0.086, rate: 0.000 },
+      strategy: 'summarize',
+      goal: '能说出白鹤为什么找不到鱼，并说出「怎样才能记住地方」。',
+      bigIdea: '记住一个地方，不能只看「会变的东西」——影子会动，树不会动。',
+      vocab: [
+        { w: '白鹤', py: 'bái hè', emoji: '🕊️', def: '一种腿和嘴都很长的大鸟，喜欢在水边捉鱼。', sent: '三只白鹤在河边捉鱼。' },
+        { w: '埋', py: 'mái', emoji: '⛏️', def: '把东西放进土里盖起来。', sent: '把鱼埋在大树下面。' },
+        { w: '树影', py: 'shù yǐng', emoji: '🌳', def: '树挡着太阳时地上出现的黑影。', sent: '太阳升起来了，树影变了。' },
+        { w: '记住', py: 'jì zhù', emoji: '🧠', def: '记在心里，不会忘。', sent: '我记得鱼在哪里。' },
+        { w: '看准', py: 'kàn zhǔn', emoji: '🎯', def: '看清楚，认准了。', sent: '下次我要看准地方。' },
+        { w: '吃不完', py: 'chī bù wán', emoji: '🍽️', def: '东西太多了，吃不下那么多。', sent: '它们捉了很多鱼，吃不完。' }
+      ],
+      pages: [
+        { n: 1, art: 'crane', bg: 'shore', text: '三只白鹤在河边捉鱼。', lines: ['三只白鹤', '在河边捉鱼。'], ask: { t: 'clarify', q: '白鹤在什么地方做什么？', hint: '在哪里、做什么，两件事都要说。' } },
+        { n: 2, art: 'crane', bg: 'shore', text: '它们捉了很多鱼，吃不完。', lines: ['它们捉了很多鱼，', '吃不完。'], ask: { t: 'predict', q: '吃不完的鱼，它们会怎么办？', hint: '想想你吃不完的东西会放哪里。' } },
+        { n: 3, art: 'crane', bg: 'shore', extra: 'fish', text: '一只白鹤把鱼埋在大树下面。', lines: ['一只白鹤把鱼', '埋在大树下面。'], ask: { t: 'question', q: '它为什么要把鱼埋在树下？', hint: '埋起来是为了——' } },
+        { n: 4, art: 'crane', bg: 'shore', text: '它说：我记得鱼在哪里。', lines: ['它说：', '我记得鱼在哪里。'], ask: { t: 'predict', q: '它能找到吗？你先猜，再往下看。', hint: '记住的是「树」，还是「影子」？' } },
+        { n: 5, art: 'crane', bg: 'shore', text: '太阳升起来了，树影变了。', lines: ['太阳升起来了，', '树影变了。'], ask: { t: 'clarify', q: '树影为什么会变？', hint: '太阳动了，影子就跟着动。' } },
+        { n: 6, art: 'crane', bg: 'shore', text: '白鹤找了半天，找不到鱼。', lines: ['白鹤找了半天，', '找不到鱼。'], ask: { t: 'summarize', q: '它为什么找不到鱼？', hint: '它记住的那个东西，会变。' } },
+        { n: 7, art: 'crane', bg: 'shore', text: '它说：下次我要看准地方。', lines: ['它说：', '下次我要看准地方。'], ask: { t: 'summarize', q: '如果再来一次，应该记住什么？', hint: '记住大树，还是记住影子？' } }
+      ],
+      retell: {
+        frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
+        prompts: [
+          '故事里有几只白鹤？它们在做什么？',
+          '它们在什么地方捉鱼？',
+          '一只白鹤把鱼藏在哪里？它说自己记住了什么？',
+          '后来它找到鱼了吗？为什么？',
+          '如果是你，你会怎么记住藏东西的地方？'
+        ],
+        sample: '三只白鹤在河边捉鱼，捉了很多吃不完。一只白鹤把鱼埋在大树下面，它说自己记得鱼在哪里。后来太阳升起来，树影变了，它找了半天也找不到鱼。我觉得它记住的是影子，可是影子会动。下次应该记住大树，因为大树不会动。'
+      },
+      parent: {
+        before: '先问：「如果要记住一个地方，你会看什么？」让孩子先说自己的想法，读完再对照。',
+        during: '读到第 5 页「树影变了」时停一下，用台灯照一个杯子，移动灯看影子怎么变。孩子一看就懂了。',
+        after: '做一次「藏东西」游戏：让孩子把玩具藏在屋里某处，说出记住的方法，第二天再找。这是把故事变成能力。',
+        watch: '孩子如果只说「它记错了」，追问一句：「它记住的是什么？那个东西会变吗？」把因果说完整。'
       }
     }
   ];
@@ -825,7 +1160,7 @@
               { t: '小兔子乖乖', type: '儿歌', on: 'l1_rabbit' },
               { t: '青蛙写诗', type: '童话', by: '张秋生', on: 'l2_frog' },
               { t: '松鼠和松果', type: '童话', by: '林颂英' },
-              { t: '三只白鹤', type: '寓言' },
+              { t: '三只白鹤', type: '寓言', on: 'l2_threecrane' },
               { t: '狗熊请客', type: '童话', by: '樊发稼' },
               { t: '小猫咪穿鞋子', type: '童话' },
               { t: '比画风', type: '故事', by: '方轶群' }
@@ -845,7 +1180,7 @@
           },
           {
             vol: '（三）', theme: '生活故事', items: [
-              { t: '燕子的话', type: '儿歌' },
+              { t: '燕子的话', type: '儿歌', on: 'l1_swallow' },
               { t: '小蘑菇', type: '儿歌' },
               { t: '你好，伙伴', type: '故事' },
               { t: '企鹅寄冰', type: '童话' },
@@ -883,11 +1218,11 @@
               { t: '高高山上一头牛', type: '童谣' },
               { t: '数蛤蟆', type: '童谣' },
               { t: '没有腿', type: '童谣' },
-              { t: '狗和猴', type: '童谣' },
+              { t: '狗和猴', type: '童谣', on: 'l1_dogmonkey' },
               { t: '一对蝈蝈吹牛皮', type: '童谣' },
               { t: '菊花开', type: '童谣' },
               { t: '种西瓜', type: '童谣' },
-              { t: '虹', type: '儿歌' },
+              { t: '虹', type: '儿歌', on: 'l1_rainbow' },
               { t: '雨儿雨儿下', type: '儿歌' },
               { t: '听声音', type: '儿歌' },
               { t: '对花', type: '儿歌' },
