@@ -1,4 +1,4 @@
-/* 一年级成长岛 v63：MIT 真人拼音表，本地解码、四声切分、点读与分步拼读。 */
+/* 低年级每日学习搭子 v63：MIT 真人拼音表，本地解码、四声切分、点读与分步拼读。 */
 (function(){
   'use strict';
   const ROOT='assets/pinyin-v63/';
