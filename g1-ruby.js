@@ -1178,6 +1178,33 @@
     return out;
   }
 
+  /* ── 关键版式 CSS 由本文件自带（v74 修复）─────────────────────────────────
+     ⚠️ 为什么必须自带：曾出现"拼音和汉字并排显示"的线上事故。
+        根因是 index.html 里 `game-v59.js?v=74` 带了版本号、而 `game-v59.css` 没带 ——
+        浏览器重新下载了新 JS（渲染出 .g1r-* 结构），却用了缓存里的旧 CSS
+        （旧 CSS 里根本没有 .g1r-* 规则）→ 拼音退化成普通文字，和汉字挤在一行。
+     所以把"拼音在上、汉字在下"这条最核心的版式规则由 JS 直接注入：
+     只要 g1-ruby.js 加载成功，版式就一定正确，不再依赖外部 CSS 文件的缓存状态。
+     字号/间距等微调仍由 game-v59.css 负责（它有父选择器、优先级更高，可正常覆盖这里）。 */
+  function injectStyle() {
+    if (typeof document === 'undefined' || document.getElementById('g1r-style')) return;
+    var css = [
+      '.g1r-ch{display:inline-flex;flex-direction:column;align-items:center;',
+      'justify-content:flex-end;vertical-align:bottom;line-height:1.05;padding:0 1px}',
+      '.g1r-py{display:block;font-size:15px;line-height:1.15;color:#6A4BC0;',
+      'font-weight:800;white-space:nowrap;',
+      'font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}',
+      '.g1r-hz{display:block;line-height:1.15}',
+      /* 窄屏兜底：拼音再小也不能失去"方便读题"的意义 */
+      '@media(max-width:560px){.g1r-py{font-size:14px}}',
+    ].join('');
+    var st = document.createElement('style');
+    st.id = 'g1r-style';
+    st.textContent = css;
+    (document.head || document.documentElement).appendChild(st);
+  }
+  injectStyle();
+
   w.G1Ruby = {
     html: html,
     py: py,

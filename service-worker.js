@@ -1,17 +1,26 @@
 /* v69: coherent cached shell, two-wide warmup, reusable bounded teaching assets. */
-const CACHE='grade1-island-v74-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v73-1';
+/* v74: 所有 CSS/JS 引用统一带 ?v= 版本号，SW 对带版本号的资源强制走网络，
+   避免 force-cache 命中浏览器 HTTP 缓存里的旧副本（曾导致"JS 新版 + CSS 旧版"
+   → 拼音退化成和汉字并排）。
+   v74-3: 另加一道根本保险 —— 关键版式 CSS 由 g1-ruby.js 自己注入 <style id="g1r-style">，
+   即使外部 CSS 是旧的，拼音也一定在汉字上方。CACHE 再进一位以强制旧客户端换壳。 */
+const CACHE='grade1-island-v74-3',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v74-2';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
-const PRECACHE=['index.html','manifest.webmanifest','game-v59.css','learning-v66.css','question-art-v67.css','curriculum-v61.css','pinyin-v63.css','practice-v68.css?v=69',
-  'curriculum-v61.js','pinyin-v63.js?v=69','game-v59.js?v=74','learning-v66.js?v=69','question-art-v67.js','pitch-v68.js','practice-v68.js?v=69','eye-v70.js','eye-v70.css','fast-v69.js','pet_voice_map.json',
-  'g1-ruby.js',
-  'reading-v71.js','reading-ui-v71.js','reading-v71.css'];
+const PRECACHE=['index.html','manifest.webmanifest',
+  'game-v59.css?v=74','learning-v66.css?v=74','question-art-v67.css?v=74','curriculum-v61.css?v=74','pinyin-v63.css?v=74','practice-v68.css?v=74','eye-v70.css?v=74','reading-v71.css?v=74',
+  'curriculum-v61.js?v=74','pinyin-v63.js?v=74','g1-ruby.js?v=74','game-v59.js?v=74','learning-v66.js?v=74','question-art-v67.js?v=74','pitch-v68.js?v=74','practice-v68.js?v=74','eye-v70.js?v=74','fast-v69.js?v=74','reading-v71.js?v=74','reading-ui-v71.js?v=74',
+  'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}
+/* 带 ?v= 的构建产物视为"指纹化资源"：必须走网络拿最新，不能吃 HTTP 缓存 */
+function fingerprinted(url){try{return new URL(url).searchParams.has('v')}catch(_){return false}}
 async function parallel(items,fn){const q=items.slice(),results=[];await Promise.all([0,1].map(async()=>{while(q.length){const item=q.shift();results.push(await fn(item))}}));return results}
 async function download(url,timeout=10000,reload=false){
   if(pending.has(url))return (await pending.get(url)).clone();
-  const task=(async()=>{const control=new AbortController(),timer=setTimeout(()=>control.abort(),timeout);try{const r=await fetch(url,{cache:reload?'reload':'force-cache',signal:control.signal});if(!r.ok)throw Error('HTTP '+r.status);const body=await r.arrayBuffer(),headers=new Headers(r.headers);headers.delete('Content-Encoding');headers.set('Content-Length',String(body.byteLength));return new Response(body,{status:r.status,headers})}finally{clearTimeout(timer)}})();
+  /* fingerprinted 资源一律用 reload（绕过 HTTP 缓存），避免把旧副本塞进新 SW 缓存 */
+  const mode=(reload||fingerprinted(url))?'reload':'force-cache';
+  const task=(async()=>{const control=new AbortController(),timer=setTimeout(()=>control.abort(),timeout);try{const r=await fetch(url,{cache:mode,signal:control.signal});if(!r.ok)throw Error('HTTP '+r.status);const body=await r.arrayBuffer(),headers=new Headers(r.headers);headers.delete('Content-Encoding');headers.set('Content-Length',String(body.byteLength));return new Response(body,{status:r.status,headers})}finally{clearTimeout(timer)}})();
   pending.set(url,task);try{return (await task).clone()}finally{pending.delete(url)}
 }
 async function storeMedia(url,response){
