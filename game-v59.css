@@ -52,3 +52,56 @@ body{background:linear-gradient(180deg,#eaf8ff 0,#f8f0ff 42%,#fff8ec 100%);color
 @media(max-width:560px){.g1-daily{padding:15px}.g1-daily-body{grid-template-columns:1fr}.g1-daily-ring{margin:auto}.g1-daily-steps{gap:6px}.g1-daily-steps button{display:flex;min-height:82px;flex-direction:column;justify-content:center;text-align:center;gap:4px;padding:6px}.g1-daily-steps button>span{flex:0 0 28px}.g1-daily-steps button>b,.g1-daily-steps button>small{width:100%}.g1-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.g1-week-report{padding:15px}.g1-week-kpis{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:900px){.g1-map{grid-row:auto}.g1-daily,.g1-map{grid-column:1/-1}}
 @media print{body>*:not(#g1PrintSheet){display:none!important}#g1PrintSheet{position:static!important;display:block!important;background:#fff!important;padding:0!important}.g1-print-sheet{width:100%!important;max-height:none!important;overflow:visible!important;box-shadow:none!important;padding:0!important}.g1-print-actions{display:none!important}.g1-week-report{box-shadow:none!important;border:1px solid #ddd!important}.g1-modal{backdrop-filter:none!important}}
+
+/* ══ v74：闯关题面全文注音（拼音在字上方，字号比绘本明显大）══════════════
+   需求原话：「闯关现在是发音读题，能不能在这个基础上，加上拼音，拼音字号大一点，方便孩子读题」。
+   所以这里的关键不是"有拼音"，而是"拼音要够大" —— 孩子要拿它读题。
+   绘本模块的拼音是 11px（那是给已识字的孩子做辅助），这里题面给到 17-22px。
+
+   ⚠️ 必须用真实上下结构（inline-flex 竖排），不能用绝对定位 ::after ——
+      绝对定位会让相邻字的拼音互相重叠，而且撑不开行高（绘本模块已踩过这个坑）。
+   ⚠️ 字号用 clamp + 变量，保证窄屏也能放下且不横向滚动。 */
+.g1-prompt{font-size:clamp(22px,5vw,30px);line-height:1.45;margin:14px 0}
+.g1-prompt .g1r-ch,.g1-answer .g1r-ch{
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  vertical-align:bottom;line-height:1.05;padding:0 1px;
+}
+/* 拼音行：字号大、颜色深、字重足，孩子一眼能看清 */
+.g1-prompt .g1r-py{
+  display:block;font-size:clamp(15px,2.6vw,19px);line-height:1.15;
+  color:#6A4BC0;font-weight:800;letter-spacing:0;white-space:nowrap;
+  font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);
+}
+.g1-prompt .g1r-hz{display:block}
+/* 选项里的拼音稍小一号，但仍比绘本大 */
+.g1-answer .g1r-py{
+  display:block;font-size:clamp(13px,2.2vw,16px);line-height:1.15;
+  color:#6A4BC0;font-weight:800;white-space:nowrap;
+  font-family:var(--font-sans,system-ui,-apple-system,"Segoe UI",sans-serif);
+}
+.g1-answer .g1r-hz{display:block;line-height:1.15}
+/* 选项按钮要容得下两行（拼音 + 汉字），不然会挤 */
+.g1-answer{display:flex;align-items:center;justify-content:center;padding:8px 10px;line-height:1.2}
+
+/* 拼音开关：小胶囊，不抢题面的视觉重心 */
+.g1-py-toggle{
+  display:inline-flex;align-items:center;min-height:34px;margin:0 0 2px 8px;
+  padding:0 13px;border:2px solid #ddd2f0;border-radius:999px;background:#fff;
+  color:#8b7aa6;font-size:13px;font-weight:900;vertical-align:middle;
+}
+.g1-py-toggle.on{border-color:#b9a4ea;background:#f1ebff;color:#6242bc}
+.g1-py-toggle span{line-height:1}
+
+/* 窄屏：题面拼音再收一点，但保证不小于 14px（再小就失去"方便读题"的意义） */
+@media(max-width:560px){
+  .g1-prompt .g1r-py{font-size:14px}
+  .g1-answer .g1r-py{font-size:13px}
+  .g1-py-toggle{min-height:30px;padding:0 10px;font-size:12px}
+}
+/* 矮横屏（landscape 且高度紧张）：压缩拼音行，避免首屏看不到选项 */
+@media(orientation:landscape) and (max-height:560px){
+  .g1-prompt{margin:8px 0;line-height:1.3}
+  .g1-prompt .g1r-py{font-size:14px}
+  .g1-answer .g1r-py{font-size:12px}
+  .g1-answer{min-height:58px}
+}

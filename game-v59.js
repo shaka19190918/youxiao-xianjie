@@ -192,14 +192,43 @@
   };
   window.g1SportConfirm=function(){const cur=taskAt(),pin=document.getElementById('g1SportPin')?.value,fb=document.getElementById('g1Feedback');if(pin!==S.parentPin){if(fb)fb.textContent='PIN不正确，请家长重新输入';return}awardTask(cur.level,cur.index);if(fb)fb.textContent='家长已确认，得到一颗星！';setTimeout(()=>levelState(cur.level.id).stars===3?g1ShowCelebration(cur.level):PGS.level.render(),650)};
 
+  /* ── 题面注音（v74 新增）───────────────────────────────────────────
+     需求：闯关是"发音读题"，孩子还不识字，看不懂题面就答不了 —— 所以题面加拼音。
+     做法：
+       ① 用 window.G1Ruby.html() 渲染成「拼音在上、汉字在下」的上下结构。
+          不用绝对定位（相邻拼音会重叠、撑不开行高，绘本模块已踩过）。
+       ② 拼音字号由 CSS 变量控制，**比绘本明显大**（孩子要读题，不是看书）。
+       ③ 保留原文：朗读、无障碍 aria-label、判题逻辑都继续用 t.prompt 原文，
+          渲染层只是把汉字包上拼音，不改数据。
+       ④ 一个开关（默认开），状态存 S.g1PinyinOn，家长/孩子可收起。 */
+  function pinyinOn(){return S.g1PinyinOn!==false}
+  /* ⚠️ R() 只写 localStorage，**不重渲染页面**（index.html 里 `function R(){localStorage.setItem(...)}`）。
+      要刷新界面必须调 PGS.level.render() —— 曾以为 R() 会重绘，切换开关后页面毫无变化。 */
+  function setPinyinOn(v){
+    S.g1PinyinOn=!!v;
+    R();
+    try{localStorage.setItem('g1_pinyin_on',v?'1':'0')}catch(_){}
+    if(typeof PGS!=='undefined'&&PGS.level&&CP==='level')PGS.level.render();
+    else if(typeof PGS!=='undefined'&&PGS.review&&CP==='review')PGS.review.render();
+  }
+  window.g1TogglePinyin=function(){setPinyinOn(!pinyinOn());toast(pinyinOn()?'题面拼音已打开':'题面拼音已收起')};
+  window.g1SetPinyin=function(v){setPinyinOn(v)};
+
+  /* 把文本渲染成带拼音的 HTML；没有 G1Ruby 时原样返回（防御） */
+  function py(text){return (window.G1Ruby&&pinyinOn())?G1Ruby.html(text):esc(text)}
+  function pyToggleBtn(){
+    const on=pinyinOn();
+    return `<button class="g1-py-toggle ${on?'on':''}" onclick="g1TogglePinyin()" aria-pressed="${on}" title="题面拼音开关"><span>${on?'拼音 ✓':'拼音 ✗'}</span></button>`;
+  }
+
   function renderTask(cur){
     const t=cur.task,starLabel=labelForTask(cur.index),heard=g1Heard[cur.level.id+'-'+cur.index];let body='';
-    if(t.type==='choice')body=`${t.audio?`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 题目和选项已听完':'🔊 听题目和全部选项'}</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerTask(${i})">${esc(x)}</button>`).join('')}</div>`;
+    if(t.type==='choice')body=`${t.audio?`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 题目和选项已听完':'🔊 听题目和全部选项'}</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerTask(${i})">${py(x)}</button>`).join('')}</div>`;
     else if(t.type==='trace')body=`<button class="g1-listen ${heard?'ready':''}" id="g1Listen" onclick="g1PlayTaskAudio()">${heard?'✅ 已听完，可以描红':'🔊 先听这个字'}</button><button class="g1-next-task" style="width:100%" onclick="g1BeginTrace()">✏️ 打开田字格描红</button>`;
     else if(t.type==='focus')body=`<button class="g1-next-task" style="width:100%" onclick="g1FocusStart()">🎯 开始九宫格</button>`;
     else if(t.type==='piano'){g1PianoProgress=[];body=`<p class="g1-task-tip">目标：${esc(t.seq.map(n=>['Do','Re','Mi'][n]).join(' · '))}</p><div class="g1-piano-keys">${['Do','Re','Mi'].map((x,i)=>`<button onclick="g1PianoTap(${i})">${x}</button>`).join('')}</div>`}
     else if(t.type==='sport')body=`<button class="g1-next-task" style="width:100%" onclick="g1SportStart()">⏱️ 开始计时</button>`;
-    return `<div class="g1-task-tag">${starLabel} · 第 ${cur.index+1} 个任务</div><h3>${esc(t.prompt)}</h3>${window.QuestionArt?.html(t)||''}<div id="g1TaskBody">${body}</div><div class="g1-feedback" id="g1Feedback">${t.audio&&!heard?'听完再回答，不能跳过':'认真完成就能得到星星'}</div>`;
+    return `<div class="g1-task-tag">${starLabel} · 第 ${cur.index+1} 个任务</div>${pyToggleBtn()}<h3 class="g1-prompt">${py(t.prompt)}</h3>${window.QuestionArt?.html(t)||''}<div id="g1TaskBody">${body}</div><div class="g1-feedback" id="g1Feedback">${t.audio&&!heard?'听完再回答，不能跳过':'认真完成就能得到星星'}</div>`;
   }
   function renderStars(s){return [0,1,2].map(i=>`<span class="g1-star ${s.tasks[i]?'on':''}">${s.tasks[i]?'★':'☆'}</span>`).join('')}
 
@@ -260,7 +289,7 @@
   }};
   window.g1ShowCelebration=function(l){if(!l)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),reply=petReply(l),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div><div class="g1-pet-action ${reply?.action||'wag'}">${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}</div><h2>三星通关！</h2><p>${reply?esc(reply.text):(pet?pet.n+'为你欢呼！':'你完成了三个真实任务！')}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap)};
 
-  function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div><h3>${esc(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${esc(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
+  function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div>${pyToggleBtn()}<h3 class="g1-prompt">${py(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${py(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
   window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;if(String(q.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(q.task.audio).catch(()=>toast('复习音频没有加载，请重试'));return}v42Play(q.task.audio,'复习音频没有加载，请重试')};
   window.g1AnswerReview=function(id,i,el){const g=game(),q=g.reviewQueue[id];if(!q)return;const t=q.task,l=LEVEL_BY_ID[q.levelId],fb=document.getElementById('g1Feedback');if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';recordActivity('review-wrong',l,{reviewId:id});sourceMark(t.key,false);R();if(fb)fb.textContent='没关系，10分钟后再来一次';playCue('retry','');return}recordActivity('review-correct',l,{reviewId:id});sourceMark(t.key,true);q.lastResult='correct';q.lastReviewedAt=Date.now();if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}R();playCue('correct','');setTimeout(()=>showPage('review'),650)};
   PGS.review={title:'📦 错题复习站',render:function(){const all=Object.entries(game().reviewQueue).sort((a,b)=>a[1].dueAt-b[1].dueAt),due=all.filter(([,x])=>x.dueAt<=Date.now()).slice(0,3);g1ReviewIds=due.map(x=>x[0]);let body;if(due.length)body=`<section class="g1-review-card">${renderReviewQuestion(due[0])}</section><p class="g1-task-tip" style="text-align:center">本次最多复习3道 · 还有 ${due.length-1} 道已到期</p>`;else{const next=all[0];body=`<section class="g1-empty"><div class="em">${next?'⏳':'🌟'}</div><h2>${next?'现在先去闯关吧':'今天没有错题'}</h2><p>${next?'下一次复习：'+new Date(next[1].dueAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'认真思考，继续保持！'}</p><button class="g1-next-task" onclick="g1Continue()">继续闯关</button></section>`}document.getElementById('ct').innerHTML=`<main class="g1-review-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>📦 错题复习站</h1><p>10分钟、1天、3天、7天、14天再见</p></div></header>${body}</main>`}};
@@ -291,7 +320,13 @@
   const baseSoundMount=v41MountSound;v41MountSound=function(){baseSoundMount();mountFloatControls()};
   const baseShow=showPage;showPage=function(id){if(g1SportTimer&&id!=='level'){clearInterval(g1SportTimer);g1SportTimer=null}baseShow(id);mountGameDock();mountFloatControls()};
 
-  LEVELS=buildLevels();LEVEL_BY_ID=Object.fromEntries(LEVELS.map(x=>[x.id,x]));game();S._setup.grade='一年级';S.strk=studyStreak();R();
+  LEVELS=buildLevels();LEVEL_BY_ID=Object.fromEntries(LEVELS.map(x=>[x.id,x]));game();S._setup.grade='一年级';S.strk=studyStreak();
+  /* 题面拼音开关：默认开；从 localStorage 恢复上次选择（跨会话保持） */
+  if(S.g1PinyinOn===undefined){
+    let saved=null;try{saved=localStorage.getItem('g1_pinyin_on')}catch(_){}
+    S.g1PinyinOn=saved===null?true:saved==='1';
+  }
+  R();
   if(new URLSearchParams(location.search).has('test'))window.__G1_TEST={
     levels:LEVELS,regions:REGION_META,totalStars,levelState,regionUnlocked,dueReviews,petReply,
     current(){return taskAt()},
