@@ -553,12 +553,12 @@
         { w: '谁', py: 'shéi', emoji: '❔', def: '问是哪一个人。', sent: '门外是谁呀？' }
       ],
       pages: [
-        { n: 1, art: 'rabbit', bg: 'door', text: '小兔子乖乖，把门儿开开。', lines: ['小兔子乖乖，', '把门儿开开。'], ask: { t: 'predict', q: '这是谁在说话呢？猜猜看。', hint: '听听声音是妈妈，还是别人？' } },
-        { n: 2, art: 'rabbit', bg: 'door', text: '快点儿开开，我要进来。', lines: ['快点儿开开，', '我要进来。'], ask: { t: 'question', q: '他说「快点儿」，为什么这么着急？', hint: '妈妈回家会这么着急吗？' } },
-        { n: 3, art: 'rabbit', bg: 'door', text: '不开不开我不开，妈妈没回来，谁来也不开。', lines: ['不开不开我不开，', '妈妈没回来，', '谁来也不开。'], ask: { t: 'predict', q: '小兔子会开门吗？你先猜，再往下看。', hint: '小兔子心里有一把尺子：妈妈没回来。' } },
-        { n: 4, art: 'rabbit', bg: 'home', text: '兔妈妈回来了。她轻轻唱：小兔子乖乖，把门儿开开。', lines: ['兔妈妈回来了。', '她轻轻唱：', '小兔子乖乖，把门儿开开。'], ask: { t: 'clarify', q: '妈妈的声音和刚才的声音，一样吗？', hint: '一个是「快点儿」，一个是「轻轻唱」。' } },
-        { n: 5, art: 'rabbit', bg: 'home', text: '就开就开我就开，妈妈回来了，这就把门开。', lines: ['就开就开我就开，', '妈妈回来了，', '这就把门开。'], ask: { t: 'summarize', q: '小兔子为什么这次开门了？', hint: '因为门外是——' } },
-        { n: 6, art: 'rabbit', bg: 'home', text: '兔妈妈抱住小兔子说：你做得对。不认准人，门就不开。', lines: ['兔妈妈抱住小兔子说：', '你做得对。', '不认准人，门就不开。'], ask: { t: 'summarize', q: '这个故事想告诉我们什么？用自己的话说一说。', hint: '和「开门」有关的一件事。' } }
+        { n: 1, art: 'rabbit', bg: 'door', text: '小兔子乖乖，把门儿开开。', py: ['xiǎo', 'tù', 'zi', 'guāi', 'guāi', 'bǎ', 'mén', 'ér', 'kāi', 'kāi'], lines: ['小兔子乖乖，', '把门儿开开。'], ask: { t: 'predict', q: '这是谁在说话呢？猜猜看。', hint: '听听声音是妈妈，还是别人？' } },
+        { n: 2, art: 'rabbit', bg: 'door', text: '快点儿开开，我要进来。', py: ['kuài', 'diǎn', 'ér', 'kāi', 'kāi', 'wǒ', 'yào', 'jìn', 'lái'], lines: ['快点儿开开，', '我要进来。'], ask: { t: 'question', q: '他说「快点儿」，为什么这么着急？', hint: '妈妈回家会这么着急吗？' } },
+        { n: 3, art: 'rabbit', bg: 'door', text: '不开不开我不开，妈妈没回来，谁来也不开。', py: ['bù', 'kāi', 'bu', 'kāi', 'wǒ', 'bù', 'kāi', 'mā', 'ma', 'méi', 'huí', 'lái', 'shuí', 'lái', 'yě', 'bù', 'kāi'], lines: ['不开不开我不开，', '妈妈没回来，', '谁来也不开。'], ask: { t: 'predict', q: '小兔子会开门吗？你先猜，再往下看。', hint: '小兔子心里有一把尺子：妈妈没回来。' } },
+        { n: 4, art: 'rabbit', bg: 'home', text: '兔妈妈回来了。她轻轻唱：小兔子乖乖，把门儿开开。', py: ['tù', 'mā', 'ma', 'huí', 'lái', 'le', 'tā', 'qīng', 'qīng', 'chàng', 'xiǎo', 'tù', 'zi', 'guāi', 'guāi', 'bǎ', 'mén', 'ér', 'kāi', 'kāi'], lines: ['兔妈妈回来了。', '她轻轻唱：', '小兔子乖乖，把门儿开开。'], ask: { t: 'clarify', q: '妈妈的声音和刚才的声音，一样吗？', hint: '一个是「快点儿」，一个是「轻轻唱」。' } },
+        { n: 5, art: 'rabbit', bg: 'home', text: '就开就开我就开，妈妈回来了，这就把门开。', py: ['jiù', 'kāi', 'jiù', 'kāi', 'wǒ', 'jiù', 'kāi', 'mā', 'ma', 'huí', 'lái', 'le', 'zhè', 'jiù', 'bǎ', 'mén', 'kāi'], lines: ['就开就开我就开，', '妈妈回来了，', '这就把门开。'], ask: { t: 'summarize', q: '小兔子为什么这次开门了？', hint: '因为门外是——' } },
+        { n: 6, art: 'rabbit', bg: 'home', text: '兔妈妈抱住小兔子说：你做得对。不认准人，门就不开。', py: ['tù', 'mā', 'ma', 'bào', 'zhù', 'xiǎo', 'tù', 'zi', 'shuō', 'nǐ', 'zuò', 'dé', 'duì', 'bú', 'rèn', 'zhǔn', 'rén', 'mén', 'jiù', 'bù', 'kāi'], lines: ['兔妈妈抱住小兔子说：', '你做得对。', '不认准人，门就不开。'], ask: { t: 'summarize', q: '这个故事想告诉我们什么？用自己的话说一说。', hint: '和「开门」有关的一件事。' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -602,12 +602,12 @@
         { w: '用力', py: 'yòng lì', emoji: '🏋️', def: '使出力气。', sent: '大家一起用力。' }
       ],
       pages: [
-        { n: 1, art: 'grandpa', bg: 'field', extra: 'radish', text: '老公公去拔萝卜。萝卜太大了，他拔不动。', lines: ['老公公去拔萝卜。', '萝卜太大了，', '他拔不动。'], ask: { t: 'predict', q: '拔不动，他会怎么办呢？', hint: '想想一个人做不完的时候，你会找谁。' } },
-        { n: 2, art: 'grandpa', bg: 'field', extra: 'radish', text: '老公公叫老奶奶来一起拔。', lines: ['老公公叫老奶奶', '来一起拔。'], ask: { t: 'question', q: '为什么要叫人来，不自己再用力一点？', hint: '有些事情，一个人再用力也不够。' } },
-        { n: 3, art: 'grandpa', bg: 'field', extra: 'radish', text: '老奶奶牵着老公公，老公公牵着萝卜叶子。', lines: ['老奶奶牵着老公公，', '老公公牵着萝卜叶子。'], ask: { t: 'clarify', q: '「牵着」是手放在哪里？做一做动作。', hint: '一个人接一个人，像一列小火车。' } },
-        { n: 4, art: 'grandpa', bg: 'field', extra: 'radish', text: '还是拔不动。老奶奶叫小妹妹来一起拔。', lines: ['还是拔不动。', '老奶奶叫小妹妹', '来一起拔。'], ask: { t: 'predict', q: '加上小妹妹，够了吗？猜猜看。', hint: '后面还有人来呢。' } },
-        { n: 5, art: 'grandpa', bg: 'field', extra: 'radish', text: '小妹妹叫小狗，小狗叫小猫，小猫叫小鸡。', lines: ['小妹妹叫小狗，', '小狗叫小猫，', '小猫叫小鸡。'], ask: { t: 'question', q: '为什么连最小的小鸡也要叫来？', hint: '少一个，会怎么样？' } },
-        { n: 6, art: 'grandpa', bg: 'field', extra: 'radish', text: '大家一起用力拔。用力，用力——萝卜拔出来了！', lines: ['大家一起用力拔。', '用力，用力——', '萝卜拔出来了！'], ask: { t: 'summarize', q: '萝卜最后为什么能拔出来？', hint: '不是谁特别有力气，而是——' } }
+        { n: 1, art: 'grandpa', bg: 'field', extra: 'radish', text: '老公公去拔萝卜。萝卜太大了，他拔不动。', py: ['lǎo', 'gōng', 'gong', 'qù', 'bá', 'luó', 'bo', 'luó', 'bo', 'tài', 'dà', 'le', 'tā', 'bá', 'bú', 'dòng'], lines: ['老公公去拔萝卜。', '萝卜太大了，', '他拔不动。'], ask: { t: 'predict', q: '拔不动，他会怎么办呢？', hint: '想想一个人做不完的时候，你会找谁。' } },
+        { n: 2, art: 'grandpa', bg: 'field', extra: 'radish', text: '老公公叫老奶奶来一起拔。', py: ['lǎo', 'gōng', 'gong', 'jiào', 'lǎo', 'nǎi', 'nai', 'lái', 'yì', 'qǐ', 'bá'], lines: ['老公公叫老奶奶', '来一起拔。'], ask: { t: 'question', q: '为什么要叫人来，不自己再用力一点？', hint: '有些事情，一个人再用力也不够。' } },
+        { n: 3, art: 'grandpa', bg: 'field', extra: 'radish', text: '老奶奶牵着老公公，老公公牵着萝卜叶子。', py: ['lǎo', 'nǎi', 'nai', 'qiān', 'zhe', 'lǎo', 'gōng', 'gong', 'lǎo', 'gōng', 'gong', 'qiān', 'zhe', 'luó', 'bo', 'yè', 'zi'], lines: ['老奶奶牵着老公公，', '老公公牵着萝卜叶子。'], ask: { t: 'clarify', q: '「牵着」是手放在哪里？做一做动作。', hint: '一个人接一个人，像一列小火车。' } },
+        { n: 4, art: 'grandpa', bg: 'field', extra: 'radish', text: '还是拔不动。老奶奶叫小妹妹来一起拔。', py: ['hái', 'shì', 'bá', 'bú', 'dòng', 'lǎo', 'nǎi', 'nai', 'jiào', 'xiǎo', 'mèi', 'mei', 'lái', 'yì', 'qǐ', 'bá'], lines: ['还是拔不动。', '老奶奶叫小妹妹', '来一起拔。'], ask: { t: 'predict', q: '加上小妹妹，够了吗？猜猜看。', hint: '后面还有人来呢。' } },
+        { n: 5, art: 'grandpa', bg: 'field', extra: 'radish', text: '小妹妹叫小狗，小狗叫小猫，小猫叫小鸡。', py: ['xiǎo', 'mèi', 'mei', 'jiào', 'xiǎo', 'gǒu', 'xiǎo', 'gǒu', 'jiào', 'xiǎo', 'māo', 'xiǎo', 'māo', 'jiào', 'xiǎo', 'jī'], lines: ['小妹妹叫小狗，', '小狗叫小猫，', '小猫叫小鸡。'], ask: { t: 'question', q: '为什么连最小的小鸡也要叫来？', hint: '少一个，会怎么样？' } },
+        { n: 6, art: 'grandpa', bg: 'field', extra: 'radish', text: '大家一起用力拔。用力，用力——萝卜拔出来了！', py: ['dà', 'jiā', 'yì', 'qǐ', 'yòng', 'lì', 'bá', 'yòng', 'lì', 'yòng', 'lì', 'luó', 'bo', 'bá', 'chū', 'lái', 'le'], lines: ['大家一起用力拔。', '用力，用力——', '萝卜拔出来了！'], ask: { t: 'summarize', q: '萝卜最后为什么能拔出来？', hint: '不是谁特别有力气，而是——' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -651,14 +651,14 @@
         { w: '浇水', py: 'jiāo shuǐ', emoji: '💧', def: '给植物水喝。', sent: '每天给白菜浇水。' }
       ],
       pages: [
-        { n: 1, art: 'goat', bg: 'field', extra: 'cabbage', text: '老山羊在地里摘白菜。小白兔和小灰兔来一起摘。', lines: ['老山羊在地里摘白菜。', '小白兔和小灰兔', '来一起摘。'], ask: { t: 'question', q: '两只小兔为什么要来一起摘？', hint: '看它们脸上的表情。' } },
-        { n: 2, art: 'rabbitGrey', bg: 'field', extra: 'cabbage', text: '摘好了白菜，老山羊把一车白菜送给小灰兔。小灰兔收下了，说：谢谢您！', lines: ['摘好了白菜，', '老山羊把一车白菜送给小灰兔。', '小灰兔收下了，说：谢谢您！'], ask: { t: 'predict', q: '如果老山羊也送小白兔一车白菜，它会要吗？', hint: '先记住你的猜想。' } },
-        { n: 3, art: 'rabbit', bg: 'field', extra: 'cabbage', text: '老山羊又把一车白菜送给小白兔。小白兔说：我不要白菜，请您给我一些菜子吧。', lines: ['老山羊又把一车白菜送给小白兔。', '小白兔说：我不要白菜，', '请您给我一些菜子吧。'], ask: { t: 'clarify', q: '「菜子」是什么？和白菜有什么不一样？', hint: '菜子种下去会长出什么？' } },
-        { n: 4, art: 'rabbit', bg: 'field', text: '小白兔回到家里，种上菜子。', lines: ['小白兔回到家里，', '种上菜子。'], ask: { t: 'predict', q: '种下去以后，还要做什么？', hint: '种花种菜，最怕什么？' } },
-        { n: 5, art: 'rabbit', bg: 'field', extra: 'cabbage', text: '过了些日子，白菜长出来了。小白兔每天给白菜浇水、施肥、拔草、捉虫。', lines: ['过了些日子，白菜长出来了。', '小白兔每天给白菜浇水、施肥、', '拔草、捉虫。'], ask: { t: 'question', q: '「每天」是什么意思？做一次和每天做，一样吗？', hint: '想一想天天浇水的花和忘了浇水的花。' } },
-        { n: 6, art: 'rabbitGrey', bg: 'home', text: '小灰兔把白菜吃完了，又去老山羊家要白菜。', lines: ['小灰兔把白菜吃完了，', '又去老山羊家要白菜。'], ask: { t: 'question', q: '白菜为什么会吃完？', hint: '一车白菜能吃多久？' } },
-        { n: 7, art: 'rabbit', bg: 'garden', extra: 'cabbage', text: '路上，他看见小白兔挑着一担白菜，给老山羊送去。', lines: ['路上，他看见小白兔', '挑着一担白菜，', '给老山羊送去。'], ask: { t: 'clarify', q: '小白兔为什么要送白菜给老山羊？', hint: '菜子是谁给的？' } },
-        { n: 8, art: 'rabbit', bg: 'garden', extra: 'cabbage', text: '小灰兔问：小白兔，你的菜是哪儿来的？小白兔说：是我自己种的。只有自己种，才有吃不完的菜。', lines: ['小灰兔问：小白兔，你的菜是哪儿来的？', '小白兔说：是我自己种的。', '只有自己种，才有吃不完的菜。'], ask: { t: 'summarize', q: '这句话里最重要的词是哪个？说说你的理由。', hint: '「自己」还是「吃不完」？' } }
+        { n: 1, art: 'goat', bg: 'field', extra: 'cabbage', text: '老山羊在地里摘白菜。小白兔和小灰兔来一起摘。', py: ['lǎo', 'shān', 'yáng', 'zài', 'dì', 'lǐ', 'zhāi', 'bái', 'cài', 'xiǎo', 'bái', 'tù', 'hé', 'xiǎo', 'huī', 'tù', 'lái', 'yì', 'qǐ', 'zhāi'], lines: ['老山羊在地里摘白菜。', '小白兔和小灰兔', '来一起摘。'], ask: { t: 'question', q: '两只小兔为什么要来一起摘？', hint: '看它们脸上的表情。' } },
+        { n: 2, art: 'rabbitGrey', bg: 'field', extra: 'cabbage', text: '摘好了白菜，老山羊把一车白菜送给小灰兔。小灰兔收下了，说：谢谢您！', py: ['zhāi', 'hǎo', 'le', 'bái', 'cài', 'lǎo', 'shān', 'yáng', 'bǎ', 'yì', 'chē', 'bái', 'cài', 'sòng', 'gěi', 'xiǎo', 'huī', 'tù', 'xiǎo', 'huī', 'tù', 'shōu', 'xià', 'le', 'shuō', 'xiè', 'xiè', 'nín'], lines: ['摘好了白菜，', '老山羊把一车白菜送给小灰兔。', '小灰兔收下了，说：谢谢您！'], ask: { t: 'predict', q: '如果老山羊也送小白兔一车白菜，它会要吗？', hint: '先记住你的猜想。' } },
+        { n: 3, art: 'rabbit', bg: 'field', extra: 'cabbage', text: '老山羊又把一车白菜送给小白兔。小白兔说：我不要白菜，请您给我一些菜子吧。', py: ['lǎo', 'shān', 'yáng', 'yòu', 'bǎ', 'yì', 'chē', 'bái', 'cài', 'sòng', 'gěi', 'xiǎo', 'bái', 'tù', 'xiǎo', 'bái', 'tù', 'shuō', 'wǒ', 'bú', 'yào', 'bái', 'cài', 'qǐng', 'nín', 'gěi', 'wǒ', 'yì', 'xiē', 'cài', 'zǐ', 'ba'], lines: ['老山羊又把一车白菜送给小白兔。', '小白兔说：我不要白菜，', '请您给我一些菜子吧。'], ask: { t: 'clarify', q: '「菜子」是什么？和白菜有什么不一样？', hint: '菜子种下去会长出什么？' } },
+        { n: 4, art: 'rabbit', bg: 'field', text: '小白兔回到家里，种上菜子。', py: ['xiǎo', 'bái', 'tù', 'huí', 'dào', 'jiā', 'lǐ', 'zhǒng', 'shàng', 'cài', 'zǐ'], lines: ['小白兔回到家里，', '种上菜子。'], ask: { t: 'predict', q: '种下去以后，还要做什么？', hint: '种花种菜，最怕什么？' } },
+        { n: 5, art: 'rabbit', bg: 'field', extra: 'cabbage', text: '过了些日子，白菜长出来了。小白兔每天给白菜浇水、施肥、拔草、捉虫。', py: ['guò', 'le', 'xiē', 'rì', 'zi', 'bái', 'cài', 'cháng', 'chū', 'lái', 'le', 'xiǎo', 'bái', 'tù', 'měi', 'tiān', 'gěi', 'bái', 'cài', 'jiāo', 'shuǐ', 'shī', 'féi', 'bá', 'cǎo', 'zhuō', 'chóng'], lines: ['过了些日子，白菜长出来了。', '小白兔每天给白菜浇水、施肥、', '拔草、捉虫。'], ask: { t: 'question', q: '「每天」是什么意思？做一次和每天做，一样吗？', hint: '想一想天天浇水的花和忘了浇水的花。' } },
+        { n: 6, art: 'rabbitGrey', bg: 'home', text: '小灰兔把白菜吃完了，又去老山羊家要白菜。', py: ['xiǎo', 'huī', 'tù', 'bǎ', 'bái', 'cài', 'chī', 'wán', 'le', 'yòu', 'qù', 'lǎo', 'shān', 'yáng', 'jiā', 'yào', 'bái', 'cài'], lines: ['小灰兔把白菜吃完了，', '又去老山羊家要白菜。'], ask: { t: 'question', q: '白菜为什么会吃完？', hint: '一车白菜能吃多久？' } },
+        { n: 7, art: 'rabbit', bg: 'garden', extra: 'cabbage', text: '路上，他看见小白兔挑着一担白菜，给老山羊送去。', py: ['lù', 'shang', 'tā', 'kàn', 'jiàn', 'xiǎo', 'bái', 'tù', 'tiāo', 'zhe', 'yì', 'dān', 'bái', 'cài', 'gěi', 'lǎo', 'shān', 'yáng', 'sòng', 'qù'], lines: ['路上，他看见小白兔', '挑着一担白菜，', '给老山羊送去。'], ask: { t: 'clarify', q: '小白兔为什么要送白菜给老山羊？', hint: '菜子是谁给的？' } },
+        { n: 8, art: 'rabbit', bg: 'garden', extra: 'cabbage', text: '小灰兔问：小白兔，你的菜是哪儿来的？小白兔说：是我自己种的。只有自己种，才有吃不完的菜。', py: ['xiǎo', 'huī', 'tù', 'wèn', 'xiǎo', 'bái', 'tù', 'nǐ', 'de', 'cài', 'shì', 'nǎ', 'ér', 'lái', 'de', 'xiǎo', 'bái', 'tù', 'shuō', 'shì', 'wǒ', 'zì', 'jǐ', 'zhǒng', 'de', 'zhǐ', 'yǒu', 'zì', 'jǐ', 'zhǒng', 'cái', 'yǒu', 'chī', 'bù', 'wán', 'de', 'cài'], lines: ['小灰兔问：小白兔，你的菜是哪儿来的？', '小白兔说：是我自己种的。', '只有自己种，才有吃不完的菜。'], ask: { t: 'summarize', q: '这句话里最重要的词是哪个？说说你的理由。', hint: '「自己」还是「吃不完」？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -702,14 +702,14 @@
         { w: '抬头', py: 'tái tóu', emoji: '⬆️', def: '把头抬起来往上看。', sent: '猴子们抬头一看。' }
       ],
       pages: [
-        { n: 1, art: 'monkey', bg: 'night', extra: 'moon', text: '一群猴子在林子里玩。一只小猴子看见井里有月亮。', lines: ['一群猴子在林子里玩。', '一只小猴子看见井里有月亮。'], ask: { t: 'predict', q: '井里为什么会有月亮？先猜一猜。', hint: '天上有什么？' } },
-        { n: 2, art: 'monkey', bg: 'well', extra: 'moon', text: '小猴子叫起来：糟啦，糟啦！月亮掉进井里啦！', lines: ['小猴子叫起来：', '糟啦，糟啦！', '月亮掉进井里啦！'], ask: { t: 'question', q: '小猴子怎么知道月亮「掉进去」了？它看见的是什么？', hint: '水面上的那个圆圆的影子。' } },
-        { n: 3, art: 'monkey', bg: 'well', extra: 'moon', text: '大猴子跑来一看，也跟着叫起来。老猴子跑来一看，也跟着叫起来。', lines: ['大猴子跑来一看，也跟着叫起来。', '老猴子跑来一看，也跟着叫起来。'], ask: { t: 'question', q: '它们都自己去看了吗？还是听见叫声就跟着喊？', hint: '「跑来一看」和「跟着叫」有什么不一样？' } },
-        { n: 4, art: 'monkey', bg: 'well', text: '猴子们决定把月亮捞上来。', lines: ['猴子们决定', '把月亮捞上来。'], ask: { t: 'predict', q: '它们能捞上来吗？猜猜看，等下对一对。', hint: '月亮有多重？' } },
-        { n: 5, art: 'monkey', bg: 'well', text: '老猴子倒挂在树上，拉住大猴子的脚。大猴子拉住别的猴子的脚……', lines: ['老猴子倒挂在树上，', '拉住大猴子的脚。', '大猴子拉住别的猴子的脚……'], ask: { t: 'clarify', q: '「倒挂」是什么样子？你能做一做吗？', hint: '头朝哪边？脚朝哪边？' } },
-        { n: 6, art: 'monkey', bg: 'well', text: '一只一只猴子接起来，一直挂到井里头。', lines: ['一只一只猴子接起来，', '一直挂到井里头。'], ask: { t: 'question', q: '为什么要一只接一只，而不是让一只跳下去？', hint: '跳下去会怎么样？' } },
-        { n: 7, art: 'monkey', bg: 'well', extra: 'moon', text: '小猴子把手伸到水里去捞月亮。手刚碰到水，月亮就不见了。', lines: ['小猴子把手伸到水里去捞月亮。', '手刚碰到水，', '月亮就不见了。'], ask: { t: 'clarify', q: '月亮为什么「不见了」？它真的不见了吗？', hint: '手碰到水，水会怎么样？' } },
-        { n: 8, art: 'monkey', bg: 'night', extra: 'moon', text: '猴子们抬头一看，月亮还在天上呢。', lines: ['猴子们抬头一看，', '月亮还在天上呢。'], ask: { t: 'summarize', q: '如果下次再看见井里有月亮，猴子会怎么做？', hint: '先做什么，再做什么？' } }
+        { n: 1, art: 'monkey', bg: 'night', extra: 'moon', text: '一群猴子在林子里玩。一只小猴子看见井里有月亮。', py: ['yì', 'qún', 'hóu', 'zi', 'zài', 'lín', 'zi', 'lǐ', 'wán', 'yì', 'zhī', 'xiǎo', 'hóu', 'zi', 'kàn', 'jiàn', 'jǐng', 'lǐ', 'yǒu', 'yuè', 'liàng'], lines: ['一群猴子在林子里玩。', '一只小猴子看见井里有月亮。'], ask: { t: 'predict', q: '井里为什么会有月亮？先猜一猜。', hint: '天上有什么？' } },
+        { n: 2, art: 'monkey', bg: 'well', extra: 'moon', text: '小猴子叫起来：糟啦，糟啦！月亮掉进井里啦！', py: ['xiǎo', 'hóu', 'zi', 'jiào', 'qǐ', 'lái', 'zāo', 'lā', 'zāo', 'lā', 'yuè', 'liàng', 'diào', 'jìn', 'jǐng', 'lǐ', 'lā'], lines: ['小猴子叫起来：', '糟啦，糟啦！', '月亮掉进井里啦！'], ask: { t: 'question', q: '小猴子怎么知道月亮「掉进去」了？它看见的是什么？', hint: '水面上的那个圆圆的影子。' } },
+        { n: 3, art: 'monkey', bg: 'well', extra: 'moon', text: '大猴子跑来一看，也跟着叫起来。老猴子跑来一看，也跟着叫起来。', py: ['dà', 'hóu', 'zi', 'pǎo', 'lái', 'yí', 'kàn', 'yě', 'gēn', 'zhe', 'jiào', 'qǐ', 'lái', 'lǎo', 'hóu', 'zi', 'pǎo', 'lái', 'yí', 'kàn', 'yě', 'gēn', 'zhe', 'jiào', 'qǐ', 'lái'], lines: ['大猴子跑来一看，也跟着叫起来。', '老猴子跑来一看，也跟着叫起来。'], ask: { t: 'question', q: '它们都自己去看了吗？还是听见叫声就跟着喊？', hint: '「跑来一看」和「跟着叫」有什么不一样？' } },
+        { n: 4, art: 'monkey', bg: 'well', text: '猴子们决定把月亮捞上来。', py: ['hóu', 'zi', 'men', 'jué', 'dìng', 'bǎ', 'yuè', 'liàng', 'lāo', 'shàng', 'lái'], lines: ['猴子们决定', '把月亮捞上来。'], ask: { t: 'predict', q: '它们能捞上来吗？猜猜看，等下对一对。', hint: '月亮有多重？' } },
+        { n: 5, art: 'monkey', bg: 'well', text: '老猴子倒挂在树上，拉住大猴子的脚。大猴子拉住别的猴子的脚……', py: ['lǎo', 'hóu', 'zǐ', 'dǎo', 'guà', 'zài', 'shù', 'shàng', 'lā', 'zhù', 'dà', 'hóu', 'zi', 'de', 'jiǎo', 'dà', 'hóu', 'zi', 'lā', 'zhù', 'bié', 'de', 'hóu', 'zi', 'de', 'jiǎo'], lines: ['老猴子倒挂在树上，', '拉住大猴子的脚。', '大猴子拉住别的猴子的脚……'], ask: { t: 'clarify', q: '「倒挂」是什么样子？你能做一做吗？', hint: '头朝哪边？脚朝哪边？' } },
+        { n: 6, art: 'monkey', bg: 'well', text: '一只一只猴子接起来，一直挂到井里头。', py: ['yì', 'zhī', 'yi', 'zhī', 'hóu', 'zi', 'jiē', 'qǐ', 'lái', 'yì', 'zhí', 'guà', 'dào', 'jǐng', 'lǐ', 'tou'], lines: ['一只一只猴子接起来，', '一直挂到井里头。'], ask: { t: 'question', q: '为什么要一只接一只，而不是让一只跳下去？', hint: '跳下去会怎么样？' } },
+        { n: 7, art: 'monkey', bg: 'well', extra: 'moon', text: '小猴子把手伸到水里去捞月亮。手刚碰到水，月亮就不见了。', py: ['xiǎo', 'hóu', 'zǐ', 'bǎ', 'shǒu', 'shēn', 'dào', 'shuǐ', 'lǐ', 'qù', 'lāo', 'yuè', 'liàng', 'shǒu', 'gāng', 'pèng', 'dào', 'shuǐ', 'yuè', 'liàng', 'jiù', 'bú', 'jiàn', 'le'], lines: ['小猴子把手伸到水里去捞月亮。', '手刚碰到水，', '月亮就不见了。'], ask: { t: 'clarify', q: '月亮为什么「不见了」？它真的不见了吗？', hint: '手碰到水，水会怎么样？' } },
+        { n: 8, art: 'monkey', bg: 'night', extra: 'moon', text: '猴子们抬头一看，月亮还在天上呢。', py: ['hóu', 'zi', 'men', 'tái', 'tóu', 'yí', 'kàn', 'yuè', 'liàng', 'hái', 'zài', 'tiān', 'shàng', 'ne'], lines: ['猴子们抬头一看，', '月亮还在天上呢。'], ask: { t: 'summarize', q: '如果下次再看见井里有月亮，猴子会怎么做？', hint: '先做什么，再做什么？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -753,14 +753,14 @@
         { w: '松鼠', py: 'sōng shǔ', emoji: '🐿️', def: '一种小动物，个子很小，住在树上。', sent: '松鼠说河水很深。' }
       ],
       pages: [
-        { n: 1, art: 'horse', bg: 'home', text: '小马长大了。妈妈让他把半袋麦子送到村口去。', lines: ['小马长大了。', '妈妈让他把半袋麦子', '送到村口去。'], ask: { t: 'question', q: '妈妈为什么让小马去，而不是自己去？', hint: '「小马长大了」这句话有分量。' } },
-        { n: 2, art: 'horse', bg: 'river', text: '路上有一条小河。小马不知道河水深不深。', lines: ['路上有一条小河。', '小马不知道', '河水深不深。'], ask: { t: 'predict', q: '如果你是小马，你会怎么办？', hint: '先记住你的办法，看小马和你一样吗。' } },
-        { n: 3, art: 'goat', bg: 'river', text: '老牛说：水很浅，刚过小腿。', lines: ['老牛说：', '水很浅，刚过小腿。'], ask: { t: 'clarify', q: '「刚过小腿」是多深？用手比一比。', hint: '「过」在这里的意思是盖住。' } },
-        { n: 4, art: 'rabbit', bg: 'river', text: '松鼠说：水很深，昨天我的伙伴就掉进水里了！', lines: ['松鼠说：水很深，', '昨天我的伙伴', '就掉进水里了！'], ask: { t: 'question', q: '老牛说浅，松鼠说深，谁错了？', hint: '它们两个，谁高谁矮？' } },
-        { n: 5, art: 'horse', bg: 'river', text: '小马不知道该怎么办，只好回家问妈妈。', lines: ['小马不知道该怎么办，', '只好回家问妈妈。'], ask: { t: 'predict', q: '妈妈会告诉它「深」还是「浅」？', hint: '想一想妈妈会怎么说。' } },
-        { n: 6, art: 'horse', bg: 'home', text: '妈妈说：孩子，光听别人说，自己不用心想，不去试试，是不行的。', lines: ['妈妈说：孩子，', '光听别人说，自己不用心想，', '不去试试，是不行的。'], ask: { t: 'clarify', q: '妈妈说了三件事，是哪三件？', hint: '听、想、试。' } },
-        { n: 7, art: 'horse', bg: 'river', text: '小马跑到河边，小心地试一试。', lines: ['小马跑到河边，', '小心地试一试。'], ask: { t: 'question', q: '「小心地」是怎么试？直接冲过去行不行？', hint: '试，也要有试的方法。' } },
-        { n: 8, art: 'horse', bg: 'river', text: '原来河水不像老牛说的那么浅，也不像松鼠说的那么深。', lines: ['原来河水', '不像老牛说的那么浅，', '也不像松鼠说的那么深。'], ask: { t: 'summarize', q: '为什么老牛和松鼠说的都不一样？', hint: '水没变，变的是什么？' } }
+        { n: 1, art: 'horse', bg: 'home', text: '小马长大了。妈妈让他把半袋麦子送到村口去。', py: ['xiǎo', 'mǎ', 'zhǎng', 'dà', 'le', 'mā', 'ma', 'ràng', 'tā', 'bǎ', 'bàn', 'dài', 'mài', 'zi', 'sòng', 'dào', 'cūn', 'kǒu', 'qù'], lines: ['小马长大了。', '妈妈让他把半袋麦子', '送到村口去。'], ask: { t: 'question', q: '妈妈为什么让小马去，而不是自己去？', hint: '「小马长大了」这句话有分量。' } },
+        { n: 2, art: 'horse', bg: 'river', text: '路上有一条小河。小马不知道河水深不深。', py: ['lù', 'shang', 'yǒu', 'yì', 'tiáo', 'xiǎo', 'hé', 'xiǎo', 'mǎ', 'bù', 'zhī', 'dào', 'hé', 'shuǐ', 'shēn', 'bu', 'shēn'], lines: ['路上有一条小河。', '小马不知道', '河水深不深。'], ask: { t: 'predict', q: '如果你是小马，你会怎么办？', hint: '先记住你的办法，看小马和你一样吗。' } },
+        { n: 3, art: 'goat', bg: 'river', text: '老牛说：水很浅，刚过小腿。', py: ['lǎo', 'niú', 'shuō', 'shuǐ', 'hěn', 'qiǎn', 'gāng', 'guò', 'xiǎo', 'tuǐ'], lines: ['老牛说：', '水很浅，刚过小腿。'], ask: { t: 'clarify', q: '「刚过小腿」是多深？用手比一比。', hint: '「过」在这里的意思是盖住。' } },
+        { n: 4, art: 'rabbit', bg: 'river', text: '松鼠说：水很深，昨天我的伙伴就掉进水里了！', py: ['sōng', 'shǔ', 'shuō', 'shuǐ', 'hěn', 'shēn', 'zuó', 'tiān', 'wǒ', 'de', 'huǒ', 'bàn', 'jiù', 'diào', 'jìn', 'shuǐ', 'lǐ', 'le'], lines: ['松鼠说：水很深，', '昨天我的伙伴', '就掉进水里了！'], ask: { t: 'question', q: '老牛说浅，松鼠说深，谁错了？', hint: '它们两个，谁高谁矮？' } },
+        { n: 5, art: 'horse', bg: 'river', text: '小马不知道该怎么办，只好回家问妈妈。', py: ['xiǎo', 'mǎ', 'bù', 'zhī', 'dào', 'gāi', 'zěn', 'me', 'bàn', 'zhǐ', 'hǎo', 'huí', 'jiā', 'wèn', 'mā', 'ma'], lines: ['小马不知道该怎么办，', '只好回家问妈妈。'], ask: { t: 'predict', q: '妈妈会告诉它「深」还是「浅」？', hint: '想一想妈妈会怎么说。' } },
+        { n: 6, art: 'horse', bg: 'home', text: '妈妈说：孩子，光听别人说，自己不用心想，不去试试，是不行的。', py: ['mā', 'ma', 'shuō', 'hái', 'zǐ', 'guāng', 'tīng', 'bié', 'rén', 'shuō', 'zì', 'jǐ', 'bú', 'yòng', 'xīn', 'xiǎng', 'bú', 'qù', 'shì', 'shì', 'shì', 'bù', 'xíng', 'de'], lines: ['妈妈说：孩子，', '光听别人说，自己不用心想，', '不去试试，是不行的。'], ask: { t: 'clarify', q: '妈妈说了三件事，是哪三件？', hint: '听、想、试。' } },
+        { n: 7, art: 'horse', bg: 'river', text: '小马跑到河边，小心地试一试。', py: ['xiǎo', 'mǎ', 'pǎo', 'dào', 'hé', 'biān', 'xiǎo', 'xīn', 'dì', 'shì', 'yi', 'shì'], lines: ['小马跑到河边，', '小心地试一试。'], ask: { t: 'question', q: '「小心地」是怎么试？直接冲过去行不行？', hint: '试，也要有试的方法。' } },
+        { n: 8, art: 'horse', bg: 'river', text: '原来河水不像老牛说的那么浅，也不像松鼠说的那么深。', py: ['yuán', 'lái', 'hé', 'shuǐ', 'bú', 'xiàng', 'lǎo', 'niú', 'shuō', 'de', 'nà', 'me', 'qiǎn', 'yě', 'bú', 'xiàng', 'sōng', 'shǔ', 'shuō', 'de', 'nà', 'me', 'shēn'], lines: ['原来河水', '不像老牛说的那么浅，', '也不像松鼠说的那么深。'], ask: { t: 'summarize', q: '为什么老牛和松鼠说的都不一样？', hint: '水没变，变的是什么？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -805,11 +805,11 @@
         { w: '滚下来', py: 'gǔn xià lái', emoji: '⬇️', def: '转着圈掉下来。', sent: '小老鼠滚下来了。' }
       ],
       pages: [
-        { n: 1, art: 'mouse', bg: 'lamp', text: '小老鼠，上灯台。', lines: ['小老鼠，', '上灯台。'], ask: { t: 'predict', q: '老鼠爬上灯台，想干什么？', hint: '灯台上面有什么香香的东西？' } },
-        { n: 2, art: 'mouse', bg: 'lamp', text: '偷油吃，下不来。', lines: ['偷油吃，', '下不来。'], ask: { t: 'question', q: '为什么「下不来」了呢？', hint: '爬上去容易，还是下来容易？' } },
-        { n: 3, art: 'mouse', bg: 'lamp', text: '叫妈妈，妈不来。', lines: ['叫妈妈，', '妈不来。'], ask: { t: 'clarify', q: '「妈不来」的时候，小老鼠心里是什么感觉？', hint: '你一个人卡在高处过吗？' } },
-        { n: 4, art: 'mouse', bg: 'lamp', text: '叽里咕噜滚下来。', lines: ['叽里咕噜', '滚下来。'], ask: { t: 'summarize', q: '用一句话说说，这首童谣讲了什么事？', hint: '谁 + 做了什么 + 结果怎样。' } },
-        { n: 5, art: 'mouse', bg: 'home', text: '小老鼠说：我再也不偷油了。', lines: ['小老鼠说：', '我再也不偷油了。'], ask: { t: 'summarize', q: '如果它下次又看见油，你觉得它会怎么办？', hint: '说清楚你的理由就好，没有标准答案。' } }
+        { n: 1, art: 'mouse', bg: 'lamp', text: '小老鼠，上灯台。', py: ['xiǎo', 'lǎo', 'shǔ', 'shàng', 'dēng', 'tái'], lines: ['小老鼠，', '上灯台。'], ask: { t: 'predict', q: '老鼠爬上灯台，想干什么？', hint: '灯台上面有什么香香的东西？' } },
+        { n: 2, art: 'mouse', bg: 'lamp', text: '偷油吃，下不来。', py: ['tōu', 'yóu', 'chī', 'xià', 'bù', 'lái'], lines: ['偷油吃，', '下不来。'], ask: { t: 'question', q: '为什么「下不来」了呢？', hint: '爬上去容易，还是下来容易？' } },
+        { n: 3, art: 'mouse', bg: 'lamp', text: '叫妈妈，妈不来。', py: ['jiào', 'mā', 'ma', 'mā', 'bù', 'lái'], lines: ['叫妈妈，', '妈不来。'], ask: { t: 'clarify', q: '「妈不来」的时候，小老鼠心里是什么感觉？', hint: '你一个人卡在高处过吗？' } },
+        { n: 4, art: 'mouse', bg: 'lamp', text: '叽里咕噜滚下来。', py: ['jī', 'lǐ', 'gū', 'lū', 'gǔn', 'xià', 'lái'], lines: ['叽里咕噜', '滚下来。'], ask: { t: 'summarize', q: '用一句话说说，这首童谣讲了什么事？', hint: '谁 + 做了什么 + 结果怎样。' } },
+        { n: 5, art: 'mouse', bg: 'home', text: '小老鼠说：我再也不偷油了。', py: ['xiǎo', 'lǎo', 'shǔ', 'shuō', 'wǒ', 'zài', 'yě', 'bù', 'tōu', 'yóu', 'le'], lines: ['小老鼠说：', '我再也不偷油了。'], ask: { t: 'summarize', q: '如果它下次又看见油，你觉得它会怎么办？', hint: '说清楚你的理由就好，没有标准答案。' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -855,12 +855,12 @@
         { w: '呱呱', py: 'guā guā', emoji: '🐸', def: '青蛙叫的声音。念起来像青蛙在说话。', sent: '青蛙的诗是：呱呱，呱呱，呱呱呱。' }
       ],
       pages: [
-        { n: 1, art: 'frog', bg: 'pond', text: '下雨了，雨点儿落下来。青蛙说：我要写诗啦！', lines: ['下雨了，', '雨点儿落下来。', '青蛙说：我要写诗啦！'], ask: { t: 'predict', q: '青蛙要写诗，它需要什么帮忙？', hint: '写诗要用到什么符号？' } },
-        { n: 2, art: 'tadpole', bg: 'pond', text: '小蝌蚪游过来说：我要给你当个小逗号。', lines: ['小蝌蚪游过来说：', '我要给你当个小逗号。'], ask: { t: 'clarify', q: '小蝌蚪为什么能当逗号？它们哪里像？', hint: '看形状：小蝌蚪圆圆的头，后面一条小尾巴。' } },
-        { n: 3, art: 'bubble', bg: 'pond', text: '水里的水泡泡说：我来当个小句号。', lines: ['水里的水泡泡说：', '我来当个小句号。'], ask: { t: 'question', q: '句号和泡泡，哪里像？', hint: '都是一个圆圆的小圈。' } },
-        { n: 4, art: 'bubble', bg: 'pond', text: '荷叶上的一串水珠说：我们可以当省略号。', lines: ['荷叶上的一串水珠说：', '我们可以当省略号。'], ask: { t: 'clarify', q: '为什么是一串水珠，不是一颗？', hint: '省略号有几个点？' } },
-        { n: 5, art: 'frog', bg: 'pond', text: '青蛙的诗写成了：呱呱，呱呱，呱呱呱。', lines: ['青蛙的诗写成了：', '呱呱，', '呱呱，', '呱呱呱。'], ask: { t: 'summarize', q: '这首「呱呱」诗里，哪里是逗号？哪里是句号？', hint: '数一数每个「呱」后面的符号。' } },
-        { n: 6, art: 'frog', bg: 'pond', text: '朋友们都来听。青蛙说：这首诗，是我们一起写的。', lines: ['朋友们都来听。', '青蛙说：', '这首诗，是我们一起写的。'], ask: { t: 'summarize', q: '为什么青蛙说「是我们一起写的」？', hint: '没有它们，青蛙的诗能写完吗？' } }
+        { n: 1, art: 'frog', bg: 'pond', text: '下雨了，雨点儿落下来。青蛙说：我要写诗啦！', py: ['xià', 'yǔ', 'le', 'yǔ', 'diǎn', 'ér', 'luò', 'xià', 'lái', 'qīng', 'wā', 'shuō', 'wǒ', 'yào', 'xiě', 'shī', 'lā'], lines: ['下雨了，', '雨点儿落下来。', '青蛙说：我要写诗啦！'], ask: { t: 'predict', q: '青蛙要写诗，它需要什么帮忙？', hint: '写诗要用到什么符号？' } },
+        { n: 2, art: 'tadpole', bg: 'pond', text: '小蝌蚪游过来说：我要给你当个小逗号。', py: ['xiǎo', 'kē', 'dǒu', 'yóu', 'guò', 'lái', 'shuō', 'wǒ', 'yào', 'gěi', 'nǐ', 'dāng', 'gè', 'xiǎo', 'dòu', 'hào'], lines: ['小蝌蚪游过来说：', '我要给你当个小逗号。'], ask: { t: 'clarify', q: '小蝌蚪为什么能当逗号？它们哪里像？', hint: '看形状：小蝌蚪圆圆的头，后面一条小尾巴。' } },
+        { n: 3, art: 'bubble', bg: 'pond', text: '水里的水泡泡说：我来当个小句号。', py: ['shuǐ', 'lǐ', 'de', 'shuǐ', 'pào', 'pào', 'shuō', 'wǒ', 'lái', 'dāng', 'gè', 'xiǎo', 'jù', 'hào'], lines: ['水里的水泡泡说：', '我来当个小句号。'], ask: { t: 'question', q: '句号和泡泡，哪里像？', hint: '都是一个圆圆的小圈。' } },
+        { n: 4, art: 'bubble', bg: 'pond', text: '荷叶上的一串水珠说：我们可以当省略号。', py: ['hé', 'yè', 'shàng', 'de', 'yí', 'chuàn', 'shuǐ', 'zhū', 'shuō', 'wǒ', 'men', 'kě', 'yǐ', 'dāng', 'shěng', 'lüè', 'hào'], lines: ['荷叶上的一串水珠说：', '我们可以当省略号。'], ask: { t: 'clarify', q: '为什么是一串水珠，不是一颗？', hint: '省略号有几个点？' } },
+        { n: 5, art: 'frog', bg: 'pond', text: '青蛙的诗写成了：呱呱，呱呱，呱呱呱。', py: ['qīng', 'wā', 'de', 'shī', 'xiě', 'chéng', 'le', 'guā', 'guā', 'guā', 'guā', 'guā', 'guā', 'guā'], lines: ['青蛙的诗写成了：', '呱呱，', '呱呱，', '呱呱呱。'], ask: { t: 'summarize', q: '这首「呱呱」诗里，哪里是逗号？哪里是句号？', hint: '数一数每个「呱」后面的符号。' } },
+        { n: 6, art: 'frog', bg: 'pond', text: '朋友们都来听。青蛙说：这首诗，是我们一起写的。', py: ['péng', 'yǒu', 'men', 'dōu', 'lái', 'tīng', 'qīng', 'wā', 'shuō', 'zhè', 'shǒu', 'shī', 'shì', 'wǒ', 'men', 'yì', 'qǐ', 'xiě', 'de'], lines: ['朋友们都来听。', '青蛙说：', '这首诗，是我们一起写的。'], ask: { t: 'summarize', q: '为什么青蛙说「是我们一起写的」？', hint: '没有它们，青蛙的诗能写完吗？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -904,9 +904,9 @@
         { w: '到底', py: 'dào dǐ', emoji: '🤔', def: '想弄清楚「究竟是哪一个」。', sent: '到底谁跟谁？' }
       ],
       pages: [
-        { n: 1, art: 'dog', bg: 'bridge', text: '桥上一条狗，桥下一只猴。', lines: ['桥上一条狗，', '桥下一只猴。'], ask: { t: 'predict', q: '一条狗在桥上，一只猴在桥下。猜猜看，接下来会发生什么？', hint: '它们能看见对方吗？' } },
-        { n: 2, art: 'dog', bg: 'bridge', text: '狗走猴也走，狗停猴也停。', lines: ['狗走猴也走，', '狗停猴也停。'], ask: { t: 'question', q: '「也」是什么意思？', hint: '狗做什么，猴就做什么。' } },
-        { n: 3, art: 'dog', bg: 'bridge', text: '到底谁跟谁，谁也说不清。', lines: ['到底谁跟谁，', '谁也说不清。'], ask: { t: 'summarize', q: '为什么它们说不清谁跟谁？', hint: '想想它们站的地方一样吗？' } }
+        { n: 1, art: 'dog', bg: 'bridge', text: '桥上一条狗，桥下一只猴。', py: ['qiáo', 'shàng', 'yì', 'tiáo', 'gǒu', 'qiáo', 'xià', 'yì', 'zhī', 'hóu'], lines: ['桥上一条狗，', '桥下一只猴。'], ask: { t: 'predict', q: '一条狗在桥上，一只猴在桥下。猜猜看，接下来会发生什么？', hint: '它们能看见对方吗？' } },
+        { n: 2, art: 'dog', bg: 'bridge', text: '狗走猴也走，狗停猴也停。', py: ['gǒu', 'zǒu', 'hóu', 'yě', 'zǒu', 'gǒu', 'tíng', 'hóu', 'yě', 'tíng'], lines: ['狗走猴也走，', '狗停猴也停。'], ask: { t: 'question', q: '「也」是什么意思？', hint: '狗做什么，猴就做什么。' } },
+        { n: 3, art: 'dog', bg: 'bridge', text: '到底谁跟谁，谁也说不清。', py: ['dào', 'dǐ', 'shuí', 'gēn', 'shuí', 'shuí', 'yě', 'shuō', 'bù', 'qīng'], lines: ['到底谁跟谁，', '谁也说不清。'], ask: { t: 'summarize', q: '为什么它们说不清谁跟谁？', hint: '想想它们站的地方一样吗？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -952,10 +952,10 @@
         { w: '紫', py: 'zǐ', emoji: '🟣', def: '茄子那样的颜色，在蓝和红中间。', sent: '红橙黄绿青蓝紫。' }
       ],
       pages: [
-        { n: 1, art: 'child', bg: 'garden', text: '雨停了，太阳出来了。', lines: ['雨停了，', '太阳出来了。'], ask: { t: 'predict', q: '雨停了，天上会出现什么呢？', hint: '想想出太阳的时候。' } },
-        { n: 2, art: 'child', bg: 'garden', text: '天上出现一道虹。', lines: ['天上出现', '一道虹。'], ask: { t: 'clarify', q: '「一道」是用来数什么的？', hint: '一道虹、一道河、一道门。' } },
-        { n: 3, art: 'child', bg: 'garden', text: '红橙黄绿青蓝紫，', lines: ['红橙黄绿', '青蓝紫，'], ask: { t: 'clarify', q: '数一数，一共有几种颜色？', hint: '慢慢数，从红开始。' } },
-        { n: 4, art: 'child', bg: 'garden', text: '像座小桥挂空中。', lines: ['像座小桥', '挂空中。'], ask: { t: 'summarize', q: '虹像什么？', hint: '想想它的形状。' } }
+        { n: 1, art: 'child', bg: 'garden', text: '雨停了，太阳出来了。', py: ['yǔ', 'tíng', 'le', 'tài', 'yáng', 'chū', 'lái', 'le'], lines: ['雨停了，', '太阳出来了。'], ask: { t: 'predict', q: '雨停了，天上会出现什么呢？', hint: '想想出太阳的时候。' } },
+        { n: 2, art: 'child', bg: 'garden', text: '天上出现一道虹。', py: ['tiān', 'shàng', 'chū', 'xiàn', 'yí', 'dào', 'hóng'], lines: ['天上出现', '一道虹。'], ask: { t: 'clarify', q: '「一道」是用来数什么的？', hint: '一道虹、一道河、一道门。' } },
+        { n: 3, art: 'child', bg: 'garden', text: '红橙黄绿青蓝紫，', py: ['hóng', 'chéng', 'huáng', 'lǜ', 'qīng', 'lán', 'zǐ'], lines: ['红橙黄绿', '青蓝紫，'], ask: { t: 'clarify', q: '数一数，一共有几种颜色？', hint: '慢慢数，从红开始。' } },
+        { n: 4, art: 'child', bg: 'garden', text: '像座小桥挂空中。', py: ['xiàng', 'zuò', 'xiǎo', 'qiáo', 'guà', 'kōng', 'zhōng'], lines: ['像座小桥', '挂空中。'], ask: { t: 'summarize', q: '虹像什么？', hint: '想想它的形状。' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -999,11 +999,11 @@
         { w: '回家', py: 'huí jiā', emoji: '🏡', def: '回到自己住的地方。', sent: '我要回家了。' }
       ],
       pages: [
-        { n: 1, art: 'swallow', bg: 'eave', text: '燕子说：我要回家了。', lines: ['燕子说：', '我要回家了。'], ask: { t: 'question', q: '燕子的家在哪里呢？', hint: '接着往下看。' } },
-        { n: 2, art: 'swallow', bg: 'eave', text: '我问：你家在哪里？', lines: ['我问：', '你家在哪里？'], ask: { t: 'predict', q: '你猜燕子会怎么回答？', hint: '想想平时在哪里看见过燕子窝。' } },
-        { n: 3, art: 'swallow', bg: 'eave', text: '燕子说：在屋檐下面。', lines: ['燕子说：', '在屋檐下面。'], ask: { t: 'clarify', q: '「屋檐」是房子的哪一部分？', hint: '屋顶伸出来的、能挡雨的那一块。' } },
-        { n: 4, art: 'swallow', bg: 'eave', text: '我又问：你明年还来吗？', lines: ['我又问：', '你明年还来吗？'], ask: { t: 'predict', q: '燕子会来吗？猜一猜。', hint: '燕子每年都会做同一件事。' } },
-        { n: 5, art: 'swallow', bg: 'eave', text: '燕子说：我会来的。', lines: ['燕子说：', '我会来的。'], ask: { t: 'summarize', q: '燕子答应了什么？', hint: '它说的是哪一句话？' } }
+        { n: 1, art: 'swallow', bg: 'eave', text: '燕子说：我要回家了。', py: ['yàn', 'zi', 'shuō', 'wǒ', 'yào', 'huí', 'jiā', 'le'], lines: ['燕子说：', '我要回家了。'], ask: { t: 'question', q: '燕子的家在哪里呢？', hint: '接着往下看。' } },
+        { n: 2, art: 'swallow', bg: 'eave', text: '我问：你家在哪里？', py: ['wǒ', 'wèn', 'nǐ', 'jiā', 'zài', 'nǎ', 'lǐ'], lines: ['我问：', '你家在哪里？'], ask: { t: 'predict', q: '你猜燕子会怎么回答？', hint: '想想平时在哪里看见过燕子窝。' } },
+        { n: 3, art: 'swallow', bg: 'eave', text: '燕子说：在屋檐下面。', py: ['yàn', 'zi', 'shuō', 'zài', 'wū', 'yán', 'xià', 'miàn'], lines: ['燕子说：', '在屋檐下面。'], ask: { t: 'clarify', q: '「屋檐」是房子的哪一部分？', hint: '屋顶伸出来的、能挡雨的那一块。' } },
+        { n: 4, art: 'swallow', bg: 'eave', text: '我又问：你明年还来吗？', py: ['wǒ', 'yòu', 'wèn', 'nǐ', 'míng', 'nián', 'hái', 'lái', 'ma'], lines: ['我又问：', '你明年还来吗？'], ask: { t: 'predict', q: '燕子会来吗？猜一猜。', hint: '燕子每年都会做同一件事。' } },
+        { n: 5, art: 'swallow', bg: 'eave', text: '燕子说：我会来的。', py: ['yàn', 'zi', 'shuō', 'wǒ', 'huì', 'lái', 'de'], lines: ['燕子说：', '我会来的。'], ask: { t: 'summarize', q: '燕子答应了什么？', hint: '它说的是哪一句话？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],
@@ -1049,13 +1049,13 @@
         { w: '吃不完', py: 'chī bù wán', emoji: '🍽️', def: '东西太多了，吃不下那么多。', sent: '它们捉了很多鱼，吃不完。' }
       ],
       pages: [
-        { n: 1, art: 'crane', bg: 'shore', text: '三只白鹤在河边捉鱼。', lines: ['三只白鹤', '在河边捉鱼。'], ask: { t: 'clarify', q: '白鹤在什么地方做什么？', hint: '在哪里、做什么，两件事都要说。' } },
-        { n: 2, art: 'crane', bg: 'shore', text: '它们捉了很多鱼，吃不完。', lines: ['它们捉了很多鱼，', '吃不完。'], ask: { t: 'predict', q: '吃不完的鱼，它们会怎么办？', hint: '想想你吃不完的东西会放哪里。' } },
-        { n: 3, art: 'crane', bg: 'shore', extra: 'fish', text: '一只白鹤把鱼埋在大树下面。', lines: ['一只白鹤把鱼', '埋在大树下面。'], ask: { t: 'question', q: '它为什么要把鱼埋在树下？', hint: '埋起来是为了——' } },
-        { n: 4, art: 'crane', bg: 'shore', text: '它说：我记得鱼在哪里。', lines: ['它说：', '我记得鱼在哪里。'], ask: { t: 'predict', q: '它能找到吗？你先猜，再往下看。', hint: '记住的是「树」，还是「影子」？' } },
-        { n: 5, art: 'crane', bg: 'shore', text: '太阳升起来了，树影变了。', lines: ['太阳升起来了，', '树影变了。'], ask: { t: 'clarify', q: '树影为什么会变？', hint: '太阳动了，影子就跟着动。' } },
-        { n: 6, art: 'crane', bg: 'shore', text: '白鹤找了半天，找不到鱼。', lines: ['白鹤找了半天，', '找不到鱼。'], ask: { t: 'summarize', q: '它为什么找不到鱼？', hint: '它记住的那个东西，会变。' } },
-        { n: 7, art: 'crane', bg: 'shore', text: '它说：下次我要看准地方。', lines: ['它说：', '下次我要看准地方。'], ask: { t: 'summarize', q: '如果再来一次，应该记住什么？', hint: '记住大树，还是记住影子？' } }
+        { n: 1, art: 'crane', bg: 'shore', text: '三只白鹤在河边捉鱼。', py: ['sān', 'zhī', 'bái', 'hè', 'zài', 'hé', 'biān', 'zhuō', 'yú'], lines: ['三只白鹤', '在河边捉鱼。'], ask: { t: 'clarify', q: '白鹤在什么地方做什么？', hint: '在哪里、做什么，两件事都要说。' } },
+        { n: 2, art: 'crane', bg: 'shore', text: '它们捉了很多鱼，吃不完。', py: ['tā', 'men', 'zhuō', 'le', 'hěn', 'duō', 'yú', 'chī', 'bù', 'wán'], lines: ['它们捉了很多鱼，', '吃不完。'], ask: { t: 'predict', q: '吃不完的鱼，它们会怎么办？', hint: '想想你吃不完的东西会放哪里。' } },
+        { n: 3, art: 'crane', bg: 'shore', extra: 'fish', text: '一只白鹤把鱼埋在大树下面。', py: ['yì', 'zhī', 'bái', 'hè', 'bǎ', 'yú', 'mái', 'zài', 'dà', 'shù', 'xià', 'miàn'], lines: ['一只白鹤把鱼', '埋在大树下面。'], ask: { t: 'question', q: '它为什么要把鱼埋在树下？', hint: '埋起来是为了——' } },
+        { n: 4, art: 'crane', bg: 'shore', text: '它说：我记得鱼在哪里。', py: ['tā', 'shuō', 'wǒ', 'jì', 'de', 'yú', 'zài', 'nǎ', 'lǐ'], lines: ['它说：', '我记得鱼在哪里。'], ask: { t: 'predict', q: '它能找到吗？你先猜，再往下看。', hint: '记住的是「树」，还是「影子」？' } },
+        { n: 5, art: 'crane', bg: 'shore', text: '太阳升起来了，树影变了。', py: ['tài', 'yáng', 'shēng', 'qǐ', 'lái', 'le', 'shù', 'yǐng', 'biàn', 'le'], lines: ['太阳升起来了，', '树影变了。'], ask: { t: 'clarify', q: '树影为什么会变？', hint: '太阳动了，影子就跟着动。' } },
+        { n: 6, art: 'crane', bg: 'shore', text: '白鹤找了半天，找不到鱼。', py: ['bái', 'hè', 'zhǎo', 'le', 'bàn', 'tiān', 'zhǎo', 'bú', 'dào', 'yú'], lines: ['白鹤找了半天，', '找不到鱼。'], ask: { t: 'summarize', q: '它为什么找不到鱼？', hint: '它记住的那个东西，会变。' } },
+        { n: 7, art: 'crane', bg: 'shore', text: '它说：下次我要看准地方。', py: ['tā', 'shuō', 'xià', 'cì', 'wǒ', 'yào', 'kàn', 'zhǔn', 'dì', 'fāng'], lines: ['它说：', '下次我要看准地方。'], ask: { t: 'summarize', q: '如果再来一次，应该记住什么？', hint: '记住大树，还是记住影子？' } }
       ],
       retell: {
         frame: ['谁', '在哪里', '发生了什么', '最后怎么样', '我觉得'],

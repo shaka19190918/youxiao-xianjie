@@ -17,7 +17,7 @@
   /* ⚠️ 此处禁止声明名为 CP 的变量：index.html 已有全局 let CP='home'，
      在 IIFE 内写 var CP 会遮蔽它，导致读到的永远是本地值。
      判断当前页请统一用 window.CP。 */
-  var cur = { book: null, page: 0, mode: 'read' };   // mode: read | ask | retell
+  var cur = { book: null, page: 0, mode: 'read', py: [] };   // mode: read | ask | retell；py = 当前页逐字拼音
   var seq = 0, speaking = false, highlighted = -1;
   var stageCache = { bookId: '', page: -1, html: '' };
 
@@ -47,26 +47,63 @@
     clearTimeout(t._tm); t._tm = setTimeout(function () { t.classList.remove('on'); }, 2200);
   }
 
-  /* 把正文按「字」拆成可点读的 span；超纲字自动加注音 */
+  /* 把正文按「字」拆成可点读的 span，并在每个字上方标注拼音与声调。
+     拼音来源优先级：
+       ① 页级 p.py[i]（由 pinyin-pro 离线生成的逐字拼音，含声调，最准）
+       ② R.RUBY[ch]（人工维护的支架注音表，用于超纲字兜底）
+     依据 Ehri(2005) 正字法映射：音形同步对齐才能形成自主解码。 */
   function rubyHTML(text, book) {
     var out = '';
     var pre = {};
     (book.vocab || []).forEach(function (v) { (v.w || '').split('').forEach(function (c) { pre[c] = 1; }); });
+    /* 取当前页的拼音数组（renderBook 会把 p.py 挂到 cur 上） */
+    var pyArr = (cur && cur.py) || [];
+    var hi = 0;   // 第几个汉字（与 py 数组下标对齐，标点不占位）
     for (var i = 0; i < text.length; i++) {
       var ch = text[i];
       if (!/[\u4e00-\u9fa5]/.test(ch)) { out += esc(ch); continue; }
       var isNew = !R.SIGHT[ch];
-      var py = R.RUBY[ch] || '';
-      var cls = 'r71-ch' + (isNew && py ? ' r71-new' : '') + (pre[ch] ? ' r71-taught' : '');
-      var title = py ? py : (R.SIGHT[ch] ? '' : '这个词在「读前预教」里出现过');
-      out += '<span class="' + cls + '" data-i="' + i + '"' + (title ? ' data-py="' + esc(title) + '"' : '') + '>' + esc(ch) + '</span>';
+      /* ① 页级拼音（有就用） ② 支架注音表兜底 */
+      var py = pyArr[hi] || R.RUBY[ch] || '';
+      hi++;
+      var cls = 'r71-ch' + (isNew ? ' r71-new' : '') + (pre[ch] ? ' r71-taught' : '');
+      out += '<span class="' + cls + '" data-i="' + i + '" data-py="' + esc(py) + '" role="button" tabindex="-1" aria-label="' + esc(ch + (py ? '，' + py : '')) + '">' +
+        '<span class="r71-py">' + esc(py) + '</span>' +
+        '<span class="r71-hz">' + esc(ch) + '</span>' +
+        '</span>';
     }
     return out;
   }
 
   /* ---------------- 语音 ---------------- */
+  /* 音色缓存：getVoices() 在页面刚加载时常常返回空数组（浏览器异步加载），
+     如果每次都重新查，用户第一次点字就可能拿不到音色而「无声」。
+     这里做两件事：① 缓存首次非空结果；② 监听 voiceschanged 主动刷新。
+     ⚠️ 不能用 `var voicesCache = getVoices()` 直接初始化——那样缓存的是空数组。 */
+  var voiceCache = null;
+  function refreshVoices() {
+    if (!window.speechSynthesis) return;
+    var vs = speechSynthesis.getVoices();
+    if (vs && vs.length) voiceCache = vs;
+  }
+  if (window.speechSynthesis) {
+    refreshVoices();
+    if (typeof speechSynthesis.addEventListener === 'function') {
+      speechSynthesis.addEventListener('voiceschanged', refreshVoices);
+    } else {
+      speechSynthesis.onvoiceschanged = refreshVoices;
+    }
+    /* 兜底轮询：部分浏览器不派发 voiceschanged */
+    var _vt = 0;
+    var _vp = setInterval(function () {
+      refreshVoices();
+      if (voiceCache || ++_vt > 20) clearInterval(_vp);
+    }, 250);
+  }
+
   function zhVoice() {
-    var vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    var vs = voiceCache || (window.speechSynthesis ? speechSynthesis.getVoices() : []);
+    if (!vs || !vs.length) return null;
     var prefer = ['Xiaoxiao', 'Huihui', 'Yaoyao', 'Kangkang', 'Tingting', 'Chinese', 'zh-CN', 'zh_CN'];
     var best = null, score = -1;
     vs.forEach(function (v) {
@@ -80,9 +117,21 @@
     return best;
   }
 
+  /* 是否有可用中文音色（供 UI 给出明确提示） */
+  function hasZhVoice() { return !!zhVoice(); }
+
   /* 逐字高亮朗读：把文本切句，每句用 utterance 的 onboundary 推进高亮 */
-  function speakText(text, book, startIdx, onDone) {
+  function speakText(text, book, startIdx, onDone, _wait) {
     if (!window.speechSynthesis) { toast('这台设备不能朗读，请家长读给孩子听'); onDone && onDone(); return; }
+    /* 音色还没加载完时，等一小会儿再开始，避免首次朗读静默失败。
+       最多等 6 轮（约 1.5s），超时就带空音色继续——让浏览器用默认音色念。 */
+    if (!voiceCache && (_wait || 0) < 6) {
+      refreshVoices();
+      if (!voiceCache) {
+        setTimeout(function () { speakText(text, book, startIdx, onDone, (_wait || 0) + 1); }, 260);
+        return;
+      }
+    }
     var mySeq = ++seq;
     speechSynthesis.cancel();
     var v = zhVoice();
@@ -223,6 +272,8 @@
     var p = b.pages[cur.page];
     var band = R.band(b.band);
     var st = bk(b.id);
+    /* 当前页逐字拼音（全文注音用），与 rubyHTML 的汉字计数一一对应 */
+    cur.py = p.py || [];
 
     /* 舞台：只在换页时重建（避免每帧重排） */
     var key = b.id + '#' + cur.page;
@@ -327,7 +378,13 @@
       '</details>';
   }
 
-  /* ---------------- 策略微课弹层 ---------------- */
+  /* ---------------- 策略微课弹层 ----------------
+     ⚠️ 曾经的问题：这个弹层是 position:fixed; inset:0; z-index:9999 的全屏遮罩，
+     打开绘本 320ms 后自动弹出，把正文整个盖住 —— 用户点字「完全没反应」，
+     实际是点在了遮罩上。实测 elementFromPoint 命中的是 DIV.r71-sheet 而非 .r71-ch。
+     现在改为：① 只在首次打开该策略时弹一次；② 弹层出现 4 秒后自动收起；
+     ③ 点击遮罩任意处即关；④ 弹层打开期间给正文区加 pointer-events:none 之外的
+     显式提示（右下角「点这里继续」），避免用户以为坏了。 */
   function strategySheet(key) {
     var s = R.STRATEGIES[key]; if (!s) return;
     var old = $('r71Sheet'); if (old) old.remove();
@@ -338,9 +395,13 @@
       '<p class="r71-swhy">' + esc(s.why) + '</p>' +
       '<ol class="r71-ssteps">' + s.steps.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
       '<p class="r71-sline">「' + esc(s.line) + '」</p>' +
-      '<button class="r71-primary" onclick="R71UI.closeSheet()">好，我试试</button></div>';
+      '<button class="r71-primary" onclick="R71UI.closeSheet()">好，我试试</button>' +
+      '<p class="r71-sauto">4 秒后自动关闭</p></div>';
     d.addEventListener('click', function (e) { if (e.target === d) d.remove(); });
     document.body.appendChild(d);
+    /* 自动收起：不让孩子卡在弹层上 */
+    clearTimeout(strategySheet._tm);
+    strategySheet._tm = setTimeout(function () { var x = $('r71Sheet'); if (x) x.remove(); }, 4000);
   }
 
   /* 逐字点读的事件委托：正文区是 innerHTML 重建的，
@@ -393,13 +454,16 @@
     },
 
     /* 逐字点读：点哪个字就读哪个字，并高亮它（Ehri 2005 音形同步映射）。
-       这是「自己读」环节的核心——孩子卡住时点一下，不用等家长。 */
+       这是「自己读」环节的核心——孩子卡住时点一下，不用等家长。
+       ⚠️ 曾踩的坑：设备无中文音色时，speak() 会异步触发 onerror，
+       高亮随即被清掉，用户看到的是「点了没反应、也没声音」，无法判断是坏了还是没音色。
+       现在：onerror 时给出明确文案提示，并保留高亮 1.2 秒，让用户看到点击已被接收。 */
     sayChar: function (i) {
       var b = cur.book; if (!b) return;
       var p = b.pages[cur.page]; if (!p) return;
       var ch = p.text.charAt(i); if (!ch) return;
       hi(i);
-      if (!window.speechSynthesis) { toast(ch); return; }
+      if (!window.speechSynthesis) { toast('这台设备不能朗读，请家长读给孩子听'); return; }
       var mySeq = ++seq;
       try { speechSynthesis.cancel(); } catch (e) {}
       var v = zhVoice();
@@ -409,7 +473,13 @@
       u.pitch = 1.04;
       u.onstart = function () { if (mySeq === seq) hi(i); };
       u.onend = function () { if (mySeq === seq) setTimeout(function () { if (mySeq === seq) clearHi(); }, 420); };
-      u.onerror = function () { if (mySeq === seq) clearHi(); };
+      u.onerror = function () {
+        if (mySeq !== seq) return;
+        /* 音色缺失/被拦截：保留高亮 1.2s，并明确告诉用户原因 */
+        setTimeout(function () { if (mySeq === seq) clearHi(); }, 1200);
+        if (!zhVoice()) toast('这台设备还没装中文语音，暂时读不出来（字已高亮）');
+        else toast('语音被浏览器拦住了，再点一次试试');
+      };
       speechSynthesis.speak(u);
     },
 
