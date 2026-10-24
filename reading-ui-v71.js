@@ -631,16 +631,23 @@
   }
 
   /* 首页入口卡：按项目既有惯例包装 PGS.home.render。
-     game-v59.js 把首页渲染成 <main class="g1-shell">，故把入口卡插到
-     .g1-map（成长地图）之前，位置稳定且语义合适。 */
+
+     ⚠️ v77 位置变更（重要，勿改回 beforebegin）：
+     原先把入口卡插到 .g1-map（成长地图）**之前**。但 v77 把成长地图前移到
+     「继续闯关」之后（为了让孩子一进来就看到自己的岛和进度），
+     此时若仍插在地图之前，这张 148px 高的入口卡会把地图重新顶出首屏 ——
+     实测：插在地图前 → 地图 top=631px（刚好掉出 630px 首屏线）；
+           插在地图后 → 地图 top=483px（稳稳在首屏内）。
+     所以改为插到 .g1-map 之后（beforeend 到地图后面），
+     语义上仍是"探索完地图，再去读书"，位置也稳定。 */
   function wrapHome() {
     if (typeof PGS !== 'object' || !PGS || !PGS.home || typeof PGS.home.render !== 'function') return false;
     if (PGS.home._r71wrapped) return true;
     var old = PGS.home.render;
     PGS.home.render = function () {
       old.apply(this, arguments);
-      var host = document.querySelector('#ct .g1-map');
-      if (host) host.insertAdjacentHTML('beforebegin', entryHTML());
+      var map = document.querySelector('#ct .g1-map');
+      if (map) map.insertAdjacentHTML('afterend', entryHTML());
       else {
         var shell = document.querySelector('#ct .g1-shell');
         if (shell) shell.insertAdjacentHTML('beforeend', entryHTML());
@@ -650,7 +657,7 @@
     return true;
   }
 
-  /* 把入口卡插到成长地图之前（首页尚未渲染时退化为插到 shell 末尾） */
+  /* 把入口卡插到成长地图之后（首页尚未渲染时退化为插到 shell 末尾） */
   function injectEntry() {
     try {
       if (document.querySelector('.r71-entry')) return true;   // 已插入
@@ -661,8 +668,8 @@
       if (nowPage !== undefined && nowPage !== 'home') return false;
       var ct = document.getElementById('ct');
       if (!ct) return false;
-      var host = ct.querySelector('.g1-map');
-      if (host) { host.insertAdjacentHTML('beforebegin', entryHTML()); return true; }
+      var map = ct.querySelector('.g1-map');
+      if (map) { map.insertAdjacentHTML('afterend', entryHTML()); return true; }
       var shell = ct.querySelector('.g1-shell');
       if (shell) { shell.insertAdjacentHTML('beforeend', entryHTML()); return true; }
     } catch (e) {}

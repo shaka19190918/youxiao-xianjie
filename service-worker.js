@@ -9,12 +9,15 @@
    既撑破按钮边框、又让窄屏整页横向溢出。
    v76-1: 品牌名由「一年级成长岛」改为「低年级每日学习搭子」（标题/logo/PWA 清单/报告页脚）。
    注意：`short_name` 与地图里的「成长岛」保留（它是游戏世界名，不是品牌名）；
-   存储键 `grade1-island-*` 一律未动（改了会丢用户数据）。CACHE 进一位以强制旧客户端换壳。 */
-const CACHE='grade1-island-v76-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v75-1';
+   存储键 `grade1-island-*` 一律未动（改了会丢用户数据）。CACHE 进一位以强制旧客户端换壳。
+   v77-1: 首页信息架构改进 —— 成长地图前移到「继续闯关」之后（实测 top 1024px → 483px，
+   进首屏），今日计划卡在矮屏（<720px）默认折叠成一行摘要（313px → 84px），
+   修掉"看得见摸不着"；绘本入口让位到地图之后（它 148px 高，挡在前面会把地图顶出首屏）。 */
+const CACHE='grade1-island-v77-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v76-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=76','learning-v66.css?v=76','question-art-v67.css?v=76','curriculum-v61.css?v=76','pinyin-v63.css?v=76','practice-v68.css?v=76','eye-v70.css?v=76','reading-v71.css?v=76',
-  'curriculum-v61.js?v=76','pinyin-v63.js?v=76','g1-ruby.js?v=76','game-v59.js?v=76','learning-v66.js?v=76','question-art-v67.js?v=76','pitch-v68.js?v=76','practice-v68.js?v=76','eye-v70.js?v=76','fast-v69.js?v=76','reading-v71.js?v=76','reading-ui-v71.js?v=76',
+  'game-v59.css?v=77','learning-v66.css?v=77','question-art-v67.css?v=77','curriculum-v61.css?v=77','pinyin-v63.css?v=77','practice-v68.css?v=77','eye-v70.css?v=77','reading-v71.css?v=77',
+  'curriculum-v61.js?v=77','pinyin-v63.js?v=77','g1-ruby.js?v=77','game-v59.js?v=77','learning-v66.js?v=77','question-art-v67.js?v=77','pitch-v68.js?v=77','practice-v68.js?v=77','eye-v70.js?v=77','fast-v69.js?v=77','reading-v71.js?v=77','reading-ui-v71.js?v=77',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}

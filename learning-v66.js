@@ -80,9 +80,85 @@
   function remaining(){return Math.max(0,Math.ceil((600000-(plan().coreMs||0))/1000))}
   function current(){const p=plan();return p.items.find(x=>!x.done&&(x.id==='piano'||remaining()>0))}
   function itemTask(item=current()){const l=G.levels.find(l=>l.id===item?.levelId);return l?{l,t:l.tasks[item.index],item}:null}
-  function dailyCard(){const p=plan(),done=p.items.filter(x=>x.done).length;return `<section class="l66-card l66-plan"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span></header><p class="l66-note">每天专注五项：基础学习约9分钟 + 钢琴20分钟。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.id==='piano'?'练满20分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':p.startedAt?'继续今日计划':'开始今日计划'}</button><p class="l66-note">基础四项最多10分钟，未完成的明天继续；钢琴另计20分钟，休息不计时。其他学科仍可在地图探索。</p></section>`}
+  /* ── v77：今日计划卡的"矮屏折叠"（修掉"看得见摸不着"）────────────────────
+     问题（v76 实测）：这张卡高 313px，在 630px 高的窗口里从 y=499 开始，
+     首屏只露出 131px，**「开始今日计划」按钮落在屏幕外** ——
+     孩子看到卡片却点不到，是体验上最糟的一种。
+     做法：视口高度 < 720px 时默认折叠成一行摘要（标题 + 进度 + 展开箭头），
+     点击展开。展开状态记在 localStorage，尊重孩子的选择。
+     ⚠️ 为什么用 JS 判断高度而不是纯 CSS：折叠态要改变 DOM（隐藏正文），
+        且需要记住用户选择；纯 CSS 无法保存展开状态。
+     ⚠️ 断点取 720px 而不是 630px：留出余量，避免"刚好卡在边界"时闪烁。 */
+  const PLAN_KEY = 'g1_plan_expanded';
+  /* 折叠样式由本文件自带注入 —— 遵循项目铁律：关键版式 CSS 跟着 JS 走，
+     避免"新 JS + 缓存旧 CSS"导致折叠按钮点了没反应（那等于静默失效，
+     而本项目明确要求"失败永远不要表现为静默无反应"）。 */
+  (function injectPlanStyle() {
+    if (typeof document === 'undefined' || document.getElementById('l66-fold-style')) return;
+    var css = [
+      /* 折叠按钮：触控 ≥44px（儿童友好下限），不抢标题视觉重心 */
+      '.l66-fold-btn{margin-left:auto;display:inline-flex;align-items:center;gap:5px;',
+      'min-height:44px;min-width:76px;padding:0 12px;border:2px solid #dcd0fa;border-radius:16px;',
+      'background:#f4f0ff;color:#50319c;font:800 14px/1 inherit;cursor:pointer;flex:0 0 auto}',
+      '.l66-fold-btn i{font-style:normal;font-size:13px;transition:transform .18s ease}',
+      '.l66-folded .l66-fold-btn i{transform:rotate(-90deg)}',
+      /* 折叠态：只留标题 + 进度 + 按钮，正文全隐 —— 首屏因此省下约 240px */
+      '.l66-folded .l66-subjects,.l66-folded .l66-primary,.l66-folded>.l66-note{display:none}',
+      '.l66-folded{padding:14px clamp(16px,3vw,22px)}',
+      /* 窄屏（≤360px）header 本来就会换行，按钮占整行更清楚 */
+      '@media(max-width:360px){.l66-fold-btn{margin-left:0;width:100%;justify-content:center}}',
+    ].join('');
+    var st = document.createElement('style');
+    st.id = 'l66-fold-style';
+    st.textContent = css;
+    (document.head || document.documentElement).appendChild(st);
+  })();
+  function planExpanded() {
+    try { return localStorage.getItem(PLAN_KEY) === '1' } catch (_) { return false }
+  }
+  function planCollapsed() {
+    if (planExpanded()) return false;
+    return (window.innerHeight || 800) < 720;
+  }
+  window.g1TogglePlan = function () {
+    const next = !planExpanded();
+    try { localStorage.setItem(PLAN_KEY, next ? '1' : '0') } catch (_) { }
+    // 只重渲染首页（R() 不重渲染页面，必须显式调用）
+    if (typeof PGS !== 'object' || !PGS || !PGS.home) return;
+    if (typeof CP !== 'undefined' && CP !== 'home') return;
+    PGS.home.render();
+    if (typeof toast === 'function') toast(next ? '已展开今日计划' : '已收起今日计划');
+  };
+  /* 渲染后再按需折叠（渲染时 innerHeight 已知，但折叠要动 DOM，故渲染后处理） */
+  function applyPlanCollapse() {
+    const card = document.querySelector('#ct .l66-plan');
+    if (!card) return;
+    const collapsed = planCollapsed();
+    card.classList.toggle('l66-folded', collapsed);
+    const btn = card.querySelector('.l66-fold-btn');
+    if (btn) {
+      btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      btn.querySelector('span').textContent = collapsed ? '展开' : '收起';
+    }
+  }
+
+  function dailyCard(){const p=plan(),done=p.items.filter(x=>x.done).length;const folded=planCollapsed();
+    return `<section class="l66-card l66-plan${folded?' l66-folded':''}"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span><button class="l66-fold-btn" onclick="g1TogglePlan()" aria-expanded="${folded?'false':'true'}" title="展开或收起今日计划"><span>${folded?'展开':'收起'}</span><i aria-hidden="true">▾</i></button></header><p class="l66-note">每天专注五项：基础学习约9分钟 + 钢琴20分钟。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.id==='piano'?'练满20分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':p.startedAt?'继续今日计划':'开始今日计划'}</button><p class="l66-note">基础四项最多10分钟，未完成的明天继续；钢琴另计20分钟，休息不计时。其他学科仍可在地图探索。</p></section>`}
   const oldHome=PGS.home.render;
-  PGS.home.render=function(){oldHome();const old=document.querySelector('.g1-daily');if(old)old.outerHTML=dailyCard();else document.querySelector('.g1-map')?.insertAdjacentHTML('beforebegin',dailyCard())};
+  PGS.home.render=function(){
+    oldHome();
+    const old=document.querySelector('.g1-daily');
+    if(old)old.outerHTML=dailyCard();
+    else document.querySelector('.g1-map')?.insertAdjacentHTML('afterend',dailyCard());
+    applyPlanCollapse();
+  };
+  /* 窗口高度变化（横竖屏切换、拉窗口）时重算折叠态 —— 只改 class，不重渲染 */
+  let _planRz;
+  window.addEventListener('resize',()=>{clearTimeout(_planRz);_planRz=setTimeout(()=>{
+    const card=document.querySelector('#ct .l66-plan');if(!card)return;
+    const should=planCollapsed(),has=card.classList.contains('l66-folded');
+    if(should!==has){card.classList.toggle('l66-folded',should);const b=card.querySelector('.l66-fold-btn');if(b){b.setAttribute('aria-expanded',should?'false':'true');b.querySelector('span').textContent=should?'展开':'收起'}}
+  },180)});
   function startDaily(){const p=plan();if(!p.startedAt){p.startedAt=Date.now();save()}dailyHeard='';showPage('daily66')}
   function taskKey(c){return c.l.id+'::'+c.t.id}
   function mayDaily(){return CP==='daily66'&&remaining()>0&&!_eyeMode&&plan().breakUntil<=Date.now()}
