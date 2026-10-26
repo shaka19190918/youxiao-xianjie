@@ -12,12 +12,17 @@
    存储键 `grade1-island-*` 一律未动（改了会丢用户数据）。CACHE 进一位以强制旧客户端换壳。
    v77-1: 首页信息架构改进 —— 成长地图前移到「继续闯关」之后（实测 top 1024px → 483px，
    进首屏），今日计划卡在矮屏（<720px）默认折叠成一行摘要（313px → 84px），
-   修掉"看得见摸不着"；绘本入口让位到地图之后（它 148px 高，挡在前面会把地图顶出首屏）。 */
-const CACHE='grade1-island-v77-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v76-1';
+   修掉"看得见摸不着"；绘本入口让位到地图之后（它 148px 高，挡在前面会把地图顶出首屏）。
+   v78-1: 矮屏紧凑模式（方案 3）—— 视口高 <720px 时压扁"问候区"（175px → 82px）
+   与"伙伴小屋"（345px → 204px），省出的空间全给成长地图（top 483px → 342px）。
+   样式由 game-v59.js 自带注入 <style id="g1-compact-style">（铁律：关键版式 CSS 跟着 JS 走）。
+   另把家长端两处催办措辞（"还差 N 个任务"）改为中性表述（"已完成 N 项，可以继续也可以收工"），
+   减轻"必须做完"的隐形压力 —— 代码本就没有强制，措辞不该制造压力。 */
+const CACHE='grade1-island-v78-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v77-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=77','learning-v66.css?v=77','question-art-v67.css?v=77','curriculum-v61.css?v=77','pinyin-v63.css?v=77','practice-v68.css?v=77','eye-v70.css?v=77','reading-v71.css?v=77',
-  'curriculum-v61.js?v=77','pinyin-v63.js?v=77','g1-ruby.js?v=77','game-v59.js?v=77','learning-v66.js?v=77','question-art-v67.js?v=77','pitch-v68.js?v=77','practice-v68.js?v=77','eye-v70.js?v=77','fast-v69.js?v=77','reading-v71.js?v=77','reading-ui-v71.js?v=77',
+  'game-v59.css?v=78','learning-v66.css?v=78','question-art-v67.css?v=78','curriculum-v61.css?v=78','pinyin-v63.css?v=78','practice-v68.css?v=78','eye-v70.css?v=78','reading-v71.css?v=78',
+  'curriculum-v61.js?v=78','pinyin-v63.js?v=78','g1-ruby.js?v=78','game-v59.js?v=78','learning-v66.js?v=78','question-art-v67.js?v=78','pitch-v68.js?v=78','practice-v68.js?v=78','eye-v70.js?v=78','fast-v69.js?v=78','reading-v71.js?v=78','reading-ui-v71.js?v=78',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}

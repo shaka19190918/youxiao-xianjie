@@ -328,6 +328,63 @@
   const baseSoundMount=v41MountSound;v41MountSound=function(){baseSoundMount();mountFloatControls()};
   const baseShow=showPage;showPage=function(id){if(g1SportTimer&&id!=='level'){clearInterval(g1SportTimer);g1SportTimer=null}baseShow(id);mountGameDock();mountFloatControls()};
 
+  /* ══════════════════════════════════════════════════════════════════
+     v78：矮屏紧凑模式（方案 3）
+     ──────────────────────────────────────────────────────────────────
+     问题（v77 实测）：在用户真实的 1360×630 窗口里，"问候区"占 175px、
+     "伙伴小屋"占 345px —— 两块非核心版块吃掉了 520px，把地图挤到 483px。
+     孩子每天看到的是同一句问候，不需要每次都用 38px 大字打招呼；
+     伙伴的三个状态条也不是"要看的信息"，而是"想看的时候才看"。
+
+     做法：仅在视口高 < 720px 时压扁这两块，省出的空间全给地图。
+       问候区   175px → 82px   （两行大标题压成一条横幅，去掉装饰大星星）
+       伙伴小屋 345px → 204px  （状态条压成一行紧凑数字，去掉进度槽与成长条）
+       地图     top 483px → 342px
+
+     ⚠️ 为什么 CSS 写在这里而不是外部 .css：
+        项目铁律 —— 关键版式 CSS 由对应 JS 自带注入。外部 CSS 可能被缓存成旧版，
+        导致"新 JS + 旧 CSS"（本项目踩过：拼音退化成与汉字并排）。
+        写在这里，只要 JS 加载成功，版式就一定对。
+     ⚠️ 断点取 720px 而非 630px：留余量，避免刚好卡边界时闪烁。
+        与 learning-v66.js 的今日计划卡折叠用同一个断点，保证两块一起收。
+     ⚠️ 触控高度必须守住 44px（项目硬标准，孩子手指粗）——
+        预演验收时曾把"去照顾伙伴"按钮压到 38px 被抓出来，已修正。
+     ⚠️ 只压"信息密度"，不删信息：状态条的数值保留，只是去掉进度槽的纵向占位。
+     ══════════════════════════════════════════════════════════════════ */
+  function injectCompactStyle(){
+    if(document.getElementById('g1-compact-style'))return;
+    const css=[
+      '@media(max-height:719px){',
+        /* 1. 问候区：两行大标题 → 一条横幅 */
+        '.g1-top{padding:10px 18px!important;border-radius:22px!important;min-height:0}',
+        '.g1-top h1{font-size:20px!important;margin:0 0 1px!important;line-height:1.2}',
+        '.g1-top p{font-size:12px!important;opacity:.85}',
+        '.g1-top:after{display:none}',
+        '.g1-score{gap:6px}',
+        '.g1-score span{min-width:66px;min-height:28px;font-size:14px!important}',
+        /* 2. 伙伴小屋：状态条压成一行紧凑数字 */
+        '.g1-pet-house{gap:6px;padding:11px}',
+        '.g1-pet-house>header strong{font-size:16px}',
+        '.g1-pet-main{grid-template-columns:60px minmax(0,1fr);gap:9px}',
+        '.g1-pet-picture{width:60px;height:60px;border-radius:17px}',
+        '.g1-pet-picture img{width:58px;height:58px}',
+        '.g1-pet-main h2{font-size:17px}',
+        '.g1-pet-main p{font-size:12px;margin:2px 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}',
+        '.g1-pet-main small{display:none}',
+        '.g1-pet-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}',
+        '.g1-pet-stats>div{padding:4px 6px;border-radius:11px}',
+        '.g1-pet-stats span{font-size:12px;gap:2px}',
+        '.g1-pet-stats i{display:none}',
+        '.g1-pet-grow{display:none}',
+        '.g1-pet-house>button{min-height:44px;font-size:13px}',
+      '}',
+    ].join('');
+    const st=document.createElement('style');
+    st.id='g1-compact-style';
+    st.textContent=css;
+    (document.head||document.documentElement).appendChild(st);
+  }
+
   LEVELS=buildLevels();LEVEL_BY_ID=Object.fromEntries(LEVELS.map(x=>[x.id,x]));game();S._setup.grade='一年级';S.strk=studyStreak();
   /* 题面拼音开关：默认开；从 localStorage 恢复上次选择（跨会话保持） */
   if(S.g1PinyinOn===undefined){
@@ -335,6 +392,7 @@
     S.g1PinyinOn=saved===null?true:saved==='1';
   }
   R();
+  injectCompactStyle();   /* v78：矮屏紧凑样式（媒体查询，只在 <720px 高时生效） */
   if(new URLSearchParams(location.search).has('test'))window.__G1_TEST={
     levels:LEVELS,regions:REGION_META,totalStars,levelState,regionUnlocked,dueReviews,petReply,
     current(){return taskAt()},
