@@ -29,12 +29,16 @@
    中间模糊带判 uncertain，提示"先分手弹一次"（符合拜厄/小汤教学法）。
    语音反馈用**时分复用**（暂停拾音 → 播语音 → 延迟 250ms 恢复）——
    不能开回声消除（AEC 会削掉钢琴谐波，音高精度会掉）。
-   采样参数由 125ms/3 帧改为 **60ms/2 帧**（实测 200ms/音 从 0% → 100%）。 */
-const CACHE='grade1-island-v79-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v78-1';
+   采样参数由 125ms/3 帧改为 **60ms/2 帧**（实测 200ms/音 从 0% → 100%）。
+   v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律加入（共 37 首曲目），
+   仅取公有领域内容（作者 1863 年卒，版权已过保护期）。
+   新增"录音模式"按钮：整曲录制 .webm，不做实时判定，文件可下载发给老师/离线分析。
+   录音用独立 MediaRecorder（不共用检测 stream），避免 AEC/采样率冲突。 */
+const CACHE='grade1-island-v80-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v79-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=79','learning-v66.css?v=79','question-art-v67.css?v=79','curriculum-v61.css?v=79','pinyin-v63.css?v=79','practice-v68.css?v=79','eye-v70.css?v=79','reading-v71.css?v=79',
-  'curriculum-v61.js?v=79','pinyin-v63.js?v=79','g1-ruby.js?v=79','game-v59.js?v=79','learning-v66.js?v=79','question-art-v67.js?v=79','pitch-v68.js?v=79','practice-v68.js?v=79','eye-v70.js?v=79','fast-v69.js?v=79','reading-v71.js?v=79','reading-ui-v71.js?v=79','follow-v79.js?v=79','follow-ui-v79.js?v=79',
+  'game-v59.css?v=80','learning-v66.css?v=80','question-art-v67.css?v=80','curriculum-v61.css?v=80','pinyin-v63.css?v=80','practice-v68.css?v=80','eye-v70.css?v=80','reading-v71.css?v=80',
+  'curriculum-v61.js?v=80','pinyin-v63.js?v=80','g1-ruby.js?v=80','game-v59.js?v=80','learning-v66.js?v=80','question-art-v67.js?v=80','pitch-v68.js?v=80','practice-v68.js?v=80','eye-v70.js?v=80','fast-v69.js?v=80','reading-v71.js?v=80','reading-ui-v71.js?v=80','follow-v79.js?v=80','follow-ui-v79.js?v=80',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
