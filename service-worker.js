@@ -17,12 +17,24 @@
    与"伙伴小屋"（345px → 204px），省出的空间全给成长地图（top 483px → 342px）。
    样式由 game-v59.js 自带注入 <style id="g1-compact-style">（铁律：关键版式 CSS 跟着 JS 走）。
    另把家长端两处催办措辞（"还差 N 个任务"）改为中性表述（"已完成 N 项，可以继续也可以收工"），
-   减轻"必须做完"的隐形压力 —— 代码本就没有强制，措辞不该制造压力。 */
-const CACHE='grade1-island-v78-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v77-1';
+   减轻"必须做完"的隐形压力 —— 代码本就没有强制，措辞不该制造压力。
+   v79-1: 钢琴跟弹模式 —— 用**引导式检测**（问"该弹的这个音在不在"，而不是"弹的是什么音"）。
+   实测（_pitch_real.js）现有单音盲检测在**双手同弹**时必然失败（报左手音或完全检测不到），
+   因为"两个音叠加时哪个是主音"没有答案；而拜厄/小汤3 从第 1 课起就是双手。
+   follow-v79.js 提供三个判据：presence（引导式存在性，对复音免疫）、bestInRange（受限
+   argmax，能指出错音）、finePitch（±5 音分扫描 + 抛物线插值）。
+   谐波重合（C3 的 3 次谐波 ≈ G4 基频、4 次谐波 = C5 基频）用**能量比值法**处理 ——
+   测低音基频、按 k^(-α) 外推其第 k 次谐波，与重合点实测幅度比：
+     没弹 0.00~0.87，真弹 1.47~5.65 → 三段式判据（0.6 / 2.0）
+   中间模糊带判 uncertain，提示"先分手弹一次"（符合拜厄/小汤教学法）。
+   语音反馈用**时分复用**（暂停拾音 → 播语音 → 延迟 250ms 恢复）——
+   不能开回声消除（AEC 会削掉钢琴谐波，音高精度会掉）。
+   采样参数由 125ms/3 帧改为 **60ms/2 帧**（实测 200ms/音 从 0% → 100%）。 */
+const CACHE='grade1-island-v79-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v78-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=78','learning-v66.css?v=78','question-art-v67.css?v=78','curriculum-v61.css?v=78','pinyin-v63.css?v=78','practice-v68.css?v=78','eye-v70.css?v=78','reading-v71.css?v=78',
-  'curriculum-v61.js?v=78','pinyin-v63.js?v=78','g1-ruby.js?v=78','game-v59.js?v=78','learning-v66.js?v=78','question-art-v67.js?v=78','pitch-v68.js?v=78','practice-v68.js?v=78','eye-v70.js?v=78','fast-v69.js?v=78','reading-v71.js?v=78','reading-ui-v71.js?v=78',
+  'game-v59.css?v=79','learning-v66.css?v=79','question-art-v67.css?v=79','curriculum-v61.css?v=79','pinyin-v63.css?v=79','practice-v68.css?v=79','eye-v70.css?v=79','reading-v71.css?v=79',
+  'curriculum-v61.js?v=79','pinyin-v63.js?v=79','g1-ruby.js?v=79','game-v59.js?v=79','learning-v66.js?v=79','question-art-v67.js?v=79','pitch-v68.js?v=79','practice-v68.js?v=79','eye-v70.js?v=79','fast-v69.js?v=79','reading-v71.js?v=79','reading-ui-v71.js?v=79','follow-v79.js?v=79','follow-ui-v79.js?v=79',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
