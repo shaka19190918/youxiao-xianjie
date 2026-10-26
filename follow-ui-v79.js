@@ -51,6 +51,8 @@
   let stats = { correct: 0, wrong: 0, uncertain: 0 };
   let stableCount = 0, lastMidi = null, lastAdvance = 0;
   let speakQueue = null, micPaused = false;
+  /* 录音模式状态 */
+  let mediaRecorder = null, recordedChunks = [], recordingStream = null, isRecording = false;
 
   const KEY = 'g1_follow_state_v1';
   function loadState() {
@@ -105,6 +107,7 @@
       '.f79-page button:disabled{opacity:.5;cursor:default}',
       '.f79-page button:focus-visible,.f79-page select:focus-visible{outline:3px solid #147796;outline-offset:3px}',
       '.f79-primary{background:#7150bc!important;color:#fff!important;border-color:#7150bc!important}',
+      '.f79-recording{background:#c96a6a!important;color:#fff!important;border-color:#c96a6a!important}',
       '.f79-actions>button{flex:1 1 170px}',
       '.f79-modes{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}',
       '.f79-modes button{flex:0 1 auto}',
@@ -491,6 +494,7 @@
       <button id="f79Stop" onclick="Follow79.stop()">■ 停止</button>
       <button id="f79Mic" onclick="Follow79.askMic()">🎤 开启麦克风</button>
       <button onclick="Follow79.restart()">↻ 从头再来</button>
+      <button id="f79Rec" onclick="Follow79.toggleRecord()">🔴 录音模式</button>
     </div>
     <p class="f79-tip">麦克风只在本机分析声音，不录音、不上传。练习时先关掉电视和音乐，房间安静一点会更准。</p>
   </section>
@@ -514,12 +518,16 @@
     const st = $('f79Start');
     if (st) {
       st.disabled = !has;
-      /* 弹完后 finishMelody() 把文案改成"再弹一遍"，重新开始时要复原，
-         否则"再弹一遍"会一直挂着，看起来像按钮没生效。 */
       if (has && noteIndex === 0) st.textContent = '▶ 开始跟弹';
     }
     const sp = $('f79Stop');
     if (sp) sp.disabled = !stream && !pending;
+    const rec = $('f79Rec');
+    if (rec) {
+      rec.disabled = !has;
+      rec.textContent = isRecording ? '⏹️ 停止录音' : '🔴 录音模式';
+      rec.classList.toggle('f79-recording', isRecording);
+    }
     if (has) {
       const t = $('f79Title');
       if (t) t.textContent = `${curMelody.icon} ${curMelody.title}`;
@@ -539,7 +547,7 @@
   function entryHTML() {
     const st = loadState();
     const last = st.last && st.last.day ? st.last : null;
-    let foot = '7 首曲子 · 听音判对错';
+    let foot = '37 首曲子 · 含拜厄 1-30 课';
     if (last) {
       const pct = last.total ? Math.round((last.correct / last.total) * 100) : 0;
       foot = `上次：${last.correct} / ${last.total} 个音（${pct}%）`;
@@ -654,6 +662,59 @@
       noteIndex = 0; lastVerdict = ''; lastMidi = null; stableCount = 0;
       lastAdvice = '从头再来，慢慢弹。';
       renderStrip(); renderLive(); renderStats(); updateButtons();
+    },
+
+    /* ── 录音模式：整曲录制 .wav，供离线分析/发给老师 ─────────────────
+       ⚠️ 录音用独立的 MediaRecorder，不跟跟弹检测共用 stream（避免 AEC/采样率冲突）。
+       只记录声音，不做实时判定。文件可下载、分享。 */
+    async startRecord() {
+      if (isRecording) return;
+      if (!navigator.mediaDevices?.getUserMedia) {
+        lastAdvice = '这台设备不支持录音。';
+        renderLive(); return;
+      }
+      try {
+        recordedChunks = [];
+        recordingStream = await navigator.mediaDevices.getUserMedia({
+          audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+          video: false,
+        });
+        mediaRecorder = new MediaRecorder(recordingStream, { mimeType: 'audio/webm;codecs=opus' });
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${curMelody ? curMelody.id : 'piano'}_${Date.now()}.webm`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+          lastAdvice = '录音已保存，可发给老师或留作对比。';
+          renderLive();
+        };
+        mediaRecorder.start(1000);  /* 每秒切片一次 */
+        isRecording = true;
+        lastAdvice = '🔴 正在录音… 弹完整首曲子，再点一次停止。';
+        updateButtons();
+      } catch (err) {
+        lastAdvice = err.name === 'NotAllowedError' ? '未获麦克风权限。' : '录音启动失败。';
+        renderLive();
+      }
+    },
+
+    stopRecord() {
+      if (!isRecording) return;
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
+      isRecording = false;
+      updateButtons();
+    },
+
+    toggleRecord() {
+      if (isRecording) this.stopRecord();
+      else this.startRecord();
     },
   };
   window.Follow79 = Follow79;
