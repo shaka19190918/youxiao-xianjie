@@ -30,15 +30,20 @@
    语音反馈用**时分复用**（暂停拾音 → 播语音 → 延迟 250ms 恢复）——
    不能开回声消除（AEC 会削掉钢琴谐波，音高精度会掉）。
    采样参数由 125ms/3 帧改为 **60ms/2 帧**（实测 200ms/音 从 0% → 100%）。
-   v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律加入（共 37 首曲目），
-   仅取公有领域内容（作者 1863 年卒，版权已过保护期）。
-   新增"录音模式"按钮：整曲录制 .webm，不做实时判定，文件可下载发给老师/离线分析。
-   录音用独立 MediaRecorder（不共用检测 stream），避免 AEC/采样率冲突。 */
-const CACHE='grade1-island-v80-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v79-1';
+v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律加入（共 37 首曲目），
+  仅取公有领域内容（作者 1863 年卒，版权已过保护期）。
+  新增"录音模式"按钮：整曲录制 .webm，不做实时判定，文件可下载发给老师/离线分析。
+  录音用独立 MediaRecorder（不共用检测 stream），避免 AEC/采样率冲突。
+  v81-1: 双手全听模式 —— follow-v79.js 新增 judgeBoth() 双手并行判定，每帧同时给右手/左手期望音打分；
+  组合结论：correct/right-only/left-only/wrong/uncertain/silent/unclear，细粒度反馈。
+  所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
+  UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
+  切模式/重新开始自动同步重置两手进度。 */
+const CACHE='grade1-island-v81-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v80-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=80','learning-v66.css?v=80','question-art-v67.css?v=80','curriculum-v61.css?v=80','pinyin-v63.css?v=80','practice-v68.css?v=80','eye-v70.css?v=80','reading-v71.css?v=80',
-  'curriculum-v61.js?v=80','pinyin-v63.js?v=80','g1-ruby.js?v=80','game-v59.js?v=80','learning-v66.js?v=80','question-art-v67.js?v=80','pitch-v68.js?v=80','practice-v68.js?v=80','eye-v70.js?v=80','fast-v69.js?v=80','reading-v71.js?v=80','reading-ui-v71.js?v=80','follow-v79.js?v=80','follow-ui-v79.js?v=80',
+  'game-v59.css?v=81','learning-v66.css?v=81','question-art-v67.css?v=81','curriculum-v61.css?v=81','pinyin-v63.css?v=81','practice-v68.css?v=81','eye-v70.css?v=81','reading-v71.css?v=81',
+  'curriculum-v61.js?v=81','pinyin-v63.js?v=81','g1-ruby.js?v=81','game-v59.js?v=81','learning-v66.js?v=81','question-art-v67.js?v=81','pitch-v68.js?v=81','practice-v68.js?v=81','eye-v70.js?v=81','fast-v69.js?v=81','reading-v71.js?v=81','reading-ui-v71.js?v=81','follow-v79.js?v=81','follow-ui-v79.js?v=81',
   'pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
