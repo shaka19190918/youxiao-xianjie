@@ -39,6 +39,9 @@
     const initials=V42_INITIALS.concat([['b','声母复习','bo1']]);
     chunks(initials,3).forEach((grp,gi)=>out.push(level('zh-initial-'+(gi+1),'chinese','声母 '+(gi+1),'🔤',grp.map((x,i)=>{const px=[x[0],x[2]];return choice('initial_'+gi+'_'+i,i?'实践星':'听懂星','听呼读音，找出开头的声母',uniqueOptions(x[0],V42_INITIALS.map(v=>v[0]),gi*11+i),x[0],g1PinyinPath(px),'pinyin_'+x[2])}))));
     chunks(V42_FINALS,3).forEach((grp,gi)=>out.push(level('zh-final-'+(gi+1),'chinese','韵母 '+(gi+1),'🗣️',grp.map((x,i)=>choice('final_'+x[1],i?'实践星':'听懂星',(PinyinRules82.whole.includes(x[0])?'听完整音节，选择整体认读音节':'听完整示范音节，选择其中的韵母'),uniqueOptions(x[0],V42_FINALS.map(v=>v[0]).filter(v=>PinyinRules82.whole.includes(v)===PinyinRules82.whole.includes(x[0])),gi*13+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
+    // Append stable IDs: never reshuffle the historical 36 final/whole tasks.
+    const extraFinals=[['ui','wei1'],['iu','you1'],['ie','ye1'],['üe','yue1'],['ui','wei2'],['iu','you3']];
+    chunks(extraFinals,3).forEach((grp,gi)=>out.push(level('zh-final-extra-'+(gi+1),'chinese','韵母补全 '+(gi+1),'🗣️',grp.map((x,i)=>choice('final_extra_'+x[1],['听懂星','实践星','巩固星'][i],'听完整示范音节，选择其中的韵母',uniqueOptions(x[0],['ui','iu','ie','üe'],gi*13+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
     chunks(V42_CHARS,3).forEach((grp,gi)=>out.push(level('zh-char-'+(gi+1),'chinese','识字描红 '+(gi+1),'✏️',grp.map((x,i)=>({id:'char_'+x[0],label:i?'实践星':'听懂星',prompt:'听一听，再按正确笔顺写“'+x[0]+'”',type:'trace',char:x[0],pinyin:x[1],audio:v42CharPath(x[0]),key:'char_'+x[0]})))));
     chunks(V42_READINGS,3).forEach((grp,gi)=>out.push(level('zh-read-'+(gi+1),'chinese','阅读理解 '+(gi+1),'📖',grp.map((q,i)=>choice('read_'+(gi*3+i),i?'实践星':'听懂星',q.q,q.o,q.a,'assets/reading/reading_'+String(gi*3+i+1).padStart(2,'0')+'.mp3','read_'+(gi*3+i))))));
     POEM_COURSE_V6.forEach((p,pi)=>{
@@ -114,7 +117,7 @@
   const regionCache=new Map();
   function regionLevels(id){if(!regionCache.has(id))regionCache.set(id,LEVELS.filter(x=>x.region===id));return regionCache.get(id)}
   function regionUnlocked(id){return totalStars()>=(REGION_META[id]?.need||0)}
-  function levelUnlocked(id){const l=LEVEL_BY_ID[id];if(!l||!regionUnlocked(l.region))return false;const list=regionLevels(l.region),i=list.findIndex(x=>x.id===id);return i<=0||levelState(list[i-1].id).stars===3}
+  function levelUnlocked(id){const l=LEVEL_BY_ID[id];if(!l||!regionUnlocked(l.region))return false;const list=regionLevels(l.region),i=list.findIndex(x=>x.id===id);/* Supplemental final practice must not relock the existing writing route. */const previous=id==='zh-char-1'?'zh-final-12':list[i-1]?.id;return i<=0||levelState(previous).stars===3}
   function regionDone(id){const ls=regionLevels(id);return ls.length&&ls.every(x=>levelState(x.id).stars===3)}
   function dueReviews(now){const t=now??Date.now();return Object.entries(game().reviewQueue).filter(([,x])=>Number(x.dueAt)<=t).sort((a,b)=>a[1].dueAt-b[1].dueAt)}
   function nextLevel(){

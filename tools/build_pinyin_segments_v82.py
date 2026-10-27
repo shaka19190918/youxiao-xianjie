@@ -38,6 +38,11 @@ if __name__=='__main__':
   row.update(spans=spans,boundaryMethod='reviewed-waveform-and-periodicity',review='reviewed-boundaries-v83.json')
  bad={k:len(v['spans']) for k,v in items.items() if len(v['spans'])!=4}
  print('Raw detector exceptions:',raw_bad,'; unresolved:',bad,flush=True)
- approved={k:v for k,v in items.items() if len(v['spans'])==4 and k not in ['hm','hng']}
+ # A detector warning is not authority to remove a working recording.
+ # Fail BEFORE writing; retain the last published complete table for review.
+ if bad:
+  raise RuntimeError('Unreviewed boundaries; existing table retained unchanged: '+json.dumps(bad))
+ assert len(items)==manifest['count']==len(manifest['files'])
+ approved=items
  (ROOT/'segments-v83.json').write_text(json.dumps({'schema':'pinyin-boundaries-v83','sourceCommit':manifest['sourceCommit'],'method':'voiced spans and hash-bound reviewed noise exclusions; no equal-quarter fallback','files':approved,'unavailable':bad},ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf8')
  print('Four-tone boundary checked:',len(approved),'recordings')

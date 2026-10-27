@@ -18,7 +18,7 @@ with sync_playwright() as p:
  else:launch['args']=['--no-proxy-server']
  browser=p.chromium.launch(**launch);ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(SEED)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
- page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000);page.wait_for_function('document.documentElement.dataset.release==="v83-pinyin-tones"')
+ page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000);page.wait_for_function('document.documentElement.dataset.release==="v84-pinyin-audit"')
  assert page.title()=='低年级每日学习搭子'
  print('PASS v82 loaded',flush=True)
  for w,h in [(320,568),(375,667),(390,844),(568,320),(667,375),(768,1024),(844,390),(1440,900)]:
