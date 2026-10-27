@@ -26,8 +26,18 @@ def one(item):
 if __name__=='__main__':
  manifest=json.loads((ROOT/'manifest.json').read_text('utf8'))
  with ThreadPoolExecutor(max_workers=4) as pool:items=dict(pool.map(one,manifest['files']))
+ raw_bad={k:len(v['spans']) for k,v in items.items() if len(v['spans'])!=4}
+ reviewed=json.loads((ROOT/'reviewed-boundaries-v83.json').read_text('utf8'))
+ for name,review in reviewed['files'].items():
+  row=items[name]
+  assert row['sha256']==review['sha256'],f'Review cannot be reused for changed source: {name}'
+  spans=review['spans']
+  assert len(spans)==4 and all(0<=a<b<=row['duration'] for a,b in spans)
+  assert all(spans[i][1]<spans[i+1][0] for i in range(3))
+  assert all(b<=na or a>=nb for a,b in spans for na,nb in review['excludedNoise'])
+  row.update(spans=spans,boundaryMethod='reviewed-waveform-and-periodicity',review='reviewed-boundaries-v83.json')
  bad={k:len(v['spans']) for k,v in items.items() if len(v['spans'])!=4}
- print('Ambiguous boundaries (not approved for isolated tone playback):',bad,flush=True)
+ print('Raw detector exceptions:',raw_bad,'; unresolved:',bad,flush=True)
  approved={k:v for k,v in items.items() if len(v['spans'])==4 and k not in ['hm','hng']}
- (ROOT/'segments-v82.json').write_text(json.dumps({'schema':'pinyin-boundaries-v82','sourceCommit':manifest['sourceCommit'],'method':'voiced spans; no equal-quarter fallback','files':approved,'unavailable':bad},ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf8')
+ (ROOT/'segments-v83.json').write_text(json.dumps({'schema':'pinyin-boundaries-v83','sourceCommit':manifest['sourceCommit'],'method':'voiced spans and hash-bound reviewed noise exclusions; no equal-quarter fallback','files':approved,'unavailable':bad},ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf8')
  print('Four-tone boundary checked:',len(approved),'recordings')
