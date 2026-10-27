@@ -83,7 +83,7 @@ with sync_playwright() as p:
     page.evaluate("pinyinV63Part('tones')")
     assert page.locator(".p63-card").count() == 24
     page.evaluate("pinyinV63Part('table')")
-    page.wait_for_function("document.querySelectorAll('#p63Syllables .p63-card').length === 406")
+    page.wait_for_function("document.querySelectorAll('#p63Syllables .p63-card').length === 404")
     page.fill("#p63Search", "ing")
     assert page.locator("#p63Syllables .p63-card").count() > 0
 
@@ -115,4 +115,4 @@ with sync_playwright() as p:
     assert not errors, errors
     browser.close()
 
-print("pinyin v63 acceptance: PASS (406 files, point-read, tones, blending, mobile)")
+print("pinyin acceptance: PASS (406 source files; 404 boundary-approved recordings, tones, mobile)")
