@@ -79,7 +79,15 @@
   function plan(){const s=state();if(s.daily?.day!==day()){const prev=s.daily;s.rotation=(s.rotation||0)+1;s.daily={version:68,day:day(),startedAt:0,items:SUBJECTS.map(x=>chooseItem(x,prev)),breakUntil:0,screenSeconds:0,coreMs:0,doneAt:0};save()}else if(s.daily.version!==68){const p=s.daily;p.items=SUBJECTS.map(spec=>spec[0]==='piano'?chooseItem(spec):p.items.find(x=>x.id===spec[0])||chooseItem(spec));p.coreMs=Math.min(600000,(p.screenSeconds||0)*1000);p.version=68;p.doneAt=0;save()}return s.daily}
   function remaining(){return Math.max(0,Math.ceil((600000-(plan().coreMs||0))/1000))}
   function current(){const p=plan();return p.items.find(x=>!x.done&&(x.id==='piano'||remaining()>0))}
-  function itemTask(item=current()){const l=G.levels.find(l=>l.id===item?.levelId);return l?{l,t:l.tasks[item.index],item}:null}
+  function itemTask(item=current()){const l=G.levels.find(l=>l.id===item?.levelId);return l?{l,t:item.confirmTask||l.tasks[item.index],item}:null}
+  function confirmation(c){
+    const base=c.l.tasks[c.item.index];
+    if(c.item.id==='english'){
+      const m=base.id.match(/^en_(\d+)_(\d+)$/);if(m){const word=V44_ENGLISH[+m[1]].items[+m[2]],opts=V44_ENGLISH[+m[1]].items.map(x=>x[1]).slice(0,4);return {...base,id:base.id+'_confirm',prompt:'“'+word[2]+'”用英语怎么说？',options:opts,answer:word[1]}}
+    }
+    const other=c.l.tasks.find(t=>t!==base&&t.type==='choice'&&t.answer!==base.answer);
+    return other?{...other,id:base.id+'_confirm'}:{...base,id:base.id+'_confirm',prompt:'再认一次：'+base.prompt,options:base.options.slice().reverse()};
+  }
   /* ── v77：今日计划卡的"矮屏折叠"（修掉"看得见摸不着"）────────────────────
      问题（v76 实测）：这张卡高 313px，在 630px 高的窗口里从 y=499 开始，
      首屏只露出 131px，**「开始今日计划」按钮落在屏幕外** ——
@@ -143,7 +151,7 @@
   }
 
   function dailyCard(){const p=plan(),done=p.items.filter(x=>x.done).length;const folded=planCollapsed();
-    return `<section class="l66-card l66-plan${folded?' l66-folded':''}"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span><button class="l66-fold-btn" onclick="g1TogglePlan()" aria-expanded="${folded?'false':'true'}" title="展开或收起今日计划"><span>${folded?'展开':'收起'}</span><i aria-hidden="true">▾</i></button></header><p class="l66-note">每天专注五项：基础学习约9分钟 + 钢琴20分钟。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.id==='piano'?'练满20分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':p.startedAt?'继续今日计划':'开始今日计划'}</button><p class="l66-note">基础四项最多10分钟，未完成的明天继续；钢琴另计20分钟，休息不计时。其他学科仍可在地图探索。</p></section>`}
+    return `<section class="l66-card l66-plan${folded?' l66-folded':''}"><header><strong>🌈 今日全科成长计划</strong><span>${done} / ${p.items.length}</span><button class="l66-fold-btn" onclick="g1TogglePlan()" aria-expanded="${folded?'false':'true'}" title="展开或收起今日计划"><span>${folded?'展开':'收起'}</span><i aria-hidden="true">▾</i></button></header><p class="l66-note">拼音、汉字、数学、英语 · 听懂、动手、再巩固。</p><div class="l66-subjects">${p.items.map(x=>`<span class="${x.done?'done':''}">${x.done?'✓ ':''}${x.label}<br><small>${x.done?'今天完成':x.id==='piano'?'20分钟':'约'+x.minutes+'分钟'}</small></span>`).join('')}</div><button class="l66-primary" onclick="L66.startDaily()">${done===p.items.length?'查看今日收获':p.startedAt?'继续今天的小冒险':'开始今天的小冒险'}</button><p class="l66-note">基础学习最多10分钟，钢琴另计20分钟。时间到了先休息，没做完的明天继续，不赶进度。</p></section>`}
   const oldHome=PGS.home.render;
   PGS.home.render=function(){
     oldHome();
@@ -172,7 +180,7 @@
     else if(p.breakUntil>Date.now())body='<h2>🌿 看看远处，离开屏幕</h2><p>站起来，看看窗外。休息结束后再继续。</p><div class="l66-clock" id="l66BreakClock"></div>';
     else{
       const {item,t}=c;
-      body=`<p>${p.items.filter(x=>x.done).length+1} / ${p.items.length} · ${item.label}</p><h2>${esc(item.offline?t.answer:t.prompt)}</h2><button id="l66Listen" onclick="L66.dailyListen()">🔊 听完整示范</button>`;
+      body=`<p>${p.items.filter(x=>x.done).length+1} / ${p.items.length} · ${item.label} · ${t.type==='trace'?'按笔顺实践':item.confirmTask?'② 变式巩固':'① 听懂并尝试'}</p><h2>${esc(item.offline?t.answer:t.prompt)}</h2><button id="l66Listen" onclick="L66.dailyListen()">🔊 听完整示范</button>`;
       body+=window.QuestionArt?.html(t)||'';
       if(item.offline)body+=`<p>请家长先读清活动要求，在安全的地方陪伴完成。不必盯着屏幕。</p><button id="l66OfflineStart" onclick="L66.offlineStart()">开始离屏活动 · ${item.minutes}分钟</button><div class="l66-clock" id="l66OfflineClock"></div><div id="l66OfflineConfirm"></div>`;
       else if(t.type==='trace')body+=`<div class="v42-char"><div class="glyph">${esc(t.char)}</div><div class="pinyin">${esc(t.pinyin)}</div></div><button class="l66-write-btn" onclick="L66.dailyTrace()">✏️ 大田字格 · 按笔顺描红</button><p class="l66-note">65分及以上通过；低于65分重新练习。</p>`;
@@ -186,6 +194,11 @@
   function dailyAnswer(i){const c=itemTask();if(!c||!mayDaily()||dailyBusy)return;if(dailyHeard!==taskKey(c))return toast('先完整听一遍');const value=c.t.options?.[i];if(value===undefined)return;if(!attempt(taskKey(c),c.t,value,true))return;if(value!==c.t.answer){G.scheduleReview(c.l,c.t);$('l66Feedback').textContent='再想一想。第三次答错，我们会一起看示范。';return}finishDaily(c)}
   function finishDaily(c){
     if(!mayDaily()||dailyBusy||c.item!==current()||c.item.done)return;
+    if(c.t.type==='choice'&&!c.item.confirmTask){
+      dailyBusy=true;c.item.primaryPassedAt=Date.now();c.item.confirmTask=confirmation(c);save();
+      if($('l66Feedback'))$('l66Feedback').textContent='第一次找对啦！换一种问法，再试一次。';
+      setTimeout(()=>{if(CP==='daily66')renderDaily()},700);return;
+    }
     dailyBusy=true;c.item.done=true;c.item.doneAt=Date.now();G.awardTask(c.l,c.item.index);G.recordActivity('daily-complete',c.l,{subject:c.item.id});
     if(!current())plan().doneAt=Date.now();save();playCue('correct','');
     if($('l66Feedback'))$('l66Feedback').textContent='完成啦！接下来见见另一个学科。';

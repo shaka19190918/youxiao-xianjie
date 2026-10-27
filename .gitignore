@@ -10,3 +10,4 @@ _samples/
 .visual-*/
 _t.mp3
 assets/_w_*.mp3
+__pycache__/

@@ -57,7 +57,7 @@ with sync_playwright() as p:
     page.goto(TEST_URL, wait_until="domcontentloaded", timeout=30000)
     page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v69-fast-loading'")
 
-    assert page.title() == "一年级成长岛"
+    assert page.title() == "低年级每日学习搭子"
     assert page.locator(".g1-map").count() == 1
     assert page.locator(".g1-region").count() == 9
     assert page.locator("#kidDock button").count() == 5
@@ -135,7 +135,7 @@ with sync_playwright() as p:
         page.set_viewport_size({"width": width, "height": height})
         page.evaluate("showPage('home')")
         assert not page.evaluate("document.documentElement.scrollWidth > innerWidth + 1"), width
-        assert page.locator(".g1-continue").evaluate("e=>e.getBoundingClientRect().height") >= 48
+        assert page.locator(".l66-primary").evaluate("e=>e.getBoundingClientRect().height") >= 48
         if width < 700:
             assert page.locator("#kidDock button").first.evaluate("e=>e.getBoundingClientRect().height") >= 44
 

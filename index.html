@@ -8,8 +8,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>低年级每日学习搭子</title>
 <meta name="application-name" content="低年级每日学习搭子">
-<meta name="app-version" content="v81-follow">
-<link rel="stylesheet" href="practice-v68.css?v=81">
+<meta name="app-version" content="v82-child-first">
+<link rel="stylesheet" href="practice-v68.css?v=82">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -264,12 +264,13 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 .v47-choice{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;align-items:stretch}.v47-choice-hear{min-width:58px;min-height:64px;border:0;border-radius:20px;background:#54b9dc;color:#fff;font-size:25px;box-shadow:0 5px 12px rgba(49,139,178,.2)}.v47-choice .v42-answer{width:100%;min-width:0}.v47-choice-hear:active{transform:scale(.96)}
 @media(min-width:700px){.v42-char-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-art{height:210px}.dog-display{width:320px!important;height:320px!important}}
 </style>
-<link rel="stylesheet" href="game-v59.css?v=81">
-<link rel="stylesheet" href="learning-v66.css?v=81">
-<link rel="stylesheet" href="question-art-v67.css?v=81">
-<link rel="stylesheet" href="curriculum-v61.css?v=81">
-<link rel="stylesheet" href="pinyin-v63.css?v=81">
-<link rel="stylesheet" href="reading-v71.css?v=81">
+<link rel="stylesheet" href="game-v59.css?v=82">
+<link rel="stylesheet" href="learning-v66.css?v=82">
+<link rel="stylesheet" href="question-art-v67.css?v=82">
+<link rel="stylesheet" href="curriculum-v61.css?v=82">
+<link rel="stylesheet" href="pinyin-v63.css?v=82">
+<link rel="stylesheet" href="reading-v71.css?v=82">
+<link rel="stylesheet" href="child-v82.css?v=82">
 </head>
 <body>
 <div id="app">
@@ -279,7 +280,7 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
     <span class="pill">💎<span id="pts">0</span></span>
     <span class="pill">🔥<span id="strk">0</span></span>
   </header>
-  <div class="main"><div id="ct"><section id="boot69" class="card" role="status" style="text-align:center;padding:40px 20px"><div style="font-size:52px">🏝️</div><h1 style="font-size:26px">正在准备成长岛…</h1><p>学习记录仍保存在这台设备上。</p><button id="bootRetry69" class="btn b1" onclick="location.reload()" hidden>重新加载</button><noscript>请开启浏览器JavaScript后再试。</noscript></section></div></div>
+  <div class="main"><div id="ct"><section id="boot69" class="card" role="status" style="text-align:center;padding:40px 20px"><div style="font-size:52px">🏝️</div><h1 style="font-size:26px">正在打开学习搭子…</h1><p>学习记录仍保存在这台设备上。</p><button id="bootRetry69" class="btn b1" onclick="location.reload()" hidden>重新加载</button><noscript>请开启浏览器JavaScript后再试。</noscript></section></div></div>
 </div>
 <div class="mo" id="hwM" style="display:none" onclick="clHW()"><div class="md" onclick="event.stopPropagation()"><div class="md-hd"><span id="hwTi"></span><button onclick="clHW()">✕</button></div><div id="hwTarget"></div><p id="hwFb" style="font-size:12px;color:var(--tx2);text-align:center;margin:6px 0"></p><div style="display:flex;gap:8px;justify-content:center"><button class="btn b1 bs" onclick="startHQ()">🎯 描红</button><button class="btn b3 bs" onclick="resetHW()">🔄 重播</button></div></div></div>
 <div class="mo" id="rwM" style="display:none" onclick="hideRw()"><div class="md rw" onclick="event.stopPropagation()"><div style="font-size:56px">💎</div><div id="rwMsg" style="font-size:17px;font-weight:700"></div></div></div>
@@ -335,7 +336,7 @@ let _selDog=null;
 let _wStep=1,_wPin='',_wName='',_wTasks=3,_wChars=3;
 function showWizard(){_wStep=1;_wPin='';_wName=S._setup.name||'';_wTasks=S.dailyGoal.tasks;_wChars=S.dailyGoal.chars;renWiz()}
 function renWiz(){let h='<div class="wiz-overlay"><div class="wiz-card">';
-if(_wStep===1){h+=`<div class="wiz-step">步骤 1/3</div><div class="wiz-title">👋 家长您好！</div><div class="wiz-desc">创建专属的一年级成长岛</div><div style="margin:10px 0"><label style="font-size:15px;font-weight:800">孩子昵称</label><input class="wiz-inp" id="wizNameInp" value="${_wName}" placeholder="输入孩子小名" oninput="_wName=this.value"></div><div class="wiz-btns"><button class="wiz-btn primary" onclick="nxtWiz(1)">下一步 →</button></div>`}
+if(_wStep===1){h+=`<div class="wiz-step">步骤 1/3</div><div class="wiz-title">👋 家长您好！</div><div class="wiz-desc">创建专属的低年级每日学习搭子</div><div style="margin:10px 0"><label style="font-size:15px;font-weight:800">孩子昵称</label><input class="wiz-inp" id="wizNameInp" value="${_wName}" placeholder="输入孩子小名" oninput="_wName=this.value"></div><div class="wiz-btns"><button class="wiz-btn primary" onclick="nxtWiz(1)">下一步 →</button></div>`}
 else if(_wStep===2){h+=`<div class="wiz-step">步骤 2/3</div><div class="wiz-title">📋 每日目标</div><div class="wiz-desc">合理的目标让孩子更爱学习</div><div style="margin:10px 0"><label style="font-size:13px;font-weight:700">每日任务次数</label><input class="wiz-inp" type="number" id="wizTasks" value="${_wTasks}" min="1" max="20" oninput="_wTasks=parseInt(this.value)||5"><span class="setting-hint" style="display:block;text-align:center">建议3-8次</span></div><div style="margin:10px 0"><label style="font-size:13px;font-weight:700">每日识字目标（个）</label><input class="wiz-inp" type="number" id="wizChars" value="${_wChars}" min="1" max="20" oninput="_wChars=parseInt(this.value)||3"><span class="setting-hint" style="display:block;text-align:center">建议3-10个</span></div><div class="wiz-btns"><button class="wiz-btn secondary" onclick="_wStep=1;renWiz()">← 上一步</button><button class="wiz-btn primary" onclick="nxtWiz(2)">下一步 →</button></div>`}
 else if(_wStep===3){h+=`<div class="wiz-step">步骤 3/3</div><div class="wiz-title">🔒 设置家长密码</div><div class="wiz-desc">4位数字PIN，进入家长模式时需要</div><div class="wiz-dots">${[0,1,2,3].map(i=>`<div class="wiz-dot ${i<_wPin.length?'filled':''}"></div>`).join('')}</div><div class="wiz-nums">${[1,2,3,4,5,6,7,8,9,'',0,'←'].map(k=>k===''?`<div></div>`:`<div class="wiz-num" onclick="wizKey('${k}')">${k}</div>`).join('')}</div><div style="text-align:center;font-size:13px;color:var(--tx2);margin-top:6px">${_wPin?'密码: '+_wPin:'请输入4位数字'}</div><div class="wiz-btns"><button class="wiz-btn secondary" onclick="_wStep=2;renWiz()">← 上一步</button><button class="wiz-btn primary" style="opacity:${_wPin.length===4?1:.3};pointer-events:${_wPin.length===4?'auto':'none'}" onclick="finWiz()">✓ 完成设置</button></div>`}
 h+='</div></div>';document.getElementById('wizWrap').innerHTML=h}
@@ -1049,7 +1050,7 @@ let v46ActiveAudio=null;
 function v46StopAudio(){_queuedCue=null;try{speechSynthesis.cancel()}catch(e){}if(v46ActiveAudio){try{v46ActiveAudio.pause();v46ActiveAudio.currentTime=0}catch(e){}}v46ActiveAudio=null}
 v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=new Audio(path);a.preload='auto';v46ActiveAudio=a;a.onerror=()=>fallback&&toast(fallback);a.play().catch(()=>fallback&&toast(fallback));return a}catch(e){fallback&&toast(fallback);return null}};
 playCue=function(key,text){return v42Play('assets/voice/'+key+'.mp3',text)};
-speakPet=async function(text){const fixed=petFix?petFix(text):text;showBubble(fixed);if(v41EnsureAudio().muted)return;await PET_VOICE_READY;const fid=PET_VOICE[fixed]||PET_VOICE[text]||'pet_hello';v42Play('assets/voice/'+fid+'.mp3','伙伴声音暂不可用，请刷新后再试')};
+speakPet=async function(text){const ticket=window.__petSpeakEpoch=(window.__petSpeakEpoch||0)+1,route=CP,fixed=petFix?petFix(text):text;showBubble(fixed);if(v41EnsureAudio().muted)return;await PET_VOICE_READY;if(CP!==route||_eyeMode||window.__petSpeakEpoch!==ticket)return;const fid=PET_VOICE[fixed]||PET_VOICE[text]||'pet_hello';v42Play('assets/voice/'+fid+'.mp3','伙伴声音暂不可用，请刷新后再试')};
 speechBoard=function(){return ''};
 v41PetStory=function(){if(!S.dog)return'';const n=S.dog.tasks||0,steps=[['🌱',0],['📚',1],['🍖',4],['🌟',10]],next=steps.find(s=>n<s[1]);return `<section class="pet-growth"><div class="pet-growth-row">${steps.map(s=>`<div class="pet-stage ${n<s[1]?'locked':''}">${s[0]}</div>`).join('')}</div><div class="pet-growth-msg">${next?`再完成 ${next[1]-n} 次学习，伙伴会有新成长`:'伙伴已成为你的学习搭档！'}</div></section>`};
 
@@ -1234,21 +1235,23 @@ v42State();
 }
 @media(prefers-reduced-motion:reduce){#wideNav button,#kidDock button{transition:none}}
 </style>
-<script src="curriculum-v61.js?v=81" defer></script>
-<script src="pinyin-v63.js?v=81" defer></script>
-<script src="g1-ruby.js?v=81" defer></script>
-<script src="game-v59.js?v=81" defer></script>
-<script src="learning-v66.js?v=81" defer></script>
-<script src="question-art-v67.js?v=81" defer></script>
-<script src="pitch-v68.js?v=81" defer></script>
-<script src="practice-v68.js?v=81" defer></script>
-<link rel="stylesheet" href="eye-v70.css?v=81">
-<script src="eye-v70.js?v=81" defer></script>
-<script src="fast-v69.js?v=81" defer></script>
-<script src="reading-v71.js?v=81" defer></script>
-<script src="reading-ui-v71.js?v=81" defer></script>
-<script src="follow-v79.js?v=81" defer></script>
-<script src="follow-ui-v79.js?v=81" defer></script>
+<script src="curriculum-v61.js?v=82" defer></script>
+<script src="pinyin-rules-v82.js?v=82" defer></script>
+<script src="pinyin-v63.js?v=82" defer></script>
+<script src="g1-ruby.js?v=82" defer></script>
+<script src="game-v59.js?v=82" defer></script>
+<script src="learning-v66.js?v=82" defer></script>
+<script src="question-art-v67.js?v=82" defer></script>
+<script src="pitch-v68.js?v=82" defer></script>
+<script src="practice-v68.js?v=82" defer></script>
+<link rel="stylesheet" href="eye-v70.css?v=82">
+<script src="eye-v70.js?v=82" defer></script>
+<script src="fast-v69.js?v=82" defer></script>
+<script src="reading-v71.js?v=82" defer></script>
+<script src="reading-ui-v71.js?v=82" defer></script>
+<script src="follow-v79.js?v=82" defer></script>
+<script src="follow-ui-v79.js?v=82" defer></script>
+<script src="child-v82.js?v=82" defer></script>
 <script>setTimeout(()=>{const box=document.getElementById('boot69');if(box){box.querySelector('h1').textContent='加载较慢，请检查网络';document.getElementById('bootRetry69').hidden=false}},12000)</script>
 </body>
 </html>

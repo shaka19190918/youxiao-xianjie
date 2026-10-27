@@ -19,7 +19,7 @@ game:{levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activityLog
 HTMLMediaElement.prototype.play=function(){setTimeout(()=>this.onended?.(),0);return Promise.resolve()};
 HTMLMediaElement.prototype.pause=function(){};
 """
-TASK = """(()=>{const i=S.learning66.daily.items.find(x=>!x.done),l=G1Learning.levels.find(x=>x.id===i.levelId);return {item:i,t:l.tasks[i.index]}})()"""
+TASK = """(()=>{const i=S.learning66.daily.items.find(x=>!x.done),l=G1Learning.levels.find(x=>x.id===i.levelId);return {item:i,t:i.confirmTask||l.tasks[i.index]}})()"""
 
 with sync_playwright() as p:
     browser=p.chromium.launch(headless=True,executable_path=str(CHROME) if CHROME.exists() else None,args=['--no-proxy-server'])
@@ -68,6 +68,11 @@ with sync_playwright() as p:
     page.clock.fast_forward(800)
     page.evaluate(f'L66.dailyAnswer({correct});L66.dailyAnswer({correct})')
     page.clock.fast_forward(800)
+    assert page.evaluate('S.pts')==0, 'primary attempt is not enough'
+    c=page.evaluate(TASK)
+    page.locator('#l66Listen').click();page.wait_for_timeout(50)
+    page.evaluate(f'L66.dailyAnswer({c["t"]["options"].index(c["t"]["answer"])})')
+    page.clock.fast_forward(800)
     assert page.evaluate('S.pts')==3
     assert page.evaluate('S.learning66.daily.items[0].done')
     # Remaining core subjects; the 20-minute piano/PIN path is tested in v68.
@@ -102,6 +107,11 @@ with sync_playwright() as p:
             i=c['t']['options'].index(c['t']['answer'])
             page.evaluate(f'L66.dailyAnswer({i})')
         page.clock.fast_forward(1000)
+        if c['t']['type']=='choice':
+            second=page.evaluate(TASK)
+            page.locator('#l66Listen').click();page.wait_for_timeout(50)
+            page.evaluate(f'L66.dailyAnswer({second["t"]["options"].index(second["t"]["answer"])})')
+            page.clock.fast_forward(1000)
     assert page.evaluate('S.learning66.daily.items.filter(x=>x.id!=="piano").every(x=>x.done)')
     assert page.locator('#p68Clock').count()==1
     assert page.evaluate('S.pts')==12, 'one first-time task star per core item'
