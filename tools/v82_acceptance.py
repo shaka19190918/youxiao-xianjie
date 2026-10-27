@@ -23,6 +23,7 @@ with sync_playwright() as p:
  print('PASS v82 loaded',flush=True)
  for w,h in [(320,568),(375,667),(390,844),(568,320),(667,375),(768,1024),(844,390),(1440,900)]:
   page.set_viewport_size({'width':w,'height':h});page.evaluate("showPage('home')")
+  page.evaluate("dispatchEvent(new Event('resize'))");page.wait_for_timeout(250)
   page.screenshot(path=str(OUT/f'home-{w}.png'))
   primary=rect(page,'.l66-primary');assert primary['y']+primary['height']<=h,(w,'daily start off screen',primary)
   page.evaluate("g1StartLevel('start-1')")
