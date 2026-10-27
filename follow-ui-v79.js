@@ -53,6 +53,8 @@
   let speakQueue = null, micPaused = false;
   /* 录音模式状态 */
   let mediaRecorder = null, recordedChunks = [], recordingStream = null, isRecording = false;
+  /* 双手模式状态 */
+  let leftNoteIndex = 0, leftStableCount = 0, leftLastVerdict = '', leftLastMidi = null, leftLastAdvance = 0;
 
   const KEY = 'g1_follow_state_v1';
   function loadState() {
@@ -117,6 +119,14 @@
       '.f79-stats>div{padding:10px 12px;border-radius:16px;background:#f7f3ff;text-align:center}',
       '.f79-stats b{display:block;font-size:24px;color:#50358d;font-variant-numeric:tabular-nums}',
       '.f79-stats small{font-size:13px;color:#7a719c}',
+      /* 双手模式：两行音符带（右手/左手） */
+      '.f79-strips{display:grid;gap:12px;margin:16px 0}',
+      '.f79-strip-row{display:grid;gap:8px}',
+      '.f79-strip-label{font-size:14px;font-weight:800;color:#50358d;padding:0 4px}',
+      '.f79-strip-row.right .f79-note{border-color:#7150bc;background:#f7f3ff}',
+      '.f79-strip-row.left .f79-note{border-color:#2f7fb8;background:#eef7ff}',
+      '.f79-prog-dual{display:grid;gap:8px;margin:12px 0}',
+      '.f79-prog-dual .f79-prog{margin:0}',
       '@media(max-width:640px){.f79-card{padding:16px}.f79-note{min-width:52px;min-height:54px}.f79-note b{font-size:16px}.f79-live strong{font-size:20px}.f79-songs{grid-template-columns:1fr}}',
       '@media(prefers-reduced-motion:reduce){.f79-page *{animation:none!important;transition:none!important}}',
       /* 首页入口卡（与绘本入口 .r71-entry 同族，视觉一致） */
@@ -289,107 +299,181 @@
     return notes[noteIndex];
   }
 
+  function currentExpectedLeft() {
+    if (!curMelody || !curMelody.leftNotes) return null;
+    if (leftNoteIndex >= curMelody.leftNotes.length) return null;
+    return curMelody.leftNotes[leftNoteIndex];
+  }
+
   function sample() {
     if (!mounted() || !analyser || !context || context.state !== 'running') { stopAll(); return; }
     if (micPaused) return;      /* 语音播报中，暂停拾音 */
-    const exp = currentExpected();
-    if (exp == null) return;
+
+    const expR = currentExpected();
+    const expL = currentExpectedLeft();
+    if (expR == null) return;
 
     analyser.getFloatTimeDomainData(buffer);
     const r = F.rangeOf(curMelody);
-    const j = F.judge(buffer, buffer.length, context.sampleRate, exp, r.low, r.high);
 
-    if (j.verdict === 'silent') {
+    let j;
+    if (mode === 'both' && expL != null) {
+      /* 双手并行判定 */
+      j = F.judgeBoth(buffer, buffer.length, context.sampleRate, expR, expL, r.low, r.high);
+    } else {
+      /* 单手模式：复用原有 judge */
+      j = { combined: null, right: F.judge(buffer, buffer.length, context.sampleRate, expR, r.low, r.high), left: null };
+      j.combined = j.right.verdict;
+    }
+
+    const jr = j.right, jl = j.left;
+
+    if (j.combined === 'silent' || (jr.verdict === 'silent' && (!jl || jl.verdict === 'silent'))) {
       stableCount = 0; lastMidi = null; lastVerdict = '';
+      leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
       heardNote = null;
       return;
     }
 
-    /* ★ 稳定确认：连续 2 帧同一结论才推进（不是 3 帧）
-       实测：2 帧 + 60ms 采样 → 200ms/音 100% 捕捉；3 帧会漏掉一半。
-       ⚠️ 判"同一结论"要用 verdict + played + cents 三者，
-          只用 verdict 会把"先弹 D 再弹 E"（都是 wrong）当成同一个，
-          稳定计数虚增 → 第二个音还没来得及确认就被判过一次。 */
-    const sig = j.verdict + '|' + (j.played == null ? '-' : j.played) + '|' + (j.cents == null ? '-' : j.cents);
-    if (sig === lastVerdict) stableCount++;
-    else { stableCount = 1; lastVerdict = sig; }
-    lastMidi = j.played;
+    /* ★ 稳定确认：连续 2 帧同一结论才推进（不是 3 帧） */
+    /* ⚠️ 判"同一结论"要用 verdict + played + cents 三者，
+       只用 verdict 会把"先弹 D 再弹 E"（都是 wrong）当成同一个，
+       稳定计数虚增 → 第二个音还没来得及确认就被判过一次。 */
+    /* 右手稳定确认 */
+    const sigR = jr.verdict + '|' + (jr.played == null ? '-' : jr.played) + '|' + (jr.cents == null ? '-' : jr.cents);
+    if (sigR === lastVerdict) stableCount++;
+    else { stableCount = 1; lastVerdict = sigR; }
+    lastMidi = jr.played;
 
-    heardNote = j.played != null ? j.played : (j.verdict === 'correct' ? exp : null);
+    /* 左手稳定确认（双手模式下） */
+    if (jl) {
+      const sigL = jl.verdict + '|' + (jl.played == null ? '-' : jl.played) + '|' + (jl.cents == null ? '-' : jl.cents);
+      if (sigL === leftLastVerdict) leftStableCount++;
+      else { leftStableCount = 1; leftLastVerdict = sigL; }
+      leftLastMidi = jl.played;
+    }
 
-    if (stableCount < 2) { renderLive(); return; }
+    heardNote = jr.played != null ? jr.played : (jr.verdict === 'correct' ? expR : null);
 
-    /* 推进条件：弹对 / 弹错 / 听不准（听不准也算"这个音过了"，避免卡死） */
-    if (j.verdict === 'correct') {
-      if (Date.now() - lastAdvance < 320) return;   /* 防抖：太快连推 */
-      lastAdvance = Date.now();
-      stats.correct++;
-      markNote(noteIndex, 'ok');
-      const cents = j.cents || 0;
-      noteIndex++;
-      stableCount = 0; lastMidi = null; lastVerdict = '';
-      if (noteIndex >= curMelody.notes.length) {
-        renderStats();
-        finishMelody();
+    /* 双手模式：需要两手都稳定才推进；单手模式：只看右手 */
+    const rightReady = stableCount >= 2;
+    const leftReady = (mode === 'both' && jl) ? leftStableCount >= 2 : true;
+    if (!rightReady || !leftReady) { renderLive(); return; }
+
+    /* 组合结论处理 */
+    switch (j.combined) {
+      case 'correct':
+        if (Date.now() - lastAdvance < 320) return;
+        lastAdvance = Date.now();
+        stats.correct++;
+        markNote(noteIndex, 'ok');
+        if (mode === 'both') { markLeftNote(leftNoteIndex, 'ok'); leftNoteIndex++; }
+        const cents = jr.cents || 0;
+        noteIndex++;
+        stableCount = 0; lastMidi = null; lastVerdict = '';
+        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        if (noteIndex >= curMelody.notes.length) { renderStats(); finishMelody(); return; }
+        if (Math.abs(cents) > 30) {
+          lastAdvice = cents > 0 ? '右手这个音有点偏高，再放松一点。' : '右手这个音有点偏低，手指站稳一点。';
+          renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
+        } else {
+          lastAdvice = '很好，继续。';
+          renderLive(); renderStrip(); renderStats();
+        }
         return;
-      }
-      /* 语音反馈：只有偏差明显时才说话，避免打断节奏 */
-      if (Math.abs(cents) > 30) {
-        lastAdvice = cents > 0 ? '这个音有点偏高，再放松一点。' : '这个音有点偏低，手指站稳一点。';
-        renderLive(); renderStrip(); renderStats();
-        speak(lastAdvice);
-      } else {
-        lastAdvice = '很好，继续。';
-        renderLive(); renderStrip(); renderStats();
-      }
-      return;
-    }
 
-    if (j.verdict === 'wrong') {
-      if (Date.now() - lastAdvance < 320) return;
-      lastAdvance = Date.now();
-      stats.wrong++;
-      markNote(noteIndex, 'bad');
-      const playedName = j.played != null ? F.name(j.played) : null;
-      lastAdvice = playedName
-        ? `这里是 ${F.name(exp)}，你弹的是 ${playedName}，再看看琴键位置。`
-        : `这里是 ${F.name(exp)}，再看看琴键位置，慢慢试一次。`;
-      renderLive(); renderStrip(); renderStats();
-      speak(lastAdvice);
-      /* 弹错不推进，让孩子重弹（这是教学法的关键：错了要立即纠正）
-         ⚠️ 不推进也要清 stableCount：否则孩子一直弹同一个错音时，
-            每 320ms 就 +1 次 wrong，统计会被灌水。 */
-      stableCount = 0; lastMidi = null; lastVerdict = '';
-      return;
-    }
+      case 'right-only':
+        if (Date.now() - lastAdvance < 320) return;
+        lastAdvance = Date.now();
+        stats.correct++;
+        markNote(noteIndex, 'ok');
+        if (mode === 'both') { markLeftNote(leftNoteIndex, 'bad'); leftNoteIndex++; }
+        const centsR = jr.cents || 0;
+        noteIndex++;
+        stableCount = 0; lastMidi = null; lastVerdict = '';
+        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        if (noteIndex >= curMelody.notes.length) { renderStats(); finishMelody(); return; }
+        if (jl && jl.verdict === 'wrong') {
+          const playedName = jl.played != null ? F.name(jl.played) : null;
+          lastAdvice = playedName
+            ? `右手对了，但左手这里是 ${F.name(expL)}，你弹的是 ${playedName}，再看看左手位置。`
+            : '右手对了，左手这个音没听清，再试一次。';
+        } else {
+          lastAdvice = '右手对了，左手再稳一点。';
+        }
+        renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
+        return;
 
-    if (j.verdict === 'uncertain') {
-      if (Date.now() - lastAdvance < 1200) return;
-      lastAdvance = Date.now();
-      stats.uncertain++;
-      const withName = j.overlapWith != null ? F.name(j.overlapWith) : null;
-      lastAdvice = withName
-        ? `左手 ${withName} 的声音和这个音有点混，先只弹右手试一次。`
-        : '这个音听不太准，先只弹右手慢慢试一次。';
-      renderLive();
-      speak(lastAdvice);
-      /* 听不准也推进（否则孩子会卡死在这一小节） */
-      markNote(noteIndex, 'skip');
-      noteIndex++;
-      stableCount = 0; lastMidi = null; lastVerdict = '';
-      renderStrip(); renderStats();
-      return;
-    }
+      case 'left-only':
+        if (Date.now() - lastAdvance < 320) return;
+        lastAdvance = Date.now();
+        if (mode === 'both') { markLeftNote(leftNoteIndex, 'ok'); leftNoteIndex++; }
+        stats.wrong++;
+        markNote(noteIndex, 'bad');
+        const playedNameR = jr.played != null ? F.name(jr.played) : null;
+        lastAdvice = playedNameR
+          ? `左手对了，但右手这里是 ${F.name(expR)}，你弹的是 ${playedNameR}，再看看右手位置。`
+          : '左手对了，右手这个音没听清，再试一次。';
+        renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
+        stableCount = 0; lastMidi = null; lastVerdict = '';
+        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        return;
 
-    /* unclear：音域内没有明确音（弹得太轻 / 手还没按实）→ 不推进，也不计数 */
-    if (stableCount === 2) {
-      lastAdvice = '这个音没听清，手指按实一点再弹一次。';
-      renderLive();
+      case 'wrong':
+        if (Date.now() - lastAdvance < 320) return;
+        lastAdvance = Date.now();
+        stats.wrong++;
+        markNote(noteIndex, 'bad');
+        if (mode === 'both') { markLeftNote(leftNoteIndex, 'bad'); leftNoteIndex++; }
+        const playedR = jr.played != null ? F.name(jr.played) : null;
+        const playedL = jl && jl.played != null ? F.name(jl.played) : null;
+        lastAdvice = `右手是 ${playedR || '没听清'}，左手是 ${playedL || '没听清'}，慢慢对照谱子再弹一次。`;
+        renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
+        /* 弹错不推进，让孩子重弹（这是教学法的关键：错了要立即纠正）
+           ⚠️ 不推进也要清 stableCount：否则孩子一直弹同一个错音时，
+              每 320ms 就 +1 次 wrong，统计会被灌水。 */
+        stableCount = 0; lastMidi = null; lastVerdict = '';
+        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        return;
+
+      case 'uncertain':
+        if (Date.now() - lastAdvance < 1200) return;
+        lastAdvance = Date.now();
+        stats.uncertain++;
+        const withNameR = jr.overlapWith != null ? F.name(jr.overlapWith) : null;
+        const withNameL = jl && jl.overlapWith != null ? F.name(jl.overlapWith) : null;
+        if (withNameR && withNameL) lastAdvice = `右手被左手 ${withNameR} 干扰、左手被右手 ${withNameL} 干扰，先分手练。`;
+        else if (withNameR) lastAdvice = `右手被左手 ${withNameR} 干扰，先只弹右手。`;
+        else if (withNameL) lastAdvice = `左手被右手 ${withNameL} 干扰，先只弹左手。`;
+        else lastAdvice = '这个音听不太准，先分手慢慢试一次。';
+        renderLive(); speak(lastAdvice);
+        /* 听不准也推进（否则孩子会卡死在这一小节） */
+        markNote(noteIndex, 'skip');
+        if (mode === 'both') { markLeftNote(leftNoteIndex, 'skip'); leftNoteIndex++; }
+        noteIndex++;
+        stableCount = 0; lastMidi = null; lastVerdict = '';
+        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        renderStrip(); renderStats();
+        return;
+
+      case 'unclear':
+        if (stableCount === 2) {
+          lastAdvice = '声音太轻，手指按实一点再弹一次。';
+          renderLive();
+        }
+        return;
     }
   }
 
   function markNote(i, cls) {
-    const el = document.querySelector(`.f79-note[data-i="${i}"]`);
+    const el = document.querySelector(`.f79-note[data-i="${i}"][data-hand="right"]`);
+    if (!el) return;
+    el.classList.remove('cur', 'ok', 'bad', 'skip');
+    el.classList.add(cls);
+  }
+
+  function markLeftNote(i, cls) {
+    const el = document.querySelector(`.f79-note[data-i="${i}"][data-hand="left"]`);
     if (!el) return;
     el.classList.remove('cur', 'ok', 'bad', 'skip');
     el.classList.add(cls);
@@ -401,15 +485,20 @@
        会把刚要播的庆祝语音掐掉（"点了没反应"的另一种形态）。 */
     stopAll();
     const total = curMelody.notes.length;
+    const totalL = curMelody.leftNotes ? curMelody.leftNotes.length : 0;
     const rate = total ? Math.round((stats.correct / total) * 100) : 0;
+    const rateL = totalL ? Math.round((stats.correct / totalL) * 100) : 0;  // 简化：用同一统计
     const advice = rate >= 90 ? '非常棒！可以再弹一遍，试试更连贯。'
       : rate >= 70 ? '不错！把错的几个单独练两遍，再完整弹一次。'
         : '慢慢来，先把错的那几个音单独练熟。';
-    lastAdvice = `弹完啦！一共 ${total} 个音，弹对 ${stats.correct} 个。`;
+    let msg = `弹完啦！右手共 ${total} 个音，弹对 ${stats.correct} 个`;
+    if (mode === 'both' && totalL) msg += `；左手共 ${totalL} 个音`;
+    msg += `${stats.uncertain ? `，${stats.uncertain} 个听不太准` : ''}。`;
+    lastAdvice = msg;
     const host = $('f79Live');
     if (host) {
       host.className = 'f79-live good';
-      host.innerHTML = `<strong>🎉 弹完啦</strong><p>${curMelody.title}：共 ${total} 个音，弹对 <b>${stats.correct}</b> 个${stats.uncertain ? `，${stats.uncertain} 个听不太准` : ''}。</p><p class="f79-tip">${advice}</p>`;
+      host.innerHTML = `<strong>🎉 弹完啦</strong><p>${msg}</p><p class="f79-tip">${advice}</p>`;
     }
     const btn = $('f79Start');
     if (btn) { btn.disabled = false; btn.textContent = '▶ 再弹一遍'; }
@@ -435,7 +524,12 @@
     else if (!stream) { title = curMelody ? '准备开始' : '先选一首曲子'; }
     else if (exp == null) { title = '弹完啦'; cls += ' good'; }
     else {
-      title = `下一个音：${F.name(exp)}（${F.solfege(exp)}）`;
+      if (mode === 'both' && curMelody.leftNotes) {
+        const expL = curMelody.leftNotes[leftNoteIndex] ?? null;
+        title = `右手：${F.name(exp)}（${F.solfege(exp)}） · 左手：${expL ? F.name(expL) + '（' + F.solfege(expL) + '）' : '—'}`;
+      } else {
+        title = `下一个音：${F.name(exp)}（${F.solfege(exp)}）`;
+      }
       if (heardNote != null) msg = `听到：${F.name(heardNote)}` + (msg ? ' · ' + msg : '');
     }
     host.className = cls;
@@ -445,13 +539,43 @@
   function renderStrip() {
     const host = $('f79Strip');
     if (!host || !curMelody) return;
-    host.innerHTML = curMelody.notes.map((m, i) => {
-      const cls = i === noteIndex ? 'cur' : (i < noteIndex ? 'ok' : '');
-      return `<div class="f79-note ${cls}" data-i="${i}"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
-    }).join('');
-    const prog = $('f79Prog');
-    if (prog) {
-      prog.innerHTML = `<progress max="${curMelody.notes.length}" value="${noteIndex}" aria-label="跟弹进度"></progress><span>${noteIndex} / ${curMelody.notes.length}</span>`;
+
+    if (mode === 'both' && curMelody.leftNotes) {
+      /* 双手模式：两行音符带 */
+      host.className = 'f79-strips';
+      const rightHtml = curMelody.notes.map((m, i) => {
+        const cls = i === noteIndex ? 'cur' : (i < noteIndex ? 'ok' : '');
+        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="right"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+      }).join('');
+      const leftHtml = curMelody.leftNotes.map((m, i) => {
+        const cls = i === leftNoteIndex ? 'cur' : (i < leftNoteIndex ? 'ok' : '');
+        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="left"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+      }).join('');
+      host.innerHTML = `
+        <div class="f79-strip-row right"><span class="f79-strip-label">🙋 右手</span>${rightHtml}</div>
+        <div class="f79-strip-row left"><span class="f79-strip-label">🤚 左手</span>${leftHtml}</div>
+      `;
+      /* 双进度条 */
+      const progHost = $('f79Prog');
+      if (progHost) {
+        progHost.className = 'f79-prog-dual';
+        progHost.innerHTML = `
+          <div class="f79-prog"><span class="f79-strip-label">🙋 右手</span><progress max="${curMelody.notes.length}" value="${noteIndex}"></progress><span>${noteIndex} / ${curMelody.notes.length}</span></div>
+          <div class="f79-prog"><span class="f79-strip-label">🤚 左手</span><progress max="${curMelody.leftNotes.length}" value="${leftNoteIndex}"></progress><span>${leftNoteIndex} / ${curMelody.leftNotes.length}</span></div>
+        `;
+      }
+    } else {
+      /* 单手模式：原有逻辑 */
+      host.className = 'f79-strip';
+      host.innerHTML = curMelody.notes.map((m, i) => {
+        const cls = i === noteIndex ? 'cur' : (i < noteIndex ? 'ok' : '');
+        return `<div class="f79-note ${cls}" data-i="${i}"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+      }).join('');
+      const prog = $('f79Prog');
+      if (prog) {
+        prog.className = 'f79-prog';
+        prog.innerHTML = `<progress max="${curMelody.notes.length}" value="${noteIndex}" aria-label="跟弹进度"></progress><span>${noteIndex} / ${curMelody.notes.length}</span>`;
+      }
     }
   }
 
@@ -618,12 +742,13 @@
       if (!m) return;
       curMelody = m;
       noteIndex = 0;
+      leftNoteIndex = 0;
       stats = { correct: 0, wrong: 0, uncertain: 0 };
       lastAdvice = '点「开启麦克风」，然后从第一个音开始弹。';
       lastVerdict = ''; lastMidi = null; stableCount = 0;
+      leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
+      leftLastAdvance = 0;
       renderStrip(); renderLive(); renderStats(); updateButtons();
-      /* ⚠️ 必须在 updateButtons()（它才把 #f79Practice 的 hidden 去掉）
-         之后才 scrollIntoView —— 对 hidden 元素滚动是无效的。 */
       const box = $('f79Practice');
       if (box && !box.hidden) { try { box.scrollIntoView({ block: 'nearest' }); } catch (_) {} }
     },
@@ -636,7 +761,10 @@
       lastAdvice = mode === 'both'
         ? '双手一起时，如果左手的声音盖住了右手，可以切回「只弹右手」。'
         : '只弹右手，左手先休息。等右手熟了再试双手。';
-      renderLive();
+      /* 切模式时重置左右手进度 */
+      noteIndex = 0; leftNoteIndex = 0;
+      stableCount = 0; leftStableCount = 0;
+      renderStrip(); renderLive(); renderStats();
     },
 
     askMic() { enableMic(); },
@@ -645,7 +773,9 @@
       if (!curMelody) return;
       if (!stream) { enableMic(); return; }
       stats = { correct: 0, wrong: 0, uncertain: 0 };
-      noteIndex = 0; lastVerdict = ''; lastMidi = null; stableCount = 0;
+      noteIndex = 0; leftNoteIndex = 0;
+      lastVerdict = ''; lastMidi = null; stableCount = 0;
+      leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
       lastAdvice = '开始吧，慢慢弹。';
       renderStrip(); renderLive(); renderStats(); updateButtons();
     },
@@ -659,7 +789,9 @@
     restart() {
       if (!curMelody) return;
       stats = { correct: 0, wrong: 0, uncertain: 0 };
-      noteIndex = 0; lastVerdict = ''; lastMidi = null; stableCount = 0;
+      noteIndex = 0; leftNoteIndex = 0;
+      lastVerdict = ''; lastMidi = null; stableCount = 0;
+      leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
       lastAdvice = '从头再来，慢慢弹。';
       renderStrip(); renderLive(); renderStats(); updateButtons();
     },
