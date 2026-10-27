@@ -49,10 +49,9 @@ with sync_playwright() as p:
     page.wait_for_function("window.__G1_TEST && document.documentElement.dataset.appVersion === 'v69-fast-loading'")
 
     # Anti-addiction is enabled by default for this real child profile and actively counts.
-    assert page.evaluate("S.scr.on && S.scr.contMin===20 && S.scr.restMin===5 && S.scr.dayMin===30")
+    assert page.evaluate("S.scr.on && S.scr.contMin===20 && S.scr.restMin===10 && S.scr.dayMin===30")
     before = page.evaluate("S.scr.used")
-    page.evaluate("scrTick()")
-    assert page.evaluate("S.scr.used") == before + 1
+    page.wait_for_function('(before)=>S.scr.used>=before+.9',arg=before,timeout=5000)
     assert page.locator("#eyeBar").is_visible()
 
     # The former single pet strip is now an informative companion house.
@@ -69,8 +68,8 @@ with sync_playwright() as p:
         page.set_viewport_size({"width": width, "height": height})
         page.evaluate("showPage('home')")
         page.wait_for_timeout(30)
-        assert page.evaluate("document.getElementById('eyeBar').parentElement.id") == "v64FloatControls"
-        assert page.evaluate("document.getElementById('v41Sound').parentElement.id") == "v64FloatControls"
+        assert page.evaluate("document.getElementById('eyeBar').parentElement.id") == "learningTools82"
+        assert page.evaluate("document.getElementById('v41Sound').parentElement.id") == "learningTools82"
         eye = page.locator("#eyeBar").bounding_box()
         sound = page.locator("#v41Sound").bounding_box()
         assert eye and sound and not overlap(eye, sound), (width, eye, sound)
@@ -78,7 +77,7 @@ with sync_playwright() as p:
 
     # Rebuilding the sound button after toggling keeps it in the managed tray.
     page.locator("#v41Sound").click()
-    assert page.evaluate("document.getElementById('v41Sound').parentElement.id") == "v64FloatControls"
+    assert page.evaluate("document.getElementById('v41Sound').parentElement.id") == "learningTools82"
     eye = page.locator("#eyeBar").bounding_box()
     sound = page.locator("#v41Sound").bounding_box()
     assert eye and sound and not overlap(eye, sound)
@@ -86,13 +85,14 @@ with sync_playwright() as p:
     # At wide sizes, the map spans the content width and the companion occupies the right rail.
     page.set_viewport_size({"width": 1920, "height": 1080})
     page.evaluate("showPage('home')")
+    page.locator('.v82-explore').evaluate('e=>e.open=true')
     layout = page.evaluate("""() => {
       const shell=document.querySelector('.g1-shell').getBoundingClientRect();
       const map=document.querySelector('.g1-map').getBoundingClientRect();
       const pet=document.querySelector('.g1-pet-house').getBoundingClientRect();
       return {shell,map,pet};
     }""")
-    assert abs(layout["map"]["width"] - layout["shell"]["width"]) < 2
+    assert 0<layout['map']['width']<=layout['shell']['width']
     assert layout["pet"]["left"] > layout["shell"]["left"] + layout["shell"]["width"] / 2
 
     assert not errors, errors

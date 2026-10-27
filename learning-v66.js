@@ -262,7 +262,7 @@
   const pinyinAnswer=pinyinV63Answer;
   pinyinV63Answer=function(value,button){const c=pinyinV66Question();if(!c||button?.disabled||!c.task.options.includes(c.format(value))||!attempt(c.key,c.task,c.format(value),true))return;pinyinAnswer(value,button)};
   // Apply the same intervention to the existing free-practice routes as well.
-  function wrapAnswer(name,get){const old=window[name];if(!old)return;window[name]=function(...args){const c=get(...args);if(!c||!attempt(c.key,c.task,c.value))return;return old(...args)}}
+  function wrapAnswer(name,get){const old=window[name];if(!old)return;window[name]=function(...args){const button=args.find(x=>x instanceof Element);if(button?.disabled)return;const c=get(...args);if(!c||!attempt(c.key,c.task,c.value))return;const result=old(...args);if(c.value===c.task.answer&&button){const group=button.closest('.v42-answer-grid,.mopts');if(group)group.querySelectorAll('button').forEach(b=>b.disabled=true)}return result}};
   const normalized=(q,key,audio,value)=>q?{key,value,task:{type:'choice',prompt:q.q,options:q.o,answer:q.a,audio}}:null;
   wrapAnswer('answerMath44',v=>normalized(v44MathQ,'math44_'+v44MathQ?.id,'assets/math-v44/question_'+String(v44MathQ?.id).padStart(2,'0')+'.mp3',v));
   wrapAnswer('answerMathLower45',v=>normalized(v45MathLowerQ,'math45l_'+v45MathLowerQ?.id,'assets/math-v45-lower/question_'+String(v45MathLowerQ?.id).padStart(2,'0')+'.mp3',v));

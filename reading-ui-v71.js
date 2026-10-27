@@ -20,6 +20,8 @@
   var cur = { book: null, page: 0, mode: 'read', py: [] };   // mode: read | ask | retell；py = 当前页逐字拼音
   var seq = 0, speaking = false, highlighted = -1;
   var stageCache = { bookId: '', page: -1, html: '' };
+  var strategyTimer=null;
+  function leaveReading(){clearTimeout(strategyTimer);clearTimeout(strategySheet._tm);strategyTimer=null;stopSpeak();var el=$('r71Sheet');if(el)el.remove();}
 
   /* ---------------- 进度存储 ---------------- */
   function load() {
@@ -432,7 +434,8 @@
       // 先播一遍策略微课提示（首次打开时）
       if (!bk(id).seenStrategy) {
         setBk(id, { seenStrategy: 1 });
-        setTimeout(function () { strategySheet(b.strategy); }, 320);
+        clearTimeout(strategyTimer);
+        strategyTimer=setTimeout(function () { if(cur.book===b && $('r71Stage') && (typeof CP==='undefined'||CP==='readhome') && (typeof _eyeMode==='undefined'||!_eyeMode))strategySheet(b.strategy); }, 320);
       }
     },
 
@@ -605,6 +608,12 @@
       return { done: n, total: t };
     }
   };
+
+  // Delayed narration/strategy overlays belong to the reading route only.
+  const previousPage=showPage;showPage=function(id){if(id!=='readhome')leaveReading();return previousPage.apply(this,arguments)};
+  const previousEye=eyeOpen;eyeOpen=function(){leaveReading();return previousEye.apply(this,arguments)};
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)leaveReading()});
+  window.addEventListener('pagehide',leaveReading);
 
   /* ---------------- 首页版块入口卡 ---------------- */
   function entryHTML() {
