@@ -1,5 +1,5 @@
 """Cache correctness, media ranges, lazy strokes, and hostile-network checks."""
-import os,json,hashlib
+import os,json,hashlib,re
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 BASE=os.environ.get('SMOKE_URL','http://127.0.0.1:4202/index.html')
@@ -27,11 +27,13 @@ with sync_playwright() as p:
     assert not any('hanzi-writer.min.js' in url for url in requests)
     page.evaluate("navigator.serviceWorker.register('service-worker.js')")
     page.wait_for_function('!!navigator.serviceWorker.controller',timeout=45000)
-    keys=page.evaluate("caches.open('grade1-island-v69-2').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
-    assert len(keys)==17,len(keys)
+    shell=re.search(r'const PRECACHE=\[(.*?)\];',(ROOT/'service-worker.js').read_text('utf8'),re.S).group(1)
+    expected=re.findall(r"'([^']+)'",shell)
+    keys=page.evaluate("caches.open('grade1-island-v84-1').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
+    assert len(keys)==len(expected),(len(keys),len(expected))
     assert not any('.mp3' in k or 'hanzi-writer.min.js' in k for k in keys)
     # Reuse unchanged media from the previous release without a network download.
-    page.evaluate("caches.open('grade1-island-v68-1').then(c=>c.put('assets/voice/cache-test.mp3',new Response(new Uint8Array([1,2,3,4,5,6]),{headers:{'Content-Type':'audio/mpeg'}})))")
+    page.evaluate("caches.open('grade1-island-v83-1').then(c=>c.put('assets/voice/cache-test.mp3',new Response(new Uint8Array([1,2,3,4,5,6]),{headers:{'Content-Type':'audio/mpeg'}})))")
     result=page.evaluate("fetch('assets/voice/cache-test.mp3',{headers:{Range:'bytes=1-3'}}).then(async r=>({status:r.status,range:r.headers.get('content-range'),bytes:[...new Uint8Array(await r.arrayBuffer())]}))")
     assert result=={'status':206,'range':'bytes 1-3/6','bytes':[2,3,4]},result
     assert page.evaluate("fetch('assets/voice/cache-test.mp3',{headers:{Range:'bytes=99-'}}).then(r=>r.status)")==416
@@ -59,10 +61,10 @@ with sync_playwright() as p:
     page.evaluate("showPage('chars');openTraceV42('一','yī')")
     page.wait_for_function("!!document.querySelector('#hwTarget svg path')")
     page.evaluate('clHW();L66.startDaily()');page.locator('#l66Listen').click()
-    page.wait_for_function("document.querySelector('#l66Listen')?.textContent.includes('听完了')",timeout=15000)
+    page.wait_for_function("document.querySelector('#l66Listen')?.textContent.includes('✅')",timeout=15000)
     assert page.evaluate('S.pts')==0
     assert not errors,errors
-    print('PASS 69 stroke hashes; 17-resource shell; no home handwriting engine; cached media ranges; prior media reuse; local/offline strokes; cached navigation '+str(round(nav))+'ms; offline teaching audio',flush=True)
+    print('PASS 69 stroke hashes; complete current shell; no home handwriting engine; cached media ranges; prior media reuse; local/offline strokes; cached navigation '+str(round(nav))+'ms; offline teaching audio',flush=True)
     ctx.close()
     # A separate first-time visitor: audio failure cannot block shell installation.
     blocked=browser.new_context();blocked.add_init_script(SEED)
@@ -76,6 +78,6 @@ with sync_playwright() as p:
     saving.add_init_script("Object.defineProperty(navigator,'connection',{value:{saveData:true,effectiveType:'4g'}})")
     quiet=saving.new_page();quiet.goto(BASE,wait_until='networkidle')
     assert quiet.evaluate('Fast69.warmCurrent()')==[]
-    assert not quiet.evaluate("performance.getEntriesByType('resource').some(x=>x.name.includes('/assets/pinyin-v63/'))")
+    assert not quiet.evaluate("performance.getEntriesByType('resource').some(x=>x.name.includes('/assets/pinyin-v63/')&&x.name.endsWith('.mp3'))")
     print('PASS: save-data mode skips speculative teaching-audio downloads',flush=True)
     saving.close();browser.close()

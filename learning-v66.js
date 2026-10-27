@@ -259,7 +259,7 @@
   const reviewAnswer=g1AnswerReview;
   g1AnswerReview=function(id,i,el){const q=G.game().reviewQueue[id];if(!q||q.task.options[i]===undefined)return;if(!attempt(id,q.task,q.task.options[i],true))return;reviewAnswer(id,i,el)};
   const pinyinAnswer=pinyinV63Answer;
-  pinyinV63Answer=function(value,button){const c=pinyinV66Question();if(!c||!attempt(c.key,c.task,c.format(value),true))return;pinyinAnswer(value,button)};
+  pinyinV63Answer=function(value,button){const c=pinyinV66Question();if(!c||button?.disabled||!c.task.options.includes(c.format(value))||!attempt(c.key,c.task,c.format(value),true))return;pinyinAnswer(value,button)};
   // Apply the same intervention to the existing free-practice routes as well.
   function wrapAnswer(name,get){const old=window[name];if(!old)return;window[name]=function(...args){const c=get(...args);if(!c||!attempt(c.key,c.task,c.value))return;return old(...args)}}
   const normalized=(q,key,audio,value)=>q?{key,value,task:{type:'choice',prompt:q.q,options:q.o,answer:q.a,audio}}:null;
