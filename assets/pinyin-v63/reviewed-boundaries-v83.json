@@ -1,0 +1,19 @@
+{
+  "schema": "pinyin-reviewed-boundaries-v83",
+  "reviewedAt": "2026-10-28",
+  "scope": "Original source SHA256, waveform, periodic voiced frames and four tone contours; not phonetic certification",
+  "files": {
+    "niu": {
+      "sha256": "d63a961da3a581da3c2465a6e516bd9eb433194b9a1e0b1fc493c135b7192016",
+      "spans": [[0.809,1.719],[2.621,3.435],[4.445,5.427],[6.329,6.927]],
+      "excludedNoise": [[7.037,7.635]],
+      "reason": "The extra trailing energy cluster has no sustained periodic voiced frames; it is not a fifth tone. Keep all four spoken syllables without merging the noise into tone 4."
+    },
+    "yang": {
+      "sha256": "0c298aca1272ca514207de42748c1bce487d288c188d73a48bd095649b22bc42",
+      "spans": [[1.169,2.139],[3.305,4.155],[5.321,6.435],[7.541,8.115]],
+      "excludedNoise": [[0.101,0.471]],
+      "reason": "The extra leading cluster has no sustained periodic voiced frames and much lower energy than the syllables. The four spoken syllables start after this noise."
+    }
+  }
+}

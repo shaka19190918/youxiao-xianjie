@@ -39,12 +39,12 @@ v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律
   所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
   UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
   切模式/重新开始自动同步重置两手进度。 */
-const CACHE='grade1-island-v82-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v81-1';
+const CACHE='grade1-island-v83-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v82-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=82','learning-v66.css?v=82','question-art-v67.css?v=82','curriculum-v61.css?v=82','pinyin-v63.css?v=82','practice-v68.css?v=82','eye-v70.css?v=82','reading-v71.css?v=82',
-  'curriculum-v61.js?v=82','pinyin-rules-v82.js?v=82','pinyin-v63.js?v=82','g1-ruby.js?v=82','game-v59.js?v=82','learning-v66.js?v=82','question-art-v67.js?v=82','pitch-v68.js?v=82','practice-v68.js?v=82','eye-v70.js?v=82','fast-v69.js?v=82','reading-v71.js?v=82','reading-ui-v71.js?v=82','follow-v79.js?v=82','follow-ui-v79.js?v=82',
-  'child-v82.css?v=82','child-v82.js?v=82','assets/pinyin-v63/segments-v82.json','pet_voice_map.json'];
+  'game-v59.css?v=83','learning-v66.css?v=83','question-art-v67.css?v=83','curriculum-v61.css?v=83','pinyin-v63.css?v=83','practice-v68.css?v=83','eye-v70.css?v=83','reading-v71.css?v=83',
+  'curriculum-v61.js?v=83','pinyin-rules-v82.js?v=83','pinyin-v63.js?v=83','g1-ruby.js?v=83','game-v59.js?v=83','learning-v66.js?v=83','question-art-v67.js?v=83','pitch-v68.js?v=83','practice-v68.js?v=83','eye-v70.js?v=83','fast-v69.js?v=83','reading-v71.js?v=83','reading-ui-v71.js?v=83','follow-v79.js?v=83','follow-ui-v79.js?v=83',
+  'child-v82.css?v=83','child-v82.js?v=83','assets/pinyin-v63/segments-v83.json','pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}
