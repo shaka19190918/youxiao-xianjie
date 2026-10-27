@@ -74,7 +74,7 @@ with sync_playwright() as p:
     page.locator("#g1Listen").click()
     page.wait_for_timeout(30)
     first_answer = page.evaluate("__G1_TEST.current().task.answer")
-    page.locator(".g1-answer").filter(has_text=first_answer).click()
+    page.locator(".g1-answer").nth(page.evaluate("__G1_TEST.current().task.options.indexOf(__G1_TEST.current().task.answer)")).click()
     page.wait_for_timeout(750)
     for _ in range(2):
         assert page.evaluate("__G1_TEST.correct()")
@@ -114,14 +114,14 @@ with sync_playwright() as p:
     intervals = [1, 3, 7, 14]
     for days in intervals:
         page.evaluate("__G1_TEST.dueNow();showPage('review')")
-        page.locator(".g1-answer").filter(has_text=page.evaluate("Object.values(__G1_TEST.game().reviewQueue)[0].task.answer")).click()
+        page.locator(".g1-answer").nth(page.evaluate("(()=>{const t=Object.values(__G1_TEST.game().reviewQueue)[0].task;return t.options.indexOf(t.answer)})()")).click()
         page.wait_for_timeout(700)
         if page.evaluate("Object.keys(__G1_TEST.game().reviewQueue).length"):
             delay = page.evaluate("Object.values(__G1_TEST.game().reviewQueue)[0].dueAt-Date.now()")
             assert abs(delay - days * 86400000) < 3000, (days, delay)
     page.evaluate("__G1_TEST.dueNow();showPage('review')")
     answer = page.evaluate("Object.values(__G1_TEST.game().reviewQueue)[0].task.answer")
-    page.locator(".g1-answer").filter(has_text=answer).click()
+    page.locator(".g1-answer").nth(page.evaluate("(()=>{const t=Object.values(__G1_TEST.game().reviewQueue)[0].task;return t.options.indexOf(t.answer)})()")).click()
     page.wait_for_timeout(700)
     assert page.evaluate("Object.keys(__G1_TEST.game().reviewQueue).length") == 0
 
