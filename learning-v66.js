@@ -141,6 +141,9 @@
   function applyPlanCollapse() {
     const card = document.querySelector('#ct .l66-plan');
     if (!card) return;
+    // The child-first home removes the folding control and pins its main CTA.
+    // A delayed resize event must not hide a card that has no way to reopen it.
+    if (!card.querySelector('.l66-fold-btn')) { card.classList.remove('l66-folded'); return; }
     const collapsed = planCollapsed();
     card.classList.toggle('l66-folded', collapsed);
     const btn = card.querySelector('.l66-fold-btn');
@@ -163,9 +166,7 @@
   /* 窗口高度变化（横竖屏切换、拉窗口）时重算折叠态 —— 只改 class，不重渲染 */
   let _planRz;
   window.addEventListener('resize',()=>{clearTimeout(_planRz);_planRz=setTimeout(()=>{
-    const card=document.querySelector('#ct .l66-plan');if(!card)return;
-    const should=planCollapsed(),has=card.classList.contains('l66-folded');
-    if(should!==has){card.classList.toggle('l66-folded',should);const b=card.querySelector('.l66-fold-btn');if(b){b.setAttribute('aria-expanded',should?'false':'true');b.querySelector('span').textContent=should?'展开':'收起'}}
+    applyPlanCollapse();
   },180)});
   function startDaily(){const p=plan();if(!p.startedAt){p.startedAt=Date.now();save()}dailyHeard='';showPage('daily66')}
   function taskKey(c){return c.l.id+'::'+c.t.id}

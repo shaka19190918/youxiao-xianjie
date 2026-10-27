@@ -39,12 +39,12 @@ v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律
   所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
   UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
   切模式/重新开始自动同步重置两手进度。 */
-const CACHE='grade1-island-v84-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v83-1';
+const CACHE='grade1-island-v84-2',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v84-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=84','learning-v66.css?v=84','question-art-v67.css?v=84','curriculum-v61.css?v=84','pinyin-v63.css?v=84','practice-v68.css?v=84','eye-v70.css?v=84','reading-v71.css?v=84',
-  'curriculum-v61.js?v=84','pinyin-rules-v82.js?v=84','pinyin-v63.js?v=84','g1-ruby.js?v=84','game-v59.js?v=84','learning-v66.js?v=84','question-art-v67.js?v=84','pitch-v68.js?v=84','practice-v68.js?v=84','eye-v70.js?v=84','fast-v69.js?v=84','reading-v71.js?v=84','reading-ui-v71.js?v=84','follow-v79.js?v=84','follow-ui-v79.js?v=84',
-  'child-v82.css?v=84','child-v82.js?v=84','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
+  'game-v59.css?v=84.2','learning-v66.css?v=84.2','question-art-v67.css?v=84.2','curriculum-v61.css?v=84.2','pinyin-v63.css?v=84.2','practice-v68.css?v=84.2','eye-v70.css?v=84.2','reading-v71.css?v=84.2',
+  'curriculum-v61.js?v=84.2','pinyin-rules-v82.js?v=84.2','pinyin-v63.js?v=84.2','g1-ruby.js?v=84.2','game-v59.js?v=84.2','learning-v66.js?v=84.2','question-art-v67.js?v=84.2','pitch-v68.js?v=84.2','practice-v68.js?v=84.2','eye-v70.js?v=84.2','fast-v69.js?v=84.2','reading-v71.js?v=84.2','reading-ui-v71.js?v=84.2','follow-v79.js?v=84.2','follow-ui-v79.js?v=84.2',
+  'child-v82.css?v=84.2','child-v82.js?v=84.2','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}
