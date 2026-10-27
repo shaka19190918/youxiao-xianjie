@@ -38,7 +38,7 @@ with sync_playwright() as p:
  browser=p.chromium.launch(**launch);ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(seed)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
- assert page.locator('meta[name="app-version"]').get_attribute('content')=='v84-pinyin-audit'
+ assert page.locator('meta[name="app-version"]').get_attribute('content')=='v85-functional-audit'
  page.evaluate("window.sourcePlays=[];window.ttsCalls=0;const oldStart=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...args){sourcePlays.push(args);return oldStart.apply(this,args)};speechSynthesis.speak=()=>ttsCalls++;showPage('pinyin');pinyinV63Part('table')")
  page.wait_for_selector('.p63-card[data-py="niu"]')
  assert page.locator('#p63Syllables .p63-card').count()==406

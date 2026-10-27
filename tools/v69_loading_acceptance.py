@@ -29,11 +29,11 @@ with sync_playwright() as p:
     page.wait_for_function('!!navigator.serviceWorker.controller',timeout=45000)
     shell=re.search(r'const PRECACHE=\[(.*?)\];',(ROOT/'service-worker.js').read_text('utf8'),re.S).group(1)
     expected=re.findall(r"'([^']+)'",shell)
-    keys=page.evaluate("caches.open('grade1-island-v84-2').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
+    keys=page.evaluate("caches.open('grade1-island-v85-1').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
     assert len(keys)==len(expected),(len(keys),len(expected))
     assert not any('.mp3' in k or 'hanzi-writer.min.js' in k for k in keys)
     # Reuse unchanged media from the previous release without a network download.
-    page.evaluate("caches.open('grade1-island-v84-1').then(c=>c.put('assets/voice/cache-test.mp3',new Response(new Uint8Array([1,2,3,4,5,6]),{headers:{'Content-Type':'audio/mpeg'}})))")
+    page.evaluate("caches.open('grade1-island-v84-2').then(c=>c.put('assets/voice/cache-test.mp3',new Response(new Uint8Array([1,2,3,4,5,6]),{headers:{'Content-Type':'audio/mpeg'}})))")
     result=page.evaluate("fetch('assets/voice/cache-test.mp3',{headers:{Range:'bytes=1-3'}}).then(async r=>({status:r.status,range:r.headers.get('content-range'),bytes:[...new Uint8Array(await r.arrayBuffer())]}))")
     assert result=={'status':206,'range':'bytes 1-3/6','bytes':[2,3,4]},result
     assert page.evaluate("fetch('assets/voice/cache-test.mp3',{headers:{Range:'bytes=99-'}}).then(r=>r.status)")==416

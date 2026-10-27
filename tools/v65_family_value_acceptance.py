@@ -49,7 +49,7 @@ with sync_playwright() as p:
 
     daily = page.locator(".l66-plan")
     assert daily.count() == 1
-    assert "今日全科成长计划" in daily.inner_text()
+    assert "今天的小冒险" in daily.inner_text()
     assert daily.locator(".l66-subjects > span").count() == 5
     assert "0 / 5" in daily.locator("header").inner_text()
 

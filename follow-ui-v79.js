@@ -53,6 +53,16 @@
   let speakQueue = null, micPaused = false;
   /* 录音模式状态 */
   let mediaRecorder = null, recordedChunks = [], recordingStream = null, isRecording = false;
+  let recordEpoch = 0, recordingPending = false;
+
+  function stopRecording() {
+    recordEpoch++;recordingPending=false;
+    const recorder=mediaRecorder,media=recordingStream;
+    mediaRecorder=null;recordingStream=null;isRecording=false;
+    try { if(recorder && recorder.state!=='inactive')recorder.stop(); }catch(_){}
+    finally { if(media)media.getTracks().forEach(t=>{if(t.readyState!=='ended')t.stop()}); }
+    updateButtons();
+  }
   /* 双手模式状态 */
   let leftNoteIndex = 0, leftStableCount = 0, leftLastVerdict = '', leftLastMidi = null, leftLastAdvance = 0;
 
@@ -231,6 +241,7 @@
     micPaused = false;
     try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (_) {}
     releaseMic();
+    stopRecording();
     stopAudio();
   }
 
@@ -645,11 +656,11 @@
       if (has && noteIndex === 0) st.textContent = '▶ 开始跟弹';
     }
     const sp = $('f79Stop');
-    if (sp) sp.disabled = !stream && !pending;
+    if (sp) sp.disabled = !stream && !pending && !isRecording && !recordingPending;
     const rec = $('f79Rec');
     if (rec) {
       rec.disabled = !has;
-      rec.textContent = isRecording ? '⏹️ 停止录音' : '🔴 录音模式';
+      rec.textContent = recordingPending ? '取消录音授权' : isRecording ? '⏹️ 停止录音' : '🔴 录音模式';
       rec.classList.toggle('f79-recording', isRecording);
     }
     if (has) {
@@ -800,52 +811,63 @@
        ⚠️ 录音用独立的 MediaRecorder，不跟跟弹检测共用 stream（避免 AEC/采样率冲突）。
        只记录声音，不做实时判定。文件可下载、分享。 */
     async startRecord() {
-      if (isRecording) return;
-      if (!navigator.mediaDevices?.getUserMedia) {
+      if (isRecording || recordingPending || !mounted() || document.hidden || (typeof _eyeMode!=='undefined' && _eyeMode)) return;
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
         lastAdvice = '这台设备不支持录音。';
         renderLive(); return;
       }
+      const id=++recordEpoch;recordingPending=true;updateButtons();
+      let media=null;
       try {
-        recordedChunks = [];
-        recordingStream = await navigator.mediaDevices.getUserMedia({
+        media = await navigator.mediaDevices.getUserMedia({
           audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false },
           video: false,
         });
-        mediaRecorder = new MediaRecorder(recordingStream, { mimeType: 'audio/webm;codecs=opus' });
-        mediaRecorder.ondataavailable = (e) => { if (e.data.size) recordedChunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        if(id!==recordEpoch || !mounted() || document.hidden || (typeof _eyeMode!=='undefined'&&_eyeMode)){media.getTracks().forEach(t=>t.stop());return;}
+        const type=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'].find(t=>MediaRecorder.isTypeSupported?.(t));
+        const recorder=new MediaRecorder(media,type?{mimeType:type}:undefined);
+        const chunks=[],songId=curMelody?.id||'piano',mime=recorder.mimeType||type||'application/octet-stream';
+        const extension=/mp4|aac/.test(mime)?'m4a':/ogg/.test(mime)?'ogg':/webm/.test(mime)?'webm':'audio';
+        recordingStream=media;mediaRecorder=recorder;recordedChunks=chunks;
+        recorder.onerror=()=>{if(mediaRecorder===recorder)stopRecording();if(mounted()){lastAdvice='录音中断，麦克风已关闭，请重试';renderLive()}};
+        recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = () => {
+          media.getTracks().forEach(t=>{if(t.readyState!=='ended')t.stop()});
+          if(mediaRecorder===recorder){mediaRecorder=null;recordingStream=null;isRecording=false;updateButtons()}
+          if(!chunks.length)return;
+          const blob = new Blob(chunks, { type: mime });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `${curMelody ? curMelody.id : 'piano'}_${Date.now()}.webm`;
+          a.download = `${songId}_${Date.now()}.${extension}`;
           document.body.appendChild(a);
           a.click();
           a.remove();
           setTimeout(() => URL.revokeObjectURL(url), 60000);
           lastAdvice = '录音已保存，可发给老师或留作对比。';
-          renderLive();
+          if(mounted())renderLive();
         };
-        mediaRecorder.start(1000);  /* 每秒切片一次 */
+        recorder.start(1000);  /* 每秒切片一次 */
         isRecording = true;
         lastAdvice = '🔴 正在录音… 弹完整首曲子，再点一次停止。';
         updateButtons();
       } catch (err) {
+        if(media)media.getTracks().forEach(t=>t.stop());
+        if(id!==recordEpoch)return;
+        mediaRecorder=null;recordingStream=null;isRecording=false;
         lastAdvice = err.name === 'NotAllowedError' ? '未获麦克风权限。' : '录音启动失败。';
-        renderLive();
+        if(mounted())renderLive();
+      } finally {
+        if(id===recordEpoch){recordingPending=false;updateButtons()}
       }
     },
 
     stopRecord() {
-      if (!isRecording) return;
-      if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-      if (recordingStream) { recordingStream.getTracks().forEach(t => t.stop()); recordingStream = null; }
-      isRecording = false;
-      updateButtons();
+      stopRecording();
     },
 
     toggleRecord() {
-      if (isRecording) this.stopRecord();
+      if (isRecording || recordingPending) this.stopRecord();
       else this.startRecord();
     },
   };
