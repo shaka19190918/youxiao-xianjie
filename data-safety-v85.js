@@ -1,7 +1,7 @@
 /* Transactional, backwards-compatible family backups. Never reset on upgrade. */
 (()=>{
  'use strict';
- const EXTRAS=['readV71','g1_follow_state_v1','g1_pinyin_on'];
+ const EXTRAS=['readV71','g1_follow_state_v1','g1_pinyin_on','g1_pinyin_review_v86'];
  // Parent authorization is a session, never a persisted child setting.
  S._parentAuth=false;R();
  const object=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
@@ -30,7 +30,7 @@
   if(d.extras!==undefined){
    assert(object(d.extras),'附加学习记录损坏');
    for(const k of EXTRAS){
-    const value=d.extras[k];if(value===undefined||value===null){extras[k]=null;continue}
+    const value=d.extras[k];if(value===undefined)continue;if(value===null){extras[k]=null;continue}
     assert(typeof value==='string','附加学习记录格式错误');
     if(k==='g1_pinyin_on')assert(['0','1'].includes(value),'拼音显示设置损坏');
     else{const parsed=JSON.parse(value);assert(object(parsed),'附加学习记录损坏');safeKeys(parsed)}
@@ -79,7 +79,7 @@
  confirmClearData=function(){
   if(!S._parentAuth)return toast('请先通过家长验证');
   const previous=S;oldClear();
-  if(S!==previous&&!S._setup.done){for(const k of [...EXTRAS,'grade1_eye_rest_v70'])localStorage.removeItem(k);location.reload()}
+  if(S!==previous&&!S._setup.done){for(const k of [...EXTRAS,'grade1_eye_rest_v70'])localStorage.removeItem(k);Promise.resolve(window.MediaTake86?.clear()).finally(()=>location.reload())}
  };
  restoreDefaults=function(){if(!S._parentAuth)return toast('请先通过家长验证');return oldDefaults()};
  if(new URLSearchParams(location.search).has('test'))window.__DATA85={snapshot,validate,restore};

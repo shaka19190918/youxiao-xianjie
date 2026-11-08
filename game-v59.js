@@ -37,7 +37,7 @@
 
     chunks(V42_TONES,3).forEach((grp,gi)=>out.push(level('zh-tone-'+(gi+1),'chinese','四声 '+(gi+1),'🎵',grp.map((x,i)=>choice('tone_'+x[1],i?'实践星':'听懂星','听真人发音，选出相同的带调拼音',uniqueOptions(x[0],V42_TONES.slice(Math.floor((gi*3+i)/4)*4,Math.floor((gi*3+i)/4)*4+4).map(v=>v[0]),gi*7+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
     const initials=V42_INITIALS.concat([['b','声母复习','bo1']]);
-    chunks(initials,3).forEach((grp,gi)=>out.push(level('zh-initial-'+(gi+1),'chinese','声母 '+(gi+1),'🔤',grp.map((x,i)=>{const px=[x[0],x[2]];return choice('initial_'+gi+'_'+i,i?'实践星':'听懂星','听呼读音，找出开头的声母',uniqueOptions(x[0],V42_INITIALS.map(v=>v[0]),gi*11+i),x[0],g1PinyinPath(px),'pinyin_'+x[2])}))));
+    chunks(initials,3).forEach((grp,gi)=>out.push(level('zh-initial-'+(gi+1),'chinese',grp.some(x=>['y','w'].includes(x[0]))?'声母与隔音字母':'声母 '+(gi+1),'🔤',grp.map((x,i)=>{const px=[x[0],x[2]];return choice('initial_'+gi+'_'+i,i?'实践星':'听懂星',['y','w'].includes(x[0])?'听完整示范音节，选择对应的隔音字母':'听完整示范音节，辨认开头的声母',uniqueOptions(x[0],V42_INITIALS.map(v=>v[0]),gi*11+i),x[0],g1PinyinPath(px),'pinyin_'+x[2])}))));
     chunks(V42_FINALS,3).forEach((grp,gi)=>out.push(level('zh-final-'+(gi+1),'chinese','韵母 '+(gi+1),'🗣️',grp.map((x,i)=>choice('final_'+x[1],i?'实践星':'听懂星',(PinyinRules82.whole.includes(x[0])?'听完整音节，选择整体认读音节':'听完整示范音节，选择其中的韵母'),uniqueOptions(x[0],V42_FINALS.map(v=>v[0]).filter(v=>PinyinRules82.whole.includes(v)===PinyinRules82.whole.includes(x[0])),gi*13+i),x[0],g1PinyinPath(x),'pinyin_'+x[1])))));
     // Append stable IDs: never reshuffle the historical 36 final/whole tasks.
     const extraFinals=[['ui','wei1'],['iu','you1'],['ie','ye1'],['üe','yue1'],['ui','wei2'],['iu','you3']];

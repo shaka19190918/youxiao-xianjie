@@ -37,7 +37,7 @@ try:
   page.evaluate('window.previousController=navigator.serviceWorker.controller;void navigator.serviceWorker.getRegistration().then(r=>r.update())')
   # A cache is created before install finishes; wait for the new worker to claim.
   page.wait_for_function('navigator.serviceWorker.controller&&navigator.serviceWorker.controller!==window.previousController',timeout=45000)
-  page.reload(wait_until='networkidle');page.wait_for_function("document.documentElement.dataset.release==='v85-functional-audit'")
+  page.reload(wait_until='networkidle');page.wait_for_function("document.documentElement.dataset.release==='v86-learning-audio'")
   assert page.evaluate("S.pts===77&&S.dog.xp===48&&S.chars['一']&&S.game.levels['start-1'].stars===3&&S.game.rewardLedger['start-1:complete']===123")
   assert not page.evaluate('S._parentAuth')
   assert page.evaluate('JSON.parse(localStorage.getItem("readV71")).saved')==1

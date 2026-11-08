@@ -817,6 +817,7 @@
         renderLive(); return;
       }
       const id=++recordEpoch;recordingPending=true;updateButtons();
+      document.querySelector('#take86 audio')?.pause();stopAudio();
       let media=null;
       try {
         media = await navigator.mediaDevices.getUserMedia({
@@ -836,6 +837,7 @@
           if(mediaRecorder===recorder){mediaRecorder=null;recordingStream=null;isRecording=false;updateButtons()}
           if(!chunks.length)return;
           const blob = new Blob(chunks, { type: mime });
+          window.MediaTake86?.remember(blob,`${songId}_${Date.now()}.${extension}`).catch(()=>{});
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -844,7 +846,7 @@
           a.click();
           a.remove();
           setTimeout(() => URL.revokeObjectURL(url), 60000);
-          lastAdvice = '录音已保存，可发给老师或留作对比。';
+          lastAdvice = '录音已生成。可在下方试听，再保存或分享；请确认系统下载结果。';
           if(mounted())renderLive();
         };
         recorder.start(1000);  /* 每秒切片一次 */

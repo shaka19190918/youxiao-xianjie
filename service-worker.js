@@ -39,12 +39,12 @@ v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律
   所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
   UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
   切模式/重新开始自动同步重置两手进度。 */
-const CACHE='grade1-island-v85-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v84-2';
+const CACHE='grade1-island-v86-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v85-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=85','learning-v66.css?v=85','question-art-v67.css?v=85','curriculum-v61.css?v=85','pinyin-v63.css?v=85','practice-v68.css?v=85','eye-v70.css?v=85','reading-v71.css?v=85',
-  'curriculum-v61.js?v=85','pinyin-rules-v82.js?v=85','pinyin-v63.js?v=85','g1-ruby.js?v=85','game-v59.js?v=85','learning-v66.js?v=85','question-art-v67.js?v=85','pitch-v68.js?v=85','practice-v68.js?v=85','eye-v70.js?v=85','fast-v69.js?v=85','reading-v71.js?v=85','reading-ui-v71.js?v=85','follow-v79.js?v=85','follow-ui-v79.js?v=85',
-  'child-v82.css?v=85','child-v82.js?v=85','data-safety-v85.js?v=85','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
+  'game-v59.css?v=86','learning-v66.css?v=86','question-art-v67.css?v=86','curriculum-v61.css?v=86','pinyin-v63.css?v=86','practice-v68.css?v=86','eye-v70.css?v=86','reading-v71.css?v=86',
+  'curriculum-v61.js?v=86','pinyin-rules-v82.js?v=86','pinyin-v63.js?v=86','g1-ruby.js?v=86','game-v59.js?v=86','learning-v66.js?v=86','question-art-v67.js?v=86','pitch-v68.js?v=86','practice-v68.js?v=86','eye-v70.js?v=86','fast-v69.js?v=86','reading-v71.js?v=86','reading-ui-v71.js?v=86','follow-v79.js?v=86','follow-ui-v79.js?v=86',
+  'child-v82.css?v=86','child-v82.js?v=86','data-safety-v85.js?v=86','adventure-v86.css?v=86','adventure-v86.js?v=86','recording-take-v86.js?v=86','pinyin-study-v86.js?v=86','media-lifecycle-v86.js?v=86','assets/pinyin-v86/review-catalog.json','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}
