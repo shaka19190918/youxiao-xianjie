@@ -22,7 +22,7 @@ with sync_playwright() as p:
  ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(seed)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
- assert page.locator('meta[name="app-version"]').get_attribute('content')=='v87-blcu-finals'
+ assert page.locator('meta[name="app-version"]').get_attribute('content')=='v88-audio-focus'
  current=page.evaluate('__G1_TEST.levels');byid={l['id']:l for l in current}
  for l in baseline:
   actual=byid[l['id']]

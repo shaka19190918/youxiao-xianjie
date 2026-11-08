@@ -34,13 +34,24 @@
     if(at<0){const iu=Math.max(s.lastIndexOf('i'),s.lastIndexOf('u'),s.lastIndexOf('ü'));at=iu}
     return at<0?s:s.slice(0,at)+marks[s[at]][n-1]+s.slice(at+1)
   }
-  function ensureContext(){if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');if(!ctx||ctx.state==='closed')ctx=new AudioContextCtor();const wanted=ctx;if(wanted.state==='running')return Promise.resolve(wanted);let timer;return Promise.race([wanted.resume(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('声音被系统暂停，请再点一次')),3000)})]).then(()=>{if(wanted.state!=='running')throw Error('请轻点页面重新启用声音');return wanted}).finally(()=>clearTimeout(timer))}
+  function ensureContext(){
+    if(document.hidden)throw Error('请返回页面后轻点播放');
+    if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');
+    if(!ctx||ctx.state==='closed'){
+      ctx=new AudioContextCtor();const created=ctx;
+      created.addEventListener('statechange',()=>{if(ctx===created&&created.state!=='running'){pinyinV63Stop();const s=document.getElementById('p63Status');if(s)s.textContent='声音已中断，返回后轻点重试；不会自动续播'}});
+    }
+    const wanted=ctx;if(wanted.state==='running')return Promise.resolve(wanted);let timer;
+    return Promise.race([wanted.resume(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('声音被系统暂停，请再点一次')),3000)})]).then(()=>{if(wanted.state!=='running'||document.hidden)throw Error('请轻点页面重新启用声音');return wanted}).finally(()=>clearTimeout(timer));
+  }
+  // Decoding a late download must never call resume() after an interruption.
+  async function decodeBuffer(bytes){if(document.hidden)throw Error('后台不解锁声音');const decoder=ctx&&ctx.state!=='closed'?ctx:await ensureContext();return decoder.decodeAudioData(bytes.slice(0))}
   async function getBuffer(name,n=1){
-    if(isFinal(normalize(name))){name=normalize(name);if(!Number.isInteger(n)||n<1||n>4)throw Error('请选择一至四声');const key=name+'|'+n;if(buffers.has(key))return buffers.get(key);const job=(async()=>{const row=(await getFinalManifest()).files[key],path=FINAL_ROOT+row.file,b=await (window.Fast69?Fast69.fetchAsset(path):fetch(path,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('独立韵母未加载');return r.arrayBuffer()}));if(!crypto.subtle)throw Error('浏览器不支持录音校验');const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).map(x=>x.toString(16).padStart(2,'0')).join('');if(hash!==row.sha256)throw Error('独立韵母文件不匹配');const decoded=await ensureContext().then(c=>c.decodeAudioData(b.slice(0)));if(Math.abs(decoded.duration-row.duration)>.15)throw Error('独立韵母录音不完整');segments.set(decoded,Array.from({length:4},()=>[0,decoded.duration]));return decoded})();buffers.set(key,job);if(buffers.size>12)buffers.delete(buffers.keys().next().value);try{return await job}catch(e){buffers.delete(key);throw e}}
+    if(isFinal(normalize(name))){name=normalize(name);if(!Number.isInteger(n)||n<1||n>4)throw Error('请选择一至四声');const key=name+'|'+n;if(buffers.has(key))return buffers.get(key);const job=(async()=>{const row=(await getFinalManifest()).files[key],path=FINAL_ROOT+row.file,b=await (window.Fast69?Fast69.fetchAsset(path):fetch(path,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('独立韵母未加载');return r.arrayBuffer()}));if(!crypto.subtle)throw Error('浏览器不支持录音校验');const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).map(x=>x.toString(16).padStart(2,'0')).join('');if(hash!==row.sha256)throw Error('独立韵母文件不匹配');const decoded=await decodeBuffer(b);if(Math.abs(decoded.duration-row.duration)>.15)throw Error('独立韵母录音不完整');segments.set(decoded,Array.from({length:4},()=>[0,decoded.duration]));return decoded})();buffers.set(key,job);if(buffers.size>12)buffers.delete(buffers.keys().next().value);try{return await job}catch(e){buffers.delete(key);throw e}}
     name=normalize(name);if(buffers.has(name)){const value=buffers.get(name);buffers.delete(name);buffers.set(name,value);return value}
     const path=ROOT+encodeURIComponent(name)+'.mp3';
     const request=window.Fast69?Fast69.fetchAsset(path):fetch(path,{cache:'force-cache'}).then(r=>{if(!r.ok)throw new Error('音频未找到');return r.arrayBuffer()});
-    const promise=request.then(async b=>{const table=await getBoundaries(),row=table.files[name];if(!row||!crypto.subtle)throw Error('此录音尚未通过校验');const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).map(x=>x.toString(16).padStart(2,'0')).join('');if(hash!==row.sha256)throw Error('录音版本不匹配，请刷新重试');const decoded=await ensureContext().then(c=>c.decodeAudioData(b.slice(0)));segments.set(decoded,await approvedSpans(name,decoded));return decoded});
+    const promise=request.then(async b=>{const table=await getBoundaries(),row=table.files[name];if(!row||!crypto.subtle)throw Error('此录音尚未通过校验');const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).map(x=>x.toString(16).padStart(2,'0')).join('');if(hash!==row.sha256)throw Error('录音版本不匹配，请刷新重试');const decoded=await decodeBuffer(b);segments.set(decoded,await approvedSpans(name,decoded));return decoded});
     buffers.set(name,promise);if(buffers.size>12)buffers.delete(buffers.keys().next().value);try{return await promise}catch(e){buffers.delete(name);throw e}
   }
   function findSegments(buffer){
@@ -54,22 +65,23 @@
   function background(){pinyinV63Stop();if(ctx?.state==='running')ctx.suspend().catch(()=>{})}
   document.addEventListener('visibilitychange',()=>{if(document.hidden)background();else{const s=document.getElementById('p63Status');if(s)s.textContent='已返回，轻点拼音继续；不会自动播放'}});
   window.addEventListener('pagehide',background);
+  window.addEventListener('pageshow',event=>{if(event.persisted){pinyinV63Stop();const s=document.getElementById('p63Status');if(s)s.textContent='页面已恢复，轻点拼音重新播放；不会自动续播'}});
   window.pinyinV69Prepare=(name,n=1)=>{try{Promise.all([getBoundaries(),ensureContext().then(()=>getBuffer(name,n))]).catch(()=>{})}catch(_){/* Optional warmup must not throw from pointerdown. */}};
   async function play(name,n=1,options={}){
     const generation=++playGeneration;
     if(stopPending)stopPending();
     document.querySelectorAll('.p63-card.playing').forEach(b=>b.classList.remove('playing'));
     if(active){try{active.stop()}catch(_){}active=null}
-    if(typeof v46StopAudio==='function')v46StopAudio();
+    if(window.PinyinAudioFocus88)PinyinAudioFocus88.begin();else if(typeof v46StopAudio==='function')v46StopAudio();
     if(typeof v41EnsureAudio==='function'&&v41EnsureAudio().muted)throw Error('请先打开声音');
     const status=document.getElementById('p63Status');if(status){status.className='p63-status';status.textContent='正在准备真人发音…'}
     try{
       if(!Number.isInteger(n)||n<1||n>4)throw Error('请选择一至四声');
-      const c=await ensureContext(),buffer=await getBuffer(name,n),span=(await approvedSpans(name,buffer))[Math.max(0,Math.min(3,n-1))];if(generation!==playGeneration||document.hidden)return false;if(active)try{active.stop()}catch(_){}
+      const c=await ensureContext(),buffer=await getBuffer(name,n),span=(await approvedSpans(name,buffer))[Math.max(0,Math.min(3,n-1))];if(generation!==playGeneration||document.hidden||c.state!=='running'||v41EnsureAudio().muted||typeof _eyeMode!=='undefined'&&_eyeMode)return false;if(active)try{active.stop()}catch(_){}
       const source=c.createBufferSource(),gain=c.createGain();source.buffer=buffer;source.connect(gain).connect(c.destination);gain.gain.value=.95;active=source;
       const start=span[0]+(options.trimStart||0),duration=Math.max(.18,span[1]-start);source.start(0,start,duration);
       document.querySelectorAll('.p63-card.playing').forEach(x=>x.classList.remove('playing'));if(options.button)options.button.classList.add('playing');
-      return await new Promise(resolve=>{let finished=false;const finish=ok=>{if(finished)return;finished=true;clearTimeout(watchdog);if(stopPending===cancel)stopPending=null;resolve(ok)},cancel=()=>finish(false);stopPending=cancel;const watchdog=setTimeout(()=>{if(finished)return;pinyinV63Stop();if(status)status.textContent='声音被系统中断，请轻点重试'},duration*1000+3000);source.onended=()=>{if(active===source)active=null;if(!finished&&generation===playGeneration){if(options.button)options.button.classList.remove('playing');if(status)status.textContent='点一下可以再听一遍';options.onEnd&&options.onEnd();finish(true)}else finish(false)}})
+      return await new Promise(resolve=>{let finished=false;const finish=ok=>{if(finished)return;finished=true;clearTimeout(watchdog);if(stopPending===cancel)stopPending=null;resolve(ok)},cancel=()=>finish(false);stopPending=cancel;const watchdog=setTimeout(()=>{if(finished)return;pinyinV63Stop();if(status)status.textContent='声音被系统中断，请轻点重试'},duration*1000+3000);source.onended=()=>{try{source.disconnect();gain.disconnect()}catch(_){}if(active===source)active=null;if(!finished&&generation===playGeneration&&c.state==='running'&&!document.hidden&&!v41EnsureAudio().muted){if(options.button)options.button.classList.remove('playing');if(status)status.textContent='点一下可以再听一遍';finish(true);options.onEnd&&options.onEnd()}else finish(false)}})
     }catch(e){if(generation!==playGeneration)return false;if(status){status.className='p63-status p63-error';status.textContent=AudioContextCtor?'音频没有加载成功，请点一下重试；不会使用设备合成音代读。':'此浏览器未提供Web Audio，无法准确分段点读；请换用支持此功能的Safari或Chrome。'}throw e}
   }
   function token(name,n=1){return 'p63|'+normalize(name)+'|'+Math.max(1,Math.min(4,Number(n)||1))}
@@ -102,11 +114,11 @@
   function syllableCards(names){return names.map(x=>`<button class="p63-card" data-py="${x}" onclick="pinyinV63Play('${x}',${tone},this)">${toneMark(x,tone)}<small>四声可切换</small></button>`).join('')}
   window.pinyinV63Tone=function(n){if(!Number.isInteger(n)||n<1||n>4)return;pinyinV63Stop();tone=n;document.querySelectorAll('.p63-tone').forEach((b,i)=>b.classList.toggle('on',i===n-1));const box=document.getElementById('p63Syllables');if(part==='finals'){const grid=document.querySelector('#p63Body .p63-grid');if(grid)grid.innerHTML=finalCards()}if(box)box.innerHTML=syllableCards((window.P63_NAMES||[]).filter(x=>!document.getElementById('p63Search')?.value||x.includes(normalize(document.getElementById('p63Search').value))));setCurrent(current.name,n)};
   window.pinyinV63Filter=function(q){const box=document.getElementById('p63Syllables'),needle=normalize(q);if(part==='finals'){const grid=document.querySelector('#p63Body .p63-grid');if(grid)grid.innerHTML=finalCards()}if(box)box.innerHTML=syllableCards((window.P63_NAMES||[]).filter(x=>x.includes(needle)))};
-  function split(name){return isFinal(name)?{kind:'zero',name:name.slice(6),parts:[name.slice(6)],note:'独立韵母示范，不是完整汉字音节；听原始录音，不拼接音素。'}:PinyinRules82.analyze(name)}
+  function split(name){return isFinal(name)?{kind:'final',name:name.slice(6),parts:[name.slice(6)],note:'独立韵母示范，不是完整汉字音节；听原始录音，不拼接音素。'}:PinyinRules82.analyze(name)}
   window.pinyinV63Blend=async function(){
     const id=++sequence,s=split(current.name),box=document.getElementById('p63BlendSteps'),name=current.name,n=current.tone;
     if(!box)return;
-    const kinds={whole:'整体认读 · 不拆拼',two:'两拼音节',three:'三拼音节',zero:'零声母音节',spelling:'音节拼写',unsupported:'完整音节示范'};
+    const kinds={whole:'整体认读 · 不拆拼',two:'两拼音节',three:'三拼音节',zero:'零声母音节',final:'独立韵母 · 不当作完整音节',spelling:'音节拼写',unsupported:'完整音节示范'};
     const pieces=s.parts.map((x,i)=>'<span class="p82-piece">'+escapeHtml(toneMark(x,i===s.parts.length-1?n:0))+'</span>');
     box.innerHTML='<div class="p82-kind">'+kinds[s.kind]+'</div><div class="p82-pieces">'+pieces.join('<span class="p63-plus">＋</span>')+(pieces.length>1?'<span class="p63-plus">→</span><strong>'+toneMark(name,n)+'</strong>':'')+'</div><p>'+escapeHtml(s.note||'看清分解，再听完整音节。')+'</p>';
     // Never concatenate bo/ying/zhong recordings and pretend they are phonemes.

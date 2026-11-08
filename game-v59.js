@@ -167,13 +167,15 @@
     g1StartLevel(id);return true;
   };
   window.g1Continue=function(){if(dueReviews().length)return showPage('review');const n=nextLevel();if(n)g1StartLevel(n.id);else toast('所有关卡都完成啦！')};
+  let g1AudioEpoch=0;
   window.g1PlayTaskAudio=function(){
     const cur=taskAt();if(!cur||!cur.task.audio)return;
-    const btn=document.getElementById('g1Listen'),fb=document.getElementById('g1Feedback');if(btn){btn.disabled=true;btn.textContent='正在听题目和选项…'}
-    const complete=()=>{g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 已听完真人发音'}if(fb)fb.textContent='听完啦，现在选答案'};
-    const fail=()=>{if(btn){btn.disabled=false;btn.textContent='🔁 音频没有加载，请重试'}if(fb)fb.textContent='没有听清前不能得星'};
-    if(String(cur.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(cur.task.audio,complete).catch(fail);return}
-    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=complete;a.onerror=fail;const p=a.play();if(p&&p.catch)p.catch(fail)}catch(_){fail()}
+    const ticket=++g1AudioEpoch,btn=document.getElementById('g1Listen'),fb=document.getElementById('g1Feedback');if(btn){btn.disabled=true;btn.textContent='正在听题目和选项…'}
+    const valid=()=>{const now=taskAt();return ticket===g1AudioEpoch&&CP==='level'&&btn?.isConnected&&document.getElementById('g1Listen')===btn&&now?.level.id===cur.level.id&&now.index===cur.index};
+    const complete=()=>{if(!valid())return;g1Heard[cur.level.id+'-'+cur.index]=true;if(btn){btn.disabled=false;btn.classList.add('ready');btn.textContent='✅ 已听完真人发音'}if(fb)fb.textContent='听完啦，现在选答案'};
+    const fail=()=>{if(!valid())return;if(btn){btn.disabled=false;btn.textContent='🔁 播放中断或未加载，请重试'}if(fb)fb.textContent='没有听清前不能得星'};
+    if(String(cur.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(cur.task.audio,complete).then(ok=>{if(!ok)fail()}).catch(fail);return}
+    v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=complete;a.onerror=fail;a.onpause=()=>{if(!a.ended)fail()};const p=a.play();if(p&&p.catch)p.catch(fail)}catch(_){fail()}
   };
   window.g1AnswerTask=function(optionIndex){
     const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
