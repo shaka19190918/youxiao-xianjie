@@ -22,9 +22,15 @@ with sync_playwright() as p:
  ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(seed)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
- assert page.locator('meta[name="app-version"]').get_attribute('content')=='v85-functional-audit'
+ assert page.locator('meta[name="app-version"]').get_attribute('content')=='v86-learning-audio'
  current=page.evaluate('__G1_TEST.levels');byid={l['id']:l for l in current}
- assert all(byid[l['id']]==l for l in baseline),'historical task or reward identity changed'
+ for l in baseline:
+  actual=byid[l['id']]
+  if l['id'].startswith('zh-initial-'):
+   # v86 corrects the teaching wording; keep the saved task/reward identity.
+   assert all({k:v for k,v in t.items() if k!='prompt'}=={k:v for k,v in a.items() if k!='prompt'} for t,a in zip(l['tasks'],actual['tasks']))
+   assert l['id']==actual['id'] and l['region']==actual['region']
+  else:assert actual==l,'historical task or reward identity changed: '+l['id']
  assert len(current)==len(baseline)+2 and all(len(l['tasks'])==3 for l in current)
  answers={t['answer'] for l in current if l['id'].startswith('zh-final-') for t in l['tasks']}
  assert {'ui','iu','ie','üe'}<=answers

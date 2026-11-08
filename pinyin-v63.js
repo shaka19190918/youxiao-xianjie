@@ -31,7 +31,7 @@
     if(at<0){const iu=Math.max(s.lastIndexOf('i'),s.lastIndexOf('u'),s.lastIndexOf('ü'));at=iu}
     return at<0?s:s.slice(0,at)+marks[s[at]][n-1]+s.slice(at+1)
   }
-  function ensureContext(){if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');if(!ctx)ctx=new AudioContextCtor();return ctx.state==='running'?Promise.resolve(ctx):ctx.resume().then(()=>ctx)}
+  function ensureContext(){if(!AudioContextCtor)throw new Error('此浏览器不支持本地点读');if(!ctx||ctx.state==='closed')ctx=new AudioContextCtor();const wanted=ctx;if(wanted.state==='running')return Promise.resolve(wanted);let timer;return Promise.race([wanted.resume(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('声音被系统暂停，请再点一次')),3000)})]).then(()=>{if(wanted.state!=='running')throw Error('请轻点页面重新启用声音');return wanted}).finally(()=>clearTimeout(timer))}
   async function getBuffer(name){
     name=normalize(name);if(buffers.has(name)){const value=buffers.get(name);buffers.delete(name);buffers.set(name,value);return value}
     const path=ROOT+encodeURIComponent(name)+'.mp3';
@@ -44,11 +44,16 @@
     // Never run energy heuristics here or merge a fifth noise cluster into a tone.
     const spans=segments.get(buffer);if(!spans)throw Error('请先加载已校验的本地录音');return spans
   }
-  let playGeneration=0;
-  window.pinyinV63Stop=function(){sequence++;playGeneration++;document.querySelectorAll('.p63-card.playing').forEach(b=>b.classList.remove('playing'));if(active){try{active.stop()}catch(_){}active=null}};
-  window.pinyinV69Prepare=name=>{Promise.all([getBoundaries(),ensureContext().then(()=>getBuffer(name))]).catch(()=>{})};
+  let playGeneration=0,stopPending=null;
+  window.pinyinV63Stop=function(){sequence++;playGeneration++;if(stopPending)stopPending();document.querySelectorAll('.p63-card.playing').forEach(b=>b.classList.remove('playing'));if(active){try{active.stop()}catch(_){}active=null}};
+  window.pinyinV86ResetAudio=function(){pinyinV63Stop();if(!AudioContextCtor){const s=document.getElementById('p63Status');if(s)s.textContent='此浏览器未提供Web Audio，请换用支持本地点读的浏览器';return Promise.resolve(false)}const old=ctx;ctx=null;if(old)old.close().catch(()=>{});return ensureContext().then(()=>{const s=document.getElementById('p63Status');if(s)s.textContent='声音已启用，请重新点读'}).catch(()=>{const s=document.getElementById('p63Status');if(s)s.textContent='系统仍在占用声音，请结束通话或录音后重试'})};
+  function background(){pinyinV63Stop();if(ctx?.state==='running')ctx.suspend().catch(()=>{})}
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)background();else{const s=document.getElementById('p63Status');if(s)s.textContent='已返回，轻点拼音继续；不会自动播放'}});
+  window.addEventListener('pagehide',background);
+  window.pinyinV69Prepare=name=>{try{Promise.all([getBoundaries(),ensureContext().then(()=>getBuffer(name))]).catch(()=>{})}catch(_){/* Optional warmup must not throw from pointerdown. */}};
   async function play(name,n=1,options={}){
     const generation=++playGeneration;
+    if(stopPending)stopPending();
     document.querySelectorAll('.p63-card.playing').forEach(b=>b.classList.remove('playing'));
     if(active){try{active.stop()}catch(_){}active=null}
     if(typeof v46StopAudio==='function')v46StopAudio();
@@ -60,8 +65,8 @@
       const source=c.createBufferSource(),gain=c.createGain();source.buffer=buffer;source.connect(gain).connect(c.destination);gain.gain.value=.95;active=source;
       const start=span[0]+(options.trimStart||0),duration=Math.max(.18,span[1]-start);source.start(0,start,duration);
       document.querySelectorAll('.p63-card.playing').forEach(x=>x.classList.remove('playing'));if(options.button)options.button.classList.add('playing');
-      return await new Promise(resolve=>{source.onended=()=>{if(active===source)active=null;if(generation===playGeneration){if(options.button)options.button.classList.remove('playing');if(status)status.textContent='点一下可以再听一遍';options.onEnd&&options.onEnd();resolve(true)}else resolve(false)}})
-    }catch(e){if(generation!==playGeneration)return false;if(status){status.className='p63-status p63-error';status.textContent='音频没有加载成功，请点一下重试；不会使用设备合成音代读。'}throw e}
+      return await new Promise(resolve=>{let finished=false;const finish=ok=>{if(finished)return;finished=true;clearTimeout(watchdog);if(stopPending===cancel)stopPending=null;resolve(ok)},cancel=()=>finish(false);stopPending=cancel;const watchdog=setTimeout(()=>{if(finished)return;pinyinV63Stop();if(status)status.textContent='声音被系统中断，请轻点重试'},duration*1000+3000);source.onended=()=>{if(active===source)active=null;if(!finished&&generation===playGeneration){if(options.button)options.button.classList.remove('playing');if(status)status.textContent='点一下可以再听一遍';options.onEnd&&options.onEnd();finish(true)}else finish(false)}})
+    }catch(e){if(generation!==playGeneration)return false;if(status){status.className='p63-status p63-error';status.textContent=AudioContextCtor?'音频没有加载成功，请点一下重试；不会使用设备合成音代读。':'此浏览器未提供Web Audio，无法准确分段点读；请换用支持此功能的Safari或Chrome。'}throw e}
   }
   function token(name,n=1){return 'p63|'+normalize(name)+'|'+Math.max(1,Math.min(4,Number(n)||1))}
   function parseToken(value){const p=String(value||'').split('|');return p[0]==='p63'?{name:p[1],tone:Number(p[2])||1}:null}
@@ -74,13 +79,13 @@
   }
   async function playToken(value,onEnd){const p=parseToken(value);if(!p)throw new Error('无效拼音音频');return play(p.name,p.tone,{onEnd})}
   function setCurrent(name,n=tone){sequence++;current={name:normalize(name),tone:n};const label=document.getElementById('p63Current');if(label)label.textContent=toneMark(current.name,n);const meta=document.getElementById('p63CurrentMeta');if(meta)meta.textContent='第 '+['一','二','三','四'][n-1]+' 声 · 真人点读'}
-  window.pinyinV63Play=function(name,n,button){setCurrent(name,n);return play(name,n,{button}).catch(()=>false)};
+  window.pinyinV63Play=function(name,n,button){setCurrent(name,n);if(button&&['initials','finals'].includes(part)){let model=document.getElementById('p86Model');if(!model){model=document.createElement('p');model.id='p86Model';model.className='p63-reader';model.setAttribute('aria-live','polite');document.getElementById('p63Body')?.prepend(model)}const glyph=button.firstChild?.textContent.trim();model.textContent='你听到的是 '+toneMark(name,n)+'；在完整音节中辨认 '+glyph+'。'+(normalize(glyph)!==name?'不是独立音素录音。':'')}return play(name,n,{button}).catch(()=>false)};
   window.pinyinV63ReplayCurrent=function(button){sequence++;return play(current.name,current.tone,{button}).catch(()=>false)};
   window.pinyinV63PlayToken=playToken;window.pinyinV63TaskToken=taskToken;
   // Keep old saved/inline point-read entry points on this same verified engine.
   // The legacy v61 path used bo/ge/ma reference syllables for o/e/a tones.
   window.playPinyinV42=function(id,label){return playToken(taskToken([label,id])).catch(()=>false)};
-  function initialCards(){return INITIALS.map(x=>`<button class="p63-card" onclick="pinyinV63Play('${x[1]}',1,this)">${x[0]}<small>呼读音 ${toneMark(x[1],1)}<br>${x[2]}</small></button>`).join('')}
+  function initialCards(){return INITIALS.map((x,i)=>(i===21?'<h3 style="grid-column:1/-1;font-size:22px">隔音字母 y、w · 单独学习</h3>':'')+`<button class="p63-card" onclick="pinyinV63Play('${x[1]}',1,this)">${x[0]}<small>${i<21?'示范音节':'音节拼写'} ${toneMark(x[1],1)}<br>${x[2]}</small></button>`).join('')}
   function finalCards(){return FINALS.map(x=>`<button class="p63-card" onclick="pinyinV63Play('${x[1]}',1,this)">${x[0]}<small>${normalize(x[0])===x[1]?'直接听韵母':'听 '+toneMark(x[1],1)+' 中的韵母'}</small></button>`).join('')}
   function wholeCards(){return WHOLE.map(x=>`<button class="p63-card" onclick="pinyinV63Play('${x}',1,this)">${x}<small>${toneMark(x,1)}</small></button>`).join('')}
   function toneCards(){return ['a','o','e','yi','wu','yu'].flatMap(name=>[1,2,3,4].map(n=>`<button class="p63-card" onclick="pinyinV63Play('${name}',${n},this)">${toneMark(name==='yi'?'i':name==='wu'?'u':name==='yu'?'ü':name,n)}<small>第 ${['一','二','三','四'][n-1]} 声</small></button>`)).join('')}
@@ -115,9 +120,9 @@
   };
   window.pinyinV63ReplayChallenge=hearChallenge;
   function renderChallenge(){document.getElementById('p63Body').innerHTML=`<div class="p63-challenge"><h2 id="p63Question">听一听，选出正确的拼音</h2><button class="p63-blend" onclick="pinyinV63ReplayChallenge(this)">🔊 再听一次</button><div class="p63-answers" id="p63Answers"></div></div>`;safeNewChallenge()}
-  function renderPart(){renderEpoch++;pinyinV63Stop();const body=document.getElementById('p63Body');if(!body)return;const status=document.getElementById('p63Status');if(status)status.textContent='';if(part==='initials')body.innerHTML='<h2>23 个声母</h2><p class="p63-note">声母用小学课堂常见的短呼读音示范；重点听开头和送气差别。</p><div class="p63-grid">'+initialCards()+'</div>';else if(part==='finals')body.innerHTML='<h2>24 个韵母</h2><p class="p63-note">直接韵母与示范音节分开标注。ui 听 wēi、in 听 yīn、ong 听 zhōng 中的韵母，不把完整音节当成独立韵母。</p><div class="p63-grid">'+finalCards()+'</div>';else if(part==='whole')body.innerHTML='<h2>16 个整体认读音节</h2><p class="p63-note">整体认读，不拆开拼。</p><div class="p63-grid">'+wholeCards()+'</div>';else if(part==='tones')body.innerHTML='<h2>六个单韵母的四声</h2><p class="p63-note">共 24 个带调读音；先听声调变化，再看调号。</p><div class="p63-grid">'+toneCards()+'</div>';else if(part==='table')renderTable();else if(part==='blend')renderBlend();else renderChallenge()}
+  function renderPart(){renderEpoch++;pinyinV63Stop();const body=document.getElementById('p63Body');if(!body)return;const status=document.getElementById('p63Status');if(status)status.textContent='';if(part==='initials')body.innerHTML='<h2>21 个声母与 y、w</h2><p class="p63-note">声母用完整示范音节示范；重点听开头和送气差别。</p><div class="p63-grid">'+initialCards()+'</div>';else if(part==='finals')body.innerHTML='<h2>24 个韵母</h2><p class="p63-note">直接韵母与示范音节分开标注。ui 听 wēi、in 听 yīn、ong 听 zhōng 中的韵母，不把完整音节当成独立韵母。</p><div class="p63-grid">'+finalCards()+'</div>';else if(part==='whole')body.innerHTML='<h2>16 个整体认读音节</h2><p class="p63-note">整体认读，不拆开拼。</p><div class="p63-grid">'+wholeCards()+'</div>';else if(part==='tones')body.innerHTML='<h2>六个单韵母的四声</h2><p class="p63-note">共 24 个带调读音；先听声调变化，再看调号。</p><div class="p63-grid">'+toneCards()+'</div>';else if(part==='table')renderTable();else if(part==='blend')renderBlend();else renderChallenge()}
   window.pinyinV63Part=function(next){part=next;document.querySelectorAll('.p63-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.part===part));renderPart()};
-function render(){getBoundaries().catch(()=>{});document.getElementById('ct').innerHTML=`<main class="p63"><header class="p63-head"><button class="p63-back" onclick="showPage('curriculum')">← 返回</button><h1 class="p63-title">拼音点读发音</h1></header><section class="p63-hero"><strong>👂 听准 · 看清 · 拼出来</strong><p>对齐统编版一年级 14 课拼音范围。真人示范与拼写一一对应，不夹入网址或系统提示。借助音节示范的韵母会明确标注。</p><span class="p63-lock">🔒 本地真人音频 · 不使用设备 TTS</span></section><nav class="p63-tabs" aria-label="拼音学习功能">${[['initials','声母'],['finals','韵母'],['whole','整体认读'],['tones','四声'],['table','完整拼音表'],['blend','分步拼读'],['challenge','听音闯关']].map(x=>`<button data-part="${x[0]}" class="${part===x[0]?'on':''}" onclick="pinyinV63Part('${x[0]}')">${x[1]}</button>`).join('')}</nav><section class="p63-panel" id="p63Body"></section><div class="p63-status" id="p63Status"></div><p class="p63-source">音频：hotoo/pinyin（MIT），已本地化；课程顺序依据国家中小学智慧教育平台一年级语文。</p></main>`;renderPart()}
+function render(){getBoundaries().catch(()=>{});document.getElementById('ct').innerHTML=`<main class="p63"><header class="p63-head"><button class="p63-back" onclick="showPage('curriculum')">← 返回</button><h1 class="p63-title">拼音点读发音</h1></header><section class="p63-hero"><strong>👂 听准 · 看清 · 拼出来</strong><p>对齐统编版一年级 14 课拼音范围。真人示范与拼写一一对应，不夹入网址或系统提示。借助音节示范的韵母会明确标注。</p><span class="p63-lock">🔒 本地真人音频 · 不使用设备 TTS</span></section><nav class="p63-tabs" aria-label="拼音学习功能">${[['initials','声母'],['finals','韵母'],['whole','整体认读'],['tones','四声'],['table','完整拼音表'],['blend','分步拼读'],['challenge','听音闯关']].map(x=>`<button data-part="${x[0]}" class="${part===x[0]?'on':''}" onclick="pinyinV63Part('${x[0]}')">${x[1]}</button>`).join('')}</nav><section class="p63-panel" id="p63Body"></section><div class="p63-status" id="p63Status"></div><button class="p63-back" onclick="pinyinV86ResetAudio()">重新启用声音</button><p class="p63-source">音频：hotoo/pinyin（MIT），已本地化；课程顺序依据国家中小学智慧教育平台一年级语文。</p></main>`;renderPart()}
   if(typeof PGS!=='undefined')PGS.pinyin={title:'🔤 拼音点读发音',render};
   if(new URLSearchParams(location.search).has('test'))window.__PINYIN_V63_TEST={INITIALS,FINALS,WHOLE,toneMark,findSegments,approvedSpans,parseToken,taskToken,getManifest,getBuffer,play,split,render,clearDecodedCache:()=>buffers.clear()};
 })();
