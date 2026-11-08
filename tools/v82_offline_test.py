@@ -14,15 +14,15 @@ with sync_playwright() as p:
  b=p.chromium.launch(**launch)
  ctx=b.new_context();ctx.add_init_script(seed);page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000);page.wait_for_function('navigator.serviceWorker.controller',timeout=60000)
- page.wait_for_function("caches.keys().then(k=>k.includes('grade1-island-v88-1'))")
+ page.wait_for_function("caches.keys().then(k=>k.includes('grade1-island-v89-1'))")
  page.evaluate("showPage('pinyin');pinyinV63Part('tones')")
  assert page.evaluate("__PINYIN_V63_TEST.play('a',1)")
  names=['a','o','e','yi','wu','yu','niu','yang','ke','ying','zhong']
  page.evaluate('async ns=>{for(const n of ns)await __PINYIN_V63_TEST.getBuffer(n)}',names)
- keys=page.evaluate("caches.open('grade1-island-v88-1').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
+ keys=page.evaluate("caches.open('grade1-island-v89-1').then(c=>c.keys()).then(xs=>xs.map(x=>x.url))")
  for name in ['pinyin-rules-v82.js','child-v82.js','child-v82.css','segments-v83.json','manifest.json']:assert any(name in x for x in keys),name
  page.evaluate('S.pts=37;R()');ctx.set_offline(True);page.reload(wait_until='networkidle')
- assert page.evaluate('document.documentElement.dataset.release')=='v88-audio-focus'
+ assert page.evaluate('document.documentElement.dataset.release')=='v89-module-media'
  assert page.evaluate('S.pts')==37
  page.evaluate("showPage('pinyin');pinyinV63Part('table')")
  page.wait_for_function('document.querySelectorAll("#p63Syllables .p63-card").length===406')
