@@ -1,5 +1,11 @@
 # 拼音音频来源与许可
 
+## v87 北语原包独立韵母（非商业用途）
+
+新增 i、u、ü、ui、iu、ie、üe、in、un、ün、ing、ong 共12项、48份单声调录音，来自北语BCC官网历史下载包，原文件未裁剪或合成；ü/üe/ün 使用原包 v1–v4、ve1–ve4、vn1–vn4，不使用GitHub不同的无数字文件。文件、来源和SHA见 [来源说明](assets/pinyin-finals-v87/SOURCE.md) 与 [清单](assets/pinyin-finals-v87/manifest.json)。
+
+按本站维护者要求仅用于非商业学习。本目录不适用下述MIT许可，不宣称获得开放商用或未来付费版授权。来源一致性和工程播放已验证，专业逐音听审尚未完成，不宣称得到北语或普通话教师审定。
+
 ## v63 拼音点读发音
 
 - 来源：[hotoo/pinyin](https://github.com/hotoo/pinyin)，commit `6580657e327edd4a94bd87325ce4d47dc2409126`

@@ -22,7 +22,7 @@ with sync_playwright() as p:
  ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(seed)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
- assert page.locator('meta[name="app-version"]').get_attribute('content')=='v86-learning-audio'
+ assert page.locator('meta[name="app-version"]').get_attribute('content')=='v87-blcu-finals'
  current=page.evaluate('__G1_TEST.levels');byid={l['id']:l for l in current}
  for l in baseline:
   actual=byid[l['id']]
@@ -30,6 +30,9 @@ with sync_playwright() as p:
    # v86 corrects the teaching wording; keep the saved task/reward identity.
    assert all({k:v for k,v in t.items() if k!='prompt'}=={k:v for k,v in a.items() if k!='prompt'} for t,a in zip(l['tasks'],actual['tasks']))
    assert l['id']==actual['id'] and l['region']==actual['region']
+  elif l['id'].startswith(('zh-final-','zh-tone-')):
+   assert {k:v for k,v in actual.items() if k!='tasks'}=={k:v for k,v in l.items() if k!='tasks'}
+   assert all({k:v for k,v in t.items() if k!='audio'}=={k:v for k,v in a.items() if k!='audio'} for t,a in zip(l['tasks'],actual['tasks']))
   else:assert actual==l,'historical task or reward identity changed: '+l['id']
  assert len(current)==len(baseline)+2 and all(len(l['tasks'])==3 for l in current)
  answers={t['answer'] for l in current if l['id'].startswith('zh-final-') for t in l['tasks']}
@@ -47,14 +50,14 @@ with sync_playwright() as p:
  # Each actual source is hash-verified and decoded through the production loader.
  report=page.evaluate("""async()=>{const api=__PINYIN_V63_TEST,m=await api.getManifest(),queue=m.files.slice();let sources=0,tones=0;await Promise.all([0,1,2,3].map(async()=>{while(queue.length){const f=queue.shift(),n=f.file.slice(0,-4),b=await api.getBuffer(n),spans=await api.approvedSpans(n,b);for(const [a,z]of spans){const c=new OfflineAudioContext(1,Math.ceil((z-a)*b.sampleRate),b.sampleRate),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0,a,z-a);const out=(await c.startRendering()).getChannelData(0);let energy=0;for(const x of out)energy+=x*x;if(energy/out.length<.000001)throw Error(n+' empty segment');tones++}sources++}}));return {sources,tones}}""")
  assert report=={'sources':406,'tones':1624};print('PASS 406 SHA/native decodes and 1624 native OfflineAudioContext four-tone renders',flush=True)
- for oldid,label,name,t in [('o4','ò','o',4),('a2','á','a',2),('ke1','k','ke',1),('ing1','ing','ying',1)]:
+ for oldid,label,name,t in [('o4','ò','o',4),('a2','á','a',2),('ke1','k','ke',1),('ing1','ing','final_ing',1)]:
   assert page.evaluate('async x=>{const api=__PINYIN_V63_TEST,b=await api.getBuffer(x.name),s=(await api.approvedSpans(x.name,b))[x.t-1],ok=await playPinyinV42(x.oldid,x.label),call=starts.at(-1);return ok&&Math.abs(call[1]-s[0])<1e-6&&Math.abs(call[2]-(s[1]-s[0]))<1e-6}',{'oldid':oldid,'label':label,'name':name,'t':t})
  print('PASS four legacy point-read entry points use identical verified recordings',flush=True)
  # Real-time production playback, not a mocked onended completion.
  groups=[('initials','__PINYIN_V63_TEST.INITIALS.map(x=>[x[1],1])'),('finals','__PINYIN_V63_TEST.FINALS.map(x=>[x[1],1])'),('whole','__PINYIN_V63_TEST.WHOLE.map(n=>[n,1])'),('tones',"['a','o','e','yi','wu','yu'].flatMap(n=>[1,2,3,4].map(t=>[n,t]))"),('regression',"['niu','yang'].flatMap(n=>[1,2,3,4].map(t=>[n,t]))")]
  if '--interaction-only' in sys.argv:groups=[]
  for group,expression in groups:
-  count=page.evaluate("""async cases=>{const a=__PINYIN_V63_TEST;for(const [n,t]of cases){const b=await a.getBuffer(n),span=(await a.approvedSpans(n,b))[t-1],before=starts.length;if(!await a.play(n,t))throw Error(n+' did not complete');const call=starts.at(-1);if(starts.length!==before+1||Math.abs(call[1]-span[0])>1e-6||Math.abs(call[2]-(span[1]-span[0]))>1e-6)throw Error(n+' wrong tone mapping')}return cases.length}""",page.evaluate(expression))
+  count=page.evaluate("""async cases=>{const a=__PINYIN_V63_TEST;for(const [n,t]of cases){const b=await a.getBuffer(n,t),span=(await a.approvedSpans(n,b))[t-1],before=starts.length;if(!await a.play(n,t))throw Error(n+' did not complete');const call=starts.at(-1);if(starts.length!==before+1||Math.abs(call[1]-span[0])>1e-6||Math.abs(call[2]-(span[1]-span[0]))>1e-6)throw Error(n+' wrong tone mapping')}return cases.length}""",page.evaluate(expression))
   print('PASS real-time production playback:',group,count,flush=True)
  assert page.evaluate('ttsCalls')==0
  # Switching a visible tone cancels the old sound, then next play uses new tone.

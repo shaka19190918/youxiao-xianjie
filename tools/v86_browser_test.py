@@ -40,7 +40,7 @@ with sync_playwright() as p:
   page.wait_for_selector('#p86Rows select');page.locator('#p86Rows select').first.select_option('pass')
   assert page.locator('#p86Rows select').first.input_value()=='pending'
   catalog=page.evaluate("fetch('assets/pinyin-v86/review-catalog.json').then(r=>r.json())")
-  assert len(catalog['items'])==87 and len(catalog['recordings'])==406
+  assert len(catalog['items'])==87 and len(catalog['recordings'])==454
   assert not catalog['professionalListeningComplete'] and all(r['phoneticReview']=='pending' for r in catalog['recordings'])
   # A real packaged MP3 tests preview/storage/download, not a child's microphone.
   page.evaluate("showPage('follow79')")

@@ -37,7 +37,9 @@ with sync_playwright() as p:
  for t in assets:
   a=t.get('audio')
   if not a:continue
-  if a.startswith('p63|'):a='assets/pinyin-v63/'+a.split('|')[1]+'.mp3'
+  if a.startswith('p63|'):
+   _,name,tone=a.split('|')
+   a=('assets/pinyin-finals-v87/'+name[6:]+tone+'.mp3') if name.startswith('final_') else ('assets/pinyin-v63/'+name+'.mp3')
   if '://' not in a and not (ROOT/a).is_file():issues.append({'error':'missing level asset',**t})
  report={'base':BASE,'routes':routes,'rows':rows,'issues':issues,'http':http}
  (out/'route-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf8')

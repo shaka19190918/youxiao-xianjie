@@ -18,7 +18,7 @@
     if(controller)return new Promise(resolve=>{const ch=new MessageChannel(),t=setTimeout(()=>{ch.port1.close();resolve([])},20000);ch.port1.onmessage=e=>{clearTimeout(t);ch.port1.close();resolve(e.data)};controller.postMessage({type:'prewarm-assets',assets:list},[ch.port2])});
     const queue=list.slice(),results=[];await Promise.all([0,1].map(async()=>{while(queue.length){const path=queue.shift();try{await fetchAsset(path);results.push({url:path,ok:true})}catch(_){results.push({url:path,ok:false})}}}));return results;
   }
-  function audioPath(task){const p=typeof task==='string'?task:task?.audio;if(!p)return null;if(p.startsWith('p63|'))return'assets/pinyin-v63/'+encodeURIComponent(p.split('|')[1])+'.mp3';return p}
+  function audioPath(task){const p=typeof task==='string'?task:task?.audio;if(!p)return null;if(p.startsWith('p63|')){const [,name,tone]=p.split('|');if(/^final_(i|u|v|ui|iu|ie|ve|in|un|vn|ing|ong)$/.test(name))return 'assets/pinyin-finals-v87/'+name.slice(6)+(Number(tone)||1)+'.mp3';return 'assets/pinyin-v63/'+encodeURIComponent(name)+'.mp3';}return p}
   function warmTasks(tasks,opts){return prefetch(tasks.map(audioPath),opts)}
   function currentAssets(){
     const result=[];
@@ -74,7 +74,7 @@
   const part=pinyinV63Part;pinyinV63Part=function(...args){const result=part(...args);schedule();return result};
   document.addEventListener('pointerdown',event=>{
     const button=event.target.closest('.p63-card');if(!button||conserve())return;
-    const match=button.getAttribute('onclick')?.match(/pinyinV63Play\('([^']+)'/);if(match)window.pinyinV69Prepare?.(match[1]);
+    const match=button.getAttribute('onclick')?.match(/pinyinV63Play\('([^']+)'\s*,\s*([1-4])/);if(match)window.pinyinV69Prepare?.(match[1],Number(match[2]));
   },{passive:true});
   window.Fast69={ready:false,prefetch,warmTasks,warmCurrent,fetchAsset,strokeData,loadWriter,retryTrace:()=>{if(lastTrace)openTraceV42(...lastTrace)}};
   const parent=PGS.parent.render;PGS.parent.render=function(){parent();if(S._parentAuth)document.getElementById('ct').insertAdjacentHTML('beforeend','<section class="l66-card"><h2>加载与离线资源</h2><p>用过的教学资源会保存在本机。进入任务时只提前准备少量相关资源；系统省流量模式下不自动预取。</p><p>笔顺数据：Hanzi Writer Data 2.0.1 / Make Me A Hanzi / Arphic Technology，69个字原样保存。<a href="assets/strokes-v69/ARPHICPL.TXT" target="_blank" rel="noopener">原始许可</a> · <a href="assets/strokes-v69/manifest.json" target="_blank" rel="noopener">来源与校验清单</a></p></section>')};
