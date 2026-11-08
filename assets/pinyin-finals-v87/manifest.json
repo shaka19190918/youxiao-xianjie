@@ -1,0 +1,493 @@
+{
+ "schema": "pinyin-finals-v87",
+ "count": 48,
+ "checkedAt": "2026-11-08",
+ "source": "BLCU BCC historical download archive",
+ "archiveSha256": "07da9ac23960b9e7cf8a9a753ce63eab67474e6db6a4172d30a424ce303ad817",
+ "archiveUrl": "https://web.archive.org/web/20220331230704id_/http://bcc.blcu.edu.cn/downloads/resources/%E6%B1%89%E8%AF%AD%E6%8B%BC%E9%9F%B3(mp3).zip",
+ "originalUrl": "http://bcc.blcu.edu.cn/downloads/resources/%E6%B1%89%E8%AF%AD%E6%8B%BC%E9%9F%B3(mp3).zip",
+ "useScope": "Non-commercial use requested by the site owner; no open/commercial license asserted.",
+ "professionalListeningComplete": false,
+ "files": {
+  "final_i|1": {
+   "audio": "final_i",
+   "final": "i",
+   "tone": 1,
+   "file": "i1.mp3",
+   "bytes": 8411,
+   "sha256": "2bcf87a7fcfa0c99d9a06063c3742597889e731bd4b5fccc1e0718574d642696",
+   "duration": 1.201571,
+   "phoneticReview": "pending"
+  },
+  "final_i|2": {
+   "audio": "final_i",
+   "final": "i",
+   "tone": 2,
+   "file": "i2.mp3",
+   "bytes": 8777,
+   "sha256": "392bf24161a5872da12d51c8bca29a1a5b85187e55bb4fac709c5acf6832d1ab",
+   "duration": 1.253857,
+   "phoneticReview": "pending"
+  },
+  "final_i|3": {
+   "audio": "final_i",
+   "final": "i",
+   "tone": 3,
+   "file": "i3.mp3",
+   "bytes": 10057,
+   "sha256": "4aa5f7b8e186005cc69b48e929eef5a7fa4e819d9a416f4de8e098224bdbf06e",
+   "duration": 1.436714,
+   "phoneticReview": "pending"
+  },
+  "final_i|4": {
+   "audio": "final_i",
+   "final": "i",
+   "tone": 4,
+   "file": "i4.mp3",
+   "bytes": 7863,
+   "sha256": "d552b4e05e49a694131185ee9ba2f7a6b291bfa0fa9a3b34afe79d38f76d61a1",
+   "duration": 1.123286,
+   "phoneticReview": "pending"
+  },
+  "final_u|1": {
+   "audio": "final_u",
+   "final": "u",
+   "tone": 1,
+   "file": "u1.mp3",
+   "bytes": 8046,
+   "sha256": "7d94aabada865904725a1d5662884de2ca8c16e7c7140c855b3df051a511e91e",
+   "duration": 1.149429,
+   "phoneticReview": "pending"
+  },
+  "final_u|2": {
+   "audio": "final_u",
+   "final": "u",
+   "tone": 2,
+   "file": "u2.mp3",
+   "bytes": 8960,
+   "sha256": "283dca4fcac893d0c735adc0ef86f5e18f1c7a4949ad541b5f39aa6effa8fe04",
+   "duration": 1.28,
+   "phoneticReview": "pending"
+  },
+  "final_u|3": {
+   "audio": "final_u",
+   "final": "u",
+   "tone": 3,
+   "file": "u3.mp3",
+   "bytes": 9143,
+   "sha256": "a472b79bc7df64f7fb1b6a029b52b747386b89d474945503cfb0809a5411ae95",
+   "duration": 1.306143,
+   "phoneticReview": "pending"
+  },
+  "final_u|4": {
+   "audio": "final_u",
+   "final": "u",
+   "tone": 4,
+   "file": "u4.mp3",
+   "bytes": 7863,
+   "sha256": "0cb8596f99150b2e0b49d45330879863ddff136ac832f8b6a43d7ea18cd7e5ac",
+   "duration": 1.123286,
+   "phoneticReview": "pending"
+  },
+  "final_v|1": {
+   "audio": "final_v",
+   "final": "v",
+   "tone": 1,
+   "file": "v1.mp3",
+   "bytes": 7863,
+   "sha256": "0c64e76b492d1ecab83d46871c65bf7ec9c7f573affce60cc4f2a649cdf70f84",
+   "duration": 1.123286,
+   "phoneticReview": "pending"
+  },
+  "final_v|2": {
+   "audio": "final_v",
+   "final": "v",
+   "tone": 2,
+   "file": "v2.mp3",
+   "bytes": 8777,
+   "sha256": "7a83240e431bd59eae2e97c7cad4d6df6ab5fa6da9b864f2278f42cee2e76e7f",
+   "duration": 1.253857,
+   "phoneticReview": "pending"
+  },
+  "final_v|3": {
+   "audio": "final_v",
+   "final": "v",
+   "tone": 3,
+   "file": "v3.mp3",
+   "bytes": 10240,
+   "sha256": "6c8df4b242026ca40ef9d226923c5adef863b8310a63b82b365f1b834931448a",
+   "duration": 1.462857,
+   "phoneticReview": "pending"
+  },
+  "final_v|4": {
+   "audio": "final_v",
+   "final": "v",
+   "tone": 4,
+   "file": "v4.mp3",
+   "bytes": 7314,
+   "sha256": "93c587c6575e26aace6f865f9caee9f8a4d0f610ab2760b9c9a7f688c84decfb",
+   "duration": 1.044857,
+   "phoneticReview": "pending"
+  },
+  "final_ui|1": {
+   "audio": "final_ui",
+   "final": "ui",
+   "tone": 1,
+   "file": "ui1.mp3",
+   "bytes": 6583,
+   "sha256": "1024c88dc1588d5642733c800b72564b7c7ff941445c9b0c94d13911617e27ab",
+   "duration": 0.940429,
+   "phoneticReview": "pending"
+  },
+  "final_ui|2": {
+   "audio": "final_ui",
+   "final": "ui",
+   "tone": 2,
+   "file": "ui2.mp3",
+   "bytes": 6766,
+   "sha256": "67aa28e2d5fffe612d1d3050af187b0f118d7aad0d8de1069ad7d4935979d4ae",
+   "duration": 0.966571,
+   "phoneticReview": "pending"
+  },
+  "final_ui|3": {
+   "audio": "final_ui",
+   "final": "ui",
+   "tone": 3,
+   "file": "ui3.mp3",
+   "bytes": 7314,
+   "sha256": "82b4ad83196ad9da17ac5f6b8264033929ec1d5d943b8b14c424a3cb255b30d0",
+   "duration": 1.044857,
+   "phoneticReview": "pending"
+  },
+  "final_ui|4": {
+   "audio": "final_ui",
+   "final": "ui",
+   "tone": 4,
+   "file": "ui4.mp3",
+   "bytes": 5851,
+   "sha256": "926abaf978ec4d9c0df8c5f8690d1c36e02b286f7f06c90ef626076cd9b91c5a",
+   "duration": 0.835857,
+   "phoneticReview": "pending"
+  },
+  "final_iu|1": {
+   "audio": "final_iu",
+   "final": "iu",
+   "tone": 1,
+   "file": "iu1.mp3",
+   "bytes": 7497,
+   "sha256": "b5d0bc9b38ed08313d0a566d77a70b42e362250ef6ef4245cb5d629902241481",
+   "duration": 1.071,
+   "phoneticReview": "pending"
+  },
+  "final_iu|2": {
+   "audio": "final_iu",
+   "final": "iu",
+   "tone": 2,
+   "file": "iu2.mp3",
+   "bytes": 7863,
+   "sha256": "f3c4695ce9bdc18cc87870dbec3e41af0fd469f584a6fbb7aac6edaf8a62b3b4",
+   "duration": 1.123286,
+   "phoneticReview": "pending"
+  },
+  "final_iu|3": {
+   "audio": "final_iu",
+   "final": "iu",
+   "tone": 3,
+   "file": "iu3.mp3",
+   "bytes": 7497,
+   "sha256": "b8c923c29444c2d1a32656735627f7180c3527eba309e7d6a909ce5a015aaa4d",
+   "duration": 1.071,
+   "phoneticReview": "pending"
+  },
+  "final_iu|4": {
+   "audio": "final_iu",
+   "final": "iu",
+   "tone": 4,
+   "file": "iu4.mp3",
+   "bytes": 6583,
+   "sha256": "bc6e256827e93ea7f19c77fc5a634b5a1f95d1e7a23a2122fa1a7116a072d6ad",
+   "duration": 0.940429,
+   "phoneticReview": "pending"
+  },
+  "final_ie|1": {
+   "audio": "final_ie",
+   "final": "ie",
+   "tone": 1,
+   "file": "ie1.mp3",
+   "bytes": 7314,
+   "sha256": "6decae81decf09bca2b5c29d9bb5b7762f4aa0dab532a28aec8a28b985950942",
+   "duration": 1.044857,
+   "phoneticReview": "pending"
+  },
+  "final_ie|2": {
+   "audio": "final_ie",
+   "final": "ie",
+   "tone": 2,
+   "file": "ie2.mp3",
+   "bytes": 7314,
+   "sha256": "d64e0f476b42f3b4c1f28bdd7713f46ccdae4da8627f7274366969594133f767",
+   "duration": 1.044857,
+   "phoneticReview": "pending"
+  },
+  "final_ie|3": {
+   "audio": "final_ie",
+   "final": "ie",
+   "tone": 3,
+   "file": "ie3.mp3",
+   "bytes": 8960,
+   "sha256": "9dc211ae899dd8b4f4827fab3163caea613ff9a5ebd51cb2ab5092c744bd6fc5",
+   "duration": 1.28,
+   "phoneticReview": "pending"
+  },
+  "final_ie|4": {
+   "audio": "final_ie",
+   "final": "ie",
+   "tone": 4,
+   "file": "ie4.mp3",
+   "bytes": 6217,
+   "sha256": "1aeecaf869b964d030280c4eed71c62b6cf4c0343c72bd99095d844360c3c28a",
+   "duration": 0.888143,
+   "phoneticReview": "pending"
+  },
+  "final_ve|1": {
+   "audio": "final_ve",
+   "final": "ve",
+   "tone": 1,
+   "file": "ve1.mp3",
+   "bytes": 6583,
+   "sha256": "d775a0eb7b5c414c46ecdde2993a13630ac2eab4d4cafda2a5f79143c4ae4d8b",
+   "duration": 0.940429,
+   "phoneticReview": "pending"
+  },
+  "final_ve|2": {
+   "audio": "final_ve",
+   "final": "ve",
+   "tone": 2,
+   "file": "ve2.mp3",
+   "bytes": 7131,
+   "sha256": "c6b8dee57c21b758dd1d82635cc033e77fe77ddd2c5960feff60fe0fe70fd501",
+   "duration": 1.018714,
+   "phoneticReview": "pending"
+  },
+  "final_ve|3": {
+   "audio": "final_ve",
+   "final": "ve",
+   "tone": 3,
+   "file": "ve3.mp3",
+   "bytes": 8594,
+   "sha256": "85e0ef9458a476a0a09971469d24cd47655cb415b414215a08d580b30b255351",
+   "duration": 1.227714,
+   "phoneticReview": "pending"
+  },
+  "final_ve|4": {
+   "audio": "final_ve",
+   "final": "ve",
+   "tone": 4,
+   "file": "ve4.mp3",
+   "bytes": 4571,
+   "sha256": "1e45c7eecea897ff5e92b1cc60e2807cc058e3cbdb894c71300ff7759d2da667",
+   "duration": 0.653,
+   "phoneticReview": "pending"
+  },
+  "final_in|1": {
+   "audio": "final_in",
+   "final": "in",
+   "tone": 1,
+   "file": "in1.mp3",
+   "bytes": 6766,
+   "sha256": "10013a2c2bc6ed92403d73bc08882928b7ec6d1423453e0cbee7b0f263594376",
+   "duration": 0.966571,
+   "phoneticReview": "pending"
+  },
+  "final_in|2": {
+   "audio": "final_in",
+   "final": "in",
+   "tone": 2,
+   "file": "in2.mp3",
+   "bytes": 7497,
+   "sha256": "2916491cf4d552255d83c2ab9721151cd5ebb49d6691c8696f06b9d86fe4ca15",
+   "duration": 1.071,
+   "phoneticReview": "pending"
+  },
+  "final_in|3": {
+   "audio": "final_in",
+   "final": "in",
+   "tone": 3,
+   "file": "in3.mp3",
+   "bytes": 10057,
+   "sha256": "5bb7a6e5a7ee3df876062a30b9682619ab6c6ce5d0cfe9ccb2c0f133f44cfe4c",
+   "duration": 1.436714,
+   "phoneticReview": "pending"
+  },
+  "final_in|4": {
+   "audio": "final_in",
+   "final": "in",
+   "tone": 4,
+   "file": "in4.mp3",
+   "bytes": 5303,
+   "sha256": "412b1d0deea664b4132798a0324a6f885dd873b8632bfb72b51a0e10d0be0393",
+   "duration": 0.757571,
+   "phoneticReview": "pending"
+  },
+  "final_un|1": {
+   "audio": "final_un",
+   "final": "un",
+   "tone": 1,
+   "file": "un1.mp3",
+   "bytes": 6034,
+   "sha256": "0b57b7e651518a3b9aecf7e77a7c816684864abf22a39666417832074ff9d60c",
+   "duration": 0.862,
+   "phoneticReview": "pending"
+  },
+  "final_un|2": {
+   "audio": "final_un",
+   "final": "un",
+   "tone": 2,
+   "file": "un2.mp3",
+   "bytes": 6949,
+   "sha256": "bfc9fdd20b9c67fbc5af6469d34777ba30924f0057443a2e1273ceaba6076c12",
+   "duration": 0.992714,
+   "phoneticReview": "pending"
+  },
+  "final_un|3": {
+   "audio": "final_un",
+   "final": "un",
+   "tone": 3,
+   "file": "un3.mp3",
+   "bytes": 6583,
+   "sha256": "d4a6684041d4ae395b985db1270390e283acd148362d36163f7c1fdd7a5edf0c",
+   "duration": 0.940429,
+   "phoneticReview": "pending"
+  },
+  "final_un|4": {
+   "audio": "final_un",
+   "final": "un",
+   "tone": 4,
+   "file": "un4.mp3",
+   "bytes": 6400,
+   "sha256": "ef1ec9b0b8597753041c5bd9b1ae9b766f12816b24f6df2020ca44c52562f083",
+   "duration": 0.914286,
+   "phoneticReview": "pending"
+  },
+  "final_vn|1": {
+   "audio": "final_vn",
+   "final": "vn",
+   "tone": 1,
+   "file": "vn1.mp3",
+   "bytes": 6949,
+   "sha256": "094b492728b52f5e7d124982657ffad4d60d3c51508475b4c18a7da7a40db057",
+   "duration": 0.992714,
+   "phoneticReview": "pending"
+  },
+  "final_vn|2": {
+   "audio": "final_vn",
+   "final": "vn",
+   "tone": 2,
+   "file": "vn2.mp3",
+   "bytes": 8777,
+   "sha256": "a22ac9f0b8a708d0bb4fede889a685c9eb687a7c50a27890cee9fec1ae58b251",
+   "duration": 1.253857,
+   "phoneticReview": "pending"
+  },
+  "final_vn|3": {
+   "audio": "final_vn",
+   "final": "vn",
+   "tone": 3,
+   "file": "vn3.mp3",
+   "bytes": 9509,
+   "sha256": "32ff66f037a81684e7e851a88eb7c1345b3c5c289d15ef7dd3c565b416fa93b5",
+   "duration": 1.358429,
+   "phoneticReview": "pending"
+  },
+  "final_vn|4": {
+   "audio": "final_vn",
+   "final": "vn",
+   "tone": 4,
+   "file": "vn4.mp3",
+   "bytes": 5303,
+   "sha256": "ce3b2181418dda269d2f7e6ebad09cdb4341cc6f6862fc7beeefb1b0b3663ce0",
+   "duration": 0.757571,
+   "phoneticReview": "pending"
+  },
+  "final_ing|1": {
+   "audio": "final_ing",
+   "final": "ing",
+   "tone": 1,
+   "file": "ing1.mp3",
+   "bytes": 8046,
+   "sha256": "1a35ed4a70996419f54c37a6f6df29f6cef24351675f6888ca31555ef7f878f8",
+   "duration": 1.149429,
+   "phoneticReview": "pending"
+  },
+  "final_ing|2": {
+   "audio": "final_ing",
+   "final": "ing",
+   "tone": 2,
+   "file": "ing2.mp3",
+   "bytes": 7131,
+   "sha256": "d3ec902ad5076f020084544336b18c7a05fd1fb6a6f07161e0acbaa1a1f8674a",
+   "duration": 1.018714,
+   "phoneticReview": "pending"
+  },
+  "final_ing|3": {
+   "audio": "final_ing",
+   "final": "ing",
+   "tone": 3,
+   "file": "ing3.mp3",
+   "bytes": 9143,
+   "sha256": "a4b9412ecec7ecc2c98ab066be5721e5b614822567290c2caf58a8cd2cff2001",
+   "duration": 1.306143,
+   "phoneticReview": "pending"
+  },
+  "final_ing|4": {
+   "audio": "final_ing",
+   "final": "ing",
+   "tone": 4,
+   "file": "ing4.mp3",
+   "bytes": 5303,
+   "sha256": "7bcc4754df5a8676147e723626cd0ef07179cea88aa94e3a4fb588551ed2cbae",
+   "duration": 0.757571,
+   "phoneticReview": "pending"
+  },
+  "final_ong|1": {
+   "audio": "final_ong",
+   "final": "ong",
+   "tone": 1,
+   "file": "ong1.mp3",
+   "bytes": 6217,
+   "sha256": "6c5b7fc25c2f83adc603f2587afc2972929d7583eb111a3caca37c33bef6a56d",
+   "duration": 0.888143,
+   "phoneticReview": "pending"
+  },
+  "final_ong|2": {
+   "audio": "final_ong",
+   "final": "ong",
+   "tone": 2,
+   "file": "ong2.mp3",
+   "bytes": 6400,
+   "sha256": "1aace103a8efd1f692a8af45431e7f90e1d1bae74a8367416a9e0c9016314ca2",
+   "duration": 0.914286,
+   "phoneticReview": "pending"
+  },
+  "final_ong|3": {
+   "audio": "final_ong",
+   "final": "ong",
+   "tone": 3,
+   "file": "ong3.mp3",
+   "bytes": 8411,
+   "sha256": "1a15a617f101d1f694faa50d9492b38bac5b39f5fbff8a328aec8e29c3b890fe",
+   "duration": 1.201571,
+   "phoneticReview": "pending"
+  },
+  "final_ong|4": {
+   "audio": "final_ong",
+   "final": "ong",
+   "tone": 4,
+   "file": "ong4.mp3",
+   "bytes": 5303,
+   "sha256": "2210dc2b32040a440314f9a4bfb0c8a4f99fd3d7e6c0f499e67a528b8100793f",
+   "duration": 0.757571,
+   "phoneticReview": "pending"
+  }
+ }
+}

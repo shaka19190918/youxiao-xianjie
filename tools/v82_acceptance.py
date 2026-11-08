@@ -18,7 +18,7 @@ with sync_playwright() as p:
  else:launch['args']=['--no-proxy-server']
  browser=p.chromium.launch(**launch);ctx=browser.new_context(viewport={'width':390,'height':844},service_workers='block');ctx.add_init_script(SEED)
  page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
- page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000);page.wait_for_function('document.documentElement.dataset.release==="v86-learning-audio"')
+ page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000);page.wait_for_function('document.documentElement.dataset.release==="v87-blcu-finals"')
  assert page.title()=='低年级每日学习搭子'
  print('PASS v82 loaded',flush=True)
  for w,h in [(320,568),(375,667),(390,844),(568,320),(667,375),(768,1024),(844,390),(1440,900)]:
@@ -56,7 +56,8 @@ with sync_playwright() as p:
   assert page.locator('.p82-piece').count()==parts,(name,page.locator('#p63BlendSteps').inner_text())
   assert page.evaluate('(n)=>PinyinRules82.analyze(n).kind',name)==kind
  page.evaluate("showPage('pinyin');pinyinV63Part('finals')")
- assert '听 zhōng 中的韵母' in page.locator('.p63-card').filter(has_text='ong').inner_text()
+ assert page.locator("button[onclick*=\"'final_ong'\"]").count()==1
+ assert '北语独立韵母' in page.locator("button[onclick*=\"'final_ong'\"]").inner_text()
  # Decode every approved source and ensure saved spans fit; no quarter guessing.
  report=page.evaluate("""async()=>{const m=await fetch('assets/pinyin-v63/segments-v83.json').then(r=>r.json());let count=0;for(const [name,row]of Object.entries(m.files)){if(row.spans.length!==4||row.spans.some(([a,b])=>a<0||b<=a||b>row.duration+.01))throw Error(name);count++}for(const n of ['a','o','ke','ying','zhong','eng']){const b=await __PINYIN_V63_TEST.getBuffer(n);await __PINYIN_V63_TEST.approvedSpans(n,b)}return {count,unavailable:Object.keys(m.unavailable)}}""")
  assert report['count']==406;assert report['unavailable']==[]

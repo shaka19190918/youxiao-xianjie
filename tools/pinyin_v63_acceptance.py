@@ -69,9 +69,9 @@ with sync_playwright() as p:
     assert page.evaluate("__PINYIN_V63_TEST.toneMark('gui', 3)") == "guǐ"
     assert page.evaluate("__PINYIN_V63_TEST.toneMark('liu', 2)") == "liú"
     assert page.evaluate("__PINYIN_V63_TEST.taskToken(['k','ke1'])") == "p63|ke|1"
-    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ing','ing1'])") == "p63|ying|1"
-    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ong','ong1'])") == "p63|zhong|1"
-    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ǖ','v1'])") == "p63|yu|1"
+    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ing','ing1'])") == "p63|final_ing|1"
+    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ong','ong1'])") == "p63|final_ong|1"
+    assert page.evaluate("__PINYIN_V63_TEST.taskToken(['ǖ','v1'])") == "p63|final_v|1"
 
     page.evaluate("showPage('pinyin')")
     page.wait_for_selector(".p63")
