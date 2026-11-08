@@ -35,7 +35,7 @@ with sync_playwright() as p:
     page=ctx.new_page();page.set_default_timeout(180000);errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
-    assert page.locator('meta[name="app-version"]').get_attribute('content')=='v88-audio-focus'
+    assert page.locator('meta[name="app-version"]').get_attribute('content')=='v89-module-media'
     page.wait_for_function('!!navigator.serviceWorker.controller')
     page.evaluate("window.tts=0;speechSynthesis.speak=()=>tts++;window.starts=[];const start=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...a){starts.push(a);return start.apply(this,a)};showPage('pinyin');pinyinV63Part('finals')")
     for width,height in [(320,568),(375,667),(390,844),(844,390),(768,1024),(1440,900)]:

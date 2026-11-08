@@ -261,6 +261,8 @@
         这里改为时分复用：暂停拾音 → 播语音 → 恢复拾音。
      ⚠️ 不能用回声消除（AEC）解决：AEC 会削掉钢琴谐波，音高精度会掉。 */
   function speak(text, after) {
+    if (!mounted() || document.hidden || _eyeMode || v41EnsureAudio().muted) return;
+    const ticket = epoch;
     if (!window.speechSynthesis) { if (after) after(); return; }
     /* ⚠️ 必须先清掉上一次的恢复定时器。
        踩过：连续两次播报时，第一次的 setTimeout 没被取消 →
@@ -292,8 +294,9 @@
       if (done) return;
       done = true;
       if (guard) clearTimeout(guard);
+      if (ticket !== epoch || !mounted() || document.hidden || _eyeMode) return;
       /* 留 250ms 让扬声器余音散掉，再恢复拾音（否则残响会被收进去） */
-      speakQueue = setTimeout(() => { micPaused = false; speakQueue = null; if (after) after(); }, 250);
+      speakQueue = setTimeout(() => { if(ticket !== epoch || !mounted() || document.hidden || _eyeMode)return;micPaused = false; speakQueue = null; if (after) after(); }, 250);
     };
     u.onend = finish;
     u.onerror = finish;
@@ -874,6 +877,7 @@
     },
   };
   window.Follow79 = Follow79;
+  if(new URLSearchParams(location.search).has('test'))window.__FOLLOW89_TEST={speak,snapshot:()=>({epoch,pending,micPaused,hasSpeechTimer:!!speakQueue})};
 
   /* ── 生命周期钩子：离开页面必须释放麦克风 ──────────────────────────
      ⚠️⚠️ 关键坑：showPage / eyeOpen 是 index.html 里的**函数声明**，

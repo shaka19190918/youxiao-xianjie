@@ -8,8 +8,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>低年级每日学习搭子</title>
 <meta name="application-name" content="低年级每日学习搭子">
-<meta name="app-version" content="v88-audio-focus">
-<link rel="stylesheet" href="practice-v68.css?v=88">
+<meta name="app-version" content="v89-module-media">
+<link rel="stylesheet" href="practice-v68.css?v=89">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -264,13 +264,13 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 .v47-choice{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;align-items:stretch}.v47-choice-hear{min-width:58px;min-height:64px;border:0;border-radius:20px;background:#54b9dc;color:#fff;font-size:25px;box-shadow:0 5px 12px rgba(49,139,178,.2)}.v47-choice .v42-answer{width:100%;min-width:0}.v47-choice-hear:active{transform:scale(.96)}
 @media(min-width:700px){.v42-char-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-art{height:210px}.dog-display{width:320px!important;height:320px!important}}
 </style>
-<link rel="stylesheet" href="game-v59.css?v=88">
-<link rel="stylesheet" href="learning-v66.css?v=88">
-<link rel="stylesheet" href="question-art-v67.css?v=88">
-<link rel="stylesheet" href="curriculum-v61.css?v=88">
-<link rel="stylesheet" href="pinyin-v63.css?v=88">
-<link rel="stylesheet" href="reading-v71.css?v=88">
-<link rel="stylesheet" href="child-v82.css?v=88">
+<link rel="stylesheet" href="game-v59.css?v=89">
+<link rel="stylesheet" href="learning-v66.css?v=89">
+<link rel="stylesheet" href="question-art-v67.css?v=89">
+<link rel="stylesheet" href="curriculum-v61.css?v=89">
+<link rel="stylesheet" href="pinyin-v63.css?v=89">
+<link rel="stylesheet" href="reading-v71.css?v=89">
+<link rel="stylesheet" href="child-v82.css?v=89">
 </head>
 <body>
 <div id="app">
@@ -701,23 +701,30 @@ const POEM_COURSE_V6=[
   {ti:'江雪',au:'柳宗元',era:'唐代',key:'poem_jiang_xue',em:'❄️',lns:['千山鸟飞绝，','万径人踪灭。','孤舟蓑笠翁，','独钓寒江雪。'],py:['qiān shān niǎo fēi jué','wàn jìng rén zōng miè','gū zhōu suō lì wēng','dú diào hán jiāng xuě']}
 ];
 function poemDayIndexV6(){if(!S.poemStart){S.poemStart=T();R()}return Math.min(POEM_COURSE_V6.length-1,Math.max(0,Math.floor((new Date(T())-new Date(S.poemStart))/864e5)))}
-let _poemCtl={audio:null,playing:false};
-function clearPoemHL(){document.querySelectorAll('#ct .pc.on').forEach(function(e){e.classList.remove('on')});document.querySelectorAll('#ct .plline.on-line').forEach(function(e){e.classList.remove('on-line')});document.querySelectorAll('#ct .pom.info-playing').forEach(function(e){e.classList.remove('info-playing')})}
-function stopPoemV6(){const c=_poemCtl;if(c.audio){c.audio.ontimeupdate=null;c.audio.onended=null;try{c.audio.pause();c.audio.currentTime=0}catch(e){}c.audio=null}c.playing=false;clearPoemHL()}
+let _poemCtl={audio:null,playing:false,infoMode:false},_poemEpoch=0;
+function clearPoemHL(){document.querySelectorAll('#ct .pc.on,#ct .plline.on-line,#ct .pom.info-playing').forEach(e=>e.classList.remove('on','on-line','info-playing'))}
+function stopPoemV6(){_poemEpoch++;const a=_poemCtl.audio;_poemCtl.audio=null;_poemCtl.playing=false;_poemCtl.infoMode=false;if(a){a.onended=a.onerror=a.onpause=a.ontimeupdate=null;try{a.pause();a.currentTime=0}catch(_){}}clearPoemHL()}
 function poemLineHTML(pi,li){const p=POEM_COURSE_V6[pi],pys=(p.py&&p.py[li]||'').split(' ');let ci=0,out='';for(const ch of p.lns[li]){if(/[，。！？,.!?、；：]/.test(ch)){out+='<span class="pc-punc">'+ch+'</span>'}else{out+='<span class="pc-wrap"><span class="pp">'+(pys[ci]||'')+'</span><span class="pc" id="pc-'+pi+'-'+li+'-'+ci+'">'+ch+'</span></span>';ci++}}return '<div class="plline" id="pl-'+pi+'-'+li+'" onclick="playPoemLine('+pi+','+li+')" title="点击听这一句">'+out+'</div>'}
-function _playPoemLineCore(pi,li,done){
-  const p=POEM_COURSE_V6[pi];const url='assets/voice/'+p.key+'_l'+(li+1)+(p.key==='poem_yong_e'&&li===0?'.wav':'.mp3');
-  const au=new Audio(url);_poemCtl.audio=au;_poemCtl.playing=true;
-  const line=document.getElementById('pl-'+pi+'-'+li);if(line)line.classList.add('on-line');
-  const N=p.lns[li].replace(/[，。！？,.!?、；：]/g,'').length;let lastCi=-1;
-  au.ontimeupdate=function(){if(!au.duration)return;const ci=Math.min(N-1,Math.floor(au.currentTime/(au.duration*0.96)*N));if(ci===lastCi)return;lastCi=ci;document.querySelectorAll('#pl-'+pi+'-'+li+' .pc.on').forEach(function(e){e.classList.remove('on')});const el=document.getElementById('pc-'+pi+'-'+li+'-'+ci);if(el)el.classList.add('on')};
-  au.onended=function(){document.querySelectorAll('#pl-'+pi+'-'+li+' .pc.on').forEach(function(e){e.classList.remove('on')});if(line)line.classList.remove('on-line');_poemCtl.audio=null;if(done)done()};
-  au.onerror=function(){if(line)line.classList.remove('on-line');_poemCtl.audio=null;toast('音频加载失败，请检查网络')};
-  const pr=au.play();if(pr&&pr.catch)pr.catch(function(){toast('轻点屏幕，听朗读')})
+
+function poemClipV89(pi,li,done){
+  const p=POEM_COURSE_V6[pi];if(!p||CP!=='poems'||document.hidden||_eyeMode||v41EnsureAudio().muted){toast('请返回古诗页并开启声音后重试');return}
+  const ticket=_poemEpoch,info=li<0,url='assets/voice/'+p.key+(info?'_info.mp3':'_l'+(li+1)+(p.key==='poem_yong_e'&&li===0?'.wav':'.mp3'));
+  const a=new Audio(url),line=document.getElementById(info?'poem-card-'+pi:'pl-'+pi+'-'+li);
+  _poemCtl.audio=a;_poemCtl.playing=true;_poemCtl.infoMode=info;a.preload='auto';line?.classList.add(info?'info-playing':'on-line');
+  const valid=()=>ticket===_poemEpoch&&_poemCtl.audio===a&&CP==='poems'&&!document.hidden&&!_eyeMode&&!v41EnsureAudio().muted;
+  const fail=()=>{if(ticket!==_poemEpoch)return;stopPoemV6();toast('朗读中断或未加载完整，请点原句或完整朗读重试；不会跳过缺失部分')};
+  if(!info){const count=p.lns[li].replace(/[，。！？,.!?、；：]/g,'').length;let last=-1;a.ontimeupdate=()=>{if(!valid()||!a.duration)return;const n=Math.min(count-1,Math.floor(a.currentTime/(a.duration*.96)*count));if(n===last)return;last=n;document.querySelectorAll('#pl-'+pi+'-'+li+' .pc.on').forEach(e=>e.classList.remove('on'));document.getElementById('pc-'+pi+'-'+li+'-'+n)?.classList.add('on')}}
+  a.onended=()=>{if(!valid())return;clearPoemHL();_poemCtl.audio=null;_poemCtl.infoMode=false;if(done)done();else{_poemCtl.playing=false;S.poems[p.ti]=true;R()}};
+  a.onerror=fail;a.onpause=()=>{if(!a.ended&&valid())fail()};try{a.play()?.catch(fail)}catch(_){fail()}
 }
-function playPoemInfoV6(i,done){const p=POEM_COURSE_V6[i];const url='assets/voice/'+p.key+'_info.mp3';const au=new Audio(url);_poemCtl.audio=au;_poemCtl.playing=true;_poemCtl.infoMode=true;const card=document.getElementById('poem-card-'+i);if(card)card.classList.add('info-playing');au.onended=function(){if(card)card.classList.remove('info-playing');_poemCtl.audio=null;_poemCtl.infoMode=false;if(done)done()};au.onerror=function(){if(card)card.classList.remove('info-playing');_poemCtl.audio=null;_poemCtl.infoMode=false;if(done)done()};const pr=au.play();if(pr&&pr.catch)pr.catch(function(){toast('轻点屏幕，听朗读');if(done)done()})}
-function playPoemLine(pi,li){const p=POEM_COURSE_V6[pi];S.poems[p.ti]=true;R();stopPoemV6();_playPoemLineCore(pi,li,null)}
-function playPoemV6(i){const p=POEM_COURSE_V6[i];S.poems[p.ti]=true;R();stopPoemV6();let li=0;playPoemInfoV6(i,function(){(function next(){if(li>=p.lns.length){_poemCtl.playing=false;clearPoemHL();awd('poem_full_'+i+'_'+T(),2,'《'+p.ti+'》诵读完成 +2💎');return}if(!_poemCtl.playing&&li>0){_poemCtl.playing=false;clearPoemHL();return}_playPoemLineCore(i,li,function(){li++;next()})})()})}
+function _playPoemLineCore(pi,li,done){poemClipV89(pi,li,done)}
+function playPoemInfoV6(pi,done){stopPoemV6();poemClipV89(pi,-1,done)}
+function playPoemLine(pi,li){stopPoemV6();poemClipV89(pi,li)}
+function playPoemV6(pi){
+  stopPoemV6();const p=POEM_COURSE_V6[pi],ticket=_poemEpoch;if(!p)return;let li=0;
+  const next=()=>{if(ticket!==_poemEpoch||CP!=='poems'||document.hidden||_eyeMode)return;if(li>=p.lns.length){_poemCtl.playing=false;clearPoemHL();S.poems[p.ti]=true;R();awd('poem_full_'+pi+'_'+T(),2,'《'+p.ti+'》诵读完成 +2💎');return}poemClipV89(pi,li++,next)};
+  poemClipV89(pi,-1,next);
+}
 PGS.poems={title:'📜 古诗诵读',render:function(){const today=poemDayIndexV6(),visible=POEM_COURSE_V6.filter((_,i)=>i<=today&&i>=Math.max(0,today-3));document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">古诗诵读</div><p class="desc">每天解锁一首新诗，保留最近三首复习。点击任意一句可单独听这一句；点“完整朗读”会逐句朗读并标红当前字。</p><div class="poem-progress">今日课程 ${today+1} / ${POEM_COURSE_V6.length}</div>${visible.map(p=>{const i=POEM_COURSE_V6.indexOf(p);return `<article class="pom" id="poem-card-${i}"><div class="pom-hd"><span style="font-size:28px">${p.em}</span><strong style="font-size:24px">《${p.ti}》</strong></div><div class="poem-meta poem-info-line">${p.era} · ${p.au}</div><button class="btn b1" onclick="playPoemV6(${i})">🔊 完整朗读（逐句标红）</button>${p.lns.map((line,li)=>poemLineHTML(i,li)).join('')}</article>`}).join('')}</div>`}}
 let mathV6={level:10,q:null};
 function nextMathV6(){const limit=mathV6.level;const b=1+Math.floor(Math.random()*Math.max(2,limit/2));const a=b+Math.floor(Math.random()*(limit-b+1));const plus=Math.random()>.45;const left=plus?Math.max(1,Math.floor(Math.random()*(limit-b))+1):a;mathV6.q={a:left,b,plus,ans:plus?left+b:left-b};renderMathV6()}
@@ -751,8 +758,8 @@ const ENGLISH_V6={
   actions:[['🏃','run','跑'],['🍽️','eat','吃'],['😴','sleep','睡觉'],['🎨','draw','画画']],
   dialogue:[['👋','hello','你好'],['🙏','thank_you','谢谢你'],['💬','how_are_you','你好吗'],['😊','i_am_fine','我很好']]
 };let englishTabV6='animals';
-function sayEnglishV6(word){try{const a=new Audio('assets/english/'+word+'.mp3');a.preload='auto';a.play().catch(()=>toast('英文音频暂不可用'))}catch(e){toast('英文音频暂不可用')}}
-function translateEnglishV6(word,cn){toast('中文：'+cn);try{const a=new Audio('assets/english-cn/'+word+'.mp3');a.preload='auto';a.play().catch(()=>toast('中文解释音频暂不可用'))}catch(e){toast('中文解释音频暂不可用')}}
+function sayEnglishV6(word){return v42Play('assets/english/'+word+'.mp3','英文音频暂不可用，请重试')}
+function translateEnglishV6(word,cn){toast('中文：'+cn);return v42Play('assets/english-cn/'+word+'.mp3','中文解释音频暂不可用，请重试')}
 PGS.english={title:'🔠 英语',render:function(){const words=ENGLISH_V6[englishTabV6];document.getElementById('ct').innerHTML=`<button class="back" onclick="showPage('home')">←</button><div class="card"><div class="child-task-title">英语小词卡</div><p class="desc">先听英文；想知道中文时，再点“翻译”。中文解释同样使用本地音频。</p><div class="etabs">${Object.keys(ENGLISH_V6).map(k=>`<button class="etab ${k===englishTabV6?'on':''}" onclick="englishTabV6='${k}';showPage('english')">${({animals:'动物',colors:'颜色',family:'家庭',body:'身体',actions:'动作',dialogue:'小对话'})[k]}</button>`).join('')}</div><div class="english-v6-grid">${words.map(w=>`<article class="english-word"><div class="em">${w[0]}</div><strong>${w[1]}</strong><button class="btn b3" onclick="sayEnglishV6('${w[1]}')">🔊 English</button><button class="btn b1" onclick="translateEnglishV6('${w[1]}','${w[2]}')">翻译</button></article>`).join('')}</div></div>`}}
 const PIANO_V6={title:'欢乐颂（主题）',composer:'贝多芬 · 公共领域作品',tempo:96,notes:[['E4',.5],['E4',.5],['F4',.5],['G4',.5],['G4',.5],['F4',.5],['E4',.5],['D4',.5],['C4',.5],['C4',.5],['D4',.5],['E4',.5],['E4',.75],['D4',.25],['D4',1]]};
 const PIANO_FREQ={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392};
@@ -795,7 +802,7 @@ const _v41PlayCue=typeof playCue==='function'?playCue:null;playCue=function(key,
 /* Pet lines use a local recording when supplied; never fall back to device TTS. */
 speakPet=function(text){if(v41EnsureAudio().muted){showBubble(text);return}const fid=typeof PET_VOICE!=='undefined'?PET_VOICE[text]:null;if(fid){const a=new Audio('assets/voice/'+fid+'.mp3');a.preload='metadata';a.play().catch(()=>toast(text));return}toast(text)};
 function v41LearnedToday(){return v41TodayKeys().some(k=>!k.startsWith('pianodone_'))}
-function v41PetReply(group,anim){const lines=(SPEECH_DATA[group]||['',[]])[1]||[],last=S.dog.petLast?.[group];if(!lines.length)return;const choices=lines.map((_,i)=>i).filter(i=>i!==last),i=choices[Math.floor(Math.random()*choices.length)],text=lines[i];S.dog.petLast=Object.assign({},S.dog.petLast,{[group]:i});R();speakPet(text);dogAnim(anim);showBubble(text)}
+function v41PetReply(group,anim){const lines=(SPEECH_DATA[group]||['',[]])[1]||[],last=S.dog.petLast?.[group];if(!lines.length)return;const choices=lines.map((_,i)=>i).filter(i=>i!==last),i=choices[Math.floor(Math.random()*choices.length)],text=lines[i];S.dog.petLast=Object.assign({},S.dog.petLast,{[group]:i});R();speakPet(text);dogAnim(anim);showBubble(text);return text}
 function fDog(){if(!S.dog)return;if((S.pts||0)<15)return toast('钻石不够，完成学习任务后再来喂食吧！');S.pts-=15;S.dog.hu=Math.min(100,(S.dog.hu||0)+35);R();saveDog();up();showPage('dog');v41PetReply(0,'feed')}
 function pDog(){if(!S.dog)return;if(!v41LearnedToday())return toast('先完成一项今天的学习任务，再来陪伙伴玩吧！');S.dog.en=Math.min(100,(S.dog.en||0)+20);R();saveDog();showPage('dog');v41PetReply(1,'pet')}
 function bDog(){if(!S.dog)return;if((S.pts||0)<8)return toast('钻石不够，完成学习任务后再来洗澡吧！');S.pts-=8;S.dog.hy=Math.min(100,(S.dog.hy||0)+40);R();saveDog();up();showPage('dog');v41PetReply(2,'bath')}
@@ -831,7 +838,15 @@ const V42_CHARS=[
 ];
 let v42CharAudio=null;
 function v42CharPath(ch){return 'assets/chars/u'+ch.codePointAt(0).toString(16)+'.mp3'}
-function playCharV42(i,trace){const x=V42_CHARS[i];if(v42CharAudio){try{v42CharAudio.pause()}catch(e){}}v42CharAudio=v42Play(v42CharPath(x[0]),'本地字音暂不可用');if(trace){const go=()=>openTraceV42(x[0],x[1]);if(v42CharAudio)v42CharAudio.onended=go;else go()}}
+let _charVoiceEpoch89=0;
+function stopCharVoiceV89(){_charVoiceEpoch89++;if(v42CharAudio){v42CharAudio.onended=null;try{v42CharAudio.pause()}catch(_){}}}
+function playCharV42(i,trace){
+  const x=V42_CHARS[i];if(!x||CP!=='chars'||document.hidden||_eyeMode)return;stopCharVoiceV89();const ticket=_charVoiceEpoch89,page=v42State().charPage||0;
+  const a=v42Play(v42CharPath(x[0]),'本地字音暂不可用，请重试');v42CharAudio=a;
+  if(trace&&a)a.onended=()=>{if(ticket===_charVoiceEpoch89&&v42CharAudio===a&&a.ended&&CP==='chars'&&!document.hidden&&!_eyeMode&&(v42State().charPage||0)===page)openTraceV42(x[0],x[1])};
+  if(trace&&!a&&v41EnsureAudio().muted)openTraceV42(x[0],x[1]);
+  if(a)a.addEventListener('pause',()=>{if(!a.ended&&ticket===_charVoiceEpoch89)_charVoiceEpoch89++},{once:true});
+}
 function v42CharPage(delta){const v=v42State(),max=Math.ceil(V42_CHARS.length/12)-1;v.charPage=Math.max(0,Math.min(max,(v.charPage||0)+delta));R();showPage('chars')}
 function openTraceV42(ch,py){_hch=ch;document.getElementById('hwTi').textContent='田字格描红：'+ch+'（'+py+'）';document.getElementById('hwTarget').innerHTML='';document.getElementById('hwTarget').classList.add('tian-grid');document.getElementById('hwFb').textContent='先看笔顺，再点“开始描红”';document.getElementById('hwM').style.display='flex';if(typeof HanziWriter==='undefined'){document.getElementById('hwFb').textContent='笔顺资源未加载，请刷新后重试';return}try{_hw=HanziWriter.create('hwTarget',ch,{width:260,height:260,padding:14,strokeAnimationSpeed:.9,delayBetweenStrokes:260,radicalColor:'#e84d67',showCharacter:false,showOutline:true,outlineColor:'#d6b4bb'});_hw.loopCharacterAnimation()}catch(e){document.getElementById('hwFb').textContent='这个字暂时无法描红'}}
 startHQ=function(){if(!_hw)return;let mistakes=0;document.getElementById('hwFb').textContent='请按正确笔顺和方向书写';_hw.quiz({onMistake:()=>{mistakes++;document.getElementById('hwFb').textContent='方向、笔顺或位置不对，请调整'},onCorrectStroke:()=>{document.getElementById('hwFb').textContent='这一笔正确，继续'},onComplete:function(s){const m=Math.max(mistakes,s.totalMistakes||0),score=Math.max(0,100-m*12),pass=score>=65;v42Mark('char_'+_hch,pass);if(!pass){document.getElementById('hwFb').innerHTML=`得分 <b>${score}</b>：低于 65 分，请重写。<br>重点检查笔顺、方向和落笔位置。`;playCue('trace_retry','请按标准笔顺重新书写');setTimeout(()=>resetHW(),900);return}S.chars[_hch]=true;R();const reward=score>=90?8:score>=75?5:3;awd('trace_'+_hch, reward,`描红 ${score} 分，获得 ${reward} 💎`);document.getElementById('hwFb').innerHTML=`✅ 得分 <b>${score}</b>，通过！<br>笔顺和方向符合要求。`;playCue('trace_pass','描红通过')}})};
@@ -1052,7 +1067,7 @@ let v46ActiveAudio=null;
 function v46StopAudio(){_queuedCue=null;try{speechSynthesis.cancel()}catch(e){}if(v46ActiveAudio){try{v46ActiveAudio.pause();v46ActiveAudio.currentTime=0}catch(e){}}v46ActiveAudio=null}
 v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=new Audio(path);a.preload='auto';v46ActiveAudio=a;a.onerror=()=>fallback&&toast(fallback);a.play().catch(()=>fallback&&toast(fallback));return a}catch(e){fallback&&toast(fallback);return null}};
 playCue=function(key,text){return v42Play('assets/voice/'+key+'.mp3',text)};
-speakPet=async function(text){const ticket=window.__petSpeakEpoch=(window.__petSpeakEpoch||0)+1,route=CP,fixed=petFix?petFix(text):text;showBubble(fixed);if(v41EnsureAudio().muted)return;await PET_VOICE_READY;if(CP!==route||_eyeMode||window.__petSpeakEpoch!==ticket)return;const fid=PET_VOICE[fixed]||PET_VOICE[text]||'pet_hello';v42Play('assets/voice/'+fid+'.mp3','伙伴声音暂不可用，请刷新后再试')};
+speakPet=async function(text){const ticket=window.__petSpeakEpoch=(window.__petSpeakEpoch||0)+1,route=CP,fixed=petFix?petFix(text):text;showBubble(fixed);if(v41EnsureAudio().muted)return;await PET_VOICE_READY;if(CP!==route||document.hidden||_eyeMode||window.__petSpeakEpoch!==ticket)return;const fid=PET_VOICE[fixed]||PET_VOICE[text]||'pet_hello';v42Play('assets/voice/'+fid+'.mp3','伙伴声音暂不可用，请刷新后再试')};
 speechBoard=function(){return ''};
 v41PetStory=function(){if(!S.dog)return'';const n=S.dog.tasks||0,steps=[['🌱',0],['📚',1],['🍖',4],['🌟',10]],next=steps.find(s=>n<s[1]);return `<section class="pet-growth"><div class="pet-growth-row">${steps.map(s=>`<div class="pet-stage ${n<s[1]?'locked':''}">${s[0]}</div>`).join('')}</div><div class="pet-growth-msg">${next?`再完成 ${next[1]-n} 次学习，伙伴会有新成长`:'伙伴已成为你的学习搭档！'}</div></section>`};
 
@@ -1173,7 +1188,7 @@ v42State();
   const audioCache=new Map();
   function primeAudio(path){if(!path)return;let a=audioCache.get(path);if(a){audioCache.delete(path);audioCache.set(path,a);return a}a=new Audio(path);a.preload='auto';audioCache.set(path,a);if(audioCache.size>12){const [key,old]=audioCache.entries().next().value;if(old!==v46ActiveAudio){old.pause();old.removeAttribute('src');old.load();audioCache.delete(key)}}return a}
   window.primeAudio=primeAudio;
-  v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=primeAudio(path);a.pause();a.currentTime=0;a.onerror=()=>fallback&&toast(fallback);a.onended=()=>{if(v46ActiveAudio===a)v46ActiveAudio=null};v46ActiveAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>fallback&&toast(fallback));return a}catch(e){fallback&&toast(fallback);return null}};
+  v42Play=function(path,fallback){if(v41EnsureAudio().muted){fallback&&toast('声音已关闭，点右下角 🔇 可开启');return null}v46StopAudio();try{const a=primeAudio(path);a.pause();a.currentTime=0;a.onerror=()=>fallback&&toast(fallback);a.onended=()=>{if(v46ActiveAudio===a)v46ActiveAudio=null};v46ActiveAudio=a;const p=a.play();if(p&&p.catch)p.catch(e=>{if(e.name!=='AbortError'&&v46ActiveAudio===a)fallback&&toast(fallback)});return a}catch(e){fallback&&toast(fallback);return null}};
 
   let pinyinPart='tones';
   window.setPinyinPartV54=function(part){pinyinPart=part;showPage('pinyin')};
@@ -1237,29 +1252,29 @@ v42State();
 }
 @media(prefers-reduced-motion:reduce){#wideNav button,#kidDock button{transition:none}}
 </style>
-<script src="curriculum-v61.js?v=88" defer></script>
-<script src="pinyin-rules-v82.js?v=88" defer></script>
-<script src="pinyin-v63.js?v=88" defer></script>
-<script src="g1-ruby.js?v=88" defer></script>
-<script src="game-v59.js?v=88" defer></script>
-<script src="learning-v66.js?v=88" defer></script>
-<script src="question-art-v67.js?v=88" defer></script>
-<script src="pitch-v68.js?v=88" defer></script>
-<script src="practice-v68.js?v=88" defer></script>
-<link rel="stylesheet" href="eye-v70.css?v=88">
-<script src="eye-v70.js?v=88" defer></script>
-<script src="fast-v69.js?v=88" defer></script>
-<script src="reading-v71.js?v=88" defer></script>
-<script src="reading-ui-v71.js?v=88" defer></script>
-<script src="follow-v79.js?v=88" defer></script>
-<script src="follow-ui-v79.js?v=88" defer></script>
-<script src="child-v82.js?v=88" defer></script>
-<script src="data-safety-v85.js?v=88" defer></script>
-<link rel="stylesheet" href="adventure-v86.css?v=88">
-<script src="media-lifecycle-v86.js?v=88" defer></script>
-<script src="recording-take-v86.js?v=88" defer></script>
-<script src="pinyin-study-v86.js?v=88" defer></script>
-<script src="adventure-v86.js?v=88" defer></script>
+<script src="curriculum-v61.js?v=89" defer></script>
+<script src="pinyin-rules-v82.js?v=89" defer></script>
+<script src="pinyin-v63.js?v=89" defer></script>
+<script src="g1-ruby.js?v=89" defer></script>
+<script src="game-v59.js?v=89" defer></script>
+<script src="learning-v66.js?v=89" defer></script>
+<script src="question-art-v67.js?v=89" defer></script>
+<script src="pitch-v68.js?v=89" defer></script>
+<script src="practice-v68.js?v=89" defer></script>
+<link rel="stylesheet" href="eye-v70.css?v=89">
+<script src="eye-v70.js?v=89" defer></script>
+<script src="fast-v69.js?v=89" defer></script>
+<script src="reading-v71.js?v=89" defer></script>
+<script src="reading-ui-v71.js?v=89" defer></script>
+<script src="follow-v79.js?v=89" defer></script>
+<script src="follow-ui-v79.js?v=89" defer></script>
+<script src="child-v82.js?v=89" defer></script>
+<script src="data-safety-v85.js?v=89" defer></script>
+<link rel="stylesheet" href="adventure-v86.css?v=89">
+<script src="media-lifecycle-v86.js?v=89" defer></script>
+<script src="recording-take-v86.js?v=89" defer></script>
+<script src="pinyin-study-v86.js?v=89" defer></script>
+<script src="adventure-v86.js?v=89" defer></script>
 <script>setTimeout(()=>{const box=document.getElementById('boot69');if(box){box.querySelector('h1').textContent='加载较慢，请检查网络';document.getElementById('bootRetry69').hidden=false}},12000)</script>
 </body>
 </html>

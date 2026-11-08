@@ -16,6 +16,7 @@
   function limit(){return (Number(S.scr.dayMin)||30)+(Number(S.scr.extMin)||0)}
   function stopMusic(){if(audio){audio.pause();audio.removeAttribute('src');audio.load();audio=null}}
   function stopLearning(){
+    try{stopPoemV6();stopCharVoiceV89();window.G1PianoSound89?.stop(true)}catch(_){}
     try{pinyinV63Stop()}catch(_){}
     try{v46StopAudio()}catch(_){}
     try{stopDogIdle();_queuedCue=null}catch(_){}
