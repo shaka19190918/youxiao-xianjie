@@ -1,4 +1,4 @@
-"""Install a real v86 SW, switch the same origin to v87, retain saved records."""
+"""Install a real v87 SW, switch the same origin to v88, retain saved records."""
 import ast,json,mimetypes,os,subprocess,sys,threading,urllib.parse
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
@@ -16,7 +16,7 @@ class Handler(BaseHTTPRequestHandler):
   if not target.is_relative_to(ROOT) or not target.is_file():self.send_error(404);return
   if mode['old'] and target.suffix in ['.html','.js','.css','.webmanifest'] and not path.startswith(('assets/','vendor/')):
    if path not in blobs:
-    try:blobs[path]=subprocess.check_output(['git','show','75ef3e1:'+path],cwd=ROOT,stderr=subprocess.DEVNULL)
+    try:blobs[path]=subprocess.check_output(['git','show','2e28c6a:'+path],cwd=ROOT,stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError:self.send_error(404);return
    data=blobs[path]
   else:data=target.read_bytes()
@@ -30,20 +30,20 @@ try:
   ctx=browser.new_context();ctx.add_init_script(seed);page=ctx.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
   base='http://127.0.0.1:'+str(server.server_port)+'/'
   page.goto(base+'?test=1',wait_until='networkidle');page.wait_for_function('!!navigator.serviceWorker.controller')
-  assert page.evaluate('document.documentElement.dataset.release')=='v86-learning-audio'
+  assert page.evaluate('document.documentElement.dataset.release')=='v87-blcu-finals'
   page.evaluate("S.pts=77;S.dog.xp=48;S.chars['一']=true;S.game.levels['start-1']={stars:3,tasks:[true,true,true]};S.game.rewardLedger['start-1:complete']=123;S._parentAuth=true;R();localStorage.setItem('readV71','{\"saved\":1}');localStorage.setItem('g1_follow_state_v1','{\"saved\":2}');showPage('pinyin')")
-  assert page.evaluate("__PINYIN_V63_TEST.play('a',1)")
+  assert page.evaluate("__PINYIN_V63_TEST.play('a',1)");assert page.evaluate("pinyinV63PlayToken('p63|final_ing|4')")
   mode['old']=False
   page.evaluate('window.previousController=navigator.serviceWorker.controller;void navigator.serviceWorker.getRegistration().then(r=>r.update())')
   # A cache is created before install finishes; wait for the new worker to claim.
   page.wait_for_function('navigator.serviceWorker.controller&&navigator.serviceWorker.controller!==window.previousController',timeout=45000)
-  page.reload(wait_until='networkidle');page.wait_for_function("document.documentElement.dataset.release==='v87-blcu-finals'")
+  page.reload(wait_until='networkidle');page.wait_for_function("document.documentElement.dataset.release==='v88-audio-focus'")
   assert page.evaluate("S.pts===77&&S.dog.xp===48&&S.chars['一']&&S.game.levels['start-1'].stars===3&&S.game.rewardLedger['start-1:complete']===123")
   assert not page.evaluate('S._parentAuth')
   assert page.evaluate('JSON.parse(localStorage.getItem("readV71")).saved')==1
   assert page.evaluate('JSON.parse(localStorage.getItem("g1_follow_state_v1")).saved')==2
   ctx.set_offline(True);page.reload(wait_until='networkidle');assert page.evaluate('S.pts')==77
-  page.evaluate("showPage('pinyin')");assert page.evaluate("__PINYIN_V63_TEST.play('a',1)")
+  page.evaluate("showPage('pinyin')");assert page.evaluate("__PINYIN_V63_TEST.play('a',1)");assert page.evaluate("pinyinV63PlayToken('p63|final_ing|4')")
   assert page.evaluate('typeof __DATA85.snapshot')=='function' and not errors,errors
-  browser.close();print('PASS real v86→v87 SW update: profile, pet, diamonds, stars, ledger, writing, books, follow progress and cached audio retained; parent session relocked')
+  browser.close();print('PASS real v87→v88 SW update: profile, pet, diamonds, stars, ledger, writing, books, follow progress and cached audio retained; parent session relocked')
 finally:server.shutdown();server.server_close();thread.join(timeout=3)

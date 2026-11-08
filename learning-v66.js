@@ -12,8 +12,8 @@
     stopAudio();const epoch=audioEpoch;
     const finish=()=>{if(epoch===audioEpoch)done?.()},bad=()=>{if(epoch===audioEpoch){fail?.();toast('音频未播放完整，请重新播放')}};
     if(!path){bad();return}
-    if(path.startsWith('p63|')){try{await pinyinV63PlayToken(path,finish)}catch(_){bad()}return}
-    try{audio=typeof primeAudio==='function'?primeAudio(path):new Audio(path);audio.pause();audio.currentTime=0;audio.preload='auto';v46ActiveAudio=audio;audio.onended=finish;audio.onerror=bad;await audio.play()}catch(_){bad()}
+    if(path.startsWith('p63|')){try{if(!await pinyinV63PlayToken(path,finish))bad()}catch(_){bad()}return}
+    try{audio=typeof primeAudio==='function'?primeAudio(path):new Audio(path);audio.pause();audio.currentTime=0;audio.preload='auto';v46ActiveAudio=audio;const model=audio;audio.onended=finish;audio.onerror=bad;audio.onpause=()=>{if(!model.ended)bad()};await audio.play()}catch(_){bad()}
   }
   function modal(id,html){$(id)?.remove();const el=document.createElement('div');el.id=id;el.className='l66-modal';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.innerHTML='<section>'+html+'</section>';document.body.append(el);el.querySelector('button')?.focus();return el}
   function recordWrong(key,t){const q=G.game().reviewQueue,old=q[key],l=G.levels.find(x=>key.startsWith(x.id+'::'));q[key]={...(old||{}),id:key,levelId:l?.id||old?.levelId,title:l?.title||t.prompt||'再练一次',task:JSON.parse(JSON.stringify(t)),step:0,dueAt:Date.now()+600000,lapses:(old?.lapses||0)+1,lastResult:'wrong'};save()}

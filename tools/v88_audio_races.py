@@ -1,0 +1,82 @@
+"""Native browser race checks; simulated lifecycle is NOT iPad hardware testing."""
+import ast,json,os,sys,urllib.parse
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+sys.stdout.reconfigure(encoding='utf8')
+ROOT=Path(__file__).resolve().parents[1];BASE=os.environ.get('SMOKE_URL','http://127.0.0.1:4213/')
+tree=ast.parse((ROOT/'tools/v82_acceptance.py').read_text('utf8'))
+seed=next(ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='SEED' for t in n.targets))
+seed+=";const s=JSON.parse(localStorage.getItem('grade1_island_state_v1'));s.scr.on=false;localStorage.setItem('grade1_island_state_v1',JSON.stringify(s));speechSynthesis.speak=()=>{};"
+with sync_playwright() as p:
+ launch=dict(headless=True,executable_path=os.path.expandvars(r'%LOCALAPPDATA%\ms-playwright\chromium-1223\chrome-win64\chrome.exe'),args=[])
+ if BASE.startswith('https:'):
+  proxy=urllib.parse.urlsplit(os.environ['HTTPS_PROXY']);launch['proxy']={'server':f'{proxy.scheme}://{proxy.hostname}:{proxy.port}'}
+ else:launch['args'].append('--no-proxy-server')
+ browser=p.chromium.launch(**launch);results=[]
+ for width,height in [(390,844),(1024,768)]:
+  ctx=browser.new_context(viewport={'width':width,'height':height},has_touch=True,service_workers='block');ctx.add_init_script(seed)
+  page=ctx.new_page();page.set_default_timeout(60000);errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+  page.goto(BASE+'?test=1',wait_until='networkidle',timeout=60000)
+  page.evaluate("""()=>{showPage('pinyin');window.started88=[];const start=AudioBufferSourceNode.prototype.start,stop=AudioBufferSourceNode.prototype.stop;AudioBufferSourceNode.prototype.start=function(...args){this.live88=true;this.addEventListener('ended',()=>this.live88=false);started88.push(this);window.context88=this.context;return start.apply(this,args)};AudioBufferSourceNode.prototype.stop=function(...a){this.live88=false;return stop.apply(this,a)}}""")
+  def prepare():
+   page.evaluate("pinyinV63Stop();v46StopAudio();S.audio.muted=false;window.done88=0;window.case88=pinyinV63PlayToken('p63|a|1',()=>done88++);void 0")
+   page.wait_for_function('started88.length&&started88.at(-1).live88')
+  def record(name,ok):
+   results.append(dict(width=width,case=name,passed=ok));print(('PASS' if ok else 'FAIL'),width,name,flush=True)
+  page.locator('.p63-card').first.tap()
+  page.wait_for_function('document.querySelector("#p63Status").textContent.includes("再听一遍")')
+  record('first touch completes audio without autoplay bypass',page.evaluate('started88.length===1&&!started88[0].live88'))
+  prepare();page.evaluate('v41ToggleSound()');page.wait_for_timeout(100)
+  record('mute stops pinyin immediately without completion',page.evaluate('!started88.at(-1).live88&&done88===0'))
+  prepare();page.evaluate("window.other88=new Audio('assets/pinyin-finals-v87/i1.mp3');void other88.play().catch(()=>{})");page.wait_for_timeout(100)
+  record('HTML audio claim stops pinyin',page.evaluate('!started88.at(-1).live88&&done88===0'))
+  page.evaluate('pinyinV63Stop();void other88.play().catch(()=>{})');page.wait_for_timeout(100)
+  prepare();record('pinyin stops detached HTML audio',page.evaluate('other88.paused'))
+  prepare();page.evaluate("speechSynthesis.speak(new SpeechSynthesisUtterance('模拟其他语音请求'))");page.wait_for_timeout(100)
+  record('simulated TTS claim stops pinyin',page.evaluate('!started88.at(-1).live88&&done88===0'))
+  prepare();page.evaluate('void context88.suspend()');page.wait_for_timeout(150)
+  record('AudioContext interruption cancels, never counts complete',page.evaluate('!started88.at(-1).live88&&done88===0'))
+  page.evaluate('void context88.resume()');page.wait_for_timeout(100)
+  page.evaluate("__PINYIN_V63_TEST.clearDecodedCache();window.fetch88=Fast69.fetchAsset;window.release88=null;Fast69.fetchAsset=async path=>{const bytes=await fetch88(path);await new Promise(r=>release88=r);return bytes};window.before88=started88.length;void(window.pending88=pinyinV63PlayToken('p63|o|1'))")
+  page.wait_for_function('!!release88')
+  page.evaluate("Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));release88()")
+  page.wait_for_timeout(250)
+  record('late download cannot resume hidden context or play',page.evaluate("started88.length===before88&&context88.state!=='running'"))
+  page.evaluate("Fast69.fetchAsset=fetch88;delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));void 0")
+  # All five priority sounds compete; only the newest intent may start.
+  outcome=page.evaluate("""async()=>{pinyinV63Stop();const before=started88.length;const names=['a','o','ke','final_ing','final_ong'];const answers=await Promise.all(names.map(n=>pinyinV63PlayToken('p63|'+n+'|4')));return {answers,starts:started88.length-before}}""")
+  record('rapid a/o/k/ing/ong only last plays fully',outcome==dict(answers=[False,False,False,False,True],starts=1))
+  complete=page.evaluate("""async()=>{done88=0;const ok=await pinyinV63PlayToken('p63|o|1',()=>{done88++;void other88.play().catch(()=>{})});return ok&&done88===1}""")
+  record('completed model may hand off to feedback exactly once',complete)
+  page.evaluate('other88.pause();pinyinV63Stop();void 0')
+  mapping=page.evaluate("""()=>{const a=__PINYIN_V63_TEST;return a.INITIALS.length===23&&a.FINALS.length===24&&a.WHOLE.length===16&&[['a','a'],['o','o'],['k','ke'],['ing','final_ing'],['ong','final_ong']].every(([glyph,name])=>[1,2,3,4].every(t=>a.taskToken([glyph,glyph+t])==='p63|'+name+'|'+(glyph==='k'?1:t)))&&a.split('final_ong').kind==='final'&&a.WHOLE.every(n=>a.split(n).kind==='whole')}""")
+  record('complete inventory, priority mappings and whole/final distinction',mapping)
+  prepare();page.evaluate("window.bfcacheBefore88=started88.length;dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}))")
+  page.wait_for_timeout(100)
+  record('simulated BFCache restore never auto-plays or completes',page.evaluate('!started88.at(-1).live88&&done88===0&&started88.length===bfcacheBefore88'))
+  assert page.evaluate("pinyinV63PlayToken('p63|final_ing|3')")
+  page.evaluate("pinyinV63Part('finals');void(window.toneSwitch88=pinyinV63PlayToken('p63|a|1'));void 0")
+  page.wait_for_function('started88.at(-1).live88');page.evaluate('pinyinV63Tone(4)')
+  record('tone switch cancels old sound before next model',page.evaluate('toneSwitch88') is False)
+  assert page.evaluate("pinyinV63PlayToken('p63|a|4')")
+  # Real lesson UI must unlock retry, not reward, when model playback is cancelled.
+  page.evaluate("""()=>{for(const l of G1Learning.levels)S.game.levels[l.id]={stars:3,tasks:[true,true,true]};const l=G1Learning.levels.find(l=>l.id.startsWith('zh-final-')&&String(l.tasks[0].audio).startsWith('p63|'));window.level88=l.id;S.game.levels[l.id]={stars:0,tasks:[false,false,false]};S.audio.muted=false;g1StartLevel(l.id)}""")
+  page.locator('#g1Listen').tap();page.wait_for_function('started88.at(-1).live88')
+  page.evaluate('v41ToggleSound()');page.wait_for_function('!document.getElementById("g1Listen").disabled')
+  page.evaluate('g1AnswerTask(0)')
+  record('level interruption enables retry but awards no star',page.evaluate("S.game.levels[level88].stars===0&&document.getElementById('g1Listen').textContent.includes('重试')"))
+  page.evaluate('v41ToggleSound()');page.locator('#g1Listen').tap();page.wait_for_function("document.getElementById('g1Listen').textContent.includes('已听完')")
+  record('level retry completes normally',True)
+  page.evaluate("showPage('home');L66.startDaily()")
+  page.locator('#l66Listen').tap();page.wait_for_function('started88.at(-1).live88')
+  page.evaluate('v41ToggleSound()');page.wait_for_function('!document.getElementById("l66Listen").disabled')
+  record('daily plan interruption enables retry',page.evaluate("document.getElementById('l66Listen').textContent.includes('重新播放')"))
+  page.evaluate('v41ToggleSound()');page.locator('#l66Listen').tap();page.wait_for_function("document.getElementById('l66Listen').textContent.includes('听完了')")
+  record('daily plan retry completes normally',True)
+  page.evaluate("showPage('pinyin')");prepare();page.evaluate("eyeOpen('lock')")
+  page.wait_for_timeout(100)
+  record('daily eye-limit lock immediately stops teaching audio',page.evaluate("!started88.at(-1).live88&&done88===0&&document.getElementById('eyeLock').style.display==='flex'"))
+  assert not errors,errors
+  ctx.close()
+ browser.close()
+ assert '--diagnose' in sys.argv or all(r['passed'] for r in results),json.dumps(results,ensure_ascii=False)
