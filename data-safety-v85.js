@@ -25,7 +25,7 @@
    if('guards' in s.learning66)assert(object(s.learning66.guards),'引导记录损坏');
    const daily=s.learning66.daily;if(daily!==undefined&&daily!==null)assert(object(daily)&&Array.isArray(daily.items)&&daily.items.every(i=>object(i)&&typeof i.id==='string'&&typeof i.done==='boolean'),'今日计划备份损坏');
   }
-  for(const l of Object.values(s.game.levels))assert(object(l)&&Number.isInteger(l.stars)&&l.stars>=0&&l.stars<=3&&Array.isArray(l.tasks)&&l.tasks.length===3&&l.tasks.every(v=>typeof v==='boolean'),'备份的三星关卡记录损坏');
+  for(const l of Object.values(s.game.levels))assert(object(l)&&Number.isInteger(l.stars)&&l.stars>=0&&l.stars<=3&&Array.isArray(l.tasks)&&l.tasks.length===3&&l.tasks.every(v=>typeof v==='boolean')&&l.stars===l.tasks.filter(Boolean).length,'备份的三星关卡记录损坏');
   const extras={};
   if(d.extras!==undefined){
    assert(object(d.extras),'附加学习记录损坏');

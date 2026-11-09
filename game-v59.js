@@ -113,7 +113,7 @@
   function localDay(at=Date.now()){const d=new Date(at),y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
   function recordActivity(kind,l,extra={}){const g=game();g.activityLog.push({at:Date.now(),day:localDay(),kind,levelId:l?.id||'',region:l?.region||'',title:l?.title||'',...extra});if(g.activityLog.length>500)g.activityLog=g.activityLog.slice(-500)}
   function levelState(id){const g=game();return g.levels[id]||(g.levels[id]={stars:0,tasks:[false,false,false],wrong:0,attempts:0})}
-  function totalStars(){return Object.values(game().levels).reduce((n,x)=>n+(x.stars||0),0)}
+  function totalStars(){return LEVELS.reduce((n,l)=>n+(game().levels[l.id]?.stars||0),0)}
   const regionCache=new Map();
   function regionLevels(id){if(!regionCache.has(id))regionCache.set(id,LEVELS.filter(x=>x.region===id));return regionCache.get(id)}
   function regionUnlocked(id){return totalStars()>=(REGION_META[id]?.need||0)}
@@ -135,10 +135,16 @@
     R();
   }
   function awardTask(l,i){
-    const s=levelState(l.id),g=game(),key=l.id+':star:'+i;if(s.tasks[i])return false;
+    if(!l||LEVEL_BY_ID[l.id]!==l||!Number.isInteger(i)||i<0||i>2||document.hidden||_eyeMode)return false;const s=levelState(l.id),g=game(),key=l.id+':star:'+i;if(s.tasks[i])return false;
     s.tasks[i]=true;s.stars=s.tasks.filter(Boolean).length;s.attempts=(s.attempts||0)+1;
-    if(!g.rewardLedger[key]){g.rewardLedger[key]=Date.now();S.pts=(S.pts||0)+3;recordActivity('star',l,{taskIndex:i})}
-    if(s.stars===3&&!s.completedAt){s.completedAt=Date.now();g.rewardLedger[l.id+':complete']=s.completedAt;recordActivity('complete',l);S.strk=studyStreak();if(S.dog){const old=dlv();S.dog.xp=(S.dog.xp||0)+12;S.dog.tasks=(S.dog.tasks||0)+1;S.dog.en=Math.min(100,(S.dog.en||0)+8);if(dlv()>old)setTimeout(()=>toast('伙伴升级啦！'),400)}const list=regionLevels(l.region),idx=list.findIndex(x=>x.id===l.id),next=list[idx+1];g.activeLevel=next?next.id:(nextLevel()?.id||l.id)}
+    if(!Object.prototype.hasOwnProperty.call(g.rewardLedger,key)){g.rewardLedger[key]=Date.now();S.pts=(S.pts||0)+3;recordActivity('star',l,{taskIndex:i})}
+    if(s.stars===3){
+      const completeKey=l.id+':complete',hadLedger=Object.prototype.hasOwnProperty.call(g.rewardLedger,completeKey),first=!s.completedAt&&!hadLedger;
+      if(!s.completedAt)s.completedAt=hadLedger&&Number.isFinite(g.rewardLedger[completeKey])?g.rewardLedger[completeKey]:Date.now();
+      if(!hadLedger)g.rewardLedger[completeKey]=s.completedAt;
+      if(first){recordActivity('complete',l);S.strk=studyStreak();if(S.dog){const old=dlv();S.dog.xp=(S.dog.xp||0)+12;S.dog.tasks=(S.dog.tasks||0)+1;S.dog.en=Math.min(100,(S.dog.en||0)+8);if(dlv()>old)setTimeout(()=>toast('伙伴升级啦！'),400)}}
+      const list=regionLevels(l.region),idx=list.findIndex(x=>x.id===l.id),next=list[idx+1];g.activeLevel=next?next.id:(nextLevel()?.id||l.id);
+    }
     R();saveDog();up();starPetPulse(l,i);return true;
   }
   function starPetPulse(l,i){
@@ -147,11 +153,12 @@
     el.innerHTML=`${petImageV6(S.dog.type,64,false)}<span><b>得到第 ${i+1} 颗星！</b><small>${pet.n}也开心地跳起来</small></span>`;
     document.body.appendChild(el);setTimeout(()=>el.remove(),1450);
   }
+  let petReplyTimer90=null;
   function petReply(l){
     if(!S.dog||typeof SPEECH_DATA==='undefined')return;
     const pool=SPEECH_DATA[3][1],g=game(),recent=g.petResponseHistory.slice(-3),offset=Math.max(0,REGION_ORDER.indexOf(l?.region))*3,ordered=pool.map((_,n)=>(offset+n)%pool.length),available=ordered.filter(id=>!recent.includes(id)),id=available[0]??0,pick={text:pool[id],id};
     g.petResponseHistory.push(pick.id);g.petResponseHistory=g.petResponseHistory.slice(-3);R();
-    setTimeout(()=>speakPet(pick.text),250);
+    const route=CP,ticket=window.__petSpeakEpoch||0;clearTimeout(petReplyTimer90);petReplyTimer90=setTimeout(()=>{if(CP===route&&(window.__petSpeakEpoch||0)===ticket&&!document.hidden&&!_eyeMode)speakPet(pick.text)},250);
     return {text:pick.text,action:(l&&({chinese:'wag',math:'bounce',life:'heart',english:'sway',science:'look',arts:'dance',thinking:'spin',interest:'bounce'}[l.region]))||'wag'};
   }
 
@@ -178,18 +185,18 @@
     v46StopAudio();try{const a=new Audio(cur.task.audio);a.preload='auto';v46ActiveAudio=a;a.onended=complete;a.onerror=fail;a.onpause=()=>{if(!a.ended)fail()};const p=a.play();if(p&&p.catch)p.catch(fail)}catch(_){fail()}
   };
   window.g1AnswerTask=function(optionIndex){
-    const cur=taskAt();if(!cur||cur.task.type!=='choice')return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
+    const cur=taskAt();if(!cur||cur.task.type!=='choice'||CP!=='level'||document.hidden||_eyeMode)return;const heard=!cur.task.audio||g1Heard[cur.level.id+'-'+cur.index];if(!heard){toast('先完整听一遍，再来作答');return}
     const val=cur.task.options[optionIndex];if(val===undefined)return;
     if(window.L66&&!L66.attempt(cur.level.id+'::'+cur.task.id,cur.task,val,true))return;
-    const buttons=[...document.querySelectorAll('.g1-answer')],fb=document.getElementById('g1Feedback');
+    const view=document.querySelector('.g1-level-page'),buttons=[...document.querySelectorAll('.g1-answer')],fb=document.getElementById('g1Feedback');
     if(val!==cur.task.answer){buttons[optionIndex]?.classList.add('wrong');buttons[optionIndex]&&(buttons[optionIndex].disabled=true);cur.state.wrong=(cur.state.wrong||0)+1;recordActivity('wrong',cur.level,{taskIndex:cur.index});sourceMark(cur.task.key,false);scheduleReview(cur.level,cur.task);if(fb)fb.textContent='再想一想，这道题已经放进复习站';playCue('retry','');R();return}
-    buttons.forEach(b=>b.disabled=true);sourceMark(cur.task.key,true);if(fb)fb.textContent='答对啦，得到一颗星！';awardTask(cur.level,cur.index);playCue('correct','');setTimeout(()=>{if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()},650);
+    buttons.forEach(b=>b.disabled=true);sourceMark(cur.task.key,true);if(fb)fb.textContent='答对啦，得到一颗星！';awardTask(cur.level,cur.index);playCue('correct','');setTimeout(()=>{if(CP==='level'&&g1ActiveLevelId===cur.level.id&&view?.isConnected&&!document.hidden&&!_eyeMode){if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()}},650);
   };
   window.g1BeginTrace=function(){const cur=taskAt();if(!cur||cur.task.type!=='trace')return;if(cur.task.audio&&!g1Heard[cur.level.id+'-'+cur.index])return toast('先听完这个字，再去描红');window.G1_TRACE_CONTEXT={levelId:cur.level.id,index:cur.index,task:cur.task};openTraceV42(cur.task.char,cur.task.pinyin)};
   window.g1FocusStart=function(){
-    const cur=taskAt();if(!cur||cur.task.type!=='focus')return;g1FocusExpected=1;const nums=shuffle([1,2,3,4,5,6,7,8,9],cur.task.seed);document.getElementById('g1TaskBody').innerHTML=`<p class="g1-task-tip">从 1 开始，按顺序点到 9</p><div class="g1-focus-grid">${nums.map(n=>`<button onclick="g1FocusTap(${n},this)">${n}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">请先点 1</div>`;
+    const cur=taskAt();if(!cur||cur.task.type!=='focus'||CP!=='level'||document.hidden||_eyeMode)return;g1FocusExpected=1;const nums=shuffle([1,2,3,4,5,6,7,8,9],cur.task.seed);document.getElementById('g1TaskBody').innerHTML=`<p class="g1-task-tip">从 1 开始，按顺序点到 9</p><div class="g1-focus-grid">${nums.map(n=>`<button onclick="g1FocusTap(${n},this)">${n}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">请先点 1</div>`;
   };
-  window.g1FocusTap=function(n,el){const fb=document.getElementById('g1Feedback');if(n!==g1FocusExpected){if(fb)fb.textContent='应该找数字 '+g1FocusExpected;return}el.classList.add('done');el.disabled=true;g1FocusExpected++;if(g1FocusExpected===10){const cur=taskAt();awardTask(cur.level,cur.index);if(fb)fb.textContent='全部找对，得到一颗星！';setTimeout(()=>levelState(cur.level.id).stars===3?g1ShowCelebration(cur.level):PGS.level.render(),600)}};
+  window.g1FocusTap=function(n,el){if(CP!=='level'||document.hidden||_eyeMode||taskAt()?.task.type!=='focus'||!el?.isConnected||el.disabled||!el.closest('.g1-focus-grid'))return;const fb=document.getElementById('g1Feedback');if(n!==g1FocusExpected){if(fb)fb.textContent='应该找数字 '+g1FocusExpected;return}el.classList.add('done');el.disabled=true;g1FocusExpected++;if(g1FocusExpected===10){const cur=taskAt();awardTask(cur.level,cur.index);if(fb)fb.textContent='全部找对，得到一颗星！';setTimeout(()=>{if(CP==='level'&&g1ActiveLevelId===cur.level.id&&el.isConnected){if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()}},600)}};
   let pianoContext89=null,pianoEpoch89=0;const pianoNodes89=new Set();
   window.G1PianoSound89={stop(close=false){pianoEpoch89++;for(const n of pianoNodes89){try{n.stop();n.disconnect()}catch(_){}}pianoNodes89.clear();if(close&&pianoContext89){const old=pianoContext89;pianoContext89=null;old.close().catch(()=>{})}}};
   function pianoTone(n){
@@ -199,10 +206,27 @@
     }catch(_){}
   }
   window.g1PianoTap=function(n){const cur=taskAt();if(!cur||cur.task.type!=='piano'||CP!=='level'||document.hidden||_eyeMode||!Number.isInteger(n)||n<0||n>2)return;const keys=document.querySelector('.g1-piano-keys');pianoTone(n);const want=cur.task.seq[g1PianoProgress.length],fb=document.getElementById('g1Feedback');if(n!==want){g1PianoProgress=[];if(fb)fb.textContent='顺序不对，重新从第一个音开始';return}g1PianoProgress.push(n);if(fb)fb.textContent='正确 '+g1PianoProgress.length+' / '+cur.task.seq.length;if(g1PianoProgress.length===cur.task.seq.length){awardTask(cur.level,cur.index);setTimeout(()=>{if(CP==='level'&&g1ActiveLevelId===cur.level.id&&keys?.isConnected){if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()}},650)}};
+  let sportProof90=null;
+  function stopSport90(){if(g1SportTimer)clearInterval(g1SportTimer);g1SportTimer=null;sportProof90=null}
+  window.G1StopTasks90=function(){const was=sportProof90;stopSport90();if(was&&CP==='level'&&taskAt()?.task.type==='sport')PGS.level.render()};
   window.g1SportStart=function(){
-    const cur=taskAt();if(!cur||cur.task.type!=='sport'||g1SportTimer)return;let left=cur.task.seconds||10;const host=document.getElementById('g1TaskBody');host.innerHTML=`<div class="g1-sport-timer" id="g1SportClock">${left}</div><p class="g1-task-tip">认真完成动作，计时结束后请家长确认</p>`;g1SportTimer=setInterval(()=>{left--;const c=document.getElementById('g1SportClock');if(c)c.textContent=left;if(left<=0){clearInterval(g1SportTimer);g1SportTimer=null;host.innerHTML=`<p class="g1-task-tip">家长看到了真实完成，请输入家长PIN</p><input class="g1-pin" id="g1SportPin" inputmode="numeric" maxlength="4" aria-label="家长PIN"><button class="g1-next-task" style="width:100%;margin-top:12px" onclick="g1SportConfirm()">家长确认完成</button><div class="g1-feedback" id="g1Feedback"></div>`}},1000);
+    const cur=taskAt(),host=document.getElementById('g1TaskBody');if(!cur||cur.task.type!=='sport'||!host||g1SportTimer||CP!=='level'||document.hidden||_eyeMode)return;
+    const proof={levelId:cur.level.id,index:cur.index,taskId:cur.task.id,ms:0,last:performance.now(),done:false,host};sportProof90=proof;const target=(cur.task.seconds||10)*1000;
+    host.innerHTML='<div class="g1-sport-timer" id="g1SportClock">'+Math.ceil(target/1000)+'</div><p class="g1-task-tip">完成动作后，请家长确认</p>';
+    g1SportTimer=setInterval(()=>{const now=performance.now(),delta=now-proof.last;proof.last=now;
+      if(sportProof90!==proof||CP!=='level'||!host.isConnected||document.hidden||_eyeMode||delta>1500){stopSport90();if(CP==='level'&&host.isConnected&&!_eyeMode)PGS.level.render();return}
+      proof.ms+=Math.max(0,delta);const clock=document.getElementById('g1SportClock');if(clock)clock.textContent=Math.ceil(Math.max(0,target-proof.ms)/1000);
+      if(proof.ms>=target){clearInterval(g1SportTimer);g1SportTimer=null;proof.done=true;host.innerHTML='<p class="g1-task-tip">请家长确认孩子真实完成了动作</p><input class="g1-pin" id="g1SportPin" type="password" inputmode="numeric" maxlength="4" aria-label="家长PIN"><button class="g1-next-task" style="width:100%;margin-top:12px" onclick="g1SportConfirm()">家长确认完成</button><div class="g1-feedback" id="g1Feedback"></div>'}
+    },250);
   };
-  window.g1SportConfirm=function(){const cur=taskAt(),pin=document.getElementById('g1SportPin')?.value,fb=document.getElementById('g1Feedback');if(pin!==S.parentPin){if(fb)fb.textContent='PIN不正确，请家长重新输入';return}awardTask(cur.level,cur.index);if(fb)fb.textContent='家长已确认，得到一颗星！';setTimeout(()=>levelState(cur.level.id).stars===3?g1ShowCelebration(cur.level):PGS.level.render(),650)};
+  window.g1SportConfirm=function(){
+    const cur=taskAt(),proof=sportProof90,input=document.getElementById('g1SportPin'),fb=document.getElementById('g1Feedback');
+    if(!cur||cur.task.type!=='sport'||CP!=='level'||document.hidden||_eyeMode||!proof?.done||!proof.host.isConnected||proof.levelId!==cur.level.id||proof.index!==cur.index||proof.taskId!==cur.task.id||!input)return;
+    if(input.value!==S.parentPin){if(fb)fb.textContent='PIN不正确，请家长重新输入';return}
+    sportProof90=null;proof.host.querySelector('button')?.setAttribute('disabled','');if(!awardTask(cur.level,cur.index))return;if(fb)fb.textContent='家长已确认，得到一颗星！';
+    setTimeout(()=>{if(CP==='level'&&g1ActiveLevelId===cur.level.id&&proof.host.isConnected){if(levelState(cur.level.id).stars===3)g1ShowCelebration(cur.level);else PGS.level.render()}},650);
+  };
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSport90();else if(CP==='level'&&taskAt()?.task.type==='sport'&&!sportProof90)PGS.level.render()});window.addEventListener('pagehide',stopSport90);
 
   /* ── 题面注音（v74 新增）───────────────────────────────────────────
      需求：闯关是"发音读题"，孩子还不识字，看不懂题面就答不了 —— 所以题面加拼音。
@@ -281,7 +305,7 @@
 
   function homePetPanel(pet,due,next){
     const dog=S.dog,lv=dlv(),stage=DST[lv],nextStage=DST[lv+1],progress=typeof dpg==='function'?dpg():100;
-    const today=T(),todayDone=Object.values(game().levels).filter(x=>x.completedAt&&new Date(x.completedAt).toISOString().slice(0,10)===today).length;
+    const todayDone=completedOn(localDay());
     let wish=due?'我们先把错题变成会做的题吧！':(next?'我准备好陪你挑战“'+next.title+'”啦！':'整座成长岛都亮起来啦！');
     if((dog.hu||0)<35)wish='我有点饿啦，完成学习赚钻石给我加餐吧！';
     else if((dog.hy||0)<35)wish='身上有点脏啦，攒好钻石帮我洗澡吧！';
@@ -303,25 +327,42 @@
     document.getElementById('ct').innerHTML=`<main class="g1-shell"><section class="g1-top"><div><h1>${esc(S._setup.name||'小朋友')}，出发闯关吧！</h1><p>做真实任务，和伙伴一起长大</p></div><div class="g1-score"><span>⭐ ${stars}</span><span>💎 ${S.pts||0}</span></div></section><button class="g1-continue" onclick="g1Continue()"><span class="ico">${due?'📦':(next?.icon||'🏆')}</span><span><strong>${due?'先复习 '+due+' 道错题':(next?'继续：'+next.title:'全部通关')}</strong><small>${due?'复习完成再去探索':'每关三个真实任务'}</small></span><span class="arrow">›</span></button>${due?`<button class="g1-review-alert" onclick="showPage('review')">📦 到期复习<b>${due}</b></button>`:''}<section class="g1-map"><div class="g1-map-title"><h2>🗺️ 成长地图</h2><span>已收集 ${stars} 星</span></div><div class="g1-region-list">${REGION_ORDER.map(id=>{const r=REGION_META[id],open=regionUnlocked(id),done=regionDone(id),count=regionLevels(id).filter(x=>levelState(x.id).stars===3).length,total=regionLevels(id).length;return `<button class="g1-region ${open?'':'locked'} ${done?'complete':''}" style="--region-color:${r.color}" onclick="g1OpenRegion('${id}')"><span class="ri">${open?r.icon:'🔒'}</span><span><strong>${r.name}</strong><small>${open?`${count} / ${total} 关完成`:r.desc}</small>${open?'':`<span class="lock">需要 ${r.need} 星</span>`}</span></button>`}).join('')}</div></section>${dailyPlanCard()}${pet?homePetPanel(pet,due,next):''}</main>`;
   }};
   PGS.region={title:'🗺️ 区域关卡',render:function(){const r=REGION_META[g1CurrentRegion]||REGION_META.start,ls=regionLevels(g1CurrentRegion),done=ls.filter(x=>levelState(x.id).stars===3).length,first=Math.max(0,ls.findIndex(x=>levelState(x.id).stars<3)),suggested=Math.floor(first/8),page=Number.isInteger(g1RegionPages[g1CurrentRegion])?g1RegionPages[g1CurrentRegion]:suggested,max=Math.max(0,Math.ceil(ls.length/8)-1),start=page*8,shown=ls.slice(start,start+8);g1RegionPages[g1CurrentRegion]=Math.min(page,max);document.getElementById('ct').innerHTML=`<main class="g1-region-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>${r.icon} ${r.name}</h1><p>${r.desc}</p></div></header><section class="g1-region-progress"><div><strong>${done} / ${ls.length} 关</strong><span>当前小节 ${page+1} / ${max+1}</span></div><i><b style="width:${ls.length?Math.round(done/ls.length*100):0}%"></b></i></section><section class="g1-level-list">${shown.map((l,j)=>{const i=start+j,s=levelState(l.id),open=levelUnlocked(l.id);return `<button class="g1-level-card ${open?'':'locked'} ${s.stars&&s.stars<3?'current':''}" onclick="g1StartLevel('${l.id}')"><span class="num">${open?i+1:'🔒'}</span><span class="stars">${'★'.repeat(s.stars)}${'☆'.repeat(3-s.stars)}</span><strong>${esc(l.title)}</strong><small>${open?(s.stars===3?'已通关':'完成三个任务'):'先完成前一关'}</small></button>`}).join('')}</section>${max?`<nav class="g1-pager" aria-label="关卡分段"><button onclick="g1RegionPage(-1)" ${page===0?'disabled':''}>← 上一小节</button><span>${start+1}—${Math.min(start+8,ls.length)}</span><button onclick="g1RegionPage(1)" ${page===max?'disabled':''}>下一小节 →</button></nav>`:''}</main>`}};
-  PGS.adventure={title:'⭐ 继续闯关',render:function(){const n=nextLevel();if(n){g1ActiveLevelId=n.id;PGS.level.render()}else PGS.home.render()}};
+  PGS.adventure={title:'⭐ 继续闯关',render:function(){const n=nextLevel();if(n)g1StartLevel(n.id);else PGS.home.render()}};
   PGS.level={title:'⭐ 三星闯关',render:function(){
-    const l=LEVEL_BY_ID[g1ActiveLevelId]||nextLevel();if(!l)return PGS.home.render();g1ActiveLevelId=l.id;const s=levelState(l.id),cur=taskAt();document.getElementById('ct').innerHTML=`<main class="g1-level-page"><header class="g1-page-head"><button class="g1-back" onclick="g1CurrentRegion='${l.region}';showPage('region')" aria-label="返回关卡列表">←</button><div><h1>${l.icon} ${esc(l.title)}</h1><p>${REGION_META[l.region].name}</p></div></header><section class="g1-level-hero"><div class="g1-level-hero-top"><h2>收集三星</h2><strong>${s.stars} / 3</strong></div><div class="g1-star-track">${renderStars(s)}</div></section><section class="g1-task">${cur?renderTask(cur):`<div class="g1-task-done"><div class="big">🎉</div><h3>三星通关！</h3><button class="g1-next-task" onclick="g1ShowCelebration(LEVEL_BY_ID['${l.id}'])">看看伙伴</button></div>`}</section></main>`;
+    const l=LEVEL_BY_ID[g1ActiveLevelId]||nextLevel();if(!l)return PGS.home.render();g1ActiveLevelId=l.id;const s=levelState(l.id),cur=taskAt();document.getElementById('ct').innerHTML=`<main class="g1-level-page"><header class="g1-page-head"><button class="g1-back" onclick="g1CurrentRegion='${l.region}';showPage('region')" aria-label="返回关卡列表">←</button><div><h1>${l.icon} ${esc(l.title)}</h1><p>${REGION_META[l.region].name}</p></div></header><section class="g1-level-hero"><div class="g1-level-hero-top"><h2>收集三星</h2><strong>${s.stars} / 3</strong></div><div class="g1-star-track">${renderStars(s)}</div></section><section class="g1-task">${cur?renderTask(cur):`<div class="g1-task-done"><div class="big">🎉</div><h3>三星通关！</h3><button class="g1-next-task" onclick="g1ShowCelebration('${l.id}')">看看伙伴</button></div>`}</section></main>`;
   }};
-  window.g1ShowCelebration=function(l){if(!l)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),reply=petReply(l),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div><div class="g1-pet-action ${reply?.action||'wag'}">${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}</div><h2>三星通关！</h2><p>${reply?esc(reply.text):(pet?pet.n+'为你欢呼！':'你完成了三个真实任务！')}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap)};
+  window.g1ShowCelebration=function(l){if(typeof l==='string')l=LEVEL_BY_ID[l];if(!l||levelState(l.id).stars!==3||document.hidden||_eyeMode)return;document.getElementById('g1Celebrate')?.remove();const pet=S.dog?(PETS_V6[S.dog.type]||PETS_V6.labrador):null,next=nextLevel(),reply=petReply(l),wrap=document.createElement('div');wrap.id='g1Celebrate';wrap.className='g1-celebrate';wrap.innerHTML=`<div class="g1-celebrate-card"><div class="stars">★★★</div><div class="g1-pet-action ${reply?.action||'wag'}">${pet?petImageV6(S.dog.type,180,false):'<div style="font-size:90px">🏆</div>'}</div><h2>三星通关！</h2><p>${reply?esc(reply.text):(pet?pet.n+'为你欢呼！':'你完成了三个真实任务！')}<br>${next?'下一关已经准备好啦。':'整座成长岛都被你点亮啦！'}</p><div class="g1-celebrate-actions"><button onclick="document.getElementById('g1Celebrate').remove();showPage('review')">📦 复习站</button><button onclick="document.getElementById('g1Celebrate').remove();showPage('home')">🗺️ 看新地图</button></div></div>`;document.body.appendChild(wrap)};
 
   function renderReviewQuestion(entry){const q=entry[1],t=q.task;return `<div class="g1-task-tag">间隔复习 · ${esc(q.title)}</div>${pyToggleBtn()}<h3 class="g1-prompt">${py(t.prompt)}</h3>${t.audio?`<button class="g1-listen" onclick="g1PlayReviewAudio('${esc(entry[0])}')">🔊 听一遍</button>`:''}<div class="g1-answers">${t.options.map((x,i)=>`<button class="g1-answer" onclick="g1AnswerReview('${esc(entry[0])}',${i},this)">${py(x)}</button>`).join('')}</div><div class="g1-feedback" id="g1Feedback">答对后会安排下一次复习</div>`}
   window.g1PlayReviewAudio=function(id){const q=game().reviewQueue[id];if(!q?.task.audio)return;if(String(q.task.audio).startsWith('p63|')&&typeof pinyinV63PlayToken==='function'){pinyinV63PlayToken(q.task.audio).catch(()=>toast('复习音频没有加载，请重试'));return}v42Play(q.task.audio,'复习音频没有加载，请重试')};
-  window.g1AnswerReview=function(id,i,el){const g=game(),q=g.reviewQueue[id];if(!q)return;const t=q.task,l=LEVEL_BY_ID[q.levelId],fb=document.getElementById('g1Feedback');if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';recordActivity('review-wrong',l,{reviewId:id});sourceMark(t.key,false);R();if(fb)fb.textContent='没关系，10分钟后再来一次';playCue('retry','');return}recordActivity('review-correct',l,{reviewId:id});sourceMark(t.key,true);q.lastResult='correct';q.lastReviewedAt=Date.now();if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}R();playCue('correct','');setTimeout(()=>showPage('review'),650)};
-  PGS.review={title:'📦 错题复习站',render:function(){const all=Object.entries(game().reviewQueue).sort((a,b)=>a[1].dueAt-b[1].dueAt),due=all.filter(([,x])=>x.dueAt<=Date.now()).slice(0,3);g1ReviewIds=due.map(x=>x[0]);let body;if(due.length)body=`<section class="g1-review-card">${renderReviewQuestion(due[0])}</section><p class="g1-task-tip" style="text-align:center">本次最多复习3道 · 还有 ${due.length-1} 道已到期</p>`;else{const next=all[0];body=`<section class="g1-empty"><div class="em">${next?'⏳':'🌟'}</div><h2>${next?'现在先去闯关吧':'今天没有错题'}</h2><p>${next?'下一次复习：'+new Date(next[1].dueAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'认真思考，继续保持！'}</p><button class="g1-next-task" onclick="g1Continue()">继续闯关</button></section>`}document.getElementById('ct').innerHTML=`<main class="g1-review-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage('home')" aria-label="返回地图">←</button><div><h1>📦 错题复习站</h1><p>10分钟、1天、3天、7天、14天再见</p></div></header>${body}</main>`}};
+  let reviewSession90=null;
+  function canAnswerReview90(id,el){const s=reviewSession90,q=game().reviewQueue[id];return !!(CP==='review'&&!document.hidden&&!_eyeMode&&s?.accepting&&s.current===id&&q&&el?.isConnected&&!el.disabled&&el.closest('.g1-review-card')&&(q.dueAt<=Date.now()||s.correcting))}
+  window.g1AnswerReview=function(id,i,el){
+    if(!canAnswerReview90(id,el))return;const g=game(),q=g.reviewQueue[id],s=reviewSession90,t=q.task,l=LEVEL_BY_ID[q.levelId],fb=document.getElementById('g1Feedback');if(!Number.isInteger(i)||!t.options.includes(t.options[i]))return;
+    if(t.options[i]!==t.answer){el.classList.add('wrong');el.disabled=true;s.correcting=true;q.step=0;q.dueAt=Date.now()+REVIEW_DELAYS[0];q.lapses=(q.lapses||0)+1;q.lastResult='wrong';recordActivity('review-wrong',l,{reviewId:id});sourceMark(t.key,false);R();if(fb)fb.textContent='再想一想，订正后10分钟再复习';playCue('retry','');return}
+    s.accepting=false;s.done.push(id);document.querySelectorAll('.g1-review-card .g1-answer').forEach(b=>b.disabled=true);sourceMark(t.key,true);q.lastReviewedAt=Date.now();
+    if(s.correcting){q.step=0;q.lastResult='corrected';q.dueAt=Date.now()+REVIEW_DELAYS[0];recordActivity('review-correction',l,{reviewId:id});toast('订正完成，10分钟后再巩固')}
+    else{recordActivity('review-correct',l,{reviewId:id});q.lastResult='correct';if(q.step>=4){delete g.reviewQueue[id];toast('这道题已经记牢啦！')}else{q.step=(q.step||0)+1;q.dueAt=Date.now()+REVIEW_DELAYS[q.step];toast('答对啦，复习间隔变长了！')}}
+    R();playCue('correct','');setTimeout(()=>{if(CP==='review'&&reviewSession90===s)PGS.review.render()},650);
+  };
+
+  PGS.review={title:'📦 错题复习站',render:function(){
+    const all=Object.entries(game().reviewQueue).sort((a,b)=>a[1].dueAt-b[1].dueAt);
+    if(!reviewSession90)reviewSession90={ids:all.filter(([,q])=>q.dueAt<=Date.now()).slice(0,3).map(([id])=>id),done:[],current:null,accepting:false,correcting:false};
+    const s=reviewSession90,id=s.ids.find(id=>!s.done.includes(id)&&game().reviewQueue[id]&&(game().reviewQueue[id].dueAt<=Date.now()||(s.current===id&&s.correcting)));let body;
+    if(id){if(s.current!==id)s.correcting=false;s.current=id;s.accepting=true;body='<section class="g1-review-card">'+renderReviewQuestion([id,game().reviewQueue[id]])+'</section><p class="g1-task-tip">本次最多3道 · 已完成 '+s.done.length+' 道</p>'}
+    else{s.accepting=false;const next=all[0];body='<section class="g1-empty"><div class="em">🌟</div><h2>'+(s.done.length?'本次复习完成啦':next?'现在先去闯关吧':'今天没有错题')+'</h2><p>'+(s.done.length?'已经认真练习 '+s.done.length+' 道，剩余到期题可以稍后再来。':next?'下一次复习：'+new Date(next[1].dueAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'认真思考，继续保持！')+'</p><button class="g1-next-task" onclick="showPage(\'home\')">返回地图</button></section>'}
+    document.getElementById('ct').innerHTML='<main class="g1-review-page"><header class="g1-page-head"><button class="g1-back" onclick="showPage(\'home\')">← 返回</button><div><h1>📦 错题复习站</h1><p>10分钟、1天、3天、7天、14天再见</p></div></header>'+body+'</main>';
+  }};
 
   const oldStartHQ=startHQ;
   startHQ=function(){
-    const ctx=window.G1_TRACE_CONTEXT;if(!ctx||!_hw)return oldStartHQ();let mistakes=0;document.getElementById('hwFb').textContent='请按正确笔顺和方向书写';_hw.quiz({onMistake:()=>{mistakes++;document.getElementById('hwFb').textContent='方向、笔顺或位置不对，请调整'},onCorrectStroke:()=>{document.getElementById('hwFb').textContent='这一笔正确，继续'},onComplete:s=>{const score=Math.max(0,100-Math.max(mistakes,s.totalMistakes||0)*12),l=LEVEL_BY_ID[ctx.levelId];if(score<65){levelState(l.id).wrong++;const reviewTask=choice('char_review_'+ctx.task.char,'复习','听一听，选出刚才练习的字',uniqueOptions(ctx.task.char,V42_CHARS.map(x=>x[0]),ctx.task.char.codePointAt(0)),ctx.task.char,ctx.task.audio,ctx.task.key);scheduleReview(l,reviewTask);sourceMark(ctx.task.key,false);document.getElementById('hwFb').innerHTML='得分 <b>'+score+'</b>：低于65分，请按笔顺重写';playCue('trace_retry','');setTimeout(()=>resetHW(),900);return}S.chars[ctx.task.char]=true;sourceMark(ctx.task.key,true);awardTask(l,ctx.index);document.getElementById('hwFb').innerHTML='✅ 得分 <b>'+score+'</b>，得到一颗星！';playCue('trace_pass','');window.G1_TRACE_CONTEXT=null;setTimeout(()=>{clHW();levelState(l.id).stars===3?g1ShowCelebration(l):PGS.level.render()},850)}})
+    const ctx=window.G1_TRACE_CONTEXT;if(!ctx||!_hw)return oldStartHQ();let mistakes=0;document.getElementById('hwFb').textContent='请按正确笔顺和方向书写';_hw.quiz({onMistake:()=>{mistakes++;document.getElementById('hwFb').textContent='方向、笔顺或位置不对，请调整'},onCorrectStroke:()=>{document.getElementById('hwFb').textContent='这一笔正确，继续'},onComplete:s=>{if(window.G1_TRACE_CONTEXT!==ctx||CP!=='level'||g1ActiveLevelId!==ctx.levelId||document.hidden||_eyeMode||taskAt()?.index!==ctx.index||document.getElementById('hwM')?.style.display!=='flex')return;const score=Math.max(0,100-Math.max(mistakes,s.totalMistakes||0)*12),l=LEVEL_BY_ID[ctx.levelId];if(score<65){levelState(l.id).wrong++;const reviewTask=choice('char_review_'+ctx.task.char,'复习','听一听，选出刚才练习的字',uniqueOptions(ctx.task.char,V42_CHARS.map(x=>x[0]),ctx.task.char.codePointAt(0)),ctx.task.char,ctx.task.audio,ctx.task.key);scheduleReview(l,reviewTask);sourceMark(ctx.task.key,false);document.getElementById('hwFb').innerHTML='得分 <b>'+score+'</b>：低于65分，请按笔顺重写';playCue('trace_retry','');setTimeout(()=>resetHW(),900);return}S.chars[ctx.task.char]=true;sourceMark(ctx.task.key,true);awardTask(l,ctx.index);document.getElementById('hwFb').innerHTML='✅ 得分 <b>'+score+'</b>，得到一颗星！';playCue('trace_pass','');window.G1_TRACE_CONTEXT=null;setTimeout(()=>{if(CP==='level'&&g1ActiveLevelId===l.id&&!window.G1_TRACE_CONTEXT){clHW();levelState(l.id).stars===3?g1ShowCelebration(l):PGS.level.render()}},850)}})
   };
   const oldClHW=clHW;clHW=function(){window.G1_TRACE_CONTEXT=null;oldClHW()};
 
   awd=function(){toast('练习已记录；钻石只从三星闯关获得');return false};
-  window.v41LearnedToday=function(){const today=T();return Object.values(game().levels).some(x=>x.completedAt&&new Date(x.completedAt).toISOString().slice(0,10)===today)};
+  window.v41LearnedToday=function(){return completedOn(localDay())>0};
   advDog=function(){};
 
   const oldParentRender=PGS.parent.render;
@@ -338,7 +379,7 @@
     if(sound&&sound.parentNode!==tray)tray.appendChild(sound)
   }
   const baseSoundMount=v41MountSound;v41MountSound=function(){baseSoundMount();mountFloatControls()};
-  const baseShow=showPage;showPage=function(id){if(g1SportTimer&&id!=='level'){clearInterval(g1SportTimer);g1SportTimer=null}baseShow(id);mountGameDock();mountFloatControls()};
+  const baseShow=showPage;showPage=function(id){if(sportProof90)stopSport90();if(id==='review')reviewSession90=null;baseShow(id);mountGameDock();mountFloatControls()};
 
   /* ══════════════════════════════════════════════════════════════════
      v78：矮屏紧凑模式（方案 3）
@@ -414,6 +455,6 @@
     dueNow(){Object.values(game().reviewQueue).forEach(x=>x.dueAt=Date.now()-1);R()},
     game
   };
-  window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay};
+  window.G1Learning={levels:LEVELS,levelState,awardTask,scheduleReview,recordActivity,current:taskAt,game,localDay,canAnswerReview90};
   document.documentElement.dataset.appVersion='v69-fast-loading';
 })();

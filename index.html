@@ -8,8 +8,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>低年级每日学习搭子</title>
 <meta name="application-name" content="低年级每日学习搭子">
-<meta name="app-version" content="v89-module-media">
-<link rel="stylesheet" href="practice-v68.css?v=89">
+<meta name="app-version" content="v90-state-audit">
+<link rel="stylesheet" href="practice-v68.css?v=90">
 <style>
 :root{--pri:#A66CFF;--pri-l:#F1E9FF;--cn:#49C7C0;--math:#FFD567;--habit:#69C98C;--focus:#A66CFF;--bg:#FAF7FF;--card:#FFF;--txt:#332C43;--tx2:#80778E;--sh:0 8px 28px rgba(94,70,150,.10);--r:24px;--sb:env(safe-area-inset-bottom,20px);--bad:#E53935}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -264,13 +264,13 @@ body{font-size:16px;line-height:1.55}.main{padding:18px 16px calc(52px + var(--s
 .v47-choice{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;align-items:stretch}.v47-choice-hear{min-width:58px;min-height:64px;border:0;border-radius:20px;background:#54b9dc;color:#fff;font-size:25px;box-shadow:0 5px 12px rgba(49,139,178,.2)}.v47-choice .v42-answer{width:100%;min-width:0}.v47-choice-hear:active{transform:scale(.96)}
 @media(min-width:700px){.v42-char-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.subject-art{height:210px}.dog-display{width:320px!important;height:320px!important}}
 </style>
-<link rel="stylesheet" href="game-v59.css?v=89">
-<link rel="stylesheet" href="learning-v66.css?v=89">
-<link rel="stylesheet" href="question-art-v67.css?v=89">
-<link rel="stylesheet" href="curriculum-v61.css?v=89">
-<link rel="stylesheet" href="pinyin-v63.css?v=89">
-<link rel="stylesheet" href="reading-v71.css?v=89">
-<link rel="stylesheet" href="child-v82.css?v=89">
+<link rel="stylesheet" href="game-v59.css?v=90">
+<link rel="stylesheet" href="learning-v66.css?v=90">
+<link rel="stylesheet" href="question-art-v67.css?v=90">
+<link rel="stylesheet" href="curriculum-v61.css?v=90">
+<link rel="stylesheet" href="pinyin-v63.css?v=90">
+<link rel="stylesheet" href="reading-v71.css?v=90">
+<link rel="stylesheet" href="child-v82.css?v=90">
 </head>
 <body>
 <div id="app">
@@ -293,7 +293,19 @@ const G1_STORAGE='grade1_island_state_v1',G1_RESET='grade1_island_reset_v1';
 try{if(!localStorage.getItem(G1_RESET)){localStorage.removeItem('yxxj_s');localStorage.removeItem('yxxj_dog');localStorage.setItem(G1_RESET,'1')}}catch(e){}
 let S={schema:'grade1-game-v1',pts:0,strk:0,dog:null,vR:{},gifts:[],ld:'',chars:{},poems:{},mathC:0,mathT:0,focusM:0,badges:{},sport:{},sudoku:{},cal:{},pianoLog:{},pianoStart:0,pianoSec:0,parentPin:'1234',parentQA:{q:'',a:''},dailyGoal:{tasks:3,chars:3},_setup:{done:false,name:'',grade:'一年级'},_parentAuth:false,scr:{on:!0,contMin:20,restMin:5,dayMin:30,extMin:0,used:0,cont:0,day:''},game:{levels:{},reviewQueue:{},rewardLedger:{},petResponseHistory:[],activeLevel:'start-1'}};
 try{const s=localStorage.getItem(G1_STORAGE);if(s)S={...S,...JSON.parse(s),schema:'grade1-game-v1'}}catch(e){}
-function L(){}function R(){try{localStorage.setItem(G1_STORAGE,JSON.stringify(S))}catch(e){}}
+function L(){}
+let lastSaveRaw90,lastSaveState90;
+function R(){
+  const status=window.G1SaveStatus90||(window.G1SaveStatus90={pending:false});
+  try{const current=localStorage.getItem(G1_STORAGE);if(lastSaveState90===S&&current!==lastSaveRaw90){status.pending=true;status.reason='conflict';showSaveStatus90();return false}const raw=JSON.stringify(S);localStorage.setItem(G1_STORAGE,raw);lastSaveRaw90=raw;lastSaveState90=S;status.pending=false;status.reason='';document.getElementById('save90Status')?.remove();return true}
+  catch(_){status.pending=true;status.reason='storage';showSaveStatus90();return false}
+}
+function showSaveStatus90(){
+  if(!document.body){setTimeout(()=>{if(window.G1SaveStatus90?.pending)showSaveStatus90()},0);return}
+  const message=window.G1SaveStatus90?.reason==='conflict'?'另一页面已更新学习记录，本页没有覆盖较新的记录。请家长先导出本页未保存内容，再重新打开；重试不会强行覆盖。':'浏览器存储不可写或空间不足。旧记录未删除，请暂勿刷新或关闭；恢复空间后重试，或请家长导出当前学习备份。';
+  if(document.getElementById('save90Status')){document.querySelector('#save90Status p').textContent=message;return}
+  try{const el=document.createElement('section');el.id='save90Status';el.setAttribute('role','alert');el.style.cssText='flex-shrink:0;padding:12px;background:#fff2d4;border:2px solid #bd6b17;border-radius:16px;color:#603600;font-size:16px;line-height:1.5';el.innerHTML='<strong>最新记录尚未保存</strong><p></p><button style="min-height:48px;border-radius:16px;padding:8px 16px" onclick="R()">重新保存</button><button style="min-height:48px;border-radius:16px;padding:8px 16px" onclick="showPage(\'parent\')">请家长帮助</button>';el.querySelector('p').textContent=message;const app=document.getElementById('app');if(app)app.insertBefore(el,app.querySelector('.main'));else document.body.prepend(el)}catch(_){}
+}
 function T(){return new Date().toISOString().split('T')[0]}function Y(){return new Date(Date.now()-864e5).toISOString().split('T')[0]}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 function uS(){const t=T();if(S.ld===t)return;if(S.ld===Y())S.strk++;else if(S.ld!==t)S.strk=0;if(!S.ld)S.strk=1;S.ld=t;R()}
@@ -1252,29 +1264,29 @@ v42State();
 }
 @media(prefers-reduced-motion:reduce){#wideNav button,#kidDock button{transition:none}}
 </style>
-<script src="curriculum-v61.js?v=89" defer></script>
-<script src="pinyin-rules-v82.js?v=89" defer></script>
-<script src="pinyin-v63.js?v=89" defer></script>
-<script src="g1-ruby.js?v=89" defer></script>
-<script src="game-v59.js?v=89" defer></script>
-<script src="learning-v66.js?v=89" defer></script>
-<script src="question-art-v67.js?v=89" defer></script>
-<script src="pitch-v68.js?v=89" defer></script>
-<script src="practice-v68.js?v=89" defer></script>
-<link rel="stylesheet" href="eye-v70.css?v=89">
-<script src="eye-v70.js?v=89" defer></script>
-<script src="fast-v69.js?v=89" defer></script>
-<script src="reading-v71.js?v=89" defer></script>
-<script src="reading-ui-v71.js?v=89" defer></script>
-<script src="follow-v79.js?v=89" defer></script>
-<script src="follow-ui-v79.js?v=89" defer></script>
-<script src="child-v82.js?v=89" defer></script>
-<script src="data-safety-v85.js?v=89" defer></script>
-<link rel="stylesheet" href="adventure-v86.css?v=89">
-<script src="media-lifecycle-v86.js?v=89" defer></script>
-<script src="recording-take-v86.js?v=89" defer></script>
-<script src="pinyin-study-v86.js?v=89" defer></script>
-<script src="adventure-v86.js?v=89" defer></script>
+<script src="curriculum-v61.js?v=90" defer></script>
+<script src="pinyin-rules-v82.js?v=90" defer></script>
+<script src="pinyin-v63.js?v=90" defer></script>
+<script src="g1-ruby.js?v=90" defer></script>
+<script src="game-v59.js?v=90" defer></script>
+<script src="learning-v66.js?v=90" defer></script>
+<script src="question-art-v67.js?v=90" defer></script>
+<script src="pitch-v68.js?v=90" defer></script>
+<script src="practice-v68.js?v=90" defer></script>
+<link rel="stylesheet" href="eye-v70.css?v=90">
+<script src="eye-v70.js?v=90" defer></script>
+<script src="fast-v69.js?v=90" defer></script>
+<script src="reading-v71.js?v=90" defer></script>
+<script src="reading-ui-v71.js?v=90" defer></script>
+<script src="follow-v79.js?v=90" defer></script>
+<script src="follow-ui-v79.js?v=90" defer></script>
+<script src="child-v82.js?v=90" defer></script>
+<script src="data-safety-v85.js?v=90" defer></script>
+<link rel="stylesheet" href="adventure-v86.css?v=90">
+<script src="media-lifecycle-v86.js?v=90" defer></script>
+<script src="recording-take-v86.js?v=90" defer></script>
+<script src="pinyin-study-v86.js?v=90" defer></script>
+<script src="adventure-v86.js?v=90" defer></script>
 <script>setTimeout(()=>{const box=document.getElementById('boot69');if(box){box.querySelector('h1').textContent='加载较慢，请检查网络';document.getElementById('bootRetry69').hidden=false}},12000)</script>
 </body>
 </html>

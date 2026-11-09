@@ -33,7 +33,7 @@
   function stopAudio(){v46StopAudio();if(typeof pinyinV63Stop==='function')pinyinV63Stop();if(typeof stopPianoV6==='function')stopPianoV6()}
   function start(){if(!allowed())return;running=true;runDay=day();lastTick=performance.now();status='正在计时 · 看琴键，不必一直看屏幕';update()}
   function releaseMic(){epoch++;pending=false;clearInterval(sampling);sampling=null;stream?.getTracks().forEach(t=>t.stop());stream=null;source?.disconnect();source=null;analyser=null;buffer=null;const old=context;context=null;old?.close().catch(()=>{});stable=0;lastMidi=null}
-  function pause(){const changed=running||!!stream||pending;running=false;releaseMic();status='已暂停 · 时间已保存，麦克风已关闭';if(changed)R();update()}
+  function pause(){const changed=running||!!stream||pending;if(running&&runDay===day()&&mounted()&&!_eyeMode){const delta=performance.now()-lastTick;if(delta>0&&delta<=1500){const s=state();s.ms=Math.min(LIMIT,s.ms+delta)}lastTick=performance.now()}running=false;releaseMic();status='已暂停 · 时间已保存，麦克风已关闭';if(changed&&R()===false)status='已暂停 · 最新时间尚未保存，请勿关闭页面，请家长帮助';update()}
   function stopMic(){releaseMic();heard='麦克风已关闭';advice='可以继续计时，请家长陪伴练习。';update()}
   function dialog(kind){if(!mounted()||_eyeMode)return;if(kind==='finish'&&(state().ms<LIMIT||state().done))return;
     pause();$('p68Consent')?.remove();const el=document.createElement('div');el.id='p68Consent';el.className='l66-modal';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','p68ConsentTitle');
