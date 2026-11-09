@@ -170,7 +170,7 @@
   },180)});
   function startDaily(){const p=plan();if(!p.startedAt){p.startedAt=Date.now();save()}dailyHeard='';showPage('daily66')}
   function taskKey(c){return c.l.id+'::'+c.t.id}
-  function mayDaily(){return CP==='daily66'&&remaining()>0&&!_eyeMode&&plan().breakUntil<=Date.now()}
+  function mayDaily(){return CP==='daily66'&&!document.hidden&&remaining()>0&&!_eyeMode&&plan().breakUntil<=Date.now()}
   function renderDaily(){
     if(current()?.id==='piano'){window.Piano68?.render();return}
     dailyHeard='';dailyBusy=false;const p=plan(),c=itemTask(),left=remaining();
@@ -213,7 +213,7 @@
   }
   function dailyTrace(){const c=itemTask();if(!c||!mayDaily()||c.t.type!=='trace')return;if(dailyHeard!==taskKey(c))return toast('先听完整字音');traceDaily=c;window.G1_TRACE_CONTEXT=null;openTraceV42(c.t.char,c.t.pinyin)}
     const previousQuiz=startHQ,previousClose=clHW;
-  startHQ=function(){if(!traceDaily)return previousQuiz();const c=traceDaily;if(!_hw||!mayDaily())return;let mistakes=0;_hw.quiz({onMistake:()=>{mistakes++;$('hwFb').textContent='看清起笔、方向和笔顺，再试试'},onComplete:result=>{const score=Math.max(0,100-Math.max(mistakes,result.totalMistakes||0)*12);if(traceDaily!==c)return;$('hwFb').textContent='得分 '+score+(score<65?'，再按笔顺写一次':'，书写通过');if(score>=65){S.chars[c.t.char]=true;finishDaily(c);traceDaily=null;setTimeout(()=>clHW(),600)}else playCue('trace_retry','')}})};
+  startHQ=function(){if(!traceDaily)return previousQuiz();const c=traceDaily;if(!_hw||!mayDaily())return;let mistakes=0;_hw.quiz({onMistake:()=>{mistakes++;$('hwFb').textContent='看清起笔、方向和笔顺，再试试'},onComplete:result=>{const score=Math.max(0,100-Math.max(mistakes,result.totalMistakes||0)*12);if(traceDaily!==c||!mayDaily()||c.item!==current()||$('hwM')?.style.display!=='flex')return;$('hwFb').textContent='得分 '+score+(score<65?'，再按笔顺写一次':'，书写通过');if(score>=65){S.chars[c.t.char]=true;finishDaily(c);traceDaily=null;setTimeout(()=>clHW(),600)}else playCue('trace_retry','')}})};
   clHW=function(){traceDaily=null;previousClose()};
   function updateDaily(){
     if(CP!=='daily66'||$('p68Practice'))return;const p=plan(),left=remaining(),clock=$('l66DailyClock');if(clock)clock.textContent='基础学习可用 '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
@@ -258,7 +258,7 @@
   pinyinV63Play=function(...args){const button=args.find(x=>x instanceof Element);if(button)pinyinGlyph=button.firstChild?.textContent.trim()||'a';return originalPlay(...args)};
   const originalPinyinRender=PGS.pinyin.render;PGS.pinyin.render=function(){originalPinyinRender();const b=document.createElement('button');b.className='l66-write-btn';b.textContent='✏️ 练写刚才点读的拼音 · 四线三格';b.onclick=()=>write(pinyinGlyph);document.querySelector('.p63-hero')?.after(b)};
   const reviewAnswer=g1AnswerReview;
-  g1AnswerReview=function(id,i,el){const q=G.game().reviewQueue[id];if(!q||q.task.options[i]===undefined)return;if(!attempt(id,q.task,q.task.options[i],true))return;reviewAnswer(id,i,el)};
+  g1AnswerReview=function(id,i,el){const q=G.game().reviewQueue[id];if(!q||q.task.options[i]===undefined||!G.canAnswerReview90(id,el))return;if(!attempt(id,q.task,q.task.options[i],true))return;reviewAnswer(id,i,el)};
   const pinyinAnswer=pinyinV63Answer;
   pinyinV63Answer=function(value,button){const c=pinyinV66Question();if(!c||button?.disabled||!c.task.options.includes(c.format(value))||!attempt(c.key,c.task,c.format(value),true))return;pinyinAnswer(value,button)};
   // Apply the same intervention to the existing free-practice routes as well.
@@ -273,16 +273,20 @@
   wrapAnswer('answerThinkV6',v=>{const q=THINK_V6[thinkV6];return{key:'think66_'+thinkV6,value:v,task:{type:'choice',prompt:q.prompt+' '+q.seq,options:q.options,answer:q.answer}}});
 
   const previousPage=showPage;
-  showPage=function(id){stopAudio();dailyHeard='';return previousPage(id)};
+  showPage=function(id){if(CP==='daily66'){flushCore90();save()}coreTick=performance.now();stopAudio();dailyHeard='';traceDaily=null;return previousPage(id)};
   const parentRender=PGS.parent.render;
   PGS.parent.render=function(){parentRender();if(!S._parentAuth)return;const p=plan();$('ct').insertAdjacentHTML('beforeend',`<section class="l66-card"><h2>今日全科计划</h2><p>已完成 ${p.items.filter(x=>x.done).length} / ${p.items.length} 项。拼音、汉字、数学、英语各一个真实短任务，另有20分钟钢琴练习。</p><p>基础学习参考9分钟、最多10分钟，钢琴另计20分钟。暂停、隐藏页面及护眼休息不计入练琴时间；休息可能使实际结束时间超过30分钟。原有屏幕限额不关闭，未完成内容不强迫赶完。</p><p>第三次答错仍触发示范和再验证。钢琴需满20分钟并由家长PIN确认；麦克风只辅助单音识别，不独立证明孩子完成了练习，也不自动发三星。</p></section>`)};
 
   window.L66={attempt,openGuard,guardListen,verifyStart,verify,leaveGuard,startDaily,dailyListen,dailyAnswer,dailyTrace,offlineStart,offlineConfirm,write,writeDaily,selectLetter,closeWriting,clearWriting,toggleModel,plan};
   let coreTick=performance.now();
+  let coreVisible90=!document.hidden;
+  function flushCore90(){const now=performance.now(),delta=Math.max(0,now-coreTick);coreTick=now;if(coreVisible90&&CP==='daily66'&&remaining()>0&&!_eyeMode&&delta<=1500){const p=plan(),c=itemTask();if(c&&p.breakUntil<=Date.now()){p.coreMs=Math.min(600000,(p.coreMs||0)+delta);p.screenSeconds=Math.floor(p.coreMs/1000)}}}
   setInterval(()=>{
-    const now=performance.now(),delta=Math.max(0,now-coreTick);coreTick=now;
+    const coreBefore90=CP==='daily66'&&remaining()>0;flushCore90();
     updateGuard();updateDaily();
-    if(CP==='daily66'&&remaining()>0&&!document.hidden&&!_eyeMode){const p=plan(),c=itemTask();if(p.breakUntil<=Date.now()&&c&&delta<=1500){p.coreMs=Math.min(600000,(p.coreMs||0)+delta);p.screenSeconds++;if(remaining()<=0){save();stopAudio();clHW();renderDaily()}}if(p.screenSeconds%10===0)save()}
+    if(CP==='daily66'&&!document.hidden){const p=plan();if(coreBefore90&&remaining()<=0){save();stopAudio();clHW();renderDaily()}if(p.screenSeconds%10===0)save()}
   },1000);
-  window.addEventListener('pagehide',()=>save());
+  document.addEventListener('visibilitychange',()=>{flushCore90();coreVisible90=!document.hidden;save()});
+  window.addEventListener('pagehide',()=>{flushCore90();coreVisible90=false;save()});
+  window.addEventListener('pageshow',()=>{coreTick=performance.now();coreVisible90=!document.hidden});
 })();

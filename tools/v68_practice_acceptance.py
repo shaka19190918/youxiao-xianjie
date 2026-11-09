@@ -64,7 +64,7 @@ with sync_playwright() as p:
     page.evaluate('Piano68.askFinish()');assert page.locator('#p68Consent').count()==0
     page.evaluate('Piano68.start();Piano68.start()');page.clock.run_for(1250)
     ms=page.evaluate('S.piano68.ms');assert 900<=ms<=1500,ms
-    page.evaluate('Piano68.pause()');page.clock.run_for(1250)
+    page.evaluate('Piano68.pause()');paused_ms=page.evaluate('S.piano68.ms');assert ms<=paused_ms<=ms+300;ms=paused_ms;page.clock.run_for(1250)
     assert page.evaluate('S.piano68.ms')==ms
     load();page.evaluate('showPage("piano")')
     assert page.evaluate('S.piano68.ms')==ms

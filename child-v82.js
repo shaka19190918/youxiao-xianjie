@@ -41,6 +41,6 @@
  PGS.dog={title:'🐾 伙伴小屋',render:pet};
  const page=showPage;showPage=function(id){window.__petSpeakEpoch=(window.__petSpeakEpoch||0)+1;const result=page(id);tools();$('hLogo').textContent='低年级每日学习搭子';document.body.dataset.route=CP;document.querySelector('#app>.main').scrollTop=0;return result};
  document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(petTimer);petBusy=false;window.__petSpeakEpoch=(window.__petSpeakEpoch||0)+1}});
- tools();document.body.dataset.route=CP;document.documentElement.dataset.release='v89-module-media';
+ tools();document.body.dataset.route=CP;document.documentElement.dataset.release='v90-state-audit';
  if(CP==='home')PGS.home.render();
 })();

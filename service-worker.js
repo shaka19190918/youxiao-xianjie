@@ -39,12 +39,12 @@ v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律
   所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
   UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
   切模式/重新开始自动同步重置两手进度。 */
-const CACHE='grade1-island-v89-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v88-1';
+const CACHE='grade1-island-v90-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v89-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=89','learning-v66.css?v=89','question-art-v67.css?v=89','curriculum-v61.css?v=89','pinyin-v63.css?v=89','practice-v68.css?v=89','eye-v70.css?v=89','reading-v71.css?v=89',
-  'curriculum-v61.js?v=89','pinyin-rules-v82.js?v=89','pinyin-v63.js?v=89','g1-ruby.js?v=89','game-v59.js?v=89','learning-v66.js?v=89','question-art-v67.js?v=89','pitch-v68.js?v=89','practice-v68.js?v=89','eye-v70.js?v=89','fast-v69.js?v=89','reading-v71.js?v=89','reading-ui-v71.js?v=89','follow-v79.js?v=89','follow-ui-v79.js?v=89',
-  'child-v82.css?v=89','child-v82.js?v=89','data-safety-v85.js?v=89','adventure-v86.css?v=89','adventure-v86.js?v=89','recording-take-v86.js?v=89','pinyin-study-v86.js?v=89','media-lifecycle-v86.js?v=89','assets/pinyin-v86/review-catalog.json?v=87','assets/pinyin-finals-v87/manifest.json?v=87','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
+  'game-v59.css?v=90','learning-v66.css?v=90','question-art-v67.css?v=90','curriculum-v61.css?v=90','pinyin-v63.css?v=90','practice-v68.css?v=90','eye-v70.css?v=90','reading-v71.css?v=90',
+  'curriculum-v61.js?v=90','pinyin-rules-v82.js?v=90','pinyin-v63.js?v=90','g1-ruby.js?v=90','game-v59.js?v=90','learning-v66.js?v=90','question-art-v67.js?v=90','pitch-v68.js?v=90','practice-v68.js?v=90','eye-v70.js?v=90','fast-v69.js?v=90','reading-v71.js?v=90','reading-ui-v71.js?v=90','follow-v79.js?v=90','follow-ui-v79.js?v=90',
+  'child-v82.css?v=90','child-v82.js?v=90','data-safety-v85.js?v=90','adventure-v86.css?v=90','adventure-v86.js?v=90','recording-take-v86.js?v=90','pinyin-study-v86.js?v=90','media-lifecycle-v86.js?v=90','assets/pinyin-v86/review-catalog.json?v=87','assets/pinyin-finals-v87/manifest.json?v=87','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}
