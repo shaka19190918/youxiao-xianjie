@@ -39,12 +39,26 @@ v80-1: 曲库扩充 + 录音模式 —— 拜厄 Op.101 第 1-30 课右手旋律
   所有 37 首曲目（7 儿歌 + 30 拜厄）补全 leftNotes/leftBeats（标准伴奏根音型）。
   UI：mode='both' 时显示双行音符带（🙋右手紫 / 🤚左手蓝）、双进度条、双手标题。
   切模式/重新开始自动同步重置两手进度。 */
-const CACHE='grade1-island-v90-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v89-1';
+/* v91-1: 跟弹模块按小学生实际可用性修正（基于 v90 合并，未回退任何 v82~v90 的改动）。
+   修的三个真缺陷：
+   ① 双手音符带 `.f79-strip-row` 原是 display:grid 但没给 grid-template-columns，
+      grid 默认单列 → 每个音符独占一行。双手 20 音 = 40 行 / 3797px，
+      把「开始跟弹」顶到视口外 3 屏。改 flex+wrap → 12 行 / 729px。
+   ② 单手模式音符格没带 data-hand，markNote() 按 [data-hand] 定位查不到
+      → 弹对了格子永远不变色（静默失败）。
+   ③ 首页从未调用 injectStyle()，入口卡一直是无样式的裸按钮。
+   设计修正：
+   ④ 双手判定改主目标推进：右手决定推进，左手同步位移只染色不拦人。
+   ⑤ 音符标注改唱名优先：do 主 / C4 辅（原来主次颠倒）。
+   ⑥ 曲目列表默认折叠 6 首 + 选曲后收起曲目区。
+   ⑦ 首页跟弹入口与「继续闯关」并排（零高度增加，地图版式不动）。
+   ⚠️ 保留 v87 的拼音资源版本号（assets/pinyin-v86、pinyin-finals-v87），未改动。 */
+const CACHE='grade1-island-v91-1',MEDIA='grade1-island-media-v69',PREVIOUS='grade1-island-v90-1';
 const BASE=self.registration.scope,INDEX=new URL('index.html',BASE).href;
 const PRECACHE=['index.html','manifest.webmanifest',
-  'game-v59.css?v=90','learning-v66.css?v=90','question-art-v67.css?v=90','curriculum-v61.css?v=90','pinyin-v63.css?v=90','practice-v68.css?v=90','eye-v70.css?v=90','reading-v71.css?v=90',
-  'curriculum-v61.js?v=90','pinyin-rules-v82.js?v=90','pinyin-v63.js?v=90','g1-ruby.js?v=90','game-v59.js?v=90','learning-v66.js?v=90','question-art-v67.js?v=90','pitch-v68.js?v=90','practice-v68.js?v=90','eye-v70.js?v=90','fast-v69.js?v=90','reading-v71.js?v=90','reading-ui-v71.js?v=90','follow-v79.js?v=90','follow-ui-v79.js?v=90',
-  'child-v82.css?v=90','child-v82.js?v=90','data-safety-v85.js?v=90','adventure-v86.css?v=90','adventure-v86.js?v=90','recording-take-v86.js?v=90','pinyin-study-v86.js?v=90','media-lifecycle-v86.js?v=90','assets/pinyin-v86/review-catalog.json?v=87','assets/pinyin-finals-v87/manifest.json?v=87','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
+  'game-v59.css?v=91','learning-v66.css?v=91','question-art-v67.css?v=91','curriculum-v61.css?v=91','pinyin-v63.css?v=91','practice-v68.css?v=91','eye-v70.css?v=91','reading-v71.css?v=91',
+  'curriculum-v61.js?v=91','pinyin-rules-v82.js?v=91','pinyin-v63.js?v=91','g1-ruby.js?v=91','game-v59.js?v=91','learning-v66.js?v=91','question-art-v67.js?v=91','pitch-v68.js?v=91','practice-v68.js?v=91','eye-v70.js?v=91','fast-v69.js?v=91','reading-v71.js?v=91','reading-ui-v71.js?v=91','follow-v79.js?v=91','follow-ui-v79.js?v=91',
+  'child-v82.css?v=91','child-v82.js?v=91','data-safety-v85.js?v=91','adventure-v86.css?v=91','adventure-v86.js?v=91','recording-take-v86.js?v=91','pinyin-study-v86.js?v=91','media-lifecycle-v86.js?v=91','assets/pinyin-v86/review-catalog.json?v=87','assets/pinyin-finals-v87/manifest.json?v=87','assets/pinyin-v63/segments-v83.json','assets/pinyin-v63/manifest.json','pet_voice_map.json'];
 const pending=new Map();let warmQueue=Promise.resolve();
 function own(url){return url.startsWith(BASE)}
 function asset(url){return own(url)&&new URL(url).pathname.includes('/assets/')}

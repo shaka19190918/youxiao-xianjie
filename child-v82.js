@@ -16,7 +16,12 @@
   if(top){top.querySelector('h1').textContent=(S._setup.name||'小朋友')+'，今天一起学！';top.querySelector('p').textContent='听一听、动手做，再试一题。做多少都算数。'}
   if(plan){plan.classList.remove('l66-folded');plan.querySelector('.l66-fold-btn')?.remove();plan.querySelector('header strong').textContent='🌈 今天的小冒险';plan.querySelector('header').after(plan.querySelector('.l66-primary'));if(top)top.after(plan);else shell.prepend(plan)}
   const extras=document.createElement('details');extras.className='v82-explore';extras.innerHTML='<summary>🧭 还有这些地方可以探索</summary><div class="v82-extra-grid"></div>';
-  const box=extras.querySelector('div');for(const el of [next,shell.querySelector('.g1-review-alert'),shell.querySelector('.g1-map'),shell.querySelector('.r71-entry'),shell.querySelector('.f79-entry')])if(el)box.append(el);
+  /* ⚠️ v91 调整：从"收进折叠区"的名单里**去掉 .f79-entry**。
+     钢琴跟弹是高频活动，属于孩子每天真正要做的事，不是"还有这些地方可以探索"；
+     收进默认收起的 <details> 里等于让孩子找不到入口（实测孩子不会主动展开）。
+     其余（继续闯关/复习提醒/成长地图/绘本）保持收编，维持 v82 的首页减负思路。
+     注：follow-ui-v79.js 也有位置纠正兜底，但源头不放进来更稳。 */
+  const box=extras.querySelector('div');for(const el of [next,shell.querySelector('.g1-review-alert'),shell.querySelector('.g1-map'),shell.querySelector('.r71-entry')])if(el)box.append(el);
   shell.append(extras);
   if(next){next.querySelector('strong').textContent='自由闯关 · '+next.querySelector('strong').textContent.replace(/^继续：/,'');next.querySelector('small').textContent='可以在今日计划之外继续探索'}
   const due=Object.values(G1Learning.game().reviewQueue||{}).filter(q=>q.dueAt<=Date.now()).length;

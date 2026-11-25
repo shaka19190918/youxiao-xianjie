@@ -49,6 +49,8 @@
   let curMelody = null, noteIndex = 0, mode = 'right';   /* right | left | both */
   let lastVerdict = '', lastAdvice = '', heardNote = null;
   let stats = { correct: 0, wrong: 0, uncertain: 0 };
+  /* 左手只做伴随记录，不影响推进 */
+  let leftTally = { ok: 0, bad: 0 };
   let stableCount = 0, lastMidi = null, lastAdvance = 0;
   let speakQueue = null, micPaused = false;
   /* 录音模式状态 */
@@ -79,6 +81,9 @@
     if ($('f79-style')) return;
     const css = [
       '.f79-page{max-width:1000px;margin:0 auto;display:grid;gap:18px;min-width:0;padding-bottom:40px}',
+      /* #kidDock 只在 ≤700px 出现（固定底部，约 64px + 安全区）——
+         原来只留 40px，页面最底部的内容会被 dock 压住（"跟弹"标签被切）。 */
+      '@media(max-width:700px){.f79-page{padding-bottom:calc(104px + env(safe-area-inset-bottom))}}',
       '.f79-page>.g1-back{display:inline-flex;align-items:center;justify-content:center;justify-self:start;width:auto;min-width:112px;height:56px;padding:0 18px;white-space:nowrap}',
       '.f79-card{border-radius:26px;padding:22px;background:#fff;box-shadow:0 10px 28px #6747a018;min-width:0}',
       '.f79-page h1{font-size:clamp(24px,4.4vw,34px);margin:0 0 8px}',
@@ -95,11 +100,17 @@
       '.f79-song b{font-size:19px;font-weight:800}',
       '.f79-song small{font-size:14px;color:#6b6288}',
       '.f79-song i{font-style:normal;font-size:13px;color:#8a7fb0}',
+      /* 「查看全部 37 首」/「换一首」—— 都是次要动作，做成弱化按钮 */
+      '.f79-more{width:100%;margin-top:12px;background:#fff!important;border-style:dashed!important;color:#6b5a9e!important;font-size:16px!important}',
+      '.f79-change{justify-self:start;min-height:46px!important;padding:8px 16px!important;font-size:15px!important;background:#fff!important;border-color:#ded4f3!important;color:#6b5a9e!important;margin-bottom:10px}',
       /* 音符带 */
       '.f79-strip{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;padding:14px;background:#f7f3ff;border-radius:20px;min-height:80px;align-items:center}',
+      /* 音符格：**唱名为主**（do/re/mi），音名（C4）降为辅助小字。
+         一年级音乐课教的是唱名与简谱，C4 这种带八度编号的科学音高记号
+         是成人/乐理体系的东西，孩子看到只会当成噪音。 */
       '.f79-note{display:grid;place-items:center;gap:2px;min-width:62px;min-height:62px;padding:6px 8px;border-radius:14px;border:2px solid #ddd3f0;background:#fff;transition:transform .12s,background .12s}',
-      '.f79-note b{font-size:19px;font-weight:800;color:#50358d;line-height:1.1}',
-      '.f79-note small{font-size:12px;color:#7a719c;line-height:1}',
+      '.f79-note b{font-size:21px;font-weight:800;color:#50358d;line-height:1.1;white-space:nowrap}',
+      '.f79-note small{font-size:11px;color:#8d84a8;line-height:1;white-space:nowrap}',
       '.f79-note.cur{border-color:#7150bc;background:#ede4ff;transform:translateY(-4px);box-shadow:0 6px 16px #7150bc33}',
       '.f79-note.ok{border-color:#4f9c72;background:#e6f7ee}',
       '.f79-note.bad{border-color:#c96a6a;background:#fdeaea}',
@@ -115,12 +126,17 @@
       '.f79-prog span{font-size:16px;font-weight:700;color:#5a4a86;font-variant-numeric:tabular-nums}',
       /* 按钮 */
       '.f79-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}',
-      '.f79-page button,.f79-page select{min-height:52px;padding:12px 18px;border-radius:18px;border:2px solid #d3c0f3;font-family:inherit;font-weight:800;font-size:17px;line-height:1.4;color:#50358d;background:#f2ebff;cursor:pointer}',
+      '.f79-page button,.f79-page select{box-sizing:border-box;min-height:52px;padding:12px 18px;border-radius:18px;border:2px solid #d3c0f3;font-family:inherit;font-weight:800;font-size:17px;line-height:1.4;color:#50358d;background:#f2ebff;cursor:pointer}',
       '.f79-page button:disabled{opacity:.5;cursor:default}',
       '.f79-page button:focus-visible,.f79-page select:focus-visible{outline:3px solid #147796;outline-offset:3px}',
       '.f79-primary{background:#7150bc!important;color:#fff!important;border-color:#7150bc!important}',
       '.f79-recording{background:#c96a6a!important;color:#fff!important;border-color:#c96a6a!important}',
-      '.f79-actions>button{flex:1 1 170px}',
+      /* ⚠️ 按钮宽度用百分比而不是固定 170px —— 原来 `flex:1 1 170px` 配合
+         content-box 的 padding/border，实际每个按钮要 210px，手机上只能一行一个，
+         5 个按钮吃掉 300px 高度，把音符带挤到屏幕外。
+         现在：主按钮【开始跟弹】独占一行，其余 4 个两两并排 = 3 行 180px。 */
+      '.f79-actions>button{flex:1 1 calc(50% - 6px);min-width:0}',
+      '.f79-actions>#f79Start{flex:1 1 100%}',
       '.f79-modes{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}',
       '.f79-modes button{flex:0 1 auto}',
       '.f79-modes button[aria-pressed=true]{background:#7150bc;color:#fff;border-color:#7150bc}',
@@ -129,28 +145,29 @@
       '.f79-stats>div{padding:10px 12px;border-radius:16px;background:#f7f3ff;text-align:center}',
       '.f79-stats b{display:block;font-size:24px;color:#50358d;font-variant-numeric:tabular-nums}',
       '.f79-stats small{font-size:13px;color:#7a719c}',
-      /* 双手模式：两行音符带（右手/左手） */
-      '.f79-strips{display:grid;gap:12px;margin:16px 0}',
-      '.f79-strip-row{display:grid;gap:8px}',
+      /* 双手模式：两行音符带（右手/左手）
+         ⚠️⚠️ .f79-strip-row 原来是 `display:grid` 但没给 grid-template-columns，
+         grid 默认单列 → **每个音符独占一整行**。实测双手 20 个音 = 40 行 / 3797px，
+         把「开始跟弹」按钮顶到视口外 3 屏（孩子点完"双手一起"按钮就消失）。
+         必须 flex + wrap，和单手 .f79-strip 用同一套换行逻辑。 */
+      '.f79-strips{display:grid;gap:14px;margin:16px 0;padding:14px;background:#f7f3ff;border-radius:20px}',
+      '.f79-strip-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
+      '.f79-strip-row>.f79-strip-label{flex:0 0 100%;margin-bottom:2px}',
       '.f79-strip-label{font-size:14px;font-weight:800;color:#50358d;padding:0 4px}',
       '.f79-strip-row.right .f79-note{border-color:#7150bc;background:#f7f3ff}',
       '.f79-strip-row.left .f79-note{border-color:#2f7fb8;background:#eef7ff}',
       '.f79-prog-dual{display:grid;gap:8px;margin:12px 0}',
       '.f79-prog-dual .f79-prog{margin:0}',
-      '@media(max-width:640px){.f79-card{padding:16px}.f79-note{min-width:52px;min-height:54px}.f79-note b{font-size:16px}.f79-live strong{font-size:20px}.f79-songs{grid-template-columns:1fr}}',
+      '@media(max-width:640px){.f79-card{padding:16px}.f79-note{min-width:54px;min-height:56px}.f79-note b{font-size:19px}.f79-live strong{font-size:20px}.f79-songs{grid-template-columns:1fr}}',
       '@media(prefers-reduced-motion:reduce){.f79-page *{animation:none!important;transition:none!important}}',
-      /* 首页入口卡（与绘本入口 .r71-entry 同族，视觉一致） */
-      '.f79-entry{display:block;width:100%;text-align:left;margin:14px 0 0;padding:16px 18px;border:2px solid #cfe6f7;border-radius:22px;background:linear-gradient(180deg,#fff 0%,#eef7ff 100%);font-family:inherit;color:#2c4256;cursor:pointer;box-shadow:0 8px 22px rgba(56,96,132,.10);transition:transform .16s ease,box-shadow .16s ease}',
-      '@media(hover:hover){.f79-entry:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(56,96,132,.17)}}',
-      '.f79-entry:active{transform:translateY(1px) scale(.99)}',
-      '.f79-entry-hd{display:flex;align-items:center;gap:10px;margin-bottom:6px}',
-      '.f79-entry-hd .f79-eic{font-size:30px}',
-      '.f79-entry-hd b{font-size:18px;color:#22374a}',
-      '.f79-entry-hd .f79-etag{font-size:12px;font-weight:800;padding:2px 9px;border-radius:999px;background:#2f7fb8;color:#fff}',
-      '.f79-entry p{font-size:13px;color:#4f6a80;line-height:1.65;margin:0 0 10px}',
-      '.f79-entry-ft{display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
-      '.f79-entry-ft i{font-style:normal;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#fff;color:#3d6a8c;border:1px solid #d7e8f4}',
-      '.f79-entry-ft .f79-go{margin-left:auto;font-size:14px;font-weight:800;color:#2f7fb8}',
+      /* 今日计划里的「钢琴」格子：从不可点的 <span> 改成可点按钮（learning-v66.js）。
+         这里补样式，让它看起来仍是科目格，但带紫色内描边提示"这里可以点"。 */
+      '.l66-subjects>button.l66-subj{border:0;font:inherit;color:#4a3a78;cursor:pointer;border-radius:18px;background:#ede4ff;padding:12px;font-size:17px;font-weight:750;text-align:center;line-height:1.35;width:100%;display:block;box-shadow:inset 0 0 0 2px #c9b6f5;transition:transform .12s ease,box-shadow .12s ease}',
+      '@media(hover:hover){.l66-subjects>button.l66-subj:hover{box-shadow:inset 0 0 0 3px #a98fe0}}',
+      '.l66-subjects>button.l66-subj:active{transform:scale(.96)}',
+      '.l66-subjects>button.l66-subj small{color:#6b48c9;font-weight:800}',
+      '.l66-subjects>button.l66-subj.done{box-shadow:inset 0 0 0 2px #c9ead5;background:#f3fff7}',
+      '@media(max-width:700px){.l66-subjects>button.l66-subj{padding:10px 2px;font-size:14px}}',
     ].join('');
     const st = document.createElement('style');
     st.id = 'f79-style';
@@ -342,9 +359,8 @@
 
     const jr = j.right, jl = j.left;
 
-    if (j.combined === 'silent' || (jr.verdict === 'silent' && (!jl || jl.verdict === 'silent'))) {
-      stableCount = 0; lastMidi = null; lastVerdict = '';
-      leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+    if (jr.verdict === 'silent' && (!jl || jl.verdict === 'silent')) {
+      resetStable();
       heardNote = null;
       return;
     }
@@ -369,106 +385,81 @@
 
     heardNote = jr.played != null ? jr.played : (jr.verdict === 'correct' ? expR : null);
 
-    /* 双手模式：需要两手都稳定才推进；单手模式：只看右手 */
-    const rightReady = stableCount >= 2;
-    const leftReady = (mode === 'both' && jl) ? leftStableCount >= 2 : true;
-    if (!rightReady || !leftReady) { renderLive(); return; }
+    /* ══ 推进只看右手（主目标），左手同步位移但不参与放行 ═══════════
+       v82 改动原因（三条都是实测出来的，不是偏好）：
+       ① 原来 `if (!rightReady || !leftReady)` 要求两手都稳定。
+          孩子右手一直弹对、左手一直不对时，页面**完全不推进也不给任何反馈**
+          —— 他只会得出"这个 app 坏了"。这又是一次失败静默。
+       ② 6-7 岁工作记忆容量只有 3-4 个信息块，"两只手同时都要对"在认知上必然超载。
+       ③ 但左手又必须跟右手**同步位移**：两只手是同时弹的，
+          左手若留在原地等，谱面位置就和右手错开，之后永远对不上。
+       结论：右手决定走不走，左手只决定自己那一格染什么色。 */
+    const leftV = jl ? jl.verdict : null;
 
-    /* 组合结论处理 */
-    switch (j.combined) {
-      case 'correct':
+    if (stableCount < 2) { renderLive(); return; }
+
+    switch (jr.verdict) {
+      case 'correct': {
         if (Date.now() - lastAdvance < 320) return;
         lastAdvance = Date.now();
         stats.correct++;
         markNote(noteIndex, 'ok');
-        if (mode === 'both') { markLeftNote(leftNoteIndex, 'ok'); leftNoteIndex++; }
+        markLeftCompanion(leftV);
         const cents = jr.cents || 0;
         noteIndex++;
-        stableCount = 0; lastMidi = null; lastVerdict = '';
-        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        resetStable();
         if (noteIndex >= curMelody.notes.length) { renderStats(); finishMelody(); return; }
-        if (Math.abs(cents) > 30) {
-          lastAdvice = cents > 0 ? '右手这个音有点偏高，再放松一点。' : '右手这个音有点偏低，手指站稳一点。';
+
+        /* 反馈优先级：左手错音 > 右手音准偏差 > 泛泛鼓励。
+           左手错音放在"这个音已经弹出去之后"才说，不打断当前音。 */
+        if (leftV === 'wrong' && jl && jl.played != null && expL != null) {
+          lastAdvice = `右手很准。刚才左手应该是 ${F.solfege(expL)}，你弹了 ${F.solfege(jl.played)}，下一遍留意。`;
+          renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
+        } else if (Math.abs(cents) > 30) {
+          lastAdvice = cents > 0 ? '这个音有点偏高，再放松一点。' : '这个音有点偏低，手指站稳一点。';
           renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
         } else {
           lastAdvice = '很好，继续。';
           renderLive(); renderStrip(); renderStats();
         }
         return;
+      }
 
-      case 'right-only':
-        if (Date.now() - lastAdvance < 320) return;
-        lastAdvance = Date.now();
-        stats.correct++;
-        markNote(noteIndex, 'ok');
-        if (mode === 'both') { markLeftNote(leftNoteIndex, 'bad'); leftNoteIndex++; }
-        const centsR = jr.cents || 0;
-        noteIndex++;
-        stableCount = 0; lastMidi = null; lastVerdict = '';
-        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
-        if (noteIndex >= curMelody.notes.length) { renderStats(); finishMelody(); return; }
-        if (jl && jl.verdict === 'wrong') {
-          const playedName = jl.played != null ? F.name(jl.played) : null;
-          lastAdvice = playedName
-            ? `右手对了，但左手这里是 ${F.name(expL)}，你弹的是 ${playedName}，再看看左手位置。`
-            : '右手对了，左手这个音没听清，再试一次。';
-        } else {
-          lastAdvice = '右手对了，左手再稳一点。';
-        }
-        renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
-        return;
-
-      case 'left-only':
-        if (Date.now() - lastAdvance < 320) return;
-        lastAdvance = Date.now();
-        if (mode === 'both') { markLeftNote(leftNoteIndex, 'ok'); leftNoteIndex++; }
-        stats.wrong++;
-        markNote(noteIndex, 'bad');
-        const playedNameR = jr.played != null ? F.name(jr.played) : null;
-        lastAdvice = playedNameR
-          ? `左手对了，但右手这里是 ${F.name(expR)}，你弹的是 ${playedNameR}，再看看右手位置。`
-          : '左手对了，右手这个音没听清，再试一次。';
-        renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
-        stableCount = 0; lastMidi = null; lastVerdict = '';
-        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
-        return;
-
-      case 'wrong':
+      case 'wrong': {
         if (Date.now() - lastAdvance < 320) return;
         lastAdvance = Date.now();
         stats.wrong++;
         markNote(noteIndex, 'bad');
-        if (mode === 'both') { markLeftNote(leftNoteIndex, 'bad'); leftNoteIndex++; }
-        const playedR = jr.played != null ? F.name(jr.played) : null;
-        const playedL = jl && jl.played != null ? F.name(jl.played) : null;
-        lastAdvice = `右手是 ${playedR || '没听清'}，左手是 ${playedL || '没听清'}，慢慢对照谱子再弹一次。`;
+        const playedName = jr.played != null ? F.name(jr.played) : null;
+        lastAdvice = playedName
+          ? `这里该弹 ${F.solfege(expR)}，你弹的是 ${playedName}，再看看琴键位置。`
+          : `这里该弹 ${F.solfege(expR)}，慢慢试一次。`;
         renderLive(); renderStrip(); renderStats(); speak(lastAdvice);
-        /* 弹错不推进，让孩子重弹（这是教学法的关键：错了要立即纠正）
-           ⚠️ 不推进也要清 stableCount：否则孩子一直弹同一个错音时，
-              每 320ms 就 +1 次 wrong，统计会被灌水。 */
-        stableCount = 0; lastMidi = null; lastVerdict = '';
-        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        /* 弹错不推进（教学法要求即时纠正）。左手也**不动** ——
+           两手必须同步位移，右手留在原地时左手不能自己往前跑。
+           ⚠️ 必须清 stableCount：否则孩子一直按着同一个错音，
+              每 320ms 就灌一次 wrong 统计。 */
+        resetStable();
         return;
+      }
 
-      case 'uncertain':
+      case 'uncertain': {
         if (Date.now() - lastAdvance < 1200) return;
         lastAdvance = Date.now();
         stats.uncertain++;
-        const withNameR = jr.overlapWith != null ? F.name(jr.overlapWith) : null;
-        const withNameL = jl && jl.overlapWith != null ? F.name(jl.overlapWith) : null;
-        if (withNameR && withNameL) lastAdvice = `右手被左手 ${withNameR} 干扰、左手被右手 ${withNameL} 干扰，先分手练。`;
-        else if (withNameR) lastAdvice = `右手被左手 ${withNameR} 干扰，先只弹右手。`;
-        else if (withNameL) lastAdvice = `左手被右手 ${withNameL} 干扰，先只弹左手。`;
-        else lastAdvice = '这个音听不太准，先分手慢慢试一次。';
+        const withName = jr.overlapWith != null ? F.name(jr.overlapWith) : null;
+        lastAdvice = withName
+          ? `左手 ${withName} 的声音和这个音有点混，先只弹右手试一次。`
+          : '这个音听不太准，先只弹右手慢慢试一次。';
         renderLive(); speak(lastAdvice);
         /* 听不准也推进（否则孩子会卡死在这一小节） */
         markNote(noteIndex, 'skip');
-        if (mode === 'both') { markLeftNote(leftNoteIndex, 'skip'); leftNoteIndex++; }
+        markLeftCompanion(leftV);
         noteIndex++;
-        stableCount = 0; lastMidi = null; lastVerdict = '';
-        leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+        resetStable();
         renderStrip(); renderStats();
         return;
+      }
 
       case 'unclear':
         if (stableCount === 2) {
@@ -477,6 +468,23 @@
         }
         return;
     }
+  }
+
+  /* 左手伴随标记：随右手一起位移，只染色不拦人（理由见 sample() 顶部注释） */
+  function markLeftCompanion(leftV) {
+    if (mode !== 'both' || !curMelody || !curMelody.leftNotes) return;
+    if (leftNoteIndex >= curMelody.leftNotes.length) return;
+    const cls = leftV === 'correct' ? 'ok' : leftV === 'wrong' ? 'bad' : 'skip';
+    markLeftNote(leftNoteIndex, cls);
+    if (cls === 'ok') leftTally.ok++;
+    else if (cls === 'bad') leftTally.bad++;
+    leftNoteIndex++;
+    leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
+  }
+
+  function resetStable() {
+    stableCount = 0; lastMidi = null; lastVerdict = '';
+    leftStableCount = 0; leftLastMidi = null; leftLastVerdict = '';
   }
 
   function markNote(i, cls) {
@@ -501,12 +509,15 @@
     const total = curMelody.notes.length;
     const totalL = curMelody.leftNotes ? curMelody.leftNotes.length : 0;
     const rate = total ? Math.round((stats.correct / total) * 100) : 0;
-    const rateL = totalL ? Math.round((stats.correct / totalL) * 100) : 0;  // 简化：用同一统计
-    const advice = rate >= 90 ? '非常棒！可以再弹一遍，试试更连贯。'
-      : rate >= 70 ? '不错！把错的几个单独练两遍，再完整弹一次。'
-        : '慢慢来，先把错的那几个音单独练熟。';
-    let msg = `弹完啦！右手共 ${total} 个音，弹对 ${stats.correct} 个`;
-    if (mode === 'both' && totalL) msg += `；左手共 ${totalL} 个音`;
+    /* 左手单独记账（leftTally，由 markLeftCompanion 累计）。
+       不再拿右手数据冒充左手 —— 原来那行 `rateL` 是同一统计的重复。 */
+    const advice = (mode === 'both' && leftTally.bad > 0)
+      ? `右手很好。左手有 ${leftTally.bad} 个音没对上，先把左手单独弹两遍再合手。`
+      : rate >= 90 ? '非常棒！可以再弹一遍，试试更连贯。'
+        : rate >= 70 ? '不错！把错的几个单独练两遍，再完整弹一次。'
+          : '慢慢来，先把错的那几个音单独练熟。';
+    let msg = `弹完啦！右手 ${total} 个音，弹对 ${stats.correct} 个`;
+    if (mode === 'both' && totalL) msg += `；左手 ${totalL} 个音，弹对 ${leftTally.ok} 个`;
     msg += `${stats.uncertain ? `，${stats.uncertain} 个听不太准` : ''}。`;
     lastAdvice = msg;
     const host = $('f79Live');
@@ -538,13 +549,16 @@
     else if (!stream) { title = curMelody ? '准备开始' : '先选一首曲子'; }
     else if (exp == null) { title = '弹完啦'; cls += ' good'; }
     else {
+      /* 文案也统一成**唱名优先**：孩子问"这个音怎么弹"时，
+         老师说的是"弹 re"，不是"弹 D4"。
+         音名放括号里只作参考，且不带八度编号以外的解释。 */
       if (mode === 'both' && curMelody.leftNotes) {
         const expL = curMelody.leftNotes[leftNoteIndex] ?? null;
-        title = `右手：${F.name(exp)}（${F.solfege(exp)}） · 左手：${expL ? F.name(expL) + '（' + F.solfege(expL) + '）' : '—'}`;
+        title = `右手 ${F.solfege(exp)}（${F.name(exp)}） · 左手 ${expL ? F.solfege(expL) + '（' + F.name(expL) + '）' : '—'}`;
       } else {
-        title = `下一个音：${F.name(exp)}（${F.solfege(exp)}）`;
+        title = `下一个音：${F.solfege(exp)}（${F.name(exp)}）`;
       }
-      if (heardNote != null) msg = `听到：${F.name(heardNote)}` + (msg ? ' · ' + msg : '');
+      if (heardNote != null) msg = `听到 ${F.solfege(heardNote)}` + (msg ? ' · ' + msg : '');
     }
     host.className = cls;
     host.innerHTML = `<strong>${title}</strong><p>${msg}</p>`;
@@ -559,11 +573,11 @@
       host.className = 'f79-strips';
       const rightHtml = curMelody.notes.map((m, i) => {
         const cls = i === noteIndex ? 'cur' : (i < noteIndex ? 'ok' : '');
-        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="right"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="right"><b>${F.solfege(m)}</b><small>${F.name(m)}</small></div>`;
       }).join('');
       const leftHtml = curMelody.leftNotes.map((m, i) => {
         const cls = i === leftNoteIndex ? 'cur' : (i < leftNoteIndex ? 'ok' : '');
-        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="left"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="left"><b>${F.solfege(m)}</b><small>${F.name(m)}</small></div>`;
       }).join('');
       host.innerHTML = `
         <div class="f79-strip-row right"><span class="f79-strip-label">🙋 右手</span>${rightHtml}</div>
@@ -579,11 +593,15 @@
         `;
       }
     } else {
-      /* 单手模式：原有逻辑 */
       host.className = 'f79-strip';
+      /* ⚠️ 单手模式也必须带 data-hand="right" ——
+         markNote() / markLeftNote() 是按 [data-hand] 定位的。
+         原来单手模板没这个属性，导致**单手模式弹对了格子永远不变色**
+         （markNote 静默返回 null），孩子只能靠"下一个音"的变化判断。
+         这个 bug 和"点了没反应"同源：失败静默。 */
       host.innerHTML = curMelody.notes.map((m, i) => {
         const cls = i === noteIndex ? 'cur' : (i < noteIndex ? 'ok' : '');
-        return `<div class="f79-note ${cls}" data-i="${i}"><b>${F.name(m)}</b><small>${F.solfege(m)}</small></div>`;
+        return `<div class="f79-note ${cls}" data-i="${i}" data-hand="right"><b>${F.solfege(m)}</b><small>${F.name(m)}</small></div>`;
       }).join('');
       const prog = $('f79Prog');
       if (prog) {
@@ -599,34 +617,76 @@
     host.innerHTML = `<div><b>${stats.correct}</b><small>弹对</small></div><div><b>${stats.wrong}</b><small>再看看</small></div><div><b>${stats.uncertain}</b><small>听不准</small></div>`;
   }
 
+  /* ── 曲目列表：默认只给 6 首，其余折叠 ────────────────────────────
+     37 张卡手机上是 4146px（5.3 屏）。6 岁孩子做不到"在长列表里找目标"，
+     而且整块曲目区会把练习区顶到视口外。 */
+  const RECOMMEND_IDS = ['wuzhi', 'twinkle', 'bee', 'beyer01', 'beyer15', 'beyer25'];
+  let songsExpanded = false;
+  /* 用户点了「换一首」→ 曲目区展开、练习区收起。
+     用显式状态而不是只改 DOM，否则 updateButtons() 一跑就把练习区又显示出来。 */
+  let songPickerOpen = false;
+
+  function lastMelodyId() {
+    try {
+      const st = JSON.parse(localStorage.getItem(KEY) || '{}');
+      return st && st.last && st.last.melody ? st.last.melody : null;
+    } catch (_) { return null; }
+  }
+
+  function foldedIds() {
+    const ids = RECOMMEND_IDS.filter((id) => F.MELODIES.some((m) => m.id === id));
+    const last = lastMelodyId();
+    /* 上次练过的那首永远排第一 —— 复练同一首时不用展开也不用找 */
+    if (last && !ids.includes(last) && F.MELODIES.some((m) => m.id === last)) ids.unshift(last);
+    return ids;
+  }
+
+  function songButton(m) {
+    const r = F.analyzeOverlap(m, [48]);
+    const safePct = Math.round(r.safeRatio * 100);
+    const hint = safePct >= 70 ? '适合合手' : '建议先右手';
+    return `<button class="f79-song" onclick="Follow79.pick('${m.id}')"><b>${m.icon} ${m.title}</b><small>${m.notes.length} 个音 · ${m.tier}</small><i>${hint}（${safePct}%）</i></button>`;
+  }
+
+  function renderSongs() {
+    const host = $('f79Songs');
+    if (!host) return;
+    const ids = foldedIds();
+    const list = songsExpanded ? F.MELODIES : F.MELODIES.filter((m) => ids.includes(m.id));
+    /* 折叠态按 RECOMMEND 顺序排，别按 MELODIES 原始顺序（拜厄在后面会乱） */
+    if (!songsExpanded) list.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    host.innerHTML = list.map(songButton).join('');
+    const more = $('f79More');
+    if (more) more.textContent = songsExpanded
+      ? '收起，只看推荐的几首'
+      : `查看全部 ${F.MELODIES.length} 首`;
+  }
+
   function render() {
     injectStyle();
     stopAll();
-    const songs = F.MELODIES.map((m) => {
-      const r = F.analyzeOverlap(m, [48]);
-      const safePct = Math.round(r.safeRatio * 100);
-      const hint = safePct >= 70 ? '适合合手' : '建议先右手';
-      return `<button class="f79-song" onclick="Follow79.pick('${m.id}')"><b>${m.icon} ${m.title}</b><small>${m.notes.length} 个音 · ${m.tier}</small><i>${hint}（${safePct}%）</i></button>`;
-    }).join('');
+    /* 重新进入页面时回到"选曲"态：曲目区展示、练习区收起 */
+    songPickerOpen = false;
 
     $('ct').innerHTML = `<main class="f79-page" id="f79Page">
   <button class="g1-back" onclick="showPage('home')">← 返回</button>
-  <section class="f79-card">
+  <section class="f79-card" id="f79SongBox">
     <h1>🎹 跟弹练习</h1>
     <p>选一首曲子，打开麦克风，一个音一个音地弹。弹对了会往下走，弹错了会停下来等你重弹。</p>
-    <div class="f79-songs">${songs}</div>
+    <div class="f79-songs" id="f79Songs"></div>
+    <button class="f79-more" id="f79More" onclick="Follow79.toggleSongs()"></button>
   </section>
   <section class="f79-card" id="f79Practice" hidden>
+    <button class="f79-change" onclick="Follow79.changeSong()">← 换一首</button>
     <h2 id="f79Title"></h2>
     <p id="f79Hint" class="f79-tip"></p>
     <div class="f79-modes" role="group" aria-label="练习方式">
       <button onclick="Follow79.setMode('right')" aria-pressed="true" id="f79ModeRight">🙋 只弹右手</button>
       <button onclick="Follow79.setMode('both')" aria-pressed="false" id="f79ModeBoth">🙌 双手一起</button>
     </div>
-    <div class="f79-strip" id="f79Strip"></div>
-    <div class="f79-prog" id="f79Prog"></div>
-    <div class="f79-live" id="f79Live"></div>
-    <div class="f79-stats" id="f79Stats"></div>
+    <!-- ★ 控制区放在音符带**之前**：先给控制、再给内容。
+         放在最下面时，双手音符带一长，按钮就被推到视口外，
+         孩子点完"双手一起"就找不到"开始跟弹"了。 -->
     <div class="f79-actions">
       <button class="f79-primary" id="f79Start" onclick="Follow79.start()">▶ 开始跟弹</button>
       <button id="f79Stop" onclick="Follow79.stop()">■ 停止</button>
@@ -634,12 +694,17 @@
       <button onclick="Follow79.restart()">↻ 从头再来</button>
       <button id="f79Rec" onclick="Follow79.toggleRecord()">🔴 录音模式</button>
     </div>
+    <div class="f79-strip" id="f79Strip"></div>
+    <div class="f79-prog" id="f79Prog"></div>
+    <div class="f79-live" id="f79Live"></div>
+    <div class="f79-stats" id="f79Stats"></div>
     <p class="f79-tip">麦克风只在本机分析声音，不录音、不上传。练习时先关掉电视和音乐，房间安静一点会更准。</p>
   </section>
 </main>`;
-    /* ⚠️ 必须补渲染这三块：render() 是重建 innerHTML，
+    /* ⚠️ 必须补渲染这几块：render() 是重建 innerHTML，
        容器是新的空节点。若不补渲染，重新进入页面时音符带 / 状态区 /
        统计全是空白（看起来像"坏了"），而 curMelody 其实还记着上次选的曲子。 */
+    renderSongs();
     renderStrip(); renderLive(); renderStats();
     updateButtons();
   }
@@ -647,7 +712,9 @@
   function updateButtons() {
     const has = !!curMelody;
     const pr = $('f79Practice');
-    if (pr) pr.hidden = !has;
+    if (pr) pr.hidden = !has || songPickerOpen;
+    const songBox = $('f79SongBox');
+    if (songBox) songBox.hidden = has && !songPickerOpen;
     const mic = $('f79Mic');
     if (mic) {
       mic.disabled = pending || !!stream || !has;
@@ -682,20 +749,28 @@
         退化链：.r71-entry → .g1-map → .g1-shell。
      ⚠️ 动态内容事件必须用委托（挂 #ct 打标记），逐元素绑 onclick
         在 innerHTML 重建后会静默失效。 */
+  /* 首页入口：**竖排小方块，与「继续闯关」并排**（零高度增加）。
+     演进过程值得记一笔：
+     ① v80 是 160px 大卡插在地图之后 → 桌面 862px / 手机 1875px，首屏根本看不见，
+        孩子自己找不到「跟弹练习」，必须家长带点一次；
+     ② v82 先改成 56px 横条插在"继续闯关"下面 → 入口进了首屏，
+        但成长地图被顶到 426px（v78 好不容易压到 342px），退掉 v78 的成果；
+     ③ 最终方案 = 跟「继续闯关」并排成一行，高度取 g1-continue 的 104px，
+        **地图版式一动不动（仍是 342px）**，入口同时在首屏内。
+     教训：在首屏塞新入口，不要"往上加高度"，要"横向借位置"。 */
+  /* 首页入口：**全宽紧凑横条**（56px）。
+     v90 基线下的现实：首页主区被「今日计划」占满，`child-v82.js` 又把
+     继续闯关/地图/绘本统一收进「🧭 还有这些地方可以探索」折叠区，
+     已经没有可并排的主行动卡了。所以这里用最省高度的横条形态。 */
   function entryHTML() {
     const st = loadState();
     const last = st.last && st.last.day ? st.last : null;
-    let foot = '37 首曲子 · 含拜厄 1-30 课';
-    if (last) {
-      const pct = last.total ? Math.round((last.correct / last.total) * 100) : 0;
-      foot = `上次：${last.correct} / ${last.total} 个音（${pct}%）`;
-    }
-    return `<button class="f79-entry" onclick="showPage('follow79')">` +
-      `<div class="f79-entry-hd"><span class="f79-eic">🎹</span><b>钢琴跟弹</b>` +
-      `<span class="f79-etag">新</span></div>` +
-      `<p>打开麦克风，一个音一个音地弹。弹对了往下走，弹错了停下来等你重弹，还会告诉你音偏高还是偏低。</p>` +
-      `<div class="f79-entry-ft"><i>拜厄 · 小汤适用</i><i>${foot}</i>` +
-      `<span class="f79-go">去弹 · →</span></div></button>`;
+    const pct = last && last.total ? Math.round((last.correct / last.total) * 100) : null;
+    const foot = pct != null ? `上次 ${pct}%` : '37 首曲子';
+    return `<button class="f79-entry" onclick="showPage('follow79')" title="钢琴跟弹：37 首曲子，会用耳朵听你弹">` +
+      `<span class="f79-eic">🎹</span>` +
+      `<span class="f79-etxt"><b>钢琴跟弹</b><small>${foot} · 一个音一个音地弹</small></span>` +
+      `<span class="f79-go">去弹 →</span></button>`;
   }
 
   function wrapHome() {
@@ -704,12 +779,11 @@
     const prev = PGS.home.render;
     PGS.home.render = function () {
       prev.apply(this, arguments);
-      const anchor = document.querySelector('#ct .r71-entry') || document.querySelector('#ct .g1-map');
-      if (anchor) anchor.insertAdjacentHTML('afterend', entryHTML());
-      else {
-        const shell = document.querySelector('#ct .g1-shell');
-        if (shell) shell.insertAdjacentHTML('beforeend', entryHTML());
-      }
+      /* ⚠️ 走 injectEntry() 而不是自己再插一次 —— injectEntry 里有
+         `if (document.querySelector('.f79-entry')) return true` 的幂等判断。
+         原来这里直接 insertAdjacentHTML，boot 时 injectEntry 先跑过一遍，
+         重渲染就会插出**第二个**入口（一屏两个"跟弹"按钮）。 */
+      injectEntry();
     };
     PGS.home._f79wrapped = true;
     return true;
@@ -717,24 +791,28 @@
 
   function injectEntry() {
     try {
-      if (document.querySelector('.f79-entry')) return true;
-      /* 只在首页插入（CP 是 index.html 的 let 全局，本文件内不可声明同名变量） */
-      let nowPage;
-      try { nowPage = CP; } catch (_) { nowPage = undefined; }
-      if (nowPage !== undefined && nowPage !== 'home') return false;
-      const ct = document.getElementById('ct');
-      if (!ct) return false;
-      const anchor = ct.querySelector('.r71-entry') || ct.querySelector('.g1-map');
-      if (anchor) { anchor.insertAdjacentHTML('afterend', entryHTML()); return true; }
-      const shell = ct.querySelector('.g1-shell');
-      if (shell) { shell.insertAdjacentHTML('beforeend', entryHTML()); return true; }
-    } catch (_) {}
-    return false;
+      /* 首页也要注入样式：今日计划里的「钢琴」格子靠下面的 .l66-subj 规则才像可点的按钮 */
+      injectStyle();
+      /* ══ v91：不再往首页另插一张「跟弹」入口卡 ══════════════════════
+         试过三种位置，全都不成立（都是实测）：
+         ① 插在成长地图之后（v80）→ 桌面 862px / 手机 1875px，首屏根本看不见；
+         ② 跟「继续闯关」并排（v82）→ v90 起继续闯关已被 child-v82 收进折叠区，没有可并排的对象；
+         ③ 插在问候区之后（v91 试）→ DOM 顺序正确，但 `.g1-shell` 是
+            `grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr)` 两列网格，
+            `.a86-home` 又给世界地图/折叠区写死了 grid-row:3/4，
+            新元素没有 grid-row 就被 auto-place 到**最后一行（实测 1392px，首屏 630 之外）**。
+         真正的答案是：v90 的今日计划卡里本来就有「🎹 钢琴 20分钟」这一格，
+         只是它被渲染成了不可点击的 <span>。把它做成 <button onclick="showPage('follow79')">
+         （见 learning-v66.js）—— 位置天然在首屏中部、语义正好是"今天要练琴"、
+         不新增任何版块、不破坏两列布局。 */
+      return true;
+    } catch (_) { return false; }
   }
 
   /* 首屏可能在本脚本执行前就已渲染完（game-v59.js 先跑），包装函数不会回头补插；
      且首页渲染时机不确定，故用 MutationObserver + 轮询双保险（项目既有做法）。 */
   function watchHome() {
+    injectStyle();
     let tries = 0;
     (function poll() {
       if (injectEntry()) return;
@@ -758,13 +836,38 @@
       noteIndex = 0;
       leftNoteIndex = 0;
       stats = { correct: 0, wrong: 0, uncertain: 0 };
-      lastAdvice = '点「开启麦克风」，然后从第一个音开始弹。';
+      leftTally = { ok: 0, bad: 0 };
+      lastAdvice = '点「开始跟弹」，从第一个音开始弹。';
       lastVerdict = ''; lastMidi = null; stableCount = 0;
       leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
       leftLastAdvance = 0;
+      /* 选完就把曲目区收起来 —— 6 张卡在手机上仍有 600px，
+         留着它练习区就还在下面。收起后练习区紧接标题，按钮稳进首屏。 */
+      songPickerOpen = false;
+      const songBox = $('f79SongBox');
+      if (songBox) songBox.hidden = true;
       renderStrip(); renderLive(); renderStats(); updateButtons();
+      /* ⚠️ block 用 'start' 不用 'nearest'：nearest 只保证元素"进入视口"，
+         容器很高时按钮仍可能落在视口下方（实测单手差 4px、双手差 2 屏）。 */
       const box = $('f79Practice');
-      if (box && !box.hidden) { try { box.scrollIntoView({ block: 'nearest' }); } catch (_) {} }
+      if (box && !box.hidden) { try { box.scrollIntoView({ block: 'start' }); } catch (_) {} }
+    },
+
+    /* 换一首：曲目区回来、练习区收起（先停止拾音，避免看不见还在听） */
+    changeSong() {
+      stopAll();
+      songPickerOpen = true;
+      const songBox = $('f79SongBox');
+      if (songBox) songBox.hidden = false;
+      const pr = $('f79Practice');
+      if (pr) pr.hidden = true;
+      renderSongs();
+      if (songBox) { try { songBox.scrollIntoView({ block: 'start' }); } catch (_) {} }
+    },
+
+    toggleSongs() {
+      songsExpanded = !songsExpanded;
+      renderSongs();
     },
 
     setMode(m) {
@@ -773,12 +876,15 @@
       if (r) r.setAttribute('aria-pressed', String(mode === 'right'));
       if (b) b.setAttribute('aria-pressed', String(mode === 'both'));
       lastAdvice = mode === 'both'
-        ? '双手一起时，如果左手的声音盖住了右手，可以切回「只弹右手」。'
+        ? '双手一起弹：右手带着你往下走，左手弹错了只会变红提醒，不会把你卡住。'
         : '只弹右手，左手先休息。等右手熟了再试双手。';
-      /* 切模式时重置左右手进度 */
+      /* 切模式必须把进度和统计一起清零 ——
+         只清 noteIndex 不清 stats，会出现"弹了 3 个音，弹对 12 个"。 */
       noteIndex = 0; leftNoteIndex = 0;
-      stableCount = 0; leftStableCount = 0;
-      renderStrip(); renderLive(); renderStats();
+      stats = { correct: 0, wrong: 0, uncertain: 0 };
+      leftTally = { ok: 0, bad: 0 };
+      resetStable();
+      renderStrip(); renderLive(); renderStats(); updateButtons();
     },
 
     askMic() { enableMic(); },
@@ -787,6 +893,7 @@
       if (!curMelody) return;
       if (!stream) { enableMic(); return; }
       stats = { correct: 0, wrong: 0, uncertain: 0 };
+      leftTally = { ok: 0, bad: 0 };
       noteIndex = 0; leftNoteIndex = 0;
       lastVerdict = ''; lastMidi = null; stableCount = 0;
       leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
@@ -803,6 +910,7 @@
     restart() {
       if (!curMelody) return;
       stats = { correct: 0, wrong: 0, uncertain: 0 };
+      leftTally = { ok: 0, bad: 0 };
       noteIndex = 0; leftNoteIndex = 0;
       lastVerdict = ''; lastMidi = null; stableCount = 0;
       leftLastVerdict = ''; leftLastMidi = null; leftStableCount = 0;
